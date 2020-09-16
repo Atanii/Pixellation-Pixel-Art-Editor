@@ -1,4 +1,4 @@
-<img align="center" src="logo.png" alt="pixellation logo">
+<img align="center" src="logo-big.png" alt="pixellation logo">
 
 # Disclaimer: This program is highly in development!
 
