@@ -1,18 +1,11 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static Pixellation.Utils.HelperFunctions;
 
 namespace Pixellation
 {
@@ -21,10 +14,21 @@ namespace Pixellation
     /// </summary>
     public partial class MainWindow : Window
     {
-        Point currentPoint = new Point();
+        private Point currentPoint = new Point();
+
         public MainWindow()
         {
             InitializeComponent();
+            InitStatusBarTexts();
+        }
+
+        private void InitStatusBarTexts()
+        {
+            statWidth.Text = "Width: 0px";
+            statHeight.Text = "Width: 0px";
+            statZoom.Text = "Zoom: 100%";
+            statZoomedWidth.Text = "Zoomed Width: 0px";
+            statZoomedHeight.Text = "Zoomed Width: 0px";
         }
 
         private void Canvas_MouseDown_1(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -51,28 +55,75 @@ namespace Pixellation
             }
         }
 
-        private void SaveCanvasAsPng(object sender, RoutedEventArgs e)
+        private void SaveAsImage(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            String fileName = "";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Image Files (*.bmp, *.jpg, *.png, *.tiff, *.gif)|*.bmp;*.jpg;*.png;*.tiff;*.gif"
+            };
             if (saveFileDialog.ShowDialog() == true)
-                fileName = saveFileDialog.FileName;
+            {
+                string fileName = saveFileDialog.FileName;
 
-            Rect rect = new Rect(paintSurface.RenderSize);
-            RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right,
-              (int)rect.Bottom, 96d, 96d, System.Windows.Media.PixelFormats.Default);
-            rtb.Render(paintSurface);
-            //endcode as PNG
-            BitmapEncoder pngEncoder = new PngBitmapEncoder();
-            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+                // Getting Bitmap
+                WriteableBitmap wrBitmap = PixelEditorSurface.GetBitmap();
+                SaveBitmapSourceToFile(fileName, wrBitmap);
+            }
+        }
 
-            //save to memory stream
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+        private void SaveBitmapSourceToFile(string fileName, BitmapSource image)
+        {
+            if (fileName != string.Empty)
+            {
+                string extension = fileName.Split('.')[^1];
+                // Saving
+                using (FileStream fs = new FileStream(fileName, FileMode.Create))
+                {
+                    BitmapEncoder encoder;
+                    switch (extension.ToLower())
+                    {
+                        case "png":
+                            encoder = new PngBitmapEncoder();
+                            break;
+                        case "jpg":
+                        case "jpeg":
+                            encoder = new JpegBitmapEncoder();
+                            break;
+                        case "bmp":
+                            encoder = new BmpBitmapEncoder();
+                            break;
+                        case "tiff":
+                            encoder = new TiffBitmapEncoder();
+                            break;
+                        case "gif":
+                            encoder = new GifBitmapEncoder();
+                            break;
+                        default:
+                            MessageBox.Show($"Saving into (.{extension}) image format is not supported!", "Error");
+                            return;
+                    }
+                    encoder.Frames.Add(BitmapFrame.Create(image));
+                    encoder.Save(fs);
+                }
+            }
+        }
 
-            pngEncoder.Save(ms);
-            ms.Close();
-            System.IO.File.WriteAllBytes(fileName, ms.ToArray());
-            Console.WriteLine("Done");
+        private void CommonCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = false;
+        }
+
+        private void CommonCommandBinding_SaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void UpdatePreview(object sender, MouseButtonEventArgs e)
+        {
+            WriteableBitmap wrBitmap = PixelEditorSurface.GetBitmap();
+            var bitmap = BitmapFromWriteableBitmap(wrBitmap);
+            var b = BitmapToBitmapSource(bitmap);
+            preview.Source = b;
         }
     }
 }

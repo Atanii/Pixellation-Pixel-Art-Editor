@@ -3,21 +3,61 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Pixellation"
+        xmlns:local="clr-namespace:Pixellation" xmlns:l="clr-namespace:Pixellation.Components.Editor"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
+    <Window.CommandBindings>
+        <CommandBinding Command="New" CanExecute="CommonCommandBinding_CanExecute" />
+        <CommandBinding Command="Open" CanExecute="CommonCommandBinding_CanExecute" />
+        <CommandBinding Command="Save" CanExecute="CommonCommandBinding_SaveCanExecute" />
+    </Window.CommandBindings>
 
+    <!-- MAINPANEL -->
     <DockPanel LastChildFill="False">
-        <Menu DockPanel.Dock="Top">
+        <!-- MENUBAR -->
+        <!--<Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New" />
                 <MenuItem Header="_Open" />
-                <MenuItem Header="_Save" Click="SaveCanvasAsPng" />
+                <MenuItem Header="_Save" Click="SaveAsImage" />
                 <Separator />
                 <MenuItem Header="_Exit" />
             </MenuItem>
-        </Menu>
+        </Menu>-->
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Command="New" Content="New" />
+                <Button Command="Open" Content="Open" />
+                <Button Command="Save" Content="Save" Click="SaveAsImage" />
+            </ToolBar>
+            <ToolBar>
+                <Button Command="Cut" Content="Cut" />
+                <Button Command="Copy" Content="Copy" />
+                <Button Command="Paste" Content="Paste" />
+            </ToolBar>
+        </ToolBarTray>
+        
+        <!-- STATUSBAR -->
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Name="statWidth" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statHeight" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statZoom" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statZoomedWidth" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statZoomedHeight" />
+            </StatusBarItem>
+        </StatusBar>
+
+        <!-- MAIN GRID -->
         <Grid Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
@@ -28,28 +68,88 @@
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
 
-            <Border  Grid.Column="0" Grid.Row="0" Width="200" MaxWidth="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
+            <!-- LEFT PANEL -->
+            <Border  Grid.Column="0" Grid.Row="0" MinWidth="200" MaxWidth="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
+                <StackPanel>
+                    <Label Content="Tools (NOT IMPLEMENTED YET)"></Label>
+                    <Grid MinHeight="150">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+
+                        <!-- TOOL ICONS GRID -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </Grid>
+
+                    <Label Content="Layers (NOT IMPLEMENTED YET)"></Label>
+                </StackPanel>
             </Border>
-            <Border Grid.Column="1" Grid.Row="0" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
-                <Canvas Width="400" Name="paintSurface" MouseDown="Canvas_MouseDown_1" MouseMove="Canvas_MouseMove_1" RenderTransformOrigin="0.5,0.5">
-                    <Canvas.Background>
-                        <DrawingBrush TileMode="Tile" Viewport="0,0,5,5" 
-                                     ViewportUnits="Absolute">
-                            <DrawingBrush.Drawing>
-                                <GeometryDrawing>
-                                    <GeometryDrawing.Geometry>
-                                        <RectangleGeometry Rect="0,0,0.1,0.1"/>
-                                    </GeometryDrawing.Geometry>
-                                    <GeometryDrawing.Pen>
-                                        <Pen Brush="Black" Thickness="0.001"/>
-                                    </GeometryDrawing.Pen>
-                                </GeometryDrawing>
-                            </DrawingBrush.Drawing>
-                        </DrawingBrush>
-                    </Canvas.Background>
-                </Canvas>
+            
+            <!-- DRAWING AREA -->
+            <Border Grid.Column="1" Grid.Row="0" MinWidth="400" Background="GhostWhite" BorderBrush="Black" BorderThickness="1"
+                    MouseUp="UpdatePreview">
+                <!-- <InkCanvas Name="paintSurface" ></InkCanvas> -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Grid.Column="0" x:Name="editorGridAreaCanvas">
+                        <Canvas MinWidth="400" Name="paintSurface" RenderTransformOrigin="0.5,0.5">
+                            <!--  MouseDown="Canvas_MouseDown_1" MouseMove="Canvas_MouseMove_1" -->
+                            <Rectangle MinWidth="500" MinHeight="500" Canvas.Left="0" Canvas.Top="0">
+                                <Rectangle.Fill>
+                                    <DrawingBrush TileMode="Tile" Viewport="0,0,32,32" ViewportUnits="Absolute">
+                                        <DrawingBrush.Drawing>
+                                            <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="LightGray"/>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Canvas>
+                    </Grid>
+
+                    <Grid Grid.Row="0" Grid.Column="0" x:Name="editorGridAreaPixelEditor">
+                        <ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                            <Border BorderBrush="Black" BorderThickness="1">
+                                <l:PixelEditor x:Name="PixelEditorSurface" />
+                            </Border>
+                        </ScrollViewer>
+                    </Grid>
+                    
+                </Grid>
             </Border>
-            <Border  Grid.Column="2" Grid.Row="0" Width="200" MaxWidth="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
+            
+            <!-- RIGHT PANEL -->
+            <Border  Grid.Column="2" Grid.Row="0" MinWidth="200" MaxWidth="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
+                <StackPanel>
+                    <Label Content="Preview"></Label>
+                    <Image Margin="10" Width="180" Height="180" RenderOptions.BitmapScalingMode="NearestNeighbor" x:Name="preview"/>
+                    <Label Content="Colour (NOT IMPLEMENTED YET)"></Label>
+                </StackPanel>
             </Border>
         </Grid>
     </DockPanel>
