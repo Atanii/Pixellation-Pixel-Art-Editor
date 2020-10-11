@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Pixellation.Components.Tools.ColourPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Pixellation.Components.Tools"
+             mc:Ignorable="d" 
+             d:DesignHeight="250" d:DesignWidth="180">
+    <StackPanel>
+        <Image x:Name="colourPickerWheel" VerticalAlignment="Top" Width="180" Height="180" Source="/Resources/colourwheel_180x180.png" MouseLeftButtonUp="Image_MouseLeftButtonUp" />
+        <GroupBox Header="Chosen Colour" Height="70">
+            <StackPanel>
+                <Label Name="ccLabel" Height="35" Content="RGBA(0,0,0,0)"></Label>
+                <Rectangle x:Name="ccRectangle" Fill="Black" Height="35"></Rectangle>
+            </StackPanel>
+        </GroupBox>
+    </StackPanel>
+</UserControl>

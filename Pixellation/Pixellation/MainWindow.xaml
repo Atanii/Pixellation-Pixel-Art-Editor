@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Pixellation" xmlns:l="clr-namespace:Pixellation.Components.Editor"
-        mc:Ignorable="d"
-        Title="Pixellation" Height="450" Width="800">
+        xmlns:l="clr-namespace:Pixellation.Components.Editor"
+        xmlns:l2="clr-namespace:Pixellation.Components.Tools"
+        mc:Ignorable="d" Name="mainWindow"
+        Title="Pixellation" Height="768" Width="1024">
 
     <Window.CommandBindings>
         <CommandBinding Command="New" CanExecute="CommonCommandBinding_True" />
@@ -14,7 +15,7 @@
     </Window.CommandBindings>
 
     <!-- MAINPANEL -->
-    <DockPanel LastChildFill="False">
+    <DockPanel LastChildFill="True">
         <!-- MENUBAR -->
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
@@ -52,18 +53,9 @@
         </StatusBar>
 
         <!-- MAIN GRID -->
-        <Grid Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-            </Grid.RowDefinitions>
-
+        <UniformGrid Columns="3" Rows="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" Width="Auto" Height="Auto">
             <!-- LEFT PANEL -->
-            <Border  Grid.Column="0" Grid.Row="0" MinWidth="200" MaxWidth="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
+            <Border HorizontalAlignment="Left" Width="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
                 <StackPanel>
                     <Label Content="Tools (NOT IMPLEMENTED YET)"></Label>
                     <Grid MinHeight="150">
@@ -100,51 +92,47 @@
             </Border>
             
             <!-- DRAWING AREA -->
-            <Border Grid.Column="1" Grid.Row="0" MinWidth="400" Background="GhostWhite" BorderBrush="Black" BorderThickness="1"
-                    MouseUp="UpdatePreview">
-                <!-- <InkCanvas Name="paintSurface" ></InkCanvas> -->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*" />
-                    </Grid.RowDefinitions>
+            <Grid HorizontalAlignment="Center" MouseUp="UpdatePreview">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Grid.Column="0" x:Name="editorGridAreaCanvas">
-                        <Canvas MinWidth="400" Name="paintSurface" RenderTransformOrigin="0.5,0.5">
-                            <!--  MouseDown="Canvas_MouseDown_1" MouseMove="Canvas_MouseMove_1" -->
-                            <Rectangle MinWidth="500" MinHeight="500" Canvas.Left="0" Canvas.Top="0">
-                                <Rectangle.Fill>
-                                    <DrawingBrush TileMode="Tile" Viewport="0,0,32,32" ViewportUnits="Absolute">
-                                        <DrawingBrush.Drawing>
-                                            <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="LightGray"/>
-                                        </DrawingBrush.Drawing>
-                                    </DrawingBrush>
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </Canvas>
-                    </Grid>
-
-                    
-                    <Grid Grid.Row="0" Grid.Column="0" x:Name="canvasGrid">
-                        <ScrollViewer x:Name="canvasScroll">
-                            <l:PixelEditor HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
-                        </ScrollViewer>
-                    </Grid>
-
+                <Grid Grid.Row="0" Grid.Column="0" x:Name="editorGridAreaCanvas">
+                    <Canvas MinWidth="400" Name="paintSurface" RenderTransformOrigin="0.5,0.5">
+                        <Rectangle MinHeight="1000" MinWidth="1000" Canvas.Left="0" Canvas.Top="0">
+                            <Rectangle.Fill>
+                                <DrawingBrush TileMode="Tile" Viewport="0,0,32,32" ViewportUnits="Absolute">
+                                    <DrawingBrush.Drawing>
+                                        <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="LightGray"/>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Canvas>
                 </Grid>
-            </Border>
-            
+
+
+                <Grid Grid.Row="0" Grid.Column="0" x:Name="canvasGrid">
+                    <ScrollViewer x:Name="canvasScroll">
+                        <l:PixelEditor HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
+                    </ScrollViewer>
+                </Grid>
+
+            </Grid>
+
             <!-- RIGHT PANEL -->
-            <Border  Grid.Column="2" Grid.Row="0" MinWidth="200" MaxWidth="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
+            <Border HorizontalAlignment="Right" Width="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
                 <StackPanel>
                     <Label Content="Preview"></Label>
                     <Image Margin="10" Width="180" Height="180" RenderOptions.BitmapScalingMode="NearestNeighbor" x:Name="preview"/>
-                    <Label Content="Colour (NOT IMPLEMENTED YET)"></Label>
+                    <Label Content="Colour"></Label>
+                    <l2:ColourPicker Panel.ZIndex="100000000"></l2:ColourPicker>
                 </StackPanel>
             </Border>
-        </Grid>
+        </UniformGrid>
     </DockPanel>
     
 </Window>
