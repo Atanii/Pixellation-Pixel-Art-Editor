@@ -163,5 +163,13 @@ namespace Pixellation
                 canvasScroll.InvalidateVisual();
             }
         }
+
+        private void mainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            checkboardBg.Width = paintSurface.ActualWidth;
+            checkboardBg.Height = paintSurface.ActualHeight;
+            checkboardBg.Measure(new Size(paintSurface.ActualWidth, paintSurface.ActualHeight));
+            checkboardBg.InvalidateMeasure();
+        }
     }
 }

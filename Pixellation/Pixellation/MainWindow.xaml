@@ -6,7 +6,8 @@
         xmlns:l="clr-namespace:Pixellation.Components.Editor"
         xmlns:l2="clr-namespace:Pixellation.Components.Tools"
         mc:Ignorable="d" Name="mainWindow"
-        Title="Pixellation" Height="768" Width="1024">
+        SizeChanged="mainWindow_SizeChanged"
+        Title="Pixellation" Height="600" Width="1024">
 
     <Window.CommandBindings>
         <CommandBinding Command="New" CanExecute="CommonCommandBinding_True" />
@@ -53,9 +54,9 @@
         </StatusBar>
 
         <!-- MAIN GRID -->
-        <UniformGrid Columns="3" Rows="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" Width="Auto" Height="Auto">
+        <UniformGrid Columns="3" Rows="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5">
             <!-- LEFT PANEL -->
-            <Border HorizontalAlignment="Left" Width="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
+            <Border HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
                 <StackPanel>
                     <Label Content="Tools (NOT IMPLEMENTED YET)"></Label>
                     <Grid MinHeight="150">
@@ -92,17 +93,17 @@
             </Border>
             
             <!-- DRAWING AREA -->
-            <Grid HorizontalAlignment="Center" MouseUp="UpdatePreview">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MouseUp="UpdatePreview">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Grid.Column="0" x:Name="editorGridAreaCanvas">
-                    <Canvas MinWidth="400" Name="paintSurface" RenderTransformOrigin="0.5,0.5">
-                        <Rectangle MinHeight="1000" MinWidth="1000" Canvas.Left="0" Canvas.Top="0">
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0" x:Name="editorGridAreaCanvas">
+                    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="paintSurface" RenderTransformOrigin="0.5,0.5">
+                        <Rectangle x:Name="checkboardBg" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Canvas.Left="0" Canvas.Top="0">
                             <Rectangle.Fill>
                                 <DrawingBrush TileMode="Tile" Viewport="0,0,32,32" ViewportUnits="Absolute">
                                     <DrawingBrush.Drawing>
@@ -114,9 +115,8 @@
                     </Canvas>
                 </Grid>
 
-
-                <Grid Grid.Row="0" Grid.Column="0" x:Name="canvasGrid">
-                    <ScrollViewer x:Name="canvasScroll">
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0" x:Name="canvasGrid">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="canvasScroll">
                         <l:PixelEditor HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
                     </ScrollViewer>
                 </Grid>
