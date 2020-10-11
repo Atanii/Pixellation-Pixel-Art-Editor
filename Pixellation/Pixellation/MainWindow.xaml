@@ -5,29 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pixellation" xmlns:l="clr-namespace:Pixellation.Components.Editor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Pixellation" Height="450" Width="800">
 
     <Window.CommandBindings>
-        <CommandBinding Command="New" CanExecute="CommonCommandBinding_CanExecute" />
-        <CommandBinding Command="Open" CanExecute="CommonCommandBinding_CanExecute" />
-        <CommandBinding Command="Save" CanExecute="CommonCommandBinding_SaveCanExecute" />
+        <CommandBinding Command="New" CanExecute="CommonCommandBinding_True" />
+        <CommandBinding Command="Open" CanExecute="CommonCommandBinding_False" />
+        <CommandBinding Command="Save" CanExecute="CommonCommandBinding_True" />
     </Window.CommandBindings>
 
     <!-- MAINPANEL -->
     <DockPanel LastChildFill="False">
         <!-- MENUBAR -->
-        <!--<Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="_New" />
-                <MenuItem Header="_Open" />
-                <MenuItem Header="_Save" Click="SaveAsImage" />
-                <Separator />
-                <MenuItem Header="_Exit" />
-            </MenuItem>
-        </Menu>-->
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
-                <Button Command="New" Content="New" />
+                <Button Command="New" Content="New" Click="NewImage" />
                 <Button Command="Open" Content="Open" />
                 <Button Command="Save" Content="Save" Click="SaveAsImage" />
             </ToolBar>
@@ -48,6 +39,9 @@
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock Name="statZoom" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <Slider x:Name="sliderZoom" Value="1" Minimum="1" Maximum="10" Width="100" ValueChanged="ZoomChanged" />
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock Name="statZoomedWidth" />
@@ -132,14 +126,13 @@
                         </Canvas>
                     </Grid>
 
-                    <Grid Grid.Row="0" Grid.Column="0" x:Name="editorGridAreaPixelEditor">
-                        <ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                            <Border BorderBrush="Black" BorderThickness="1">
-                                <l:PixelEditor x:Name="PixelEditorSurface" />
-                            </Border>
+                    
+                    <Grid Grid.Row="0" Grid.Column="0" x:Name="canvasGrid">
+                        <ScrollViewer x:Name="canvasScroll">
+                            <l:PixelEditor HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
                         </ScrollViewer>
                     </Grid>
-                    
+
                 </Grid>
             </Border>
             

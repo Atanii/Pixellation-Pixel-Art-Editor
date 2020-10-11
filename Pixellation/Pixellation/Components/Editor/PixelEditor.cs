@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -8,28 +9,54 @@ namespace Pixellation.Components.Editor
     public class PixelEditor : FrameworkElement
     {
         private readonly Surface _surface;
-        private readonly Visual _gridLines;
+        private Visual _gridLines;
+        private Visual _borderLine;
 
         public int PixelWidth { get; } = 32;
         public int PixelHeight { get; } = 32;
-        public int Magnification { get; } = 5;
+        public int Magnification { get; set; } = 5;
 
         public PixelEditor()
         {
             _surface = new Surface(this);
             _gridLines = CreateGridLines();
+            _borderLine = CreateBorderLines();
 
             Cursor = Cursors.Pen;
 
             AddVisualChild(_surface);
             AddVisualChild(_gridLines);
+            AddVisualChild(_borderLine);
         }
 
-        protected override int VisualChildrenCount => 2;
+        public PixelEditor(int width, int height, int defaultMagnification = 1)
+        {
+            PixelWidth = width;
+            PixelHeight = height;
+            Magnification = defaultMagnification;
+
+            _surface = new Surface(this);
+            _gridLines = CreateGridLines();
+            _borderLine = CreateBorderLines();
+
+            Cursor = Cursors.Pen;
+
+            AddVisualChild(_surface);
+            AddVisualChild(_gridLines);
+            AddVisualChild(_borderLine);
+        }
+
+        protected override int VisualChildrenCount => 3;
 
         protected override Visual GetVisualChild(int index)
         {
-            return index == 0 ? _surface : _gridLines;
+            return index switch
+            {
+                0 => _surface,
+                1 => _gridLines,
+                2 => _borderLine,
+                _ => null,
+            };
         }
 
         private void Draw()
@@ -112,9 +139,50 @@ namespace Pixellation.Components.Editor
             return dv;
         }
 
+        private Visual CreateBorderLines()
+        {
+            var dv = new DrawingVisual();
+            var dc = dv.RenderOpen();
+
+            var w = PixelWidth;
+            var h = PixelHeight;
+            var m = Magnification;
+            var d = -0.5d; // snap gridlines to device pixels
+
+            var pen = new Pen(new SolidColorBrush(Color.FromArgb(100, 0, 0, 0)), 2d);
+
+            pen.Freeze();
+
+            dc.DrawLine(pen, new Point(0, 0), new Point(w * m, 0));
+            dc.DrawLine(pen, new Point(0, h * m), new Point(h * m, w * m));
+
+            dc.DrawLine(pen, new Point(0, 0), new Point(0, h * m));
+            dc.DrawLine(pen, new Point(w * m, 0), new Point(w * m, h * m));
+
+            dc.Close();
+
+            return dv;
+        }
+
         public WriteableBitmap GetBitmap()
         {
             return this._surface.GetBitMap();
+        }
+
+        public void UpdateMagnification(int zoom)
+        {
+            Magnification = zoom;
+
+            RemoveVisualChild(_gridLines);
+            _gridLines = CreateGridLines();
+
+            RemoveVisualChild(_borderLine);
+            _borderLine = CreateBorderLines();
+            
+            AddVisualChild(_borderLine);
+            AddVisualChild(_gridLines);
+
+            _surface.InvalidateVisual();
         }
 
         private sealed class Surface : FrameworkElement

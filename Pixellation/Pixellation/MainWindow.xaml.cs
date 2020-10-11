@@ -1,7 +1,10 @@
 ﻿using Microsoft.Win32;
+using Pixellation.Components.Dialogs.NewImageDialog;
+using Pixellation.Components.Editor;
 using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -66,7 +69,7 @@ namespace Pixellation
                 string fileName = saveFileDialog.FileName;
 
                 // Getting Bitmap
-                WriteableBitmap wrBitmap = PixelEditorSurface.GetBitmap();
+                WriteableBitmap wrBitmap = canvasImage.GetBitmap();
                 SaveBitmapSourceToFile(fileName, wrBitmap);
             }
         }
@@ -108,22 +111,57 @@ namespace Pixellation
             }
         }
 
-        private void CommonCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void CommonCommandBinding_False(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = false;
         }
 
-        private void CommonCommandBinding_SaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void CommonCommandBinding_True(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
 
         private void UpdatePreview(object sender, MouseButtonEventArgs e)
         {
-            WriteableBitmap wrBitmap = PixelEditorSurface.GetBitmap();
+            WriteableBitmap wrBitmap = canvasImage.GetBitmap();
             var bitmap = BitmapFromWriteableBitmap(wrBitmap);
             var b = BitmapToBitmapSource(bitmap);
             preview.Source = b;
+        }
+
+        private void NewImage(object sender, RoutedEventArgs e)
+        {
+            NewImageDialog newImgDialog = new NewImageDialog();
+            if (newImgDialog.ShowDialog() == true)
+            {
+                // Get Data
+                var widthHeight = newImgDialog.Answer;
+                int width = Int32.Parse(widthHeight.Split(';')[0]);
+                int height = Int32.Parse(widthHeight.Split(';')[1]);
+                // New Image
+                canvasImage = new PixelEditor(width, height, 2);
+                canvasImage.InvalidateVisual();
+            }   
+        }
+
+        private void ZoomChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (canvasImage != null)
+            {
+                int newZoom = (int)e.NewValue;
+                
+                canvasImage.UpdateMagnification(newZoom);
+                
+                // TODO: scroll when magnified
+                canvasImage.RenderTransformOrigin = new Point(canvasImage.ActualWidth, canvasImage.ActualHeight);
+                canvasImage.HorizontalAlignment = HorizontalAlignment.Center;
+                canvasImage.VerticalAlignment = VerticalAlignment.Center;
+                
+                canvasImage.InvalidateVisual();
+
+                canvasScroll.InvalidateScrollInfo();
+                canvasScroll.InvalidateVisual();
+            }
         }
     }
 }
