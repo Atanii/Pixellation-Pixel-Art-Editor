@@ -25,4 +25,10 @@
     <Resource Include="Resources\colourwheel.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

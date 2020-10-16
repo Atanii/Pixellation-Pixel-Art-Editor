@@ -6,7 +6,7 @@
         xmlns:l="clr-namespace:Pixellation.Components.Editor"
         xmlns:l2="clr-namespace:Pixellation.Components.Tools"
         mc:Ignorable="d" Name="mainWindow"
-        SizeChanged="mainWindow_SizeChanged"
+        SizeChanged="MainWindow_SizeChanged"
         Title="Pixellation" Height="600" Width="1024">
 
     <Window.CommandBindings>
@@ -117,7 +117,7 @@
 
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0" x:Name="canvasGrid">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="canvasScroll">
-                        <l:PixelEditor HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
+                        <l:PixelEditor ChosenColour="{Binding ElementName=mainWindow, Path=ChosenColour, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
                     </ScrollViewer>
                 </Grid>
 
@@ -129,7 +129,7 @@
                     <Label Content="Preview"></Label>
                     <Image Margin="10" Width="180" Height="180" RenderOptions.BitmapScalingMode="NearestNeighbor" x:Name="preview"/>
                     <Label Content="Colour"></Label>
-                    <l2:ColourPicker Panel.ZIndex="100000000"></l2:ColourPicker>
+                    <l2:ColourPicker ChosenColour="{Binding ElementName=mainWindow, Path=ChosenColour}"></l2:ColourPicker>
                 </StackPanel>
             </Border>
         </UniformGrid>

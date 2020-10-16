@@ -4,11 +4,9 @@ using Pixellation.Components.Editor;
 using System;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using static Pixellation.Utils.HelperFunctions;
+using static Pixellation.Utils.ExtensionMethods;
 
 namespace Pixellation
 {
@@ -17,7 +15,14 @@ namespace Pixellation
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Point currentPoint = new Point();
+        public System.Drawing.Color ChosenColour
+        {
+            get { return (System.Drawing.Color)GetValue(ChosenColourProperty); }
+            set { SetValue(ChosenColourProperty, value); }
+        }
+        public static readonly DependencyProperty ChosenColourProperty =
+         DependencyProperty.Register("ChosenColour", typeof(System.Drawing.Color), typeof(MainWindow), new FrameworkPropertyMetadata(
+            System.Drawing.Color.Black));
 
         public MainWindow()
         {
@@ -32,30 +37,6 @@ namespace Pixellation
             statZoom.Text = "Zoom: 100%";
             statZoomedWidth.Text = "Zoomed Width: 0px";
             statZoomedHeight.Text = "Zoomed Width: 0px";
-        }
-
-        private void Canvas_MouseDown_1(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (e.ButtonState == MouseButtonState.Pressed)
-                currentPoint = e.GetPosition(paintSurface);
-        }
-
-        private void Canvas_MouseMove_1(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                Line line = new Line();
-
-                line.Stroke = SystemColors.WindowFrameBrush;
-                line.X1 = currentPoint.X;
-                line.Y1 = currentPoint.Y;
-                line.X2 = e.GetPosition(paintSurface).X;
-                line.Y2 = e.GetPosition(paintSurface).Y;
-
-                currentPoint = e.GetPosition(paintSurface);
-
-                paintSurface.Children.Add(line);
-            }
         }
 
         private void SaveAsImage(object sender, RoutedEventArgs e)
@@ -88,19 +69,24 @@ namespace Pixellation
                         case "png":
                             encoder = new PngBitmapEncoder();
                             break;
+
                         case "jpg":
                         case "jpeg":
                             encoder = new JpegBitmapEncoder();
                             break;
+
                         case "bmp":
                             encoder = new BmpBitmapEncoder();
                             break;
+
                         case "tiff":
                             encoder = new TiffBitmapEncoder();
                             break;
+
                         case "gif":
                             encoder = new GifBitmapEncoder();
                             break;
+
                         default:
                             MessageBox.Show($"Saving into (.{extension}) image format is not supported!", "Error");
                             return;
@@ -123,9 +109,8 @@ namespace Pixellation
 
         private void UpdatePreview(object sender, MouseButtonEventArgs e)
         {
-            WriteableBitmap wrBitmap = canvasImage.GetBitmap();
-            var bitmap = BitmapFromWriteableBitmap(wrBitmap);
-            var b = BitmapToBitmapSource(bitmap);
+            var bitmap = canvasImage.GetBitmap().ToBitmap();
+            var b = bitmap.ToBitmapSource();
             preview.Source = b;
         }
 
@@ -141,22 +126,23 @@ namespace Pixellation
                 // New Image
                 canvasImage = new PixelEditor(width, height, 2);
                 canvasImage.InvalidateVisual();
-            }   
+            }
         }
 
         private void ZoomChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            var a = ChosenColour;
             if (canvasImage != null)
             {
                 int newZoom = (int)e.NewValue;
-                
+
                 canvasImage.UpdateMagnification(newZoom);
-                
+
                 // TODO: scroll when magnified
                 canvasImage.RenderTransformOrigin = new Point(canvasImage.ActualWidth, canvasImage.ActualHeight);
                 canvasImage.HorizontalAlignment = HorizontalAlignment.Center;
                 canvasImage.VerticalAlignment = VerticalAlignment.Center;
-                
+
                 canvasImage.InvalidateVisual();
 
                 canvasScroll.InvalidateScrollInfo();
@@ -164,7 +150,7 @@ namespace Pixellation
             }
         }
 
-        private void mainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             checkboardBg.Width = paintSurface.ActualWidth;
             checkboardBg.Height = paintSurface.ActualHeight;

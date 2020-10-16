@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Pixellation.Utils;
+using System;
 using System.Drawing;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Pixellation.Components.Tools
 {
@@ -20,33 +14,60 @@ namespace Pixellation.Components.Tools
     public partial class ColourPicker : UserControl
     {
         private readonly Bitmap colourWheel;
-        public System.Drawing.Color ChosenColour { get; private set; }
+
+        public System.Drawing.Color ChosenColour
+        {
+            get { return (System.Drawing.Color)GetValue(ChosenColourProperty); }
+            set
+            {
+                SetValue(ChosenColourProperty, value);
+                SetCcRectangleFill();
+            }
+        }
+        public static readonly DependencyProperty ChosenColourProperty =
+         DependencyProperty.Register("ChosenColour", typeof(System.Drawing.Color), typeof(ColourPicker), new FrameworkPropertyMetadata(
+            System.Drawing.Color.Black, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public ColourPicker()
         {
             InitializeComponent();
-           // colourWheel = new Bitmap(@"/Resources/colourwheel_180x180.png");
+            var a = new Uri(@"pack://application:,,,/Resources/colourwheel_180x180.png");
+            colourWheel = new Bitmap(Application.GetResourceStream(a).Stream);
         }
 
-        private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void SetChosenColourFromMousePosition(System.Windows.Point mousePos)
         {
-            /*System.Windows.Point mousePos = e.GetPosition(colourPickerWheel);
-            System.Drawing.Color colour = colourWheel.GetPixel(
-                (int) mousePos.X,
-                (int) mousePos.Y
+            var colour = colourWheel.GetPixel(
+                (int)mousePos.X,
+                (int)mousePos.Y
             );
             if (colour != null)
             {
                 ChosenColour = colour;
-                var cc = new System.Windows.Media.Color();
-                cc.R = colour.R;
-                cc.G = colour.G;
-                cc.B = colour.B;
-                cc.A = colour.A;
-                ccLabel.Content = colour.ToString();
-                ccRectangle.Fill = new System.Windows.Media.SolidColorBrush(cc);
-            }*/
+            }
+        }
 
+        private void SetCcRectangleFill()
+        {
+            ccLabel.Content = ChosenColour.ToString();
+            ccRectangle.Fill = new SolidColorBrush(ChosenColour.ToMediaColor());
+        }
+
+        private void ColourWheelVisual_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            SetChosenColourFromMousePosition(e.GetPosition(colourWheelVisual));
+        }
+
+        private void ColourWheelVisual_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                SetChosenColourFromMousePosition(e.GetPosition(colourWheelVisual));
+            }
+        }
+
+        private void ccBrightness_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        {
         }
     }
 }

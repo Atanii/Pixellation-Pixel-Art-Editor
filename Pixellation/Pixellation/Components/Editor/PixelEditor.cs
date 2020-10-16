@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Pixellation.Utils;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -15,6 +16,15 @@ namespace Pixellation.Components.Editor
         public int PixelWidth { get; } = 32;
         public int PixelHeight { get; } = 32;
         public int Magnification { get; set; } = 5;
+
+        public System.Drawing.Color ChosenColour
+        {
+            get { return (System.Drawing.Color)GetValue(ChosenColourProperty); }
+            set { SetValue(ChosenColourProperty, value); }
+        }
+        public static readonly DependencyProperty ChosenColourProperty =
+         DependencyProperty.Register("ChosenColour", typeof(System.Drawing.Color), typeof(PixelEditor), new FrameworkPropertyMetadata(
+            System.Drawing.Color.Black));
 
         public PixelEditor()
         {
@@ -72,7 +82,7 @@ namespace Pixellation.Components.Editor
             _surface.SetColor(
                 (int)(p.X / magnification),
                 (int)(p.Y / magnification),
-                Colors.DodgerBlue);
+                ExtensionMethods.ToMediaColor(ChosenColour));
 
             _surface.InvalidateVisual();
         }
@@ -147,7 +157,7 @@ namespace Pixellation.Components.Editor
             var w = PixelWidth;
             var h = PixelHeight;
             var m = Magnification;
-            var d = -0.5d; // snap gridlines to device pixels
+            // var d = -0.5d; // snap gridlines to device pixels
 
             var pen = new Pen(new SolidColorBrush(Color.FromArgb(100, 0, 0, 0)), 2d);
 

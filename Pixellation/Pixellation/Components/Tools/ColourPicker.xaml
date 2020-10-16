@@ -7,11 +7,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="180">
     <StackPanel>
-        <Image x:Name="colourPickerWheel" VerticalAlignment="Top" Width="180" Height="180" Source="/Resources/colourwheel_180x180.png" MouseLeftButtonUp="Image_MouseLeftButtonUp" />
+        <Image x:Name="colourWheelVisual" VerticalAlignment="Top" Width="180" Height="180" MouseLeftButtonDown="ColourWheelVisual_MouseLeftButtonDown">
+            <Image.Source>
+                <BitmapImage x:Name="colourWheelVisualBitmap" DecodePixelWidth="300" UriSource="pack://application:,,,/Resources/colourwheel_180x180.png" />
+            </Image.Source>
+        </Image>
         <GroupBox Header="Chosen Colour" Height="70">
             <StackPanel>
                 <Label Name="ccLabel" Height="35" Content="RGBA(0,0,0,0)"></Label>
                 <Rectangle x:Name="ccRectangle" Fill="Black" Height="35"></Rectangle>
+                <Slider x:Name="ccBrightness" Maximum="100" Minimum="0" Value="50" ValueChanged="ccBrightness_ValueChanged"></Slider>
             </StackPanel>
         </GroupBox>
     </StackPanel>
