@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Pixellation.Components.Tools.ColourPicker"
+﻿<UserControl x:Class="Pixellation.Components.Tools.ColourChooser"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,10 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="180">
     <StackPanel>
-        <Image x:Name="colourWheelVisual" VerticalAlignment="Top" Width="180" Height="180" MouseLeftButtonDown="ColourWheelVisual_MouseLeftButtonDown">
-            <Image.Source>
-                <BitmapImage x:Name="colourWheelVisualBitmap" DecodePixelWidth="300" UriSource="pack://application:,,,/Resources/colourwheel_180x180.png" />
-            </Image.Source>
+        <Image x:Name="colourWheelVisual" VerticalAlignment="Top" Width="180" Height="180" MouseLeftButtonDown="ColourWheelVisual_MouseLeftButtonDown"
+               Source="pack://application:,,,/Resources/colourwheel_180x180.png">
         </Image>
         <GroupBox Header="Chosen Colour" Height="70">
             <StackPanel>

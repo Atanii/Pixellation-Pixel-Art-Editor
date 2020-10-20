@@ -1,13 +1,14 @@
-﻿<Window x:Class="Pixellation.MainWindow"
+﻿<Window xmlns:Panels="clr-namespace:Pixellation.Components.Panels"  x:Class="Pixellation.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:l="clr-namespace:Pixellation.Components.Editor"
         xmlns:l2="clr-namespace:Pixellation.Components.Tools"
+        xmlns:resource="clr-namespace:Pixellation.Properties"
         mc:Ignorable="d" Name="mainWindow"
         SizeChanged="MainWindow_SizeChanged"
-        Title="Pixellation" Height="600" Width="1024">
+        Title="{x:Static resource:Resources.Title}" Height="600" Width="1024">
 
     <Window.CommandBindings>
         <CommandBinding Command="New" CanExecute="CommonCommandBinding_True" />
@@ -20,7 +21,7 @@
         <!-- MENUBAR -->
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
-                <Button Command="New" Content="New" Click="NewImage" />
+                <Button Command="New" Content="New" Click="OpenNewImageDialog" />
                 <Button Command="Open" Content="Open" />
                 <Button Command="Save" Content="Save" Click="SaveAsImage" />
             </ToolBar>
@@ -28,6 +29,9 @@
                 <Button Command="Cut" Content="Cut" />
                 <Button Command="Copy" Content="Copy" />
                 <Button Command="Paste" Content="Paste" />
+            </ToolBar>
+            <ToolBar>
+                <Button Content="About" Click="OpenAboutDialog" />
             </ToolBar>
         </ToolBarTray>
         
@@ -58,36 +62,8 @@
             <!-- LEFT PANEL -->
             <Border HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
                 <StackPanel>
-                    <Label Content="Tools (NOT IMPLEMENTED YET)"></Label>
-                    <Grid MinHeight="150">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1*" />
-                            <RowDefinition Height="1*" />
-                            <RowDefinition Height="1*" />
-                            <RowDefinition Height="1*" />
-                            <RowDefinition Height="1*" />
-                        </Grid.RowDefinitions>
-
-                        <!-- TOOL ICONS GRID -->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="1*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*" />
-                                <RowDefinition Height="1*" />
-                                <RowDefinition Height="1*" />
-                                <RowDefinition Height="1*" />
-                            </Grid.RowDefinitions>
-                        </Grid>
-                    </Grid>
-
+                    <Label Content="Tools"></Label>
+                    <Panels:ToolPalette x:Name="toolPalette" />
                     <Label Content="Layers (NOT IMPLEMENTED YET)"></Label>
                 </StackPanel>
             </Border>
@@ -116,8 +92,10 @@
                 </Grid>
 
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0" x:Name="canvasGrid">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="canvasScroll">
-                        <l:PixelEditor ChosenColour="{Binding ElementName=mainWindow, Path=ChosenColour, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="canvasScroll">
+                        <l:PixelEditor ChosenTool="{Binding ElementName=toolPalette, Path=ChosenTool, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
                     </ScrollViewer>
                 </Grid>
 
@@ -129,7 +107,7 @@
                     <Label Content="Preview"></Label>
                     <Image Margin="10" Width="180" Height="180" RenderOptions.BitmapScalingMode="NearestNeighbor" x:Name="preview"/>
                     <Label Content="Colour"></Label>
-                    <l2:ColourPicker ChosenColour="{Binding ElementName=mainWindow, Path=ChosenColour}"></l2:ColourPicker>
+                    <l2:ColourChooser x:Name="colorChooser" ChosenColour="{Binding ElementName=canvasImage, Path=ChosenColour, Mode=TwoWay}"></l2:ColourChooser>
                 </StackPanel>
             </Border>
         </UniformGrid>

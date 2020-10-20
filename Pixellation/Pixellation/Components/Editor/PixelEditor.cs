@@ -1,5 +1,5 @@
-﻿using Pixellation.Utils;
-using System.Diagnostics;
+﻿using Pixellation.Components.Tools;
+using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -9,7 +9,7 @@ namespace Pixellation.Components.Editor
 {
     public class PixelEditor : FrameworkElement
     {
-        private readonly Surface _surface;
+        private DrawingSurface _surface;
         private Visual _gridLines;
         private Visual _borderLine;
 
@@ -22,21 +22,30 @@ namespace Pixellation.Components.Editor
             get { return (System.Drawing.Color)GetValue(ChosenColourProperty); }
             set { SetValue(ChosenColourProperty, value); }
         }
+
         public static readonly DependencyProperty ChosenColourProperty =
          DependencyProperty.Register("ChosenColour", typeof(System.Drawing.Color), typeof(PixelEditor), new FrameworkPropertyMetadata(
-            System.Drawing.Color.Black));
+            System.Drawing.Color.Black
+        ));
+
+        public BaseTool ChosenTool
+        {
+            get { return (BaseTool)GetValue(ChosenToolProperty); }
+            set { SetValue(ChosenToolProperty, value); }
+        }
+
+        public readonly DependencyProperty ChosenToolProperty =
+         DependencyProperty.Register("ChosenTool", typeof(ITool), typeof(PixelEditor), new PropertyMetadata(
+             null, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
+        ));
+
+        private delegate void ToolChangeEventHandler(object sender, EventArgs args);
+
+        private static event ToolChangeEventHandler RaiseToolChangeEvent;
 
         public PixelEditor()
         {
-            _surface = new Surface(this);
-            _gridLines = CreateGridLines();
-            _borderLine = CreateBorderLines();
-
-            Cursor = Cursors.Pen;
-
-            AddVisualChild(_surface);
-            AddVisualChild(_gridLines);
-            AddVisualChild(_borderLine);
+            Init();
         }
 
         public PixelEditor(int width, int height, int defaultMagnification = 1)
@@ -44,8 +53,12 @@ namespace Pixellation.Components.Editor
             PixelWidth = width;
             PixelHeight = height;
             Magnification = defaultMagnification;
+            Init();
+        }
 
-            _surface = new Surface(this);
+        private void Init()
+        {
+            _surface = new DrawingSurface(this);
             _gridLines = CreateGridLines();
             _borderLine = CreateBorderLines();
 
@@ -54,6 +67,28 @@ namespace Pixellation.Components.Editor
             AddVisualChild(_surface);
             AddVisualChild(_gridLines);
             AddVisualChild(_borderLine);
+
+            BaseTool.RaiseToolEvent += HandleToolEvent;
+            RaiseToolChangeEvent += HandleToolChangeEvent;
+        }
+
+        private void HandleToolChangeEvent(object sender, EventArgs e)
+        {
+            ChosenTool.SetDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _surface);
+        }
+
+        private void HandleToolEvent(object sender, ToolEventArgs e)
+        {
+            switch (e.Type)
+            {
+                case ToolEventType.COLOR:
+                    ChosenColour = (System.Drawing.Color)e.Value;
+                    break;
+
+                case ToolEventType.NOTHING:
+                default:
+                    break;
+            }
         }
 
         protected override int VisualChildrenCount => 3;
@@ -69,43 +104,29 @@ namespace Pixellation.Components.Editor
             };
         }
 
-        private void Draw()
-        {
-            var p = Mouse.GetPosition(_surface);
-            var magnification = Magnification;
-            var surfaceWidth = PixelWidth * magnification;
-            var surfaceHeight = PixelHeight * magnification;
-
-            if (p.X < 0 || p.X >= surfaceWidth || p.Y < 0 || p.Y >= surfaceHeight)
-                return;
-
-            _surface.SetColor(
-                (int)(p.X / magnification),
-                (int)(p.Y / magnification),
-                ExtensionMethods.ToMediaColor(ChosenColour));
-
-            _surface.InvalidateVisual();
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
 
-            if (e.LeftButton == MouseButtonState.Pressed && IsMouseCaptured)
-                Draw();
+            if (IsMouseCaptured)
+                ChosenTool.OnMouseMove(e);
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
+
             CaptureMouse();
-            Draw();
+
+            ChosenTool.SetDrawColor(ChosenColour);
+            ChosenTool.OnMouseLeftButtonDown(e);
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
             ReleaseMouseCapture();
+            ChosenTool.OnMouseLeftButtonUp(e);
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -188,46 +209,11 @@ namespace Pixellation.Components.Editor
 
             RemoveVisualChild(_borderLine);
             _borderLine = CreateBorderLines();
-            
+
             AddVisualChild(_borderLine);
             AddVisualChild(_gridLines);
 
             _surface.InvalidateVisual();
-        }
-
-        private sealed class Surface : FrameworkElement
-        {
-            private readonly PixelEditor _owner;
-            private readonly WriteableBitmap _bitmap;
-
-            public Surface(PixelEditor owner)
-            {
-                _owner = owner;
-                _bitmap = BitmapFactory.New(owner.PixelWidth, owner.PixelHeight);
-                _bitmap.Clear(Colors.Transparent); // Colors.White
-                RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
-            }
-
-            protected override void OnRender(DrawingContext dc)
-            {
-                base.OnRender(dc);
-
-                var magnification = _owner.Magnification;
-                var width = _bitmap.PixelWidth * magnification;
-                var height = _bitmap.PixelHeight * magnification;
-
-                dc.DrawImage(_bitmap, new Rect(0, 0, width, height));
-            }
-
-            internal void SetColor(int x, int y, Color color)
-            {
-                _bitmap.SetPixel(x, y, color);
-            }
-
-            public WriteableBitmap GetBitMap()
-            {
-                return this._bitmap;
-            }
         }
     }
 }

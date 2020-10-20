@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Pixellation.Components.Dialogs.AboutDialog;
 using Pixellation.Components.Dialogs.NewImageDialog;
 using Pixellation.Components.Editor;
 using System;
@@ -15,15 +16,6 @@ namespace Pixellation
     /// </summary>
     public partial class MainWindow : Window
     {
-        public System.Drawing.Color ChosenColour
-        {
-            get { return (System.Drawing.Color)GetValue(ChosenColourProperty); }
-            set { SetValue(ChosenColourProperty, value); }
-        }
-        public static readonly DependencyProperty ChosenColourProperty =
-         DependencyProperty.Register("ChosenColour", typeof(System.Drawing.Color), typeof(MainWindow), new FrameworkPropertyMetadata(
-            System.Drawing.Color.Black));
-
         public MainWindow()
         {
             InitializeComponent();
@@ -114,9 +106,9 @@ namespace Pixellation
             preview.Source = b;
         }
 
-        private void NewImage(object sender, RoutedEventArgs e)
+        private void OpenNewImageDialog(object sender, RoutedEventArgs e)
         {
-            NewImageDialog newImgDialog = new NewImageDialog();
+            var newImgDialog = new NewImageDialog();
             if (newImgDialog.ShowDialog() == true)
             {
                 // Get Data
@@ -129,9 +121,14 @@ namespace Pixellation
             }
         }
 
+        private void OpenAboutDialog(object sender, RoutedEventArgs e)
+        {
+            var aboutDialog = new AboutDialog();
+            aboutDialog.ShowDialog();
+        }
+
         private void ZoomChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var a = ChosenColour;
             if (canvasImage != null)
             {
                 int newZoom = (int)e.NewValue;

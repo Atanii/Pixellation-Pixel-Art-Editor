@@ -5,11 +5,22 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <StartupObject></StartupObject>
+    <Version>0.0.1</Version>
+    <AssemblyVersion>0.0.1.0</AssemblyVersion>
+    <FileVersion>0.0.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\colourwheel.png" />
     <None Remove="Resources\colourwheel_180x180.png" />
+    <None Remove="Resources\icons-fugue\eraser.png" />
+    <None Remove="Resources\icons-fugue\grid-dot.png" />
+    <None Remove="Resources\icons-fugue\layer-shape-line.png" />
+    <None Remove="Resources\icons-fugue\paint-can.png" />
+    <None Remove="Resources\icons-fugue\pencil-field.png" />
+    <None Remove="Resources\icons-fugue\pencil.png" />
+    <None Remove="Resources\icons-fugue\pipette.png" />
+    <None Remove="Resources\icons-fugue\selection.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,10 +33,41 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\colourwheel.png" />
+    <Resource Include="Resources\icons-fugue\eraser.png" />
+    <Resource Include="Resources\icons-fugue\grid-dot.png" />
+    <Resource Include="Resources\icons-fugue\layer-shape-line.png" />
+    <Resource Include="Resources\icons-fugue\paint-can.png" />
+    <Resource Include="Resources\icons-fugue\pencil-field.png" />
+    <Resource Include="Resources\icons-fugue\pencil.png" />
+    <Resource Include="Resources\icons-fugue\pipette.png" />
+    <Resource Include="Resources\icons-fugue\selection.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Update="Resources\LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

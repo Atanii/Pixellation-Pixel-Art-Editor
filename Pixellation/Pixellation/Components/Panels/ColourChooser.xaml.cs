@@ -11,9 +11,9 @@ namespace Pixellation.Components.Tools
     /// <summary>
     /// Interaction logic for ColourPicker.xaml
     /// </summary>
-    public partial class ColourPicker : UserControl
+    public partial class ColourChooser : UserControl
     {
-        private readonly Bitmap colourWheel;
+        private Bitmap colourWheel;
 
         public System.Drawing.Color ChosenColour
         {
@@ -24,15 +24,27 @@ namespace Pixellation.Components.Tools
                 SetCcRectangleFill();
             }
         }
-        public static readonly DependencyProperty ChosenColourProperty =
-         DependencyProperty.Register("ChosenColour", typeof(System.Drawing.Color), typeof(ColourPicker), new FrameworkPropertyMetadata(
-            System.Drawing.Color.Black, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public ColourPicker()
+        public static readonly DependencyProperty ChosenColourProperty =
+         DependencyProperty.Register("ChosenColour", typeof(System.Drawing.Color), typeof(ColourChooser), new FrameworkPropertyMetadata(
+            System.Drawing.Color.Black, (d, e) => { RaiseChosenColourPropertyChangeEventHandlerEvent?.Invoke(default, EventArgs.Empty); }));
+
+        private delegate void ChosenColourPropertyChangeEventHandler(object sender, EventArgs args);
+
+        private static event ChosenColourPropertyChangeEventHandler RaiseChosenColourPropertyChangeEventHandlerEvent;
+
+        public ColourChooser()
         {
             InitializeComponent();
-            var a = new Uri(@"pack://application:,,,/Resources/colourwheel_180x180.png");
-            colourWheel = new Bitmap(Application.GetResourceStream(a).Stream);
+            Init();
+        }
+
+        private void Init()
+        {
+            var temp = new Uri(@"pack://application:,,,/Resources/colourwheel_180x180.png");
+            colourWheel = new Bitmap(Application.GetResourceStream(temp).Stream);
+
+            RaiseChosenColourPropertyChangeEventHandlerEvent += (s, a) => { SetCcRectangleFill(); };
         }
 
         private void SetChosenColourFromMousePosition(System.Windows.Point mousePos)

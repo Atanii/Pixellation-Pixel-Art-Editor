@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="Pixellation.Components.Panels.ToolPalette"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Pixellation.Components.Panels"
+             xmlns:resource="clr-namespace:Pixellation.Properties"
+             mc:Ignorable="d"
+             d:DesignHeight="250" d:DesignWidth="250">
+    <UniformGrid Columns="5" Rows="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Button
+            Click="ToolButton_Click"
+            x:Name="BtnPencil"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/pencil.png"></ImageBrush>
+            </Button.Background>
+        </Button>
+        <Button
+            Click="ToolButton_Click"
+            x:Name="BtnDithering"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/pencil-field.png"></ImageBrush>
+            </Button.Background>
+        </Button>
+        <Button
+            Click="ToolButton_Click"
+            x:Name="BtnPipette"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/pipette.png"></ImageBrush>
+            </Button.Background>
+        </Button>
+        <!--<Button
+            Click="ToolButton_Click"
+            x:Name="BtnGrid"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/grid-dot.png"></ImageBrush>
+            </Button.Background>
+        </Button>-->
+        <Button
+            Click="ToolButton_Click"
+            x:Name="BtnLine"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/layer-shape-line.png"></ImageBrush>
+            </Button.Background>
+        </Button>
+        <Button
+            Click="ToolButton_Click"
+            x:Name="BtnPaintBucket"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/paint-can.png"></ImageBrush>
+            </Button.Background>
+        </Button>
+        <Button
+            Click="ToolButton_Click"
+            x:Name="BtnEraser"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/eraser.png"></ImageBrush>
+            </Button.Background>
+        </Button>
+        <!--<Button
+            Click="ToolButton_Click"
+            x:Name="BtnSelection"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/selection.png"></ImageBrush>
+            </Button.Background>
+        </Button>-->
+    </UniformGrid>
+</UserControl>
