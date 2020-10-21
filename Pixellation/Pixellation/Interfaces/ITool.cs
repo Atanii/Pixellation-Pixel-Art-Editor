@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Input;
 
-namespace Pixellation.Components.Tools
+namespace Pixellation.Components
 {
     public interface ITool
     {

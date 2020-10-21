@@ -63,13 +63,13 @@
             <Border HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
                 <StackPanel>
                     <Label Content="Tools"></Label>
-                    <Panels:ToolPalette x:Name="toolPalette" />
+                    <Panels:ToolPalette Width="180" Height="180" x:Name="toolPalette" />
                     <Label Content="Layers (NOT IMPLEMENTED YET)"></Label>
                 </StackPanel>
             </Border>
             
             <!-- DRAWING AREA -->
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MouseUp="UpdatePreview">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -105,9 +105,10 @@
             <Border HorizontalAlignment="Right" Width="200" Background="GhostWhite" BorderBrush="Black" BorderThickness="1">
                 <StackPanel>
                     <Label Content="Preview"></Label>
-                    <Image Margin="10" Width="180" Height="180" RenderOptions.BitmapScalingMode="NearestNeighbor" x:Name="preview"/>
+                    <Panels:Preview Width="180" Height="180" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}" />
+                    <!--<Image Margin="10" Width="180" Height="180" RenderOptions.BitmapScalingMode="NearestNeighbor" x:Name="preview"/>-->
                     <Label Content="Colour"></Label>
-                    <l2:ColourChooser x:Name="colorChooser" ChosenColour="{Binding ElementName=canvasImage, Path=ChosenColour, Mode=TwoWay}"></l2:ColourChooser>
+                    <l2:ColourChooser Width="180" Height="250" x:Name="colorChooser" ChosenColour="{Binding ElementName=canvasImage, Path=ChosenColour, Mode=TwoWay}"></l2:ColourChooser>
                 </StackPanel>
             </Border>
         </UniformGrid>

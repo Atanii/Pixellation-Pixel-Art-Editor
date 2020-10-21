@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Pixellation.Components.Panels"
              xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d"
-             d:DesignHeight="250" d:DesignWidth="250">
+             d:DesignHeight="180" d:DesignWidth="180">
     <UniformGrid Columns="5" Rows="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Button
             Click="ToolButton_Click"

@@ -99,13 +99,6 @@ namespace Pixellation
             e.CanExecute = true;
         }
 
-        private void UpdatePreview(object sender, MouseButtonEventArgs e)
-        {
-            var bitmap = canvasImage.GetBitmap().ToBitmap();
-            var b = bitmap.ToBitmapSource();
-            preview.Source = b;
-        }
-
         private void OpenNewImageDialog(object sender, RoutedEventArgs e)
         {
             var newImgDialog = new NewImageDialog();

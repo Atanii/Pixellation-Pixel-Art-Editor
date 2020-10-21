@@ -1,6 +1,5 @@
 ﻿using Pixellation.Components.Editor;
 using Pixellation.Utils;
-using System;
 using System.Drawing;
 using System.Windows.Input;
 
@@ -16,6 +15,7 @@ namespace Pixellation.Components.Tools
         protected DrawingSurface _layer;
 
         public delegate void ToolEventHandler(object sender, ToolEventArgs args);
+
         public static event ToolEventHandler RaiseToolEvent;
 
         protected BaseTool()

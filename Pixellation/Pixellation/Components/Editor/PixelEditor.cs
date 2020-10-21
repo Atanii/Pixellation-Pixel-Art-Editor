@@ -1,4 +1,5 @@
-﻿using Pixellation.Components.Tools;
+﻿using Pixellation.Components.Panels;
+using Pixellation.Components.Tools;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -7,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public class PixelEditor : FrameworkElement
+    public class PixelEditor : FrameworkElement, IPreviewable
     {
         private DrawingSurface _surface;
         private Visual _gridLines;
@@ -39,9 +40,9 @@ namespace Pixellation.Components.Editor
              null, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
         ));
 
-        private delegate void ToolChangeEventHandler(object sender, EventArgs args);
+        private static event EventHandler RaiseToolChangeEvent;
 
-        private static event ToolChangeEventHandler RaiseToolChangeEvent;
+        public event EventHandler RaiseImageUpdatedEvent;
 
         public PixelEditor()
         {
@@ -127,6 +128,7 @@ namespace Pixellation.Components.Editor
             base.OnMouseLeftButtonUp(e);
             ReleaseMouseCapture();
             ChosenTool.OnMouseLeftButtonUp(e);
+            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -195,11 +197,6 @@ namespace Pixellation.Components.Editor
             return dv;
         }
 
-        public WriteableBitmap GetBitmap()
-        {
-            return this._surface.GetBitMap();
-        }
-
         public void UpdateMagnification(int zoom)
         {
             Magnification = zoom;
@@ -214,6 +211,11 @@ namespace Pixellation.Components.Editor
             AddVisualChild(_gridLines);
 
             _surface.InvalidateVisual();
+        }
+
+        public WriteableBitmap GetBitmap()
+        {
+            return this._surface.GetBitMap();
         }
     }
 }
