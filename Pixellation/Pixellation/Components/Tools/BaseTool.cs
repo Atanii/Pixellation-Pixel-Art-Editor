@@ -12,7 +12,7 @@ namespace Pixellation.Components.Tools
         protected int _magnification;
         protected int _surfaceWidth;
         protected int _surfaceHeight;
-        protected DrawingSurface _layer;
+        protected DrawingLayer _layer;
 
         public delegate void ToolEventHandler(object sender, ToolEventArgs args);
 
@@ -28,12 +28,13 @@ namespace Pixellation.Components.Tools
             ToolColor = c.ToMediaColor();
         }
 
-        protected BaseTool(int magnification, int pixelWidth, int pixelHeight, DrawingSurface ds)
+        protected BaseTool(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds)
         {
+            ToolColor = System.Windows.Media.Color.FromRgb(0, 0, 0);
             SetDrawingCircumstances(magnification, pixelWidth, pixelHeight, ds);
         }
 
-        protected BaseTool(Color c, int magnification, int pixelWidth, int pixelHeight, DrawingSurface ds)
+        protected BaseTool(Color c, int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds)
         {
             ToolColor = c.ToMediaColor();
             SetDrawingCircumstances(magnification, pixelWidth, pixelHeight, ds);
@@ -44,11 +45,16 @@ namespace Pixellation.Components.Tools
             RaiseToolEvent?.Invoke(sender, e);
         }
 
-        public void SetDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingSurface ds)
+        public void SetDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds)
         {
             this._magnification = magnification;
             this._surfaceWidth = pixelWidth * magnification;
             this._surfaceHeight = pixelHeight * magnification;
+            this._layer = ds;
+        }
+
+        public void SetActiveLayer(DrawingLayer ds)
+        {
             this._layer = ds;
         }
 

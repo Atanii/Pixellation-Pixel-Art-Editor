@@ -19,16 +19,23 @@ namespace Pixellation
         public MainWindow()
         {
             InitializeComponent();
-            InitStatusBarTexts();
         }
 
-        private void InitStatusBarTexts()
+        private void OpenImage(object sender, RoutedEventArgs e)
         {
-            statWidth.Text = "Width: 0px";
-            statHeight.Text = "Width: 0px";
-            statZoom.Text = "Zoom: 100%";
-            statZoomedWidth.Text = "Zoomed Width: 0px";
-            statZoomedHeight.Text = "Zoomed Width: 0px";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image Files (*.bmp, *.jpg, *.png, *.tiff, *.gif)|*.bmp;*.jpg;*.png;*.tiff;*.gif"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string fileName = openFileDialog.FileName;
+
+                // Getting Bitmap
+                BitmapImage bitmap = new BitmapImage(new Uri(fileName, UriKind.Absolute));
+                WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap);
+                canvasImage.NewImage(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, 2, writeableBitmap);
+            }
         }
 
         private void SaveAsImage(object sender, RoutedEventArgs e)
@@ -42,7 +49,7 @@ namespace Pixellation
                 string fileName = saveFileDialog.FileName;
 
                 // Getting Bitmap
-                WriteableBitmap wrBitmap = canvasImage.GetBitmap();
+                WriteableBitmap wrBitmap = canvasImage.VisualAndLayerManager.GetAllMergedWriteableBitmap();
                 SaveBitmapSourceToFile(fileName, wrBitmap);
             }
         }
@@ -53,39 +60,37 @@ namespace Pixellation
             {
                 string extension = fileName.Split('.')[^1];
                 // Saving
-                using (FileStream fs = new FileStream(fileName, FileMode.Create))
+                using FileStream fs = new FileStream(fileName, FileMode.Create);
+                BitmapEncoder encoder;
+                switch (extension.ToLower())
                 {
-                    BitmapEncoder encoder;
-                    switch (extension.ToLower())
-                    {
-                        case "png":
-                            encoder = new PngBitmapEncoder();
-                            break;
+                    case "png":
+                        encoder = new PngBitmapEncoder();
+                        break;
 
-                        case "jpg":
-                        case "jpeg":
-                            encoder = new JpegBitmapEncoder();
-                            break;
+                    case "jpg":
+                    case "jpeg":
+                        encoder = new JpegBitmapEncoder();
+                        break;
 
-                        case "bmp":
-                            encoder = new BmpBitmapEncoder();
-                            break;
+                    case "bmp":
+                        encoder = new BmpBitmapEncoder();
+                        break;
 
-                        case "tiff":
-                            encoder = new TiffBitmapEncoder();
-                            break;
+                    case "tiff":
+                        encoder = new TiffBitmapEncoder();
+                        break;
 
-                        case "gif":
-                            encoder = new GifBitmapEncoder();
-                            break;
+                    case "gif":
+                        encoder = new GifBitmapEncoder();
+                        break;
 
-                        default:
-                            MessageBox.Show($"Saving into (.{extension}) image format is not supported!", "Error");
-                            return;
-                    }
-                    encoder.Frames.Add(BitmapFrame.Create(image));
-                    encoder.Save(fs);
+                    default:
+                        MessageBox.Show($"Saving into (.{extension}) image format is not supported!", "Error");
+                        return;
                 }
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Save(fs);
             }
         }
 
@@ -109,8 +114,7 @@ namespace Pixellation
                 int width = Int32.Parse(widthHeight.Split(';')[0]);
                 int height = Int32.Parse(widthHeight.Split(';')[1]);
                 // New Image
-                canvasImage = new PixelEditor(width, height, 2);
-                canvasImage.InvalidateVisual();
+                canvasImage.NewImage(width, height, 2);
             }
         }
 
@@ -125,27 +129,8 @@ namespace Pixellation
             if (canvasImage != null)
             {
                 int newZoom = (int)e.NewValue;
-
                 canvasImage.UpdateMagnification(newZoom);
-
-                // TODO: scroll when magnified
-                canvasImage.RenderTransformOrigin = new Point(canvasImage.ActualWidth, canvasImage.ActualHeight);
-                canvasImage.HorizontalAlignment = HorizontalAlignment.Center;
-                canvasImage.VerticalAlignment = VerticalAlignment.Center;
-
-                canvasImage.InvalidateVisual();
-
-                canvasScroll.InvalidateScrollInfo();
-                canvasScroll.InvalidateVisual();
             }
-        }
-
-        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            checkboardBg.Width = paintSurface.ActualWidth;
-            checkboardBg.Height = paintSurface.ActualHeight;
-            checkboardBg.Measure(new Size(paintSurface.ActualWidth, paintSurface.ActualHeight));
-            checkboardBg.InvalidateMeasure();
         }
     }
 }

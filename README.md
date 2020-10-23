@@ -16,10 +16,10 @@ Pixellation is a pixel art editor program developed in .NET Core. It provides fe
 - [x] Preview
 
 ### Milestone 2
-- [ ] Basic layers
+- [x] Basic layers, add, remove
 - [ ] Rectangle tool, sphere tool
 - [x] Tools for one pixel drawing, dithering, drawing lines, pipette, eraser, paintbucket fill
-- [ ] Application icon
+- [x] Application icon
 - [ ] Loading image files to edit
 
 ### Milestone 3

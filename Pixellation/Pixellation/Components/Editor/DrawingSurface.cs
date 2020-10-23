@@ -1,19 +1,27 @@
-﻿using System.Windows;
+﻿using Pixellation.Utils;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public sealed class DrawingSurface : FrameworkElement
+    public class DrawingSurface : FrameworkElement
     {
-        private readonly PixelEditor _owner;
-        private readonly WriteableBitmap _bitmap;
+        protected readonly PixelEditor _owner;
+        protected readonly WriteableBitmap _bitmap;
 
         public DrawingSurface(PixelEditor owner)
         {
             _owner = owner;
             _bitmap = BitmapFactory.New(owner.PixelWidth, owner.PixelHeight);
             _bitmap.Clear(Colors.Transparent);
+            RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
+        }
+
+        public DrawingSurface(PixelEditor owner, WriteableBitmap bitmap)
+        {
+            _owner = owner;
+            _bitmap = bitmap;
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
         }
 
@@ -38,9 +46,14 @@ namespace Pixellation.Components.Editor
             return _bitmap.GetPixel(x, y);
         }
 
-        public WriteableBitmap GetBitMap()
+        public WriteableBitmap GetWriteableBitmap()
         {
             return this._bitmap;
+        }
+
+        public System.Drawing.Bitmap GetBitmap()
+        {
+            return this._bitmap.ToBitmap();
         }
     }
 }

@@ -7,6 +7,8 @@ namespace Pixellation.Components
     {
         public event EventHandler RaiseImageUpdatedEvent;
 
-        public WriteableBitmap GetBitmap();
+        public WriteableBitmap GetWriteableBitmap();
+
+        public BitmapImage GetImageSource(int width = 0, int height = 0);
     }
 }

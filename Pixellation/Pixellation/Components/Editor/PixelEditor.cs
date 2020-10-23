@@ -1,6 +1,7 @@
-﻿using Pixellation.Components.Panels;
-using Pixellation.Components.Tools;
+﻿using Pixellation.Components.Tools;
+using Pixellation.Utils;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -8,15 +9,17 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public class PixelEditor : FrameworkElement, IPreviewable
+    public partial class PixelEditor : FrameworkElement, IPreviewable
     {
-        private DrawingSurface _surface;
+        private DrawingLayer _activeLayer;
         private Visual _gridLines;
         private Visual _borderLine;
 
-        public int PixelWidth { get; } = 32;
-        public int PixelHeight { get; } = 32;
-        public int Magnification { get; set; } = 5;
+        public List<DrawingLayer> Layers { get; private set; }
+
+        public int PixelWidth { get; private set; }
+        public int PixelHeight { get; private set; }
+        public int Magnification { get; set; }
 
         public System.Drawing.Color ChosenColour
         {
@@ -44,38 +47,78 @@ namespace Pixellation.Components.Editor
 
         public event EventHandler RaiseImageUpdatedEvent;
 
+        private readonly VisualManager _vm;
+
+        public IVisualManager VisualAndLayerManager => _vm;
+
         public PixelEditor()
         {
+            PixelWidth = 32;
+            PixelHeight = 32;
+            Magnification = 1;
+            _vm = new VisualManager(this);
             Init();
         }
 
-        public PixelEditor(int width, int height, int defaultMagnification = 1)
+        public PixelEditor(int width = 32, int height = 32, int defaultMagnification = 1)
         {
             PixelWidth = width;
             PixelHeight = height;
             Magnification = defaultMagnification;
+            _vm = new VisualManager(this);
             Init();
         }
 
-        private void Init()
+        private void Init(WriteableBitmap imageToEdit = null)
         {
-            _surface = new DrawingSurface(this);
+            var layers = new List<DrawingLayer>();
+            if (imageToEdit == null)
+            {
+                layers.Add(new DrawingLayer(this, "default"));
+            } 
+            else
+            {
+                layers.Add(new DrawingLayer(this, imageToEdit, "default"));
+            }
+
             _gridLines = CreateGridLines();
             _borderLine = CreateBorderLines();
 
             Cursor = Cursors.Pen;
 
-            AddVisualChild(_surface);
-            AddVisualChild(_gridLines);
-            AddVisualChild(_borderLine);
-
             BaseTool.RaiseToolEvent += HandleToolEvent;
-            RaiseToolChangeEvent += HandleToolChangeEvent;
+            RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
+
+            _vm.SetVisuals(layers, _gridLines, _borderLine);
+
+            _vm.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
         }
 
-        private void HandleToolChangeEvent(object sender, EventArgs e)
+        public void NewImage(int width = 32, int height = 32, int defaultMagnification = 1, WriteableBitmap imageToEdit = null)
         {
-            ChosenTool.SetDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _surface);
+            PixelWidth = width;
+            PixelHeight = height;
+            Magnification = defaultMagnification;
+
+            _vm.FlushLayers();
+
+            Init();
+
+            UpdateToolProperties();
+
+            InvalidateMeasure();
+            InvalidateVisual();
+        }
+
+        private void UpdateVisualRelated()
+        {
+            InvalidateVisual();
+            ChosenTool.SetActiveLayer(_activeLayer);
+        }
+
+        private void UpdateToolProperties()
+        {
+            ChosenTool.SetDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer);
         }
 
         private void HandleToolEvent(object sender, ToolEventArgs e)
@@ -92,18 +135,9 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        protected override int VisualChildrenCount => 3;
+        protected override int VisualChildrenCount => _vm.VisualCount;
 
-        protected override Visual GetVisualChild(int index)
-        {
-            return index switch
-            {
-                0 => _surface,
-                1 => _gridLines,
-                2 => _borderLine,
-                _ => null,
-            };
-        }
+        protected override Visual GetVisualChild(int index) => _vm.GetVisualChild(index);
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -136,14 +170,14 @@ namespace Pixellation.Components.Editor
             var magnification = Magnification;
             var size = new Size(PixelWidth * magnification, PixelHeight * magnification);
 
-            _surface.Measure(size);
+            _activeLayer?.Measure(size);
 
             return size;
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            _surface.Arrange(new Rect(finalSize));
+            _activeLayer?.Arrange(new Rect(finalSize));
             return finalSize;
         }
 
@@ -210,12 +244,29 @@ namespace Pixellation.Components.Editor
             AddVisualChild(_borderLine);
             AddVisualChild(_gridLines);
 
-            _surface.InvalidateVisual();
+            _activeLayer.InvalidateVisual();
+
+            RenderTransformOrigin = new Point(ActualWidth, ActualHeight);
+            HorizontalAlignment = HorizontalAlignment.Center;
+            VerticalAlignment = VerticalAlignment.Center;
+
+            UpdateToolProperties();
+
+            InvalidateVisual();
         }
 
-        public WriteableBitmap GetBitmap()
+        public WriteableBitmap GetWriteableBitmap()
         {
-            return this._surface.GetBitMap();
+            return this._activeLayer.GetWriteableBitmap();
+        }
+
+        public BitmapImage GetImageSource(int width = 0, int height = 0)
+        {
+            var temp = this._activeLayer.GetWriteableBitmap().ToBitmap();
+            width = width == 0 ? temp.Width : width;
+            height = height == 0 ? temp.Height : height;
+            var bi = new System.Drawing.Bitmap(temp, new System.Drawing.Size() { Width = width, Height = height });
+            return bi.ToImageSource();
         }
     }
 }

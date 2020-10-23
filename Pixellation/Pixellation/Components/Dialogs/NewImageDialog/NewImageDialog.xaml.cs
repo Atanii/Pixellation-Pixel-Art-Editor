@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace Pixellation.Components.Dialogs.NewImageDialog
 {
@@ -17,6 +7,11 @@ namespace Pixellation.Components.Dialogs.NewImageDialog
     /// </summary>
     public partial class NewImageDialog : Window
     {
+        public string Answer
+        {
+            get { return txtWidth.Text + ";" + txtHeight.Text; }
+        }
+
         public NewImageDialog()
         {
             InitializeComponent();
@@ -26,14 +21,10 @@ namespace Pixellation.Components.Dialogs.NewImageDialog
         {
             this.DialogResult = true;
         }
+
         private void Cancel(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
-        }
-
-        public string Answer
-        {
-            get { return txtWidth.Text + ";" + txtHeight.Text; }
         }
     }
 }

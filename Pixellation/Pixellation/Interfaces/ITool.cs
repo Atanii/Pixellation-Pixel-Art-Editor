@@ -6,7 +6,7 @@ namespace Pixellation.Components
 {
     public interface ITool
     {
-        public void SetDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingSurface ds);
+        public void SetDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds);
 
         public void SetDrawColor(Color c);
 

@@ -39,6 +39,11 @@ namespace Pixellation.Utils
             return source;
         }
 
+        public static WriteableBitmap ToWriteableBitmap(this Bitmap bitmap)
+        {
+            return new WriteableBitmap(bitmap.ToBitmapSource());
+        }
+
         public static System.Drawing.Bitmap ToBitmap(this BitmapSource srs)
         {
             int width = srs.PixelWidth;

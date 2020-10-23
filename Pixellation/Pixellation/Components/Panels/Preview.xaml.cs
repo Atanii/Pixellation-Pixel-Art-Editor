@@ -38,7 +38,7 @@ namespace Pixellation.Components.Panels
         private void Update(object sender, EventArgs e)
         {
             // TODO: fix transparency
-            var bitmap = VisualToPreview.GetBitmap().ToBitmap();
+            var bitmap = VisualToPreview.GetWriteableBitmap().ToBitmap();
             var b = bitmap.ToBitmapSource();
             imgPreview.Source = b;
         }
