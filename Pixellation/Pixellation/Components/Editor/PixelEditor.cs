@@ -102,7 +102,7 @@ namespace Pixellation.Components.Editor
 
             _vm.FlushLayers();
 
-            Init();
+            Init(imageToEdit);
 
             UpdateToolProperties();
 

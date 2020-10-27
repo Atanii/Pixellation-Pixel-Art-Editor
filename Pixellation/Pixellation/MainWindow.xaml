@@ -12,7 +12,7 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="New" CanExecute="CommonCommandBinding_True" />
-        <CommandBinding Command="Open" CanExecute="CommonCommandBinding_False" />
+        <CommandBinding Command="Open" CanExecute="CommonCommandBinding_True" />
         <CommandBinding Command="Save" CanExecute="CommonCommandBinding_True" />
         
         <CommandBinding Command="Cut" CanExecute="CommonCommandBinding_False" />
