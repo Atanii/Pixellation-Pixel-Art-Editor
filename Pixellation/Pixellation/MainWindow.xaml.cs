@@ -34,7 +34,7 @@ namespace Pixellation
                 // Getting Bitmap
                 BitmapImage bitmap = new BitmapImage(new Uri(fileName, UriKind.Absolute));
                 WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap);
-                canvasImage.NewImage(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, 2, writeableBitmap);
+                canvasImage.NewImage(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, 1, writeableBitmap);
             }
         }
 
@@ -114,7 +114,7 @@ namespace Pixellation
                 int width = Int32.Parse(widthHeight.Split(';')[0]);
                 int height = Int32.Parse(widthHeight.Split(';')[1]);
                 // New Image
-                canvasImage.NewImage(width, height, 2);
+                canvasImage.NewImage(width, height, 5); // TODO: update UI binding
             }
         }
 

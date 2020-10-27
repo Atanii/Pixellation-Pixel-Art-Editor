@@ -9,6 +9,24 @@ namespace Pixellation.Utils
 {
     public static class ExtensionMethods
     {
+        public static BitmapImage ToImageSource(this WriteableBitmap wb)
+        {
+            BitmapImage bmImage = new BitmapImage();
+            using (MemoryStream stream = new MemoryStream())
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(wb));
+                encoder.Save(stream);
+                bmImage.BeginInit();
+                bmImage.CacheOption = BitmapCacheOption.OnLoad;
+                bmImage.StreamSource = stream;
+                bmImage.EndInit();
+                bmImage.Freeze();
+            }
+            return bmImage;
+        }
+
+
         public static Bitmap ToBitmap(this WriteableBitmap writeBmp)
         {
             using MemoryStream outStream = new MemoryStream();

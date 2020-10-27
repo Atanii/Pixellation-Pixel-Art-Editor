@@ -9,6 +9,6 @@ namespace Pixellation.Components
 
         public WriteableBitmap GetWriteableBitmap();
 
-        public BitmapImage GetImageSource(int width = 0, int height = 0);
+        public BitmapImage GetImageSource();
     }
 }

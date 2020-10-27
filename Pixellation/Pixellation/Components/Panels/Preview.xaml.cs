@@ -32,15 +32,10 @@ namespace Pixellation.Components.Panels
 
         private void VisualToPreviewPropertyInitOrUpdated(object e, DependencyPropertyChangedEventArgs a)
         {
-            VisualToPreview.RaiseImageUpdatedEvent += Update;
-        }
-
-        private void Update(object sender, EventArgs e)
-        {
-            // TODO: fix transparency
-            var bitmap = VisualToPreview.GetWriteableBitmap().ToBitmap();
-            var b = bitmap.ToBitmapSource();
-            imgPreview.Source = b;
+            VisualToPreview.RaiseImageUpdatedEvent += (s, e) =>
+            {
+                imgPreview.Source = VisualToPreview.GetImageSource();
+            };
         }
     }
 }

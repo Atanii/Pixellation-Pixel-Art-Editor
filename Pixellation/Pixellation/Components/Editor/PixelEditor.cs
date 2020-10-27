@@ -260,13 +260,6 @@ namespace Pixellation.Components.Editor
             return this._activeLayer.GetWriteableBitmap();
         }
 
-        public BitmapImage GetImageSource(int width = 0, int height = 0)
-        {
-            var temp = this._activeLayer.GetWriteableBitmap().ToBitmap();
-            width = width == 0 ? temp.Width : width;
-            height = height == 0 ? temp.Height : height;
-            var bi = new System.Drawing.Bitmap(temp, new System.Drawing.Size() { Width = width, Height = height });
-            return bi.ToImageSource();
-        }
+        public BitmapImage GetImageSource() => _activeLayer.GetImageSource();
     }
 }
