@@ -7,8 +7,8 @@
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject></StartupObject>
     <Version>0.0.2</Version>
-    <AssemblyVersion>0.0.2.3</AssemblyVersion>
-    <FileVersion>0.0.2.3</FileVersion>
+    <AssemblyVersion>0.0.2.4</AssemblyVersion>
+    <FileVersion>0.0.2.4</FileVersion>
     <Authors>Jeremi Emánuel Kádár</Authors>
     <Copyright>Jeremi Emánuel Kádár</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -24,6 +24,8 @@
   <ItemGroup>
     <None Remove="Resources\application-icon.ico" />
     <None Remove="Resources\application-icon.png" />
+    <None Remove="Resources\icons-common\circle.png" />
+    <None Remove="Resources\icons-common\rectangle.png" />
     <None Remove="Resources\icons-fugue\eraser.png" />
     <None Remove="Resources\icons-fugue\grid-dot.png" />
     <None Remove="Resources\icons-fugue\layer-shape-line.png" />
@@ -53,6 +55,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\icons-common\circle.png" />
+    <Resource Include="Resources\icons-common\rectangle.png" />
     <Resource Include="Resources\icons-fugue\eraser.png" />
     <Resource Include="Resources\icons-fugue\grid-dot.png" />
     <Resource Include="Resources\icons-fugue\layer-shape-line.png" />

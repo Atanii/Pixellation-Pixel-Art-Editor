@@ -17,6 +17,8 @@ namespace Pixellation.Components.Panels
         public static readonly ITool Line = LineTool.GetInstance();
         public static readonly ITool Dithering = DitheringTool.GetInstance();
         public static readonly ITool Pipette = PipetteTool.GetInstance();
+        public static readonly ITool Circle = CircleTool.GetInstance();
+        public static readonly ITool Rectangle = RectangleTool.GetInstance();
 
         public ITool ChosenTool
         {
@@ -42,6 +44,8 @@ namespace Pixellation.Components.Panels
                 "BtnLine" => Line,
                 "BtnDithering" => Dithering,
                 "BtnPipette" => Pipette,
+                "BtnCircle" => Circle,
+                "BtnRectangle" => Rectangle,
                 _ => Pencil,
             };
         }

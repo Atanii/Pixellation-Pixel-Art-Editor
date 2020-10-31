@@ -78,6 +78,26 @@
                 <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/eraser.png"></ImageBrush>
             </Button.Background>
         </Button>
+        <Button
+            Click="ToolButton_Click"
+            x:Name="BtnCircle"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/circle.png"></ImageBrush>
+            </Button.Background>
+        </Button>
+        <Button
+            Click="ToolButton_Click"
+            x:Name="BtnRectangle"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/rectangle.png"></ImageBrush>
+            </Button.Background>
+        </Button>
         <!--<Button
             Click="ToolButton_Click"
             x:Name="BtnSelection"
