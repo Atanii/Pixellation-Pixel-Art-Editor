@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components
@@ -9,6 +10,6 @@ namespace Pixellation.Components
 
         public WriteableBitmap GetWriteableBitmap();
 
-        public BitmapImage GetImageSource();
+        public ImageSource GetImageSource();
     }
 }

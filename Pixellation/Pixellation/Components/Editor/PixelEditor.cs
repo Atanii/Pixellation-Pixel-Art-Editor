@@ -1,5 +1,4 @@
 ﻿using Pixellation.Components.Tools;
-using Pixellation.Utils;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -75,7 +74,7 @@ namespace Pixellation.Components.Editor
             if (imageToEdit == null)
             {
                 layers.Add(new DrawingLayer(this, "default"));
-            } 
+            }
             else
             {
                 layers.Add(new DrawingLayer(this, imageToEdit, "default"));
@@ -260,6 +259,6 @@ namespace Pixellation.Components.Editor
             return this._activeLayer.GetWriteableBitmap();
         }
 
-        public BitmapImage GetImageSource() => _activeLayer.GetImageSource();
+        public ImageSource GetImageSource() => _vm.GetAllMergedImageSource();
     }
 }

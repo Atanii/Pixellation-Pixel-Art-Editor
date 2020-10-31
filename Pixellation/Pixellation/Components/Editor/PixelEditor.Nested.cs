@@ -28,11 +28,13 @@ namespace Pixellation.Components.Editor
 
             public void RemoveLayer(int layerIndex);
 
-            public Bitmap Merge(int from, int to = 0);
+            public WriteableBitmap Merge(int from, int to = 0, WriteableBitmapExtensions.BlendMode mode = WriteableBitmapExtensions.BlendMode.Alpha);
 
             public DrawingLayer GetAllMerged();
 
             public WriteableBitmap GetAllMergedWriteableBitmap();
+
+            public ImageSource GetAllMergedImageSource();
 
             public Bitmap GetAllMergedBitmap();
         }
@@ -86,10 +88,7 @@ namespace Pixellation.Components.Editor
                 VisualsChanged?.Invoke(this, EventArgs.Empty);
             }
 
-            public void FlushLayers()
-            {
-                Layers.RemoveAll((x) => true);
-            }
+            public void FlushLayers() => Layers.RemoveAll((x) => true);
 
             public Visual GetVisualChild(int index)
             {
@@ -121,15 +120,9 @@ namespace Pixellation.Components.Editor
                 }
             }
 
-            public List<DrawingLayer> GetLayers()
-            {
-                return Layers;
-            }
+            public List<DrawingLayer> GetLayers() => Layers;
 
-            public DrawingLayer GetLayer(int layerIndex = 0)
-            {
-                return Layers.ElementAtOrDefault(layerIndex);
-            }
+            public DrawingLayer GetLayer(int layerIndex = 0) => Layers.ElementAtOrDefault(layerIndex);
 
             public void AddLayer(DrawingLayer layer, int layerIndex = 0)
             {
@@ -150,47 +143,39 @@ namespace Pixellation.Components.Editor
             }
 
             /// <summary>
-            /// Merges the layers in the given index range into a single bitmap.
+            /// Merges the layers in the given index range into a single WriteableBitmap.
             /// The indexing is reverse!
             /// </summary>
             /// <param name="from">From index relative to last layer index</param>
             /// <param name="to">To index relative to last layer index. Default is 0, which means the layer above all others.</param>
             /// <returns>The bitmap containing the merged layers. If no merge could have been done in the range, a blank bitmap will be returned.</returns>
-            public Bitmap Merge(int from, int to = 0)
+            public WriteableBitmap Merge(int from, int to = 0, WriteableBitmapExtensions.BlendMode mode = WriteableBitmapExtensions.BlendMode.Alpha)
             {
                 // Blank bitmap as mergebase
-                var tmp = BitmapFactory.New(_pe.PixelWidth, _pe.PixelHeight);
-                tmp.Clear(Colors.Transparent);
-                var merged = tmp.ToBitmap();
+                var merged = BitmapFactory.New(_pe.PixelWidth, _pe.PixelHeight);
+                merged.Clear(Colors.Transparent);
 
-                // Merge all layers into one
-                using Graphics g = Graphics.FromImage(merged);
+                var rect = new System.Windows.Rect(0d, 0d, merged.Width, merged.Height); ;
+
                 for (int i = from; i >= to; i--)
                 {
-                    g.DrawImage(Layers[i].GetBitmap(), new Point() { X = 0, Y = 0 });
+                    merged.Blit(rect, Layers[i].GetWriteableBitmap(), rect, mode);
                 }
 
-                // Return merged layers
                 return merged;
             }
 
             public DrawingLayer GetAllMerged()
             {
                 var merged = Merge(Layers.Count() - 1, 0);
-                return new DrawingLayer(_pe, merged.ToWriteableBitmap(), "merged");
+                return new DrawingLayer(_pe, merged, "merged");
             }
 
-            public WriteableBitmap GetAllMergedWriteableBitmap()
-            {
-                var merged = Merge(Layers.Count() - 1, 0);
-                return merged.ToWriteableBitmap();
-            }
+            public WriteableBitmap GetAllMergedWriteableBitmap() => Merge(Layers.Count() - 1, 0);
 
-            public Bitmap GetAllMergedBitmap()
-            {
-                var merged = Merge(Layers.Count() - 1, 0);
-                return merged;
-            }
+            public Bitmap GetAllMergedBitmap() => Merge(Layers.Count() - 1, 0).ToBitmap();
+
+            public ImageSource GetAllMergedImageSource() => Merge(Layers.Count() - 1, 0).ToImageSource();
 
             public void RemoveLayer(DrawingLayer layer)
             {

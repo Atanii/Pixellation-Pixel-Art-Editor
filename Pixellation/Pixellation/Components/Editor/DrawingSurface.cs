@@ -56,7 +56,7 @@ namespace Pixellation.Components.Editor
             return this._bitmap.ToBitmap();
         }
 
-        public BitmapImage GetImageSource()
+        public ImageSource GetImageSource()
         {
             return _bitmap.ToImageSource();
         }

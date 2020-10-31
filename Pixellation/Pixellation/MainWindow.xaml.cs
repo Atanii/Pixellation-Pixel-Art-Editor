@@ -1,13 +1,11 @@
 ﻿using Microsoft.Win32;
 using Pixellation.Components.Dialogs.AboutDialog;
 using Pixellation.Components.Dialogs.NewImageDialog;
-using Pixellation.Components.Editor;
 using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using static Pixellation.Utils.ExtensionMethods;
 
 namespace Pixellation
 {
@@ -49,7 +47,7 @@ namespace Pixellation
                 string fileName = saveFileDialog.FileName;
 
                 // Getting Bitmap
-                WriteableBitmap wrBitmap = canvasImage.VisualAndLayerManager.GetAllMergedWriteableBitmap();
+                var wrBitmap = canvasImage.VisualAndLayerManager.GetAllMergedWriteableBitmap();
                 SaveBitmapSourceToFile(fileName, wrBitmap);
             }
         }
