@@ -31,5 +31,23 @@ namespace Pixellation.Properties {
                 return ((int)(this["IconSize"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("32")]
+        public int DefaultImageSize {
+            get {
+                return ((int)(this["DefaultImageSize"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int DefaultMagnification {
+            get {
+                return ((int)(this["DefaultMagnification"]));
+            }
+        }
     }
 }

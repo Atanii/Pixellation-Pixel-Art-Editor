@@ -37,6 +37,10 @@ namespace Pixellation.Components.Editor
             public ImageSource GetAllMergedImageSource();
 
             public Bitmap GetAllMergedBitmap();
+
+            public void MoveUp(int layerIndex);
+
+            public void MoveDown(int layerIndex);
         }
 
         private class VisualManager : IVisualManager
@@ -113,7 +117,16 @@ namespace Pixellation.Components.Editor
                 }
             }
 
-            public void FlushLayers() => Layers.RemoveAll((x) => true);
+            public void RemoveAllVisualChildren()
+            {
+                foreach (var l in Layers)
+                {
+                    _pe.RemoveVisualChild(l);
+                }
+                _pe.RemoveVisualChild(_pe._gridLines);
+                _pe.RemoveVisualChild(_pe._borderLine);
+                Layers.Clear();
+            }
 
             public Visual GetVisualChild(int index)
             {
@@ -133,6 +146,28 @@ namespace Pixellation.Components.Editor
                 {
                     return null;
                 }
+            }
+
+            public void RefreshMiscVisuals()
+            {
+                _pe.RemoveVisualChild(_pe._gridLines);
+                _pe.RemoveVisualChild(_pe._borderLine);
+                _pe.AddVisualChild(_pe._gridLines);
+                _pe.AddVisualChild(_pe._borderLine);
+            }
+
+            public void RefreshLayerVisuals(bool miscToo = true)
+            {
+                foreach (var l in Layers)
+                {
+                    _pe.RemoveVisualChild(l);
+                }
+                foreach (var l in Layers)
+                {
+                    _pe.AddVisualChild(l);
+                }
+                if (miscToo)
+                    RefreshMiscVisuals();
             }
 
             public void SetActiveLayer(int layerIndex = 0)
@@ -155,6 +190,8 @@ namespace Pixellation.Components.Editor
                 _pe.AddVisualChild(Layers[layerIndex]);
                 ++VisualCount;
 
+                RefreshMiscVisuals();
+
                 VisualsChanged?.Invoke(this, EventArgs.Empty);
             }
 
@@ -164,7 +201,33 @@ namespace Pixellation.Components.Editor
                 _pe.AddVisualChild(Layers[layerIndex]);
                 ++VisualCount;
 
+                RefreshMiscVisuals();
+
                 VisualsChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+            public void MoveUp(int layerIndex)
+            {
+                if (layerIndex > 0)
+                {
+                    var tmp = Layers[layerIndex];
+                    Layers.RemoveAt(layerIndex);
+                    Layers.Insert(--layerIndex, tmp);
+                    RefreshLayerVisuals();
+                    VisualsChanged?.Invoke(this, EventArgs.Empty);
+                }                
+            }
+
+            public void MoveDown(int layerIndex)
+            {
+                if (layerIndex < Layers.Count() - 1)
+                {
+                    var tmp = Layers[layerIndex];
+                    Layers.RemoveAt(layerIndex);
+                    Layers.Insert(++layerIndex, tmp);
+                    RefreshLayerVisuals();
+                    VisualsChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
 
             /// <summary>
@@ -215,7 +278,7 @@ namespace Pixellation.Components.Editor
             {
                 if (Layers.ElementAtOrDefault(layerIndex) != null)
                 {
-                    _pe.RemoveVisualChild(_pe.GetVisualChild(layerIndex));
+                    _pe.RemoveVisualChild(Layers[layerIndex]);
                     Layers.RemoveAt(layerIndex);
                     --VisualCount;
 

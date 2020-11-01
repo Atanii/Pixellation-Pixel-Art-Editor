@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using Pixellation.Components.Dialogs.AboutDialog;
 using Pixellation.Components.Dialogs.NewImageDialog;
+using Pixellation.Properties;
 using System;
 using System.IO;
 using System.Windows;
@@ -14,9 +15,16 @@ namespace Pixellation
     /// </summary>
     public partial class MainWindow : Window
     {
+        private int _width = 0;
+        private int _height = 0;
+        public int ImageWidth { get { return _width; } set { _width = value; statWidth.Text = $"Width: {value}px"; } }
+        public int ImageHeight { get { return _height; } set { _height = value; statHeight.Text = $"Height: {value}px"; } }
+
         public MainWindow()
         {
             InitializeComponent();
+            ImageWidth = Settings.Default.DefaultImageSize;
+            ImageHeight = Settings.Default.DefaultImageSize;
         }
 
         private void OpenImage(object sender, RoutedEventArgs e)
@@ -32,6 +40,8 @@ namespace Pixellation
                 // Getting Bitmap
                 BitmapImage bitmap = new BitmapImage(new Uri(fileName, UriKind.Absolute));
                 WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap);
+                ImageWidth = writeableBitmap.PixelWidth;
+                ImageHeight = writeableBitmap.PixelHeight;
                 canvasImage.NewImage(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, (int)sliderZoom.Value, writeableBitmap);
             }
         }
@@ -40,7 +50,7 @@ namespace Pixellation
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "Image Files (*.bmp, *.jpg, *.png, *.tiff, *.gif)|*.bmp;*.jpg;*.png;*.tiff;*.gif"
+                Filter = "Image Files (*.png, *.bmp, *.jpg, *.tiff, *.gif)|*.png;*.bmp;*.jpg;*.tiff;*.gif"
             };
             if (saveFileDialog.ShowDialog() == true)
             {
@@ -109,10 +119,10 @@ namespace Pixellation
             {
                 // Get Data
                 var widthHeight = newImgDialog.Answer;
-                int width = Int32.Parse(widthHeight.Split(';')[0]);
-                int height = Int32.Parse(widthHeight.Split(';')[1]);
+                ImageWidth = Int32.Parse(widthHeight.Split(';')[0]);
+                ImageHeight = Int32.Parse(widthHeight.Split(';')[1]);
                 // New Image
-                canvasImage.NewImage(width, height, (int)sliderZoom.Value); // TODO: update UI binding
+                canvasImage.NewImage(ImageWidth, ImageHeight, (int)sliderZoom.Value); // TODO: update UI binding
             }
         }
 

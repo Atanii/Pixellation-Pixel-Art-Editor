@@ -1,4 +1,5 @@
 ﻿using Pixellation.Components.Tools;
+using Pixellation.Properties;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -52,14 +53,14 @@ namespace Pixellation.Components.Editor
 
         public PixelEditor()
         {
-            PixelWidth = 32;
-            PixelHeight = 32;
-            Magnification = 1;
+            PixelWidth = Settings.Default.DefaultImageSize;
+            PixelHeight = Settings.Default.DefaultImageSize;
+            Magnification = Settings.Default.DefaultMagnification;
             _vm = new VisualManager(this);
             Init();
         }
 
-        public PixelEditor(int width = 32, int height = 32, int defaultMagnification = 1)
+        public PixelEditor(int width, int height, int defaultMagnification)
         {
             PixelWidth = width;
             PixelHeight = height;
@@ -99,7 +100,7 @@ namespace Pixellation.Components.Editor
             PixelHeight = height;
             Magnification = defaultMagnification;
 
-            _vm.FlushLayers();
+            _vm.RemoveAllVisualChildren();
 
             Init(imageToEdit);
 
@@ -112,6 +113,7 @@ namespace Pixellation.Components.Editor
         private void UpdateVisualRelated()
         {
             InvalidateVisual();
+            RaiseImageUpdatedEvent?.Invoke(default, EventArgs.Empty);
             ChosenTool.SetActiveLayer(_activeLayer);
         }
 

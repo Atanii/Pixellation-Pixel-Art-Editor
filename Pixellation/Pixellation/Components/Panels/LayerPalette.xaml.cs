@@ -54,5 +54,15 @@ namespace Pixellation.Components.Panels
         {
             LayerManager?.RemoveLayer(layerList.SelectedIndex);
         }
+
+        private void MoveLayerUp(object sender, RoutedEventArgs e)
+        {
+            LayerManager?.MoveUp(layerList.SelectedIndex);
+        }
+
+        private void MoveLayerDown(object sender, RoutedEventArgs e)
+        {
+            LayerManager?.MoveDown(layerList.SelectedIndex);
+        }
     }
 }
