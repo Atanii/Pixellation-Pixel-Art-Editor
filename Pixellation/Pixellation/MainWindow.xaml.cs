@@ -32,7 +32,7 @@ namespace Pixellation
                 // Getting Bitmap
                 BitmapImage bitmap = new BitmapImage(new Uri(fileName, UriKind.Absolute));
                 WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap);
-                canvasImage.NewImage(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, 1, writeableBitmap);
+                canvasImage.NewImage(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, (int)sliderZoom.Value, writeableBitmap);
             }
         }
 
@@ -112,7 +112,7 @@ namespace Pixellation
                 int width = Int32.Parse(widthHeight.Split(';')[0]);
                 int height = Int32.Parse(widthHeight.Split(';')[1]);
                 // New Image
-                canvasImage.NewImage(width, height, 5); // TODO: update UI binding
+                canvasImage.NewImage(width, height, (int)sliderZoom.Value); // TODO: update UI binding
             }
         }
 
@@ -128,6 +128,7 @@ namespace Pixellation
             {
                 int newZoom = (int)e.NewValue;
                 canvasImage.UpdateMagnification(newZoom);
+                canvasImage.InvalidateMeasure();
             }
         }
     }

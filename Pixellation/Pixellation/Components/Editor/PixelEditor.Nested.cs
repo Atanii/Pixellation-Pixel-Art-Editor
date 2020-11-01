@@ -88,13 +88,38 @@ namespace Pixellation.Components.Editor
                 VisualsChanged?.Invoke(this, EventArgs.Empty);
             }
 
+            public void InvalidateAllLayerVisual()
+            {
+                foreach (var l in Layers)
+                {
+                    l.InvalidateMeasure();
+                    l.InvalidateVisual();
+                }
+            }
+
+            public void MeasureAllLayer(System.Windows.Size s)
+            {
+                foreach (var l in Layers)
+                {
+                    l?.Measure(s);
+                }
+            }
+
+            public void ArrangeAllLayer(System.Windows.Rect s)
+            {
+                foreach (var l in Layers)
+                {
+                    l?.Arrange(s);
+                }
+            }
+
             public void FlushLayers() => Layers.RemoveAll((x) => true);
 
             public Visual GetVisualChild(int index)
             {
                 if (index < Layers.Count())
                 {
-                    return Layers[index];
+                    return Layers[(Layers.Count() - 1) - index];
                 }
                 else if (index == VisualCount - 2)
                 {

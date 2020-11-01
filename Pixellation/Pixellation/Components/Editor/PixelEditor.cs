@@ -169,14 +169,14 @@ namespace Pixellation.Components.Editor
             var magnification = Magnification;
             var size = new Size(PixelWidth * magnification, PixelHeight * magnification);
 
-            _activeLayer?.Measure(size);
+            _vm?.MeasureAllLayer(size);
 
             return size;
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            _activeLayer?.Arrange(new Rect(finalSize));
+            _vm?.ArrangeAllLayer(new Rect(finalSize));
             return finalSize;
         }
 
@@ -243,7 +243,7 @@ namespace Pixellation.Components.Editor
             AddVisualChild(_borderLine);
             AddVisualChild(_gridLines);
 
-            _activeLayer.InvalidateVisual();
+            _vm.InvalidateAllLayerVisual();
 
             RenderTransformOrigin = new Point(ActualWidth, ActualHeight);
             HorizontalAlignment = HorizontalAlignment.Center;

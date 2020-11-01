@@ -48,13 +48,11 @@
                 <TextBlock Name="statHeight" Text="{Binding ElementName=canvasImage, Path=PixelHeight, StringFormat='Height: {0}px'}" />
             </StatusBarItem>
             <StatusBarItem>
-                <TextBlock Name="statZoom" Text="{Binding ElementName=canvasImage, Path=Magnification, StringFormat='Zoom: {0}x'}" />
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock Text="Zoom: " />
-            </StatusBarItem>
-            <StatusBarItem>
-                <Slider x:Name="sliderZoom" Value="1" Minimum="1" Maximum="10" Width="100" ValueChanged="ZoomChanged" />
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Left" Text="Zoom: " />
+                    <Slider x:Name="sliderZoom" Value="1" Minimum="1" Maximum="30" Width="150" IsSnapToTickEnabled="True" ValueChanged="ZoomChanged" />
+                    <TextBlock DockPanel.Dock="Right" Name="statZoom" Text="{Binding ElementName=sliderZoom, Path=Value, StringFormat=' {0}x'}" />
+                </DockPanel>
             </StatusBarItem>
         </StatusBar>
 
