@@ -14,6 +14,8 @@ namespace Pixellation.Components.Editor
         private DrawingLayer _activeLayer;
         private Visual _gridLines;
         private Visual _borderLine;
+        public bool Tiled { get; private set; } = false;
+        public int TiledOpacity { get; private set; } = 50;
 
         public List<DrawingLayer> Layers { get; private set; }
 
@@ -92,6 +94,18 @@ namespace Pixellation.Components.Editor
             _vm.SetVisuals(layers, _gridLines, _borderLine);
 
             _vm.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
+        }
+
+        public void ToggleTiled()
+        {
+            Tiled = !Tiled;
+            _vm.InvalidateAllLayerVisual();
+        }
+
+        public void SetTiledOpacity(int newOpacity)
+        {
+            TiledOpacity = newOpacity;
+            _vm.InvalidateAllLayerVisual();
         }
 
         public void NewImage(int width = 32, int height = 32, int defaultMagnification = 1, WriteableBitmap imageToEdit = null)

@@ -72,7 +72,10 @@
             <StackPanel>
                 <Label Content="Preview"></Label>
                 <Panels:Preview Width="180" Height="180" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}" />
-                
+
+                <Label Content="Tiled"></Label>
+                <Panels:TiledModeSettingsPanel Editor="{Binding ElementName=canvasImage, Mode=OneTime}" />
+
                 <Label Content="Colour"></Label>
                 <l2:ColourChooser Width="180" Height="250" x:Name="colorChooser" ChosenColour="{Binding ElementName=canvasImage, Path=ChosenColour, Mode=TwoWay}"></l2:ColourChooser>
             </StackPanel>

@@ -34,6 +34,21 @@ namespace Pixellation.Components.Editor
             var height = _bitmap.PixelHeight * magnification;
 
             dc.DrawImage(_bitmap, new Rect(0, 0, width, height));
+
+            if (_owner.Tiled)
+            {
+                var temp = (WriteableBitmap)_bitmap.Clone();
+                temp.BlitRender(temp, false, _owner.TiledOpacity);
+                for (int x = -5 * width; x <= 5 * width; x += width)
+                {
+                    for (int y = -5 * height; y <= 5 * height; y += height)
+                    {
+                        if (x == 0 && y == 0)
+                            continue;
+                        dc.DrawImage(temp, new Rect(x, y, width, height));
+                    }
+                }
+            }
         }
 
         internal void SetColor(int x, int y, Color color)
