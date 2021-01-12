@@ -10,11 +10,12 @@
         <WrapPanel HorizontalAlignment="Stretch" Margin="10,10,10,0">
             <Button Width="25" Height="25" Margin="0,0,10,0" Content="+" Click="AddLayer"></Button>
             <Button Width="25" Height="25" Margin="0,0,10,0" Content="-" Click="DeleteLayer"></Button>
-            <Button Width="25" Height="25" Margin="0,0,10,0" Content="Up" Click="MoveLayerUp"></Button>
-            <Button Width="25" Height="25" Margin="0,0,10,0" Content="Down" Click="MoveLayerDown"></Button>
+            <Button Width="25" Height="25" Margin="0,0,10,0" Content="↑" Click="MoveLayerUp"></Button>
+            <Button Width="25" Height="25" Margin="0,0,10,0" Content="↓" Click="MoveLayerDown"></Button>
         </WrapPanel>
         <ListView Height="200" SelectionMode="Single" Margin="10" x:Name="layerList" SelectionChanged="LayerList_SelectionChanged"
-                  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False">
+                  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False"
+                  IsSynchronizedWithCurrentItem="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>

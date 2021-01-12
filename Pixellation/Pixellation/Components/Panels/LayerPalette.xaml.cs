@@ -3,6 +3,7 @@ using Pixellation.Components.Editor;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using static Pixellation.Components.Editor.PixelEditor;
 
 namespace Pixellation.Components.Panels
@@ -28,8 +29,23 @@ namespace Pixellation.Components.Panels
 
         public LayerPalette()
         {
-            RaiseLayerListPropertyInitialized += (a, b) => { LayerManager.VisualsChanged += UpdateLayerList; UpdateLayerList(a, EventArgs.Empty); };
+            RaiseLayerListPropertyInitialized += (a, b) => {
+                LayerManager.VisualsChanged += UpdateLayerList;
+                UpdateLayerList(a, EventArgs.Empty);
+                // Initial layer selection
+                SelectLayer();
+            };
             InitializeComponent();
+        }
+
+        private void SelectLayer(int index = 0)
+        {
+            if (LayerManager != null && LayerManager.GetLayers().Count > 0 && layerList.Items.Count > 0)
+            {
+                LayerManager?.SetActiveLayer(index);
+                layerList.SelectedIndex = index;
+                layerList.SelectedItem = layerList.Items[index];
+            }
         }
 
         private void UpdateLayerList(object sender, EventArgs e)
@@ -40,14 +56,17 @@ namespace Pixellation.Components.Panels
 
         private void LayerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            LayerManager?.SetActiveLayer(layerList.SelectedIndex);
+            SelectLayer(layerList.SelectedIndex);
         }
 
         private void AddLayer(object sender, RoutedEventArgs e)
         {
             var newLayerDialog = new StringInputDialog("New Layer", "Layername");
             if (newLayerDialog.ShowDialog() == true)
+            {
                 LayerManager?.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
+                SelectLayer();
+            }
         }
 
         private void DeleteLayer(object sender, RoutedEventArgs e)
