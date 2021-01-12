@@ -20,6 +20,11 @@ namespace Pixellation.Components.Panels
         public static readonly ITool Circle = CircleTool.GetInstance();
         public static readonly ITool Rectangle = RectangleTool.GetInstance();
 
+        private readonly Thickness ThicknessClicked;
+        private readonly Thickness ThicknessDefault;
+
+        private Button PreviouslyClicked;
+
         public ITool ChosenTool
         {
             get { return (ITool)GetValue(ChosenToolProperty); }
@@ -30,12 +35,37 @@ namespace Pixellation.Components.Panels
 
         public ToolPalette()
         {
+            ThicknessClicked = new Thickness()
+            {
+                Top = 1.0,
+                Right = 1.0,
+                Bottom = 1.0,
+                Left = 1.0
+            };
+            ThicknessDefault = new Thickness()
+            {
+                Top = 0.0,
+                Right = 0.0,
+                Bottom = 0.0,
+                Left = 0.0
+            };
+
             InitializeComponent();
+
+            // Selected by default
+            PreviouslyClicked = BtnPencil;
+            BtnPencil.BorderThickness = ThicknessClicked;
         }
 
         private void ToolButton_Click(object sender, RoutedEventArgs e)
         {
+            PreviouslyClicked.BorderThickness = ThicknessDefault;
+
             var a = (Button)sender;
+
+            a.BorderThickness = ThicknessClicked;
+            PreviouslyClicked = a;
+
             ChosenTool = a.Name switch
             {
                 "BtnPencil" => Pencil,

@@ -12,6 +12,7 @@
             Click="ToolButton_Click"
             x:Name="BtnPencil"
             BorderThickness="0"
+            BorderBrush="Black"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
             <Button.Background>
