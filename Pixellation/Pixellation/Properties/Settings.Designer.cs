@@ -34,7 +34,7 @@ namespace Pixellation.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("32")]
+        [global::System.Configuration.DefaultSettingValueAttribute("64")]
         public int DefaultImageSize {
             get {
                 return ((int)(this["DefaultImageSize"]));
@@ -43,7 +43,7 @@ namespace Pixellation.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
         public int DefaultMagnification {
             get {
                 return ((int)(this["DefaultMagnification"]));
