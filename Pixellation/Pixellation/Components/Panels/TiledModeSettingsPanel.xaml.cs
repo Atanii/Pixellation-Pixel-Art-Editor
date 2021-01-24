@@ -30,7 +30,7 @@ namespace Pixellation.Components.Panels
 
         private void TiledModeOpacitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Editor?.SetTiledOpacity(100 - (int)e.NewValue);
+            Editor?.SetTiledOpacity( ((float)e.NewValue / 100.0f) );
         }
     }
 }

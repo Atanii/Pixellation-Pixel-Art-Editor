@@ -15,7 +15,7 @@ namespace Pixellation.Components.Editor
         private Visual _gridLines;
         private Visual _borderLine;
         public bool Tiled { get; private set; } = false;
-        public int TiledOpacity { get; private set; } = 50;
+        public float TiledOpacity { get; private set; } = 0.5f;
 
         public List<DrawingLayer> Layers { get; private set; }
 
@@ -102,7 +102,7 @@ namespace Pixellation.Components.Editor
             _vm.InvalidateAllLayerVisual();
         }
 
-        public void SetTiledOpacity(int newOpacity)
+        public void SetTiledOpacity(float newOpacity)
         {
             TiledOpacity = newOpacity;
             _vm.InvalidateAllLayerVisual();
