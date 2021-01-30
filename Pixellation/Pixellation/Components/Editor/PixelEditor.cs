@@ -126,7 +126,7 @@ namespace Pixellation.Components.Editor
             InvalidateVisual();
         }
 
-        private void UpdateVisualRelated()
+        public void UpdateVisualRelated()
         {
             InvalidateVisual();
             RaiseImageUpdatedEvent?.Invoke(default, EventArgs.Empty);

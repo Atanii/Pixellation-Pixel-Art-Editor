@@ -14,13 +14,11 @@
             <Button Width="25" Height="25" Margin="0,0,10,0" Content="↓" Click="MoveLayerDown"></Button>
         </WrapPanel>
         <ListView Height="200" SelectionMode="Single" Margin="10" x:Name="layerList" SelectionChanged="LayerList_SelectionChanged"
-                  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False" MouseDoubleClick="OpenLayerSettingsDialog"
                   IsSynchronizedWithCurrentItem="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <WrapPanel>
-                        <TextBlock Text="{Binding LayerName}" FontWeight="Normal" />
-                    </WrapPanel>
+                    <TextBlock Text="{Binding LayerName}" FontWeight="Normal" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

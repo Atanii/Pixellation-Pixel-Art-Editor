@@ -5,18 +5,22 @@ namespace Pixellation.Components.Editor
 {
     public class DrawingLayer : DrawingSurface, IPreviewable
     {
-        public string LayerName { get; set; }
+        private string name;
+        public string LayerName {
+            get { return name; }
+            set { name = value; _owner.UpdateVisualRelated(); }
+        }
         public bool Visible { get; set; }
 
         public DrawingLayer(PixelEditor owner, string layerName = "", bool visible = true) : base(owner)
         {
             if (layerName == "")
             {
-                LayerName = "Layer-" + (new DateTime()).Ticks;
+                name = "Layer-" + (new DateTime()).Ticks;
             }
             else
             {
-                LayerName = layerName;
+                name = layerName;
             }
             Visible = visible;
         }
@@ -25,11 +29,11 @@ namespace Pixellation.Components.Editor
         {
             if (layerName == "")
             {
-                LayerName = "Layer-" + (new DateTime()).Ticks;
+                name = "Layer-" + (new DateTime()).Ticks;
             }
             else
             {
-                LayerName = layerName;
+                name = layerName;
             }
             Visible = visible;
         }

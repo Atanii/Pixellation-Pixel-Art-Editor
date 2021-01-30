@@ -1,4 +1,5 @@
-﻿using Pixellation.Components.Dialogs.StringInputDialog;
+﻿using Pixellation.Components.Dialogs;
+using Pixellation.Components.Dialogs.StringInputDialog;
 using Pixellation.Components.Editor;
 using System;
 using System.Windows;
@@ -82,6 +83,16 @@ namespace Pixellation.Components.Panels
         private void MoveLayerDown(object sender, RoutedEventArgs e)
         {
             LayerManager?.MoveDown(layerList.SelectedIndex);
+        }
+
+        private void OpenLayerSettingsDialog(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (LayerManager != null)
+            {
+                var newImgDialog = new LayerSettingsDialog();
+                newImgDialog.ShowDialog(LayerManager.GetLayer(layerList.SelectedIndex));
+                layerList.Items.Refresh();
+            }
         }
     }
 }
