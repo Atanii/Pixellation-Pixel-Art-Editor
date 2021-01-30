@@ -13,6 +13,7 @@ namespace Pixellation.Components.Tools
         protected int _surfaceWidth;
         protected int _surfaceHeight;
         protected DrawingLayer _layer;
+        protected DrawingLayer _previewLayer;
 
         public delegate void ToolEventHandler(object sender, ToolEventArgs args);
 
@@ -28,16 +29,16 @@ namespace Pixellation.Components.Tools
             ToolColor = c.ToMediaColor();
         }
 
-        protected BaseTool(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds)
+        protected BaseTool(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer)
         {
             ToolColor = System.Windows.Media.Color.FromRgb(0, 0, 0);
-            SetDrawingCircumstances(magnification, pixelWidth, pixelHeight, ds);
+            SetDrawingCircumstances(magnification, pixelWidth, pixelHeight, ds, previewLayer);
         }
 
-        protected BaseTool(Color c, int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds)
+        protected BaseTool(Color c, int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer)
         {
             ToolColor = c.ToMediaColor();
-            SetDrawingCircumstances(magnification, pixelWidth, pixelHeight, ds);
+            SetDrawingCircumstances(magnification, pixelWidth, pixelHeight, ds, previewLayer);
         }
 
         protected void OnRaiseToolEvent(object sender, ToolEventArgs e)
@@ -45,12 +46,13 @@ namespace Pixellation.Components.Tools
             RaiseToolEvent?.Invoke(sender, e);
         }
 
-        public void SetDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds)
+        public void SetDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer)
         {
             this._magnification = magnification;
             this._surfaceWidth = pixelWidth * magnification;
             this._surfaceHeight = pixelHeight * magnification;
             this._layer = ds;
+            this._previewLayer = previewLayer;
         }
 
         public void SetActiveLayer(DrawingLayer ds)

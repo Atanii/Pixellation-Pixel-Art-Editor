@@ -30,7 +30,7 @@ namespace Pixellation.Components.Tools
 
         public override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            p0 = Mouse.GetPosition(_layer);
+            p0 = e.GetPosition(_layer);
         }
 
         public override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
@@ -41,7 +41,11 @@ namespace Pixellation.Components.Tools
         public override void OnMouseMove(MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
-                p1 = Mouse.GetPosition(_layer);
+            {
+                p1 = e.GetPosition(_layer);
+                _previewLayer.GetWriteableBitmap().Clear();
+                _previewLayer.GetWriteableBitmap().DrawEllipse((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
+            }   
         }
     }
 }

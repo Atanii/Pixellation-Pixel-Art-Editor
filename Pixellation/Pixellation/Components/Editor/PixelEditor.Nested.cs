@@ -57,13 +57,13 @@ namespace Pixellation.Components.Editor
                 _pe = pe;
             }
 
-            public VisualManager(PixelEditor pe, List<DrawingLayer> layers, Visual grid = null, Visual lines = null)
+            public VisualManager(PixelEditor pe, List<DrawingLayer> layers, Visual grid = null, Visual lines = null, DrawingLayer drawPreview = null)
             {
                 _pe = pe;
-                SetVisuals(layers, grid, lines);
+                SetVisuals(layers, grid, lines, drawPreview);
             }
 
-            public void SetVisuals(List<DrawingLayer> layers, Visual grid = null, Visual lines = null)
+            public void SetVisuals(List<DrawingLayer> layers, Visual grid = null, Visual lines = null, DrawingLayer drawPreview = null)
             {
                 Layers = layers;
 
@@ -77,6 +77,11 @@ namespace Pixellation.Components.Editor
                     ++VisualCount;
                 }
 
+                if (drawPreview != null)
+                {
+                    _pe.AddVisualChild(drawPreview);
+                    ++VisualCount;
+                }
                 // decoration goes last
                 if (grid != null)
                 {
@@ -87,7 +92,7 @@ namespace Pixellation.Components.Editor
                 {
                     _pe.AddVisualChild(lines);
                     ++VisualCount;
-                }
+                }                
 
                 VisualsChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -107,6 +112,10 @@ namespace Pixellation.Components.Editor
                 {
                     l?.Measure(s);
                 }
+                if (_pe._drawPreview != null)
+                {
+                    _pe._drawPreview.Measure(s);
+                }
             }
 
             public void ArrangeAllLayer(System.Windows.Rect s)
@@ -114,6 +123,10 @@ namespace Pixellation.Components.Editor
                 foreach (var l in Layers)
                 {
                     l?.Arrange(s);
+                }
+                if (_pe._drawPreview != null)
+                {
+                    _pe._drawPreview.Arrange(s);
                 }
             }
 
@@ -123,6 +136,7 @@ namespace Pixellation.Components.Editor
                 {
                     _pe.RemoveVisualChild(l);
                 }
+                _pe.RemoveVisualChild(_pe._drawPreview);
                 _pe.RemoveVisualChild(_pe._gridLines);
                 _pe.RemoveVisualChild(_pe._borderLine);
                 Layers.Clear();
@@ -133,6 +147,10 @@ namespace Pixellation.Components.Editor
                 if (index < Layers.Count())
                 {
                     return Layers[(Layers.Count() - 1) - index];
+                }
+                else if (index == VisualCount - 3)
+                {
+                    return _pe._drawPreview;
                 }
                 else if (index == VisualCount - 2)
                 {
@@ -150,8 +168,11 @@ namespace Pixellation.Components.Editor
 
             public void RefreshMiscVisuals()
             {
+                _pe.RemoveVisualChild(_pe._drawPreview);
                 _pe.RemoveVisualChild(_pe._gridLines);
                 _pe.RemoveVisualChild(_pe._borderLine);
+
+                _pe.AddVisualChild(_pe._drawPreview);
                 _pe.AddVisualChild(_pe._gridLines);
                 _pe.AddVisualChild(_pe._borderLine);
             }

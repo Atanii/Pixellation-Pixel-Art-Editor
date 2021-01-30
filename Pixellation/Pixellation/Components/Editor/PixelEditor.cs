@@ -14,6 +14,7 @@ namespace Pixellation.Components.Editor
         private DrawingLayer _activeLayer;
         private Visual _gridLines;
         private Visual _borderLine;
+        private DrawingLayer _drawPreview;
         public bool Tiled { get; private set; } = false;
         public float TiledOpacity { get; private set; } = 0.5f;
 
@@ -85,13 +86,14 @@ namespace Pixellation.Components.Editor
 
             _gridLines = CreateGridLines();
             _borderLine = CreateBorderLines();
+            _drawPreview = new DrawingLayer(this, "DrawPreview");
 
             Cursor = Cursors.Pen;
 
             BaseTool.RaiseToolEvent += HandleToolEvent;
             RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
 
-            _vm.SetVisuals(layers, _gridLines, _borderLine);
+            _vm.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
 
             _vm.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
         }
@@ -133,7 +135,7 @@ namespace Pixellation.Components.Editor
 
         private void UpdateToolProperties()
         {
-            ChosenTool.SetDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer);
+            ChosenTool.SetDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview);
         }
 
         private void HandleToolEvent(object sender, ToolEventArgs e)
@@ -256,6 +258,10 @@ namespace Pixellation.Components.Editor
             RemoveVisualChild(_borderLine);
             _borderLine = CreateBorderLines();
 
+            RemoveVisualChild(_drawPreview);
+            _drawPreview = new DrawingLayer(this, "DrawPreview");
+
+            AddVisualChild(_drawPreview);
             AddVisualChild(_borderLine);
             AddVisualChild(_gridLines);
 
