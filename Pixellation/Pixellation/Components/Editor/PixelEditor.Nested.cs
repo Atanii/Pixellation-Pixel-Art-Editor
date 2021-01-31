@@ -268,7 +268,7 @@ namespace Pixellation.Components.Editor
 
                 for (int i = from; i >= to; i--)
                 {
-                    merged.Blit(rect, Layers[i].GetWriteableBitmap(), rect, mode);
+                    merged.Blit(rect, Layers[i].GetWriteableBitmapWithAppliedOpacity(), rect, mode);
                 }
 
                 return merged;

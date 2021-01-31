@@ -19,7 +19,16 @@ namespace Pixellation.Components.Dialogs
         private void Save(object sender, RoutedEventArgs e)
         {
             l.LayerName = txtLayerName.Text;
-            this.DialogResult = true;
+            var strTmp = txtLayerOpacity.Text.Replace('.', ',');
+            if (Double.TryParse(strTmp, out double newOpacity))
+            {
+                newOpacity = Math.Clamp(newOpacity, 0.0, 1.0);
+                l.Opacity = newOpacity;
+                this.DialogResult = true;
+            } else
+            {
+                MessageBox.Show($"Value {txtLayerOpacity.Text} is not a number!", "Error");
+            }
         }
 
         private void Cancel(object sender, RoutedEventArgs e)
@@ -31,7 +40,16 @@ namespace Pixellation.Components.Dialogs
         {
             l = layer;
             txtLayerName.Text = l.LayerName;
+            txtLayerOpacity.Text = l.Opacity.ToString();
             return ShowDialog();
+        }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                Save(sender, e);
+            }
         }
     }
 }

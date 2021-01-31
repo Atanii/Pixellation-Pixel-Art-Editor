@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pixellation.Components.Dialogs"
         mc:Ignorable="d"
-        Title="LayerSettings" Height="120" Width="300">
+        Title="LayerSettings" Height="150" Width="300" KeyDown="Window_KeyDown">
     <Grid>
         <Label Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="114"/>
         <TextBox x:Name="txtLayerName" HorizontalAlignment="Left" Margin="124,14,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button Click="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="205,52,0,0" VerticalAlignment="Top"/>
-        <Button Click="Save" Content="Save" HorizontalAlignment="Left" Margin="124,52,0,0" VerticalAlignment="Top"/>
+        <Label Content="Opacity" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="114"/>
+        <TextBox x:Name="txtLayerOpacity" HorizontalAlignment="Left" Margin="124,45,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button Click="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="205,74,0,0" VerticalAlignment="Top"/>
+        <Button Click="Save" Content="Save" HorizontalAlignment="Left" Margin="124,74,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace Pixellation.Components.Tools
 {
@@ -26,9 +27,64 @@ namespace Pixellation.Components.Tools
             var targetColor = _layer.GetColor((int)(p.X / _magnification), (int)(p.Y / _magnification));
             var replacementColor = ToolColor;
 
-            RecursiveFloodFill(p, targetColor, replacementColor);
+            FloodFill(p, targetColor, replacementColor);
 
             _layer.InvalidateVisual();
+        }
+
+        private void FloodFill(System.Windows.Point startingPoint, System.Windows.Media.Color targetColor, System.Windows.Media.Color replacementColor)
+        {
+            if (targetColor == replacementColor)
+            {
+                return;
+            }
+
+            Stack<System.Windows.Point> nodes = new Stack<System.Windows.Point>();
+            nodes.Push(startingPoint);
+            
+            System.Windows.Point current;
+
+            while (nodes.Count > 0)
+            {
+                current = nodes.Pop();
+
+                if (_layer.GetColor((int)(current.X / _magnification), (int)(current.Y / _magnification)) != targetColor)
+                {
+                    continue;
+                }
+                else
+                {
+                    _layer.SetColor(
+                        (int)(current.X / _magnification),
+                        (int)(current.Y / _magnification),
+                        replacementColor
+                    );
+
+                    var tmp = new System.Windows.Point { X = current.X + _magnification, Y = current.Y };
+                    if (tmp.X >= 0 && tmp.X < _surfaceWidth && tmp.Y >= 0 && tmp.Y < _surfaceHeight)
+                    {
+                        nodes.Push(tmp);
+                    }
+
+                    tmp = new System.Windows.Point { X = current.X - _magnification, Y = current.Y };
+                    if (tmp.X >= 0 && tmp.X < _surfaceWidth && tmp.Y >= 0 && tmp.Y < _surfaceHeight)
+                    {
+                        nodes.Push(tmp);
+                    }
+
+                    tmp = new System.Windows.Point { X = current.X, Y = current.Y + _magnification };
+                    if (tmp.X >= 0 && tmp.X < _surfaceWidth && tmp.Y >= 0 && tmp.Y < _surfaceHeight)
+                    {
+                        nodes.Push(tmp);
+                    }
+
+                    tmp = new System.Windows.Point { X = current.X, Y = current.Y - _magnification };
+                    if (tmp.X >= 0 && tmp.X < _surfaceWidth && tmp.Y >= 0 && tmp.Y < _surfaceHeight)
+                    {
+                        nodes.Push(tmp);
+                    }
+                }
+            }
         }
 
         private void RecursiveFloodFill(System.Windows.Point p, System.Windows.Media.Color targetColor, System.Windows.Media.Color replacementColor)
