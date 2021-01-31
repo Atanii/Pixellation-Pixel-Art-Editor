@@ -16,11 +16,12 @@
         <ListView Height="200" SelectionMode="Single" Margin="10" x:Name="layerList" SelectionChanged="LayerList_SelectionChanged"
                   ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False" MouseDoubleClick="OpenLayerSettingsDialog"
                   IsSynchronizedWithCurrentItem="True">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding LayerName}" FontWeight="Normal" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" Width="60" DisplayMemberBinding="{Binding LayerName}" />
+                    <GridViewColumn Header="Opacity" Width="50" DisplayMemberBinding="{Binding Opacity}" />
+                </GridView>
+            </ListView.View>
         </ListView>
     </StackPanel>
 </UserControl>

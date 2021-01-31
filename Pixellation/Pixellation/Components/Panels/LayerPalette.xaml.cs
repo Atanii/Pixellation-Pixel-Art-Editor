@@ -1,10 +1,8 @@
 ﻿using Pixellation.Components.Dialogs;
 using Pixellation.Components.Dialogs.StringInputDialog;
-using Pixellation.Components.Editor;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using static Pixellation.Components.Editor.PixelEditor;
 
 namespace Pixellation.Components.Panels
@@ -30,7 +28,8 @@ namespace Pixellation.Components.Panels
 
         public LayerPalette()
         {
-            RaiseLayerListPropertyInitialized += (a, b) => {
+            RaiseLayerListPropertyInitialized += (a, b) =>
+            {
                 LayerManager.VisualsChanged += UpdateLayerList;
                 UpdateLayerList(a, EventArgs.Empty);
                 // Initial layer selection
