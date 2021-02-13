@@ -1,7 +1,5 @@
 ﻿using Pixellation.Utils;
 using System;
-using System.Drawing;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,16 +8,17 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Tools
 {
+    using Rectangle = System.Windows.Shapes.Rectangle;
+    using Color = System.Drawing.Color;
+
     /// <summary>
     /// Interaction logic for ColourPicker.xaml
     /// </summary>
     public partial class ColourChooser : UserControl
-    {
-        private Bitmap colourWheel;
-
-        public System.Drawing.Color ChosenColour
+    {   
+        public Color ChosenColour
         {
-            get { return (System.Drawing.Color)GetValue(ChosenColourProperty); }
+            get { return (Color)GetValue(ChosenColourProperty); }
             set
             {
                 SetValue(ChosenColourProperty, value);
@@ -28,8 +27,8 @@ namespace Pixellation.Components.Tools
         }
 
         public static readonly DependencyProperty ChosenColourProperty =
-         DependencyProperty.Register("ChosenColour", typeof(System.Drawing.Color), typeof(ColourChooser), new FrameworkPropertyMetadata(
-            System.Drawing.Color.Black, (d, e) => { RaiseChosenColourPropertyChangeEventHandlerEvent?.Invoke(default, EventArgs.Empty); }));
+         DependencyProperty.Register("ChosenColour", typeof(Color), typeof(ColourChooser), new FrameworkPropertyMetadata(
+            Color.Black, (d, e) => { RaiseChosenColourPropertyChangeEventHandlerEvent?.Invoke(default, EventArgs.Empty); }));
 
         private delegate void ChosenColourPropertyChangeEventHandler(object sender, EventArgs args);
 
@@ -42,52 +41,91 @@ namespace Pixellation.Components.Tools
         }
 
         private void Init()
-        {   
+        {
             RaiseChosenColourPropertyChangeEventHandlerEvent += (s, a) => { SetCcRectangleFill(); };
         }
 
-        private void CanvasToBitmap() {
-            RenderTargetBitmap rtb = new RenderTargetBitmap(
-                (int)colourGradientCanvas.RenderSize.Width,
-                (int)colourGradientCanvas.RenderSize.Height, 
-                96d, 96d, System.Windows.Media.PixelFormats.Default);
-            rtb.Render(colourGradientCanvas);
+        private Color GetPixelColor(Rectangle cvs, Point mousePos)
+        {
+            var source = PresentationSource.FromVisual(cvs);
+            Point ptDpi;
+            if (source != null)
+            {
+                ptDpi = new Point(
+                    96d * source.CompositionTarget.TransformToDevice.M11,
+                    96d * source.CompositionTarget.TransformToDevice.M22
+                );
+            }
+            else
+            {
+                ptDpi = new Point(96d, 96d); // Default for most monitors.
+            }
 
-            var crop = new CroppedBitmap(rtb, new Int32Rect(0, 0, 180, 180));
+            var srcSize = VisualTreeHelper.GetDescendantBounds(cvs).Size;
 
-            BitmapEncoder pngEncoder = new PngBitmapEncoder();
-            pngEncoder.Frames.Add(BitmapFrame.Create(crop));
+            // Viewbox uses [0; 1] so we normalize the Rect with respect to the visual's size
+            var percentSrcRec = new Rect(
+                mousePos.X / srcSize.Width, mousePos.Y / srcSize.Height,
+                1 / srcSize.Width, 1 / srcSize.Height
+            );
 
-            using Stream s = new MemoryStream();
-            pngEncoder.Save(s);
-            colourWheel = new Bitmap(s);
+            // Generalized for monitors with different dpi
+            var bmpOut = new RenderTargetBitmap(
+                (int)(ptDpi.X / 96d),
+                (int)(ptDpi.Y / 96d),
+                ptDpi.X, ptDpi.Y, PixelFormats.Default
+            );
+
+            var dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                dc.DrawRectangle(
+                    new VisualBrush { Visual = cvs, Viewbox = percentSrcRec },
+                    null, // No Pen
+                    new Rect(0, 0, 1d, 1d)
+                );
+            }
+            bmpOut.Render(dv);
+
+            var bytes = new byte[4];
+            int iStride = 4; // = 4 * bmpOut.Width (for 32 bit graphics with 4 bytes per pixel -- 4 * 8 bits per byte = 32)
+            bmpOut.CopyPixels(bytes, iStride, 0);
+
+            return Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
         }
 
-        private void SetChosenColourFromMousePosition(System.Windows.Point mousePos)
+        private void SetChosenColourFromMousePosition(Point mousePos)
         {
-            if (colourWheel == null)
-            {
-                CanvasToBitmap();
-            }
-            var colour = colourWheel.GetPixel(
-                (int)mousePos.X,
-                (int)mousePos.Y
-            );
+            var colour = GetPixelColor(colourGradientCanvas, mousePos);
             if (colour != null)
             {
                 ChosenColour = colour;
             }
         }
 
+        private void SetHueColourFromMousePosition(Point mousePos)
+        {
+            var colour = GetPixelColor(colourGradientHue, mousePos);
+            if (colour != null)
+            {
+                Resources["CurrentColor"] = colour.ToMediaColor();
+            }
+        }
+
         private void SetCcRectangleFill()
         {
-            ccLabel.Content = ChosenColour.ToString();
+            ccLabel.Content = $"R: {ChosenColour.R}, G: {ChosenColour.G}, B: {ChosenColour.B}, A: {ChosenColour.A}";
             ccRectangle.Fill = new SolidColorBrush(ChosenColour.ToMediaColor());
         }
 
         private void ColourWheelVisual_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             SetChosenColourFromMousePosition(e.GetPosition(colourGradientCanvas));
+        }
+
+        private void ColourWheelVisualHue_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            SetHueColourFromMousePosition(e.GetPosition(colourGradientHue));
         }
 
         private void ColourWheelVisual_MouseMove(object sender, MouseEventArgs e)
@@ -98,8 +136,20 @@ namespace Pixellation.Components.Tools
             }
         }
 
-        private void ccBrightness_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        public void SetHueColor(Color c)
         {
+            if (c != null)
+            {
+                Resources["CurrentColor"] = c.ToMediaColor();
+            }
+        }
+
+        public void SetHueColor(System.Windows.Media.Color c)
+        {
+            if (c != null)
+            {
+                Resources["CurrentColor"] = c;
+            }
         }
     }
 }
