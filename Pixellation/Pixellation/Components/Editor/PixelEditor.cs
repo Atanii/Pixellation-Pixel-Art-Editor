@@ -1,4 +1,5 @@
 ﻿using Pixellation.Components.Tools;
+using Pixellation.Models;
 using Pixellation.Properties;
 using System;
 using System.Collections.Generic;
@@ -98,6 +99,22 @@ namespace Pixellation.Components.Editor
             _vm.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
         }
 
+        private void Init(List<DrawingLayer> layers)
+        {
+            _gridLines = CreateGridLines();
+            _borderLine = CreateBorderLines();
+            _drawPreview = new DrawingLayer(this, "DrawPreview");
+
+            Cursor = Cursors.Pen;
+
+            BaseTool.RaiseToolEvent += HandleToolEvent;
+            RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
+
+            _vm.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
+
+            _vm.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
+        }
+
         public void ToggleTiled()
         {
             Tiled = !Tiled;
@@ -116,9 +133,34 @@ namespace Pixellation.Components.Editor
             PixelHeight = height;
             Magnification = defaultMagnification;
 
-            _vm.RemoveAllVisualChildren();
+            _vm.DeleteAllVisualChildren();
 
             Init(imageToEdit);
+
+            UpdateToolProperties();
+
+            InvalidateMeasure();
+            InvalidateVisual();
+        }
+
+        public void NewImage(List<LayerModel> models, int width = 32, int height = 32, int defaultMagnification = 1)
+        {
+            PixelWidth = width;
+            PixelHeight = height;
+            Magnification = defaultMagnification;
+
+            _vm.DeleteAllVisualChildren();
+
+            var layers = new List<DrawingLayer>();
+            foreach(var model in models)
+            {
+                layers.Add(new DrawingLayer(
+                    this,
+                    model
+                ));
+            }
+
+            Init(layers);
 
             UpdateToolProperties();
 
@@ -282,5 +324,7 @@ namespace Pixellation.Components.Editor
         }
 
         public ImageSource GetImageSource() => _vm.GetAllMergedImageSource();
+
+        public List<LayerModel> GetLayerModels() => _vm.GetLayerModels();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Pixellation.Utils;
+﻿using Pixellation.Models;
+using Pixellation.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -41,6 +42,8 @@ namespace Pixellation.Components.Editor
             public void MoveUp(int layerIndex);
 
             public void MoveDown(int layerIndex);
+
+            public List<LayerModel> GetLayerModels();
         }
 
         private class VisualManager : IVisualManager
@@ -130,7 +133,7 @@ namespace Pixellation.Components.Editor
                 }
             }
 
-            public void RemoveAllVisualChildren()
+            public void DeleteAllVisualChildren()
             {
                 foreach (var l in Layers)
                 {
@@ -305,6 +308,16 @@ namespace Pixellation.Components.Editor
 
                     VisualsChanged?.Invoke(this, EventArgs.Empty);
                 }
+            }
+
+            public List<LayerModel> GetLayerModels()
+            {
+                var list = new List<LayerModel>();
+                foreach (var l in Layers)
+                {
+                    list.Add(l.ToLayerModel());
+                }
+                return list;
             }
         }
     }

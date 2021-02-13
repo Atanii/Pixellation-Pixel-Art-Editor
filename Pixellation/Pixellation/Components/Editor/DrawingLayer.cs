@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Pixellation.Models;
+using Pixellation.Utils;
+using System;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
@@ -38,11 +40,48 @@ namespace Pixellation.Components.Editor
             Visible = visible;
         }
 
+        public DrawingLayer(PixelEditor owner, LayerModel model, bool visible = true) : base(
+            owner,
+            model.LayerBitmap.ToWriteableBitmap(model.Width, model.Height, model.Stride)
+        ) {
+            if (model.LayerName == "")
+            {
+                _name = "Layer-" + (new DateTime()).Ticks;
+            }
+            else
+            {
+                _name = model.LayerName;
+            }
+            Visible = visible;
+        }
+
         public event EventHandler RaiseImageUpdatedEvent;
 
         public override string ToString()
         {
             return LayerName;
+        }
+
+        public LayerModel ToLayerModel()
+        {
+            var src = _bitmap.ToImageSource();
+
+            var width = src.PixelWidth;
+            var height = src.PixelHeight;
+            var stride = width * ((src.Format.BitsPerPixel + 7) / 8);
+
+            var bitmapData = new byte[height * stride];
+
+            src.CopyPixels(bitmapData, stride, 0);
+
+            return new LayerModel
+            {
+                LayerBitmap = bitmapData,
+                Width = _owner.PixelWidth,
+                Height = _owner.PixelHeight,
+                Stride = stride,
+                LayerName = _name
+            };
         }
     }
 }

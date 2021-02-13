@@ -14,10 +14,6 @@
         <CommandBinding Command="New" CanExecute="CommonCommandBinding_True" />
         <CommandBinding Command="Open" CanExecute="CommonCommandBinding_True" />
         <CommandBinding Command="Save" CanExecute="CommonCommandBinding_True" />
-        
-        <CommandBinding Command="Cut" CanExecute="CommonCommandBinding_False" />
-        <CommandBinding Command="Copy" CanExecute="CommonCommandBinding_False" />
-        <CommandBinding Command="Paste" CanExecute="CommonCommandBinding_False" />
     </Window.CommandBindings>
 
     <!-- MAINPANEL -->
@@ -26,13 +22,11 @@
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
                 <Button Command="New" Content="New" Click="OpenNewImageDialog" />
-                <Button Command="Open" Content="Open" Click="OpenImage" />
-                <Button Command="Save" Content="Save" Click="SaveAsImage" />
+                <Button Command="Open" Content="Open" Click="Open" />
+                <Button Command="Save" Content="Save Project" Click="SaveProject" />
             </ToolBar>
             <ToolBar>
-                <Button Command="Cut" Content="Cut" />
-                <Button Command="Copy" Content="Copy" />
-                <Button Command="Paste" Content="Paste" />
+                <Button Content="Export" Click="ExportAsImage" />
             </ToolBar>
             <ToolBar>
                 <Button Content="About" Click="OpenAboutDialog" />

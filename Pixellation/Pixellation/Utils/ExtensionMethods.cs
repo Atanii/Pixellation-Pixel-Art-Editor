@@ -97,5 +97,18 @@ namespace Pixellation.Utils
         {
             return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
+
+        public static WriteableBitmap ToWriteableBitmap(this byte[] bytes, int width, int height, int stride)
+        {
+            var wrBmp = BitmapFactory.New(width, height);
+            wrBmp.Clear(System.Windows.Media.Colors.Transparent);
+            wrBmp.WritePixels(
+                new Int32Rect(0, 0, width, height),
+                bytes,
+                stride,
+                0
+            );
+            return wrBmp;
+        }
     }
 }

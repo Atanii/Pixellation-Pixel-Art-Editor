@@ -1,9 +1,13 @@
 ﻿using Microsoft.Win32;
 using Pixellation.Components.Dialogs.AboutDialog;
 using Pixellation.Components.Dialogs.NewImageDialog;
+using Pixellation.Models;
 using Pixellation.Properties;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -27,26 +31,56 @@ namespace Pixellation
             ImageHeight = Settings.Default.DefaultImageSize;
         }
 
-        private void OpenImage(object sender, RoutedEventArgs e)
+        private void Open(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Image Files (*.bmp, *.jpg, *.png, *.tiff, *.gif)|*.bmp;*.jpg;*.png;*.tiff;*.gif"
+                Filter = "Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pix)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pix"
             };
             if (openFileDialog.ShowDialog() == true)
             {
                 string fileName = openFileDialog.FileName;
 
-                // Getting Bitmap
-                BitmapImage bitmap = new BitmapImage(new Uri(fileName, UriKind.Absolute));
-                WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap);
-                ImageWidth = writeableBitmap.PixelWidth;
-                ImageHeight = writeableBitmap.PixelHeight;
-                canvasImage.NewImage(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, (int)sliderZoom.Value, writeableBitmap);
+                string extension = fileName.Split('.')[^1];
+                if (extension == "pix")
+                {
+                    var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+                    var formatter = new BinaryFormatter();
+                    List<LayerModel> data = (List<LayerModel>)formatter.Deserialize(stream);
+                    canvasImage.NewImage(data, ImageWidth, ImageHeight, (int)sliderZoom.Value);
+                }
+                else
+                {
+                    // Getting Bitmap
+                    BitmapImage bitmap = new BitmapImage(new Uri(fileName, UriKind.Absolute));
+                    WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap);
+                    ImageWidth = writeableBitmap.PixelWidth;
+                    ImageHeight = writeableBitmap.PixelHeight;
+                    canvasImage.NewImage(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, (int)sliderZoom.Value, writeableBitmap);
+                }
             }
         }
 
-        private void SaveAsImage(object sender, RoutedEventArgs e)
+        private void SaveProject(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Pixellation Project Files (*.pix)|*.pix"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string fileName = saveFileDialog.FileName;
+
+                // using FileStream createStream = File.Create("C://temp.json");
+                // await JsonSerializer.SerializeAsync(createStream, canvasImage);
+                var formatter = new BinaryFormatter();
+                var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write); // "T://temp.plb"
+                formatter.Serialize(stream, canvasImage.GetLayerModels());
+                stream.Close();
+            }
+        }
+
+        private void ExportAsImage(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
