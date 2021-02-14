@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="250" d:DesignWidth="200">
+             d:DesignHeight="270" d:DesignWidth="200">
 
     <UserControl.Resources>
 
@@ -66,10 +66,17 @@
             <Rectangle  x:Name="colourGradientHue" Fill="{StaticResource HueGradientBrush}" Width="18" Height="180" Margin="0"
                     StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True" MouseLeftButtonDown="ColourWheelVisualHue_MouseLeftButtonDown" />
         </StackPanel>
-        <GroupBox Header="Chosen Colour" Height="70">
+        <GroupBox Header="Colour (RGBA)" Height="50">
+            <UniformGrid Columns="4" Rows="1">
+                <TextBox x:Name="scR" Margin="5" KeyUp="sc_TextInput" Height="20"></TextBox>
+                <TextBox x:Name="scG" Margin="5" KeyUp="sc_TextInput" Height="20"></TextBox>
+                <TextBox x:Name="scB" Margin="5" KeyUp="sc_TextInput" Height="20"></TextBox>
+                <TextBox x:Name="scA" Margin="5" KeyUp="sc_TextInput" Height="20"></TextBox>
+            </UniformGrid>
+        </GroupBox>
+        <GroupBox Header="Chosen Colour" Height="40">
             <StackPanel>
-                <Label Name="ccLabel" Height="35" Content="RGBA(0,0,0,0)"></Label>
-                <Rectangle x:Name="ccRectangle" Fill="Black" Height="10"></Rectangle>
+                <Rectangle x:Name="ccRectangle" Fill="Black" Height="20"></Rectangle>
             </StackPanel>
         </GroupBox>
     </StackPanel>

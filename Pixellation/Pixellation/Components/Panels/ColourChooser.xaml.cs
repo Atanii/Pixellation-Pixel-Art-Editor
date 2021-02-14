@@ -23,6 +23,7 @@ namespace Pixellation.Components.Tools
             {
                 SetValue(ChosenColourProperty, value);
                 SetCcRectangleFill();
+                SetRGBATxtInputs();
             }
         }
 
@@ -38,6 +39,7 @@ namespace Pixellation.Components.Tools
         {
             InitializeComponent();
             Init();
+            SetRGBATxtInputs();
         }
 
         private void Init()
@@ -114,8 +116,15 @@ namespace Pixellation.Components.Tools
 
         private void SetCcRectangleFill()
         {
-            ccLabel.Content = $"R: {ChosenColour.R}, G: {ChosenColour.G}, B: {ChosenColour.B}, A: {ChosenColour.A}";
             ccRectangle.Fill = new SolidColorBrush(ChosenColour.ToMediaColor());
+        }
+
+        private void SetRGBATxtInputs()
+        {
+            scR.Text = ChosenColour.R.ToString();
+            scG.Text = ChosenColour.G.ToString();
+            scB.Text = ChosenColour.B.ToString();
+            scA.Text = ChosenColour.A.ToString();
         }
 
         private void ColourWheelVisual_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -149,6 +158,19 @@ namespace Pixellation.Components.Tools
             if (c != null)
             {
                 Resources["CurrentColor"] = c;
+            }
+        }
+
+        private void sc_TextInput(object sender, KeyEventArgs e)
+        {
+            if (int.TryParse(scR.Text, out int R) &&
+                int.TryParse(scG.Text, out int G) &&
+                int.TryParse(scB.Text, out int B) &&
+                int.TryParse(scA.Text, out int A) &&
+                R <= 255 && G <= 255 && B <= 255 && A <= 255 &&
+                R >= 0 && G >= 0 && B >= 0 && A >= 0)
+            {
+                ChosenColour = Color.FromArgb(A, R, G, B);
             }
         }
     }
