@@ -29,9 +29,9 @@ Pixellation is a pixel art editor program developed in .NET Core. It provides fe
 - [x] Ordering, managing layers
 
 ### Milestone 4
-- [ ] Own filetype for projects
-- [ ] Save & Load Projects
-- [ ] More Advanced Colourpalette
+- [x] Own filetype for projects
+- [x] Save & Load Projects
+- [x] More Advanced Colourpalette
 
 ### Milestone 5
 - [ ] Mirror Image
