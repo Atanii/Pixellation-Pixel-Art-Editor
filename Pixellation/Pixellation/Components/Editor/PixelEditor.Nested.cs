@@ -44,6 +44,10 @@ namespace Pixellation.Components.Editor
             public void MoveDown(int layerIndex);
 
             public List<LayerModel> GetLayerModels();
+
+            public void Mirror(bool horizontally, bool allLayers = false);
+
+            public void Rotate(int angleInDegree, bool allLayers = false, bool counterClockWise = false);
         }
 
         private class VisualManager : IVisualManager
@@ -318,6 +322,39 @@ namespace Pixellation.Components.Editor
                     list.Add(l.ToLayerModel());
                 }
                 return list;
+            }
+
+            public void Mirror(bool horizontally, bool allLayers)
+            {
+                if (!allLayers && _pe._activeLayer != null)
+                {
+                    _pe._activeLayer.Mirror(horizontally);
+                } else
+                {
+                    foreach (var l in Layers)
+                    {
+                        l.Mirror(horizontally);
+                    }
+                }
+                RefreshLayerVisuals();
+                VisualsChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+            public void Rotate(int angleInDegree, bool allLayers, bool counterClockWise)
+            {
+                if (!allLayers && _pe._activeLayer != null)
+                {
+                    _pe._activeLayer.Rotate(counterClockWise ? 360 - angleInDegree : angleInDegree);
+                }
+                else
+                {
+                    foreach (var l in Layers)
+                    {
+                        l.Rotate(counterClockWise ? 360 - angleInDegree : angleInDegree);
+                    }
+                }
+                RefreshLayerVisuals();
+                VisualsChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }

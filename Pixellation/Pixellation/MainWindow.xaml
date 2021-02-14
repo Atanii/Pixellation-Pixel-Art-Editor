@@ -54,10 +54,13 @@
         <Border DockPanel.Dock="Left" HorizontalAlignment="Left" Width="200" BorderBrush="Gray" BorderThickness="1">
             <StackPanel>
                 <Label Content="Tools"></Label>
-                <Panels:ToolPalette Width="180" Height="180" x:Name="toolPalette" />
+                <Panels:ToolPalette Width="180" Height="120" x:Name="toolPalette" />
                 
                 <Label Content="Layers"></Label>
                 <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}"></Panels:LayerPalette>
+
+                <Label Content="Transforms"></Label>
+                <Panels:Transforms LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}"></Panels:Transforms>
             </StackPanel>
         </Border>
         

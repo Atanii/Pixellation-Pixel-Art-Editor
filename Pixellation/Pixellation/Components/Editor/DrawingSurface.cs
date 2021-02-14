@@ -9,7 +9,7 @@ namespace Pixellation.Components.Editor
     public class DrawingSurface : FrameworkElement
     {
         protected readonly PixelEditor _owner;
-        protected readonly WriteableBitmap _bitmap;
+        protected WriteableBitmap _bitmap;
 
         public DrawingSurface(PixelEditor owner)
         {
@@ -98,5 +98,19 @@ namespace Pixellation.Components.Editor
         {
             return _bitmap.ToImageSource();
         }
+
+        public void Mirror(bool horizontal = true)
+        {
+            if (horizontal)
+            {
+                _bitmap = _bitmap.Flip(WriteableBitmapExtensions.FlipMode.Horizontal);
+            }
+            else
+            {
+                _bitmap = _bitmap.Flip(WriteableBitmapExtensions.FlipMode.Vertical);
+            }
+        }
+
+        public void Rotate(int angleInDegree) => _bitmap = _bitmap.Rotate(angleInDegree);
     }
 }
