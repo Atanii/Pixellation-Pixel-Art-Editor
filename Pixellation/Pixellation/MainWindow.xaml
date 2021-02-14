@@ -74,7 +74,7 @@
                 <Panels:TiledModeSettingsPanel Editor="{Binding ElementName=canvasImage, Mode=OneTime}" />
 
                 <Label Content="Colour"></Label>
-                <l2:ColourChooser Width="200" Height="250" x:Name="colorChooser" ChosenColour="{Binding ElementName=canvasImage, Path=ChosenColour, Mode=TwoWay}"></l2:ColourChooser>
+                <l2:ColourChooser Width="200" Height="270" x:Name="colorChooser" ChosenColour="{Binding ElementName=canvasImage, Path=ChosenColour, Mode=TwoWay}"></l2:ColourChooser>
             </StackPanel>
         </Border>
 
