@@ -61,6 +61,87 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Image Files (*.png, *.bmp, *.jpg, *.tiff, *.gif)|*.png;*.bmp;*.jpg;*.tiff;*.gif.
+        /// </summary>
+        public static string ExportFilter {
+            get {
+                return ResourceManager.GetString("ExportFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pod.
+        /// </summary>
+        public static string ExtensionForDataFile {
+            get {
+                return ResourceManager.GetString("ExtensionForDataFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to plb.
+        /// </summary>
+        public static string ExtensionForLayersFile {
+            get {
+                return ResourceManager.GetString("ExtensionForLayersFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pix.
+        /// </summary>
+        public static string ExtensionForProjectFilePackage {
+            get {
+                return ResourceManager.GetString("ExtensionForProjectFilePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pix)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pix.
+        /// </summary>
+        public static string OpenFileFilter {
+            get {
+                return ResourceManager.GetString("OpenFileFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to layers.
+        /// </summary>
+        public static string PackageContentFileNameForLayers {
+            get {
+                return ResourceManager.GetString("PackageContentFileNameForLayers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to metadata.
+        /// </summary>
+        public static string PackageContentFileNameForMetaData {
+            get {
+                return ResourceManager.GetString("PackageContentFileNameForMetaData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to projectinfo.
+        /// </summary>
+        public static string PackageContentFileNameForProjectData {
+            get {
+                return ResourceManager.GetString("PackageContentFileNameForProjectData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pixellation Project Files (*.pix)|*.pix.
+        /// </summary>
+        public static string SaveFileFilter {
+            get {
+                return ResourceManager.GetString("SaveFileFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pixellation.
         /// </summary>
         public static string Title {

@@ -117,6 +117,36 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExportFilter" xml:space="preserve">
+    <value>Image Files (*.png, *.bmp, *.jpg, *.tiff, *.gif)|*.png;*.bmp;*.jpg;*.tiff;*.gif</value>
+  </data>
+  <data name="ExtensionForDataFile" xml:space="preserve">
+    <value>pod</value>
+    <comment>json</comment>
+  </data>
+  <data name="ExtensionForLayersFile" xml:space="preserve">
+    <value>plb</value>
+    <comment>binary</comment>
+  </data>
+  <data name="ExtensionForProjectFilePackage" xml:space="preserve">
+    <value>pix</value>
+    <comment>zip</comment>
+  </data>
+  <data name="OpenFileFilter" xml:space="preserve">
+    <value>Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pix)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pix</value>
+  </data>
+  <data name="PackageContentFileNameForLayers" xml:space="preserve">
+    <value>layers</value>
+  </data>
+  <data name="PackageContentFileNameForMetaData" xml:space="preserve">
+    <value>metadata</value>
+  </data>
+  <data name="PackageContentFileNameForProjectData" xml:space="preserve">
+    <value>projectinfo</value>
+  </data>
+  <data name="SaveFileFilter" xml:space="preserve">
+    <value>Pixellation Project Files (*.pix)|*.pix</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>Pixellation</value>
   </data>

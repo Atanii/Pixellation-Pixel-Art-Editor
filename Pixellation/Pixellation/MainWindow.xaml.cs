@@ -3,14 +3,17 @@ using Pixellation.Components.Dialogs.AboutDialog;
 using Pixellation.Components.Dialogs.NewImageDialog;
 using Pixellation.Models;
 using Pixellation.Properties;
+using Pixellation.Utils.FilePackage;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+
 
 namespace Pixellation
 {
@@ -31,23 +34,23 @@ namespace Pixellation
             ImageHeight = Settings.Default.DefaultImageSize;
         }
 
-        private void Open(object sender, RoutedEventArgs e)
+        private async void Open(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pix)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pix"
+                Filter = Properties.Resources.OpenFileFilter
             };
             if (openFileDialog.ShowDialog() == true)
             {
                 string fileName = openFileDialog.FileName;
 
                 string extension = fileName.Split('.')[^1];
-                if (extension == "pix")
+                if (extension == Properties.Resources.ExtensionForProjectFilePackage)
                 {
-                    var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-                    var formatter = new BinaryFormatter();
-                    List<LayerModel> data = (List<LayerModel>)formatter.Deserialize(stream);
-                    canvasImage.NewImage(data, ImageWidth, ImageHeight, (int)sliderZoom.Value);
+                    var fpr = new FilePackageReader(fileName);
+                    var data = await fpr.LoadProjectModel();
+                    canvasImage.NewImage(data.Layers, ImageWidth, ImageHeight, (int)sliderZoom.Value);
+                    Title = Properties.Resources.Title + " - " + data.ProjectData.ProjectName;
                 }
                 else
                 {
@@ -65,18 +68,56 @@ namespace Pixellation
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "Pixellation Project Files (*.pix)|*.pix"
+                Filter = Properties.Resources.SaveFileFilter
             };
             if (saveFileDialog.ShowDialog() == true)
             {
                 string fileName = saveFileDialog.FileName;
 
-                // using FileStream createStream = File.Create("C://temp.json");
-                // await JsonSerializer.SerializeAsync(createStream, canvasImage);
+                var filePaths = new List<string>();
+
+                // Saving LayerModels
+                var layersPath = Properties.Resources.PackageContentFileNameForLayers + "." + Properties.Resources.ExtensionForLayersFile;
                 var formatter = new BinaryFormatter();
-                var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write); // "T://temp.plb"
+                var stream = new FileStream(layersPath, FileMode.Create, FileAccess.Write);
                 formatter.Serialize(stream, canvasImage.GetLayerModels());
                 stream.Close();
+                filePaths.Add(layersPath);
+
+                // Saving Metadata
+                var fpmd = new FilePackageMetadata
+                {
+                    Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                    SaveDate = DateTime.Now.ToString()
+                };
+
+                var metaDataPath = Properties.Resources.PackageContentFileNameForMetaData + "." + Properties.Resources.ExtensionForDataFile;
+                string jsonString = JsonSerializer.Serialize(fpmd);
+                File.WriteAllText(metaDataPath, jsonString);
+                filePaths.Add(metaDataPath);
+
+                // Saving Project Data
+                var fppd = new ProjectDataModel
+                {
+                    ProjectName = fileName.Split('.')[0].Split('\\')[^1]
+                };
+
+                var projectInfoPath = Properties.Resources.PackageContentFileNameForProjectData + "." + Properties.Resources.ExtensionForDataFile;
+                jsonString = JsonSerializer.Serialize(fppd);
+                File.WriteAllText(projectInfoPath, jsonString);
+                filePaths.Add(projectInfoPath);
+
+                // Packaging
+                var fp = new FilePackage
+                {
+                    FilePath = fileName,
+                    ContentFilePathList = filePaths
+                };
+
+                var fpwr = new FilePackageWriter(fp);
+                fpwr.SaveProjectModel();
+
+                Title = Properties.Resources.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
             }
         }
 
@@ -84,7 +125,7 @@ namespace Pixellation
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "Image Files (*.png, *.bmp, *.jpg, *.tiff, *.gif)|*.png;*.bmp;*.jpg;*.tiff;*.gif"
+                Filter = Properties.Resources.ExportFilter
             };
             if (saveFileDialog.ShowDialog() == true)
             {
