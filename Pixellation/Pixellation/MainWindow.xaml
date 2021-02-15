@@ -51,31 +51,35 @@
         </StatusBar>
 
         <!-- LEFT PANEL -->
-        <Border DockPanel.Dock="Left" HorizontalAlignment="Left" Width="200" BorderBrush="Gray" BorderThickness="1">
-            <StackPanel>
-                <Label Content="Tools"></Label>
-                <Panels:ToolPalette Width="180" Height="120" x:Name="toolPalette" />
-                
-                <Label Content="Layers"></Label>
-                <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}"></Panels:LayerPalette>
+        <Border DockPanel.Dock="Left" HorizontalAlignment="Left" Width="220" BorderBrush="Gray" BorderThickness="1">
+            <ScrollViewer>
+                <StackPanel>
+                    <Label Content="Tools"></Label>
+                    <Panels:ToolPalette Width="180" Height="80" x:Name="toolPalette" />
 
-                <Label Content="Transforms"></Label>
-                <Panels:Transforms LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}"></Panels:Transforms>
-            </StackPanel>
+                    <Label Content="Layers"></Label>
+                    <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}"></Panels:LayerPalette>
+
+                    <Label Content="Transforms"></Label>
+                    <Panels:Transforms LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}"></Panels:Transforms>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
         
         <!-- RIGHT PANEL -->
-        <Border DockPanel.Dock="Right" HorizontalAlignment="Right" Width="200" BorderBrush="Gray" BorderThickness="1">
-            <StackPanel>
-                <Label Content="Preview"></Label>
-                <Panels:Preview Width="200" Height="200" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}" />
+        <Border DockPanel.Dock="Right" HorizontalAlignment="Right" Width="220" BorderBrush="Gray" BorderThickness="1">
+            <ScrollViewer>
+                <StackPanel>
+                    <Label Content="Preview"></Label>
+                    <Panels:Preview Width="200" Height="200" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}" />
 
-                <Label Content="Tiled"></Label>
-                <Panels:TiledModeSettingsPanel Editor="{Binding ElementName=canvasImage, Mode=OneTime}" />
+                    <Label Content="Tiled"></Label>
+                    <Panels:TiledModeSettingsPanel Editor="{Binding ElementName=canvasImage, Mode=OneTime}" />
 
-                <Label Content="Colour"></Label>
-                <l2:ColourChooser Width="200" Height="270" x:Name="colorChooser" ChosenColour="{Binding ElementName=canvasImage, Path=ChosenColour, Mode=TwoWay}"></l2:ColourChooser>
-            </StackPanel>
+                    <Label Content="Colour"></Label>
+                    <l2:ColourChooser Width="200" Height="270" x:Name="colorChooser" ChosenColour="{Binding ElementName=canvasImage, Path=ChosenColour, Mode=TwoWay}"></l2:ColourChooser>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <!-- DRAWING AREA -->

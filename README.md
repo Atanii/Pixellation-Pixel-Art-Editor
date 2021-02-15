@@ -36,7 +36,8 @@ Pixellation is a pixel art editor program developed in .NET Core. It provides fe
 ### Milestone 5
 - [x] Mirror layer(s)
 - [x] Rotate layer(s) *(by 90°)* (counter)clockwise
-- [ ] Selecting parts of image, cutting, pasting it
+- [x] Selecting parts of image, cutting, pasting it
+- [ ] Resizing Image
 
 ### Milestone 6
 

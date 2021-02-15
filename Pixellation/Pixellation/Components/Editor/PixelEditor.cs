@@ -169,6 +169,18 @@ namespace Pixellation.Components.Editor
             InvalidateVisual();
         }
 
+        private void Resize(int newWidth, int newHeight)
+        {
+            PixelWidth = newWidth;
+            PixelHeight = newHeight;
+
+            UpdateToolProperties();
+
+            InvalidateMeasure();
+
+            UpdateMagnification(Magnification);
+        }
+
         public void UpdateVisualRelated()
         {
             InvalidateVisual();

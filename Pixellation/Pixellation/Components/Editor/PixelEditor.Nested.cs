@@ -48,6 +48,10 @@ namespace Pixellation.Components.Editor
             public void Mirror(bool horizontally, bool allLayers = false);
 
             public void Rotate(int angleInDegree, bool allLayers = false, bool counterClockWise = false);
+
+            public void Resize(int newWidth, int newHeight);
+
+            public Size GetSize();
         }
 
         private class VisualManager : IVisualManager
@@ -355,6 +359,22 @@ namespace Pixellation.Components.Editor
                 }
                 RefreshLayerVisuals();
                 VisualsChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+            void IVisualManager.Resize(int newWidth, int newHeight)
+            {
+                foreach (var l in Layers)
+                {
+                    l.Resize(newWidth, newHeight);
+                }
+                RefreshLayerVisuals();
+                VisualsChanged?.Invoke(this, EventArgs.Empty);
+                _pe.Resize(newWidth, newHeight);
+            }
+
+            Size IVisualManager.GetSize()
+            {
+                return new Size(_pe.PixelWidth, _pe.PixelHeight);
             }
         }
     }

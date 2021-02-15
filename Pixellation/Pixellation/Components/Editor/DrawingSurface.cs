@@ -112,5 +112,10 @@ namespace Pixellation.Components.Editor
         }
 
         public void Rotate(int angleInDegree) => _bitmap = _bitmap.Rotate(angleInDegree);
+
+        public void Resize(int newWidth, int newHeight)
+        {
+            _bitmap = _bitmap.Resize(newWidth, newHeight, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
+        }
     }
 }
