@@ -19,6 +19,7 @@ namespace Pixellation.Components.Panels
         public static readonly ITool Pipette = PipetteTool.GetInstance();
         public static readonly ITool Circle = CircleTool.GetInstance();
         public static readonly ITool Rectangle = RectangleTool.GetInstance();
+        public static readonly ITool Selection = SelectCopyPasteTool.GetInstance();
 
         private readonly Thickness ThicknessClicked;
         private readonly Thickness ThicknessDefault;
@@ -76,6 +77,7 @@ namespace Pixellation.Components.Panels
                 "BtnPipette" => Pipette,
                 "BtnCircle" => Circle,
                 "BtnRectangle" => Rectangle,
+                "BtnSelection" => Selection,
                 _ => Pencil,
             };
         }

@@ -32,6 +32,7 @@ namespace Pixellation
             InitializeComponent();
             ImageWidth = Settings.Default.DefaultImageSize;
             ImageHeight = Settings.Default.DefaultImageSize;
+            GetWindow(this).KeyDown += canvasImage.OnKeyDown;
         }
 
         private async void Open(object sender, RoutedEventArgs e)

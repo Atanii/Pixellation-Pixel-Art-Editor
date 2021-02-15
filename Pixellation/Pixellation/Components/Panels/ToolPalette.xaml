@@ -99,7 +99,7 @@
                 <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/rectangle.png"></ImageBrush>
             </Button.Background>
         </Button>
-        <!--<Button
+        <Button
             Click="ToolButton_Click"
             x:Name="BtnSelection"
             BorderThickness="0"
@@ -108,6 +108,6 @@
             <Button.Background>
                 <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/selection.png"></ImageBrush>
             </Button.Background>
-        </Button>-->
+        </Button>
     </UniformGrid>
 </UserControl>

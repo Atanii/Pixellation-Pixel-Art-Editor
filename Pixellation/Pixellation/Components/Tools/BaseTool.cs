@@ -89,5 +89,10 @@ namespace Pixellation.Components.Tools
         {
             return;
         }
+
+        public virtual void OnKeyDown(KeyEventArgs e)
+        {
+            return;
+        }
     }
 }

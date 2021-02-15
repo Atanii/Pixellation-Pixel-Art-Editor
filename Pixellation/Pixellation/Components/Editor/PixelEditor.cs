@@ -3,6 +3,7 @@ using Pixellation.Models;
 using Pixellation.Properties;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -222,6 +223,16 @@ namespace Pixellation.Components.Editor
             ReleaseMouseCapture();
             ChosenTool.OnMouseLeftButtonUp(e);
             RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (IsMouseOver)
+            {
+                base.OnKeyDown(e);
+                ChosenTool.OnKeyDown(e);
+                RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         protected override Size MeasureOverride(Size availableSize)

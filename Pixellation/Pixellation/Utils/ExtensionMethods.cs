@@ -110,5 +110,13 @@ namespace Pixellation.Utils
             );
             return wrBmp;
         }
+
+        public static System.Windows.Point IntDivide(this System.Windows.Point p, int divisor)
+        {
+            p.X /= divisor;
+            p.Y /= divisor;
+
+            return p;
+        }
     }
 }
