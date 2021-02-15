@@ -164,7 +164,23 @@ namespace Pixellation.Components.Tools
 
         public override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.C)
+            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.X)
+            {
+                _copyArea.X = _selectionArea.X;
+                _copyArea.Y = _selectionArea.Y;
+                _copyArea.Width = _selectionArea.Width;
+                _copyArea.Height = _selectionArea.Height;
+                _copySrc = _layer.GetWriteableBitmap().Clone();
+
+                var x1 = (int)_selectionArea.X;
+                var y1 = (int)_selectionArea.Y;
+                var x2 = (int)(_selectionArea.X + _selectionArea.Width);
+                var y2 = (int)(_selectionArea.Y + _selectionArea.Height);
+                _layer.GetWriteableBitmap().FillRectangle(
+                        x1, y1, x2, y2, Colors.Transparent
+                );
+            }
+            else if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.C)
             {
                 _copyArea.X = _selectionArea.X;
                 _copyArea.Y = _selectionArea.Y;
@@ -172,7 +188,7 @@ namespace Pixellation.Components.Tools
                 _copyArea.Height = _selectionArea.Height;
                 _copySrc = _layer.GetWriteableBitmap().Clone();
             }
-            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.V)
+            else if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.V)
             {
                 _layer.GetWriteableBitmap().Blit(_selectionArea, _copySrc, _copyArea, WriteableBitmapExtensions.BlendMode.Alpha);
             }
