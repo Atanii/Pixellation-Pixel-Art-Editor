@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -117,6 +118,25 @@ namespace Pixellation.Utils
             p.Y /= divisor;
 
             return p;
+        }
+
+        public static WriteableBitmap ClearPixelsByGraphicsPath(this WriteableBitmap bitmap, GraphicsPath path, bool inThePath = true)
+        {
+            for (int y = 0; y < bitmap.PixelHeight; y++)
+            {
+                for (int x = 0; x < bitmap.PixelWidth; x++)
+                {
+                    if (inThePath && path.IsVisible(x, y))
+                    {
+                        bitmap.SetPixel(x, y, 0, 0, 0, 0);
+                    }
+                    else if (!inThePath && !path.IsVisible(x, y))
+                    {
+                        bitmap.SetPixel(x, y, 0, 0, 0, 0);
+                    }
+                }
+            }
+            return bitmap;
         }
     }
 }

@@ -7,9 +7,9 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Tools
 {
-    internal class SelectCopyPasteTool : BaseTool
+    internal class SelectCopyPasteRectangleTool : BaseTool
     {
-        private static SelectCopyPasteTool _instance;
+        private static SelectCopyPasteRectangleTool _instance;
 
         private Point p0;
         private Point p1;
@@ -25,16 +25,16 @@ namespace Pixellation.Components.Tools
         private bool _creating = false;
         private bool _dragging = false;
 
-        private SelectCopyPasteTool() : base()
+        private SelectCopyPasteRectangleTool() : base()
         {
             _selectionFillColour = Color.FromArgb(100, 100, 100, 100);
         }
 
-        public static SelectCopyPasteTool GetInstance()
+        public static SelectCopyPasteRectangleTool GetInstance()
         {
             if (_instance == null)
             {
-                _instance = new SelectCopyPasteTool();
+                _instance = new SelectCopyPasteRectangleTool();
             }
 
             _selectionArea.X = 0;

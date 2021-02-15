@@ -109,5 +109,15 @@
                 <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/selection.png"></ImageBrush>
             </Button.Background>
         </Button>
+        <Button
+            Click="ToolButton_Click"
+            x:Name="BtnEllipseSelection"
+            BorderThickness="0"
+            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/circle_selection.png"></ImageBrush>
+            </Button.Background>
+        </Button>
     </UniformGrid>
 </UserControl>

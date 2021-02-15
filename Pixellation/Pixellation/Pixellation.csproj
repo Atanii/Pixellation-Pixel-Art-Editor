@@ -25,6 +25,7 @@
     <None Remove="Resources\application-icon.ico" />
     <None Remove="Resources\application-icon.png" />
     <None Remove="Resources\icons-common\circle.png" />
+    <None Remove="Resources\icons-common\circle_selection.png" />
     <None Remove="Resources\icons-common\rectangle.png" />
     <None Remove="Resources\icons-fugue\eraser.png" />
     <None Remove="Resources\icons-fugue\grid-dot.png" />
@@ -57,6 +58,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\icons-common\circle.png" />
+    <Resource Include="Resources\icons-common\circle_selection.png" />
     <Resource Include="Resources\icons-common\rectangle.png" />
     <Resource Include="Resources\icons-fugue\eraser.png" />
     <Resource Include="Resources\icons-fugue\grid-dot.png" />
