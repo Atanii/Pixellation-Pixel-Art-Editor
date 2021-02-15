@@ -21,5 +21,7 @@ namespace Pixellation.Components
         public void OnMouseRightButtonUp(MouseButtonEventArgs e);
 
         public void OnKeyDown(KeyEventArgs e);
+
+        public void Reset();
     }
 }

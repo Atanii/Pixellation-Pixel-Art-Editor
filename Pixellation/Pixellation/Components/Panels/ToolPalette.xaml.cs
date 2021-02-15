@@ -66,8 +66,18 @@ namespace Pixellation.Components.Panels
             var a = (Button)sender;
 
             a.BorderThickness = ThicknessClicked;
-            PreviouslyClicked = a;
 
+            switch(PreviouslyClicked.Name)
+            {
+                case "BtnSelection":
+                    SelectionRectangle.Reset();
+                    break;
+                case "BtnEllipseSelection":
+                    SelectionEllipse.Reset();
+                    break;
+            }
+
+            PreviouslyClicked = a;
             ChosenTool = a.Name switch
             {
                 "BtnPencil" => Pencil,

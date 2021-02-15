@@ -5,11 +5,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Pixellation.Components.Tools
 {
-    class SelectCopyPasteEllipseTool : BaseTool
+    internal class SelectCopyPasteEllipseTool : BaseTool
     {
         private static SelectCopyPasteEllipseTool _instance;
 
@@ -39,11 +38,6 @@ namespace Pixellation.Components.Tools
                 _instance = new SelectCopyPasteEllipseTool();
             }
 
-            _selectionArea.X = 0;
-            _selectionArea.Y = 0;
-            _selectionArea.Width = 0;
-            _selectionArea.Height = 0;
-
             return _instance;
         }
 
@@ -57,7 +51,7 @@ namespace Pixellation.Components.Tools
             {
                 if (_copySrc != null)
                 {
-                    _copySrc.Clear(Colors.Transparent);
+                    _copySrc.Clear();
                 }
 
                 _selectionArea.X = p0.X;
@@ -200,6 +194,26 @@ namespace Pixellation.Components.Tools
             {
                 _layer.GetWriteableBitmap().Blit(_selectionArea, _copySrc, _copyArea, WriteableBitmapExtensions.BlendMode.Alpha);
             }
+        }
+
+        public override void Reset()
+        {
+            _selectionArea.X = 0;
+            _selectionArea.Y = 0;
+            _selectionArea.Width = 0;
+            _selectionArea.Height = 0;
+
+            _copyArea.X = 0;
+            _copyArea.Y = 0;
+            _copyArea.Width = 0;
+            _copyArea.Height = 0;
+
+            if (_copySrc != null)
+            {
+                _copySrc.Clear();
+            }
+
+            _previewLayer.GetWriteableBitmap().Clear();
         }
     }
 }

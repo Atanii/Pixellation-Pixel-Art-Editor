@@ -94,5 +94,10 @@ namespace Pixellation.Components.Tools
         {
             return;
         }
+
+        public virtual void Reset()
+        {
+            return;
+        }
     }
 }
