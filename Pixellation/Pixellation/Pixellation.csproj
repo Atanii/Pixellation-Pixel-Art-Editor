@@ -6,9 +6,9 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject></StartupObject>
-    <Version>0.0.5.5</Version>
-    <AssemblyVersion>0.0.5.5</AssemblyVersion>
-    <FileVersion>0.0.5.5</FileVersion>
+    <Version>0.0.5.6</Version>
+    <AssemblyVersion>0.0.5.6</AssemblyVersion>
+    <FileVersion>0.0.5.6</FileVersion>
     <Authors>Jeremi Emánuel Kádár</Authors>
     <Copyright>Jeremi Emánuel Kádár</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -26,6 +26,11 @@
     <None Remove="Resources\application-icon.png" />
     <None Remove="Resources\icons-common\circle.png" />
     <None Remove="Resources\icons-common\circle_selection.png" />
+    <None Remove="Resources\icons-common\layers\layer-blank.png" />
+    <None Remove="Resources\icons-common\layers\layer-down.png" />
+    <None Remove="Resources\icons-common\layers\layer-duplicate.png" />
+    <None Remove="Resources\icons-common\layers\layer-remove.png" />
+    <None Remove="Resources\icons-common\layers\layer-up.png" />
     <None Remove="Resources\icons-common\rectangle.png" />
     <None Remove="Resources\icons-fugue\eraser.png" />
     <None Remove="Resources\icons-fugue\grid-dot.png" />
@@ -59,6 +64,11 @@
   <ItemGroup>
     <Resource Include="Resources\icons-common\circle.png" />
     <Resource Include="Resources\icons-common\circle_selection.png" />
+    <Resource Include="Resources\icons-common\layers\layer-blank.png" />
+    <Resource Include="Resources\icons-common\layers\layer-down.png" />
+    <Resource Include="Resources\icons-common\layers\layer-duplicate.png" />
+    <Resource Include="Resources\icons-common\layers\layer-remove.png" />
+    <Resource Include="Resources\icons-common\layers\layer-up.png" />
     <Resource Include="Resources\icons-common\rectangle.png" />
     <Resource Include="Resources\icons-fugue\eraser.png" />
     <Resource Include="Resources\icons-fugue\grid-dot.png" />

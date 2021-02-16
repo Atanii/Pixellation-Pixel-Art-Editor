@@ -4,16 +4,47 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Pixellation.Components.Panels"
+             xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d" x:Name="layerManager"
              d:DesignHeight="250" d:DesignWidth="200">
     <StackPanel>
-        <WrapPanel HorizontalAlignment="Stretch" Margin="10,10,10,0">
-            <Button Width="25" Height="25" Margin="0,0,10,0" Content="+" Click="AddLayer"></Button>
-            <Button Width="25" Height="25" Margin="0,0,10,0" Content="-" Click="DeleteLayer"></Button>
-            <Button Width="25" Height="25" Margin="0,0,10,0" Content="D" Click="DuplicateLayer"></Button>
-            <Button Width="25" Height="25" Margin="0,0,10,0" Content="↑" Click="MoveLayerUp"></Button>
-            <Button Width="25" Height="25" Margin="0,0,10,0" Content="↓" Click="MoveLayerDown"></Button>
-        </WrapPanel>
+        <UniformGrid Rows="1" Columns="5" HorizontalAlignment="Stretch" Margin="10,10,10,0">
+            <Button Click="AddLayer"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/layers/layer-blank.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button Click="DuplicateLayer"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/layers/layer-duplicate.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button Click="DeleteLayer"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/layers/layer-remove.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button Click="MoveLayerUp"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/layers/layer-up.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button Click="MoveLayerDown"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/layers/layer-down.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+        </UniformGrid>
         <ListView Height="200" SelectionMode="Single" Margin="10" x:Name="layerList" SelectionChanged="LayerList_SelectionChanged"
                   ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False" MouseDoubleClick="OpenLayerSettingsDialog"
                   IsSynchronizedWithCurrentItem="True">
