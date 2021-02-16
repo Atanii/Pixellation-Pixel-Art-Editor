@@ -36,15 +36,15 @@
         <!-- STATUSBAR -->
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
-                <TextBlock Name="statWidth" />
+                <TextBlock Name="statWidth" Text="{Binding ElementName=canvasImage, Path=PixelWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' Width: {0}px'}" />
             </StatusBarItem>
             <StatusBarItem>
-                <TextBlock Name="statHeight" />
+                <TextBlock Name="statHeight" Text="{Binding ElementName=canvasImage, Path=PixelHeight, Mode=OneWay, StringFormat=' Height: {0}px'}" />
             </StatusBarItem>
             <StatusBarItem>
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Left" Text="Zoom: " />
-                    <Slider x:Name="sliderZoom" Value="{Binding Source={x:Static resource:Settings.Default}, Mode=OneTime, Path=DefaultMagnification}" Minimum="1" Maximum="30" Width="150" IsSnapToTickEnabled="True" ValueChanged="ZoomChanged" />
+                    <Slider x:Name="sliderZoom" Value="{Binding ElementName=canvasImage, Path=Magnification, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="30" Width="150" IsSnapToTickEnabled="True" />
                     <TextBlock DockPanel.Dock="Right" Name="statZoom" Text="{Binding ElementName=sliderZoom, Path=Value, StringFormat=' {0}x'}" />
                 </DockPanel>
             </StatusBarItem>

@@ -3,7 +3,8 @@ using Pixellation.Models;
 using Pixellation.Properties;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -11,27 +12,55 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public partial class PixelEditor : FrameworkElement, IPreviewable
+    public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged
     {
         private DrawingLayer _activeLayer;
         private Visual _gridLines;
         private Visual _borderLine;
         private DrawingLayer _drawPreview;
+
+        private int _pixelWidth;
+        public int PixelWidth {
+            get { return _pixelWidth; }
+            private set
+            {
+                _pixelWidth = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _pixelHeight;
+        public int PixelHeight
+        {
+            get { return _pixelHeight; }
+            private set
+            {
+                _pixelHeight = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _magnification;
+        public int Magnification
+        {
+            get { return _magnification; }
+            set
+            {
+                _magnification = value;
+                RefreshMeasureAndMagnification();
+                OnPropertyChanged();
+            }
+        }
+
         public bool Tiled { get; private set; } = false;
-        public float TiledOpacity { get; private set; } = 0.5f;
-
+        public float TiledOpacity { get; private set; } = Settings.Default.DefaultTiledOpacity;
         public List<DrawingLayer> Layers { get; private set; }
-
-        public int PixelWidth { get; private set; }
-        public int PixelHeight { get; private set; }
-        public int Magnification { get; set; }
 
         public System.Drawing.Color ChosenColour
         {
             get { return (System.Drawing.Color)GetValue(ChosenColourProperty); }
             set { SetValue(ChosenColourProperty, value); }
         }
-
         public static readonly DependencyProperty ChosenColourProperty =
          DependencyProperty.Register("ChosenColour", typeof(System.Drawing.Color), typeof(PixelEditor), new FrameworkPropertyMetadata(
             System.Drawing.Color.Black
@@ -42,18 +71,16 @@ namespace Pixellation.Components.Editor
             get { return (BaseTool)GetValue(ChosenToolProperty); }
             set { SetValue(ChosenToolProperty, value); }
         }
-
         public readonly DependencyProperty ChosenToolProperty =
          DependencyProperty.Register("ChosenTool", typeof(ITool), typeof(PixelEditor), new PropertyMetadata(
              null, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
         ));
 
         private static event EventHandler RaiseToolChangeEvent;
-
         public event EventHandler RaiseImageUpdatedEvent;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private readonly VisualManager _vm;
-
         public IVisualManager VisualAndLayerManager => _vm;
 
         public PixelEditor()
@@ -63,6 +90,7 @@ namespace Pixellation.Components.Editor
             Magnification = Settings.Default.DefaultMagnification;
             _vm = new VisualManager(this);
             Init();
+            RefreshMeasureAndMagnification();
         }
 
         public PixelEditor(int width, int height, int defaultMagnification)
@@ -72,6 +100,7 @@ namespace Pixellation.Components.Editor
             Magnification = defaultMagnification;
             _vm = new VisualManager(this);
             Init();
+            RefreshMeasureAndMagnification();
         }
 
         private void Init(WriteableBitmap imageToEdit = null)
@@ -128,11 +157,22 @@ namespace Pixellation.Components.Editor
             _vm.InvalidateAllLayerVisual();
         }
 
-        public void NewImage(int width = 32, int height = 32, int defaultMagnification = 1, WriteableBitmap imageToEdit = null)
+        public void NewImage(int width = 32, int height = 32)
         {
             PixelWidth = width;
             PixelHeight = height;
-            Magnification = defaultMagnification;
+
+            _vm.DeleteAllVisualChildren();
+
+            Init();
+
+            RefreshMeasureAndMagnification();
+        }
+
+        public void NewImage(WriteableBitmap imageToEdit)
+        {
+            PixelWidth = imageToEdit.PixelWidth;
+            PixelHeight = imageToEdit.PixelHeight;
 
             _vm.DeleteAllVisualChildren();
 
@@ -144,11 +184,10 @@ namespace Pixellation.Components.Editor
             InvalidateVisual();
         }
 
-        public void NewImage(List<LayerModel> models, int width = 32, int height = 32, int defaultMagnification = 1)
+        public void NewImage(List<LayerModel> models, int width = 32, int height = 32)
         {
             PixelWidth = width;
             PixelHeight = height;
-            Magnification = defaultMagnification;
 
             _vm.DeleteAllVisualChildren();
 
@@ -163,22 +202,21 @@ namespace Pixellation.Components.Editor
 
             Init(layers);
 
-            UpdateToolProperties();
-
-            InvalidateMeasure();
-            InvalidateVisual();
+            RefreshMeasureAndMagnification();
         }
 
         private void Resize(int newWidth, int newHeight)
         {
             PixelWidth = newWidth;
             PixelHeight = newHeight;
+            Magnification = Settings.Default.DefaultMagnification;
+        }
 
+        public void RefreshMeasureAndMagnification()
+        {
             UpdateToolProperties();
-
             InvalidateMeasure();
-
-            UpdateMagnification(Magnification);
+            UpdateMagnification();
         }
 
         public void UpdateVisualRelated()
@@ -190,7 +228,7 @@ namespace Pixellation.Components.Editor
 
         private void UpdateToolProperties()
         {
-            ChosenTool.SetDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview);
+            ChosenTool?.SetDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview);
         }
 
         private void HandleToolEvent(object sender, ToolEventArgs e)
@@ -313,6 +351,32 @@ namespace Pixellation.Components.Editor
             return dv;
         }
 
+        public void UpdateMagnification()
+        {
+            RemoveVisualChild(_gridLines);
+            _gridLines = CreateGridLines();
+
+            RemoveVisualChild(_borderLine);
+            _borderLine = CreateBorderLines();
+
+            RemoveVisualChild(_drawPreview);
+            _drawPreview = new DrawingLayer(this, "DrawPreview");
+
+            AddVisualChild(_drawPreview);
+            AddVisualChild(_borderLine);
+            AddVisualChild(_gridLines);
+
+            _vm?.InvalidateAllLayerVisual();
+
+            RenderTransformOrigin = new Point(ActualWidth, ActualHeight);
+            HorizontalAlignment = HorizontalAlignment.Center;
+            VerticalAlignment = VerticalAlignment.Center;
+
+            UpdateToolProperties();
+
+            InvalidateVisual();
+        }
+
         public void UpdateMagnification(int zoom)
         {
             Magnification = zoom;
@@ -349,5 +413,10 @@ namespace Pixellation.Components.Editor
         public ImageSource GetImageSource() => _vm.GetAllMergedImageSource();
 
         public List<LayerModel> GetLayerModels() => _vm.GetLayerModels();
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }

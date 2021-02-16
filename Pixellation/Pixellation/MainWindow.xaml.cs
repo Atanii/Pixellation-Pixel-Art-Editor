@@ -22,16 +22,10 @@ namespace Pixellation
     /// </summary>
     public partial class MainWindow : Window
     {
-        private int _width = 0;
-        private int _height = 0;
-        public int ImageWidth { get { return _width; } set { _width = value; statWidth.Text = $"Width: {value}px"; } }
-        public int ImageHeight { get { return _height; } set { _height = value; statHeight.Text = $"Height: {value}px"; } }
 
         public MainWindow()
         {
             InitializeComponent();
-            ImageWidth = Settings.Default.DefaultImageSize;
-            ImageHeight = Settings.Default.DefaultImageSize;
             GetWindow(this).KeyDown += canvasImage.OnKeyDown;
         }
 
@@ -50,7 +44,15 @@ namespace Pixellation
                 {
                     var fpr = new FilePackageReader(fileName);
                     var data = await fpr.LoadProjectModel();
-                    canvasImage.NewImage(data.Layers, ImageWidth, ImageHeight, (int)sliderZoom.Value);
+
+                    var width = Settings.Default.DefaultImageSize;
+                    var height = Settings.Default.DefaultImageSize;
+                    if (data.Layers.Count > 0)
+                    {
+                        width = data.Layers[0].Width;
+                        height = data.Layers[0].Height;
+                    }
+                    canvasImage.NewImage(data.Layers, width, height);
                     Title = Properties.Resources.Title + " - " + data.ProjectData.ProjectName;
                 }
                 else
@@ -58,9 +60,7 @@ namespace Pixellation
                     // Getting Bitmap
                     BitmapImage bitmap = new BitmapImage(new Uri(fileName, UriKind.Absolute));
                     WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap);
-                    ImageWidth = writeableBitmap.PixelWidth;
-                    ImageHeight = writeableBitmap.PixelHeight;
-                    canvasImage.NewImage(writeableBitmap.PixelWidth, writeableBitmap.PixelHeight, (int)sliderZoom.Value, writeableBitmap);
+                    canvasImage.NewImage(writeableBitmap);
                 }
             }
         }
@@ -195,10 +195,11 @@ namespace Pixellation
             {
                 // Get Data
                 var widthHeight = newImgDialog.Answer;
-                ImageWidth = Int32.Parse(widthHeight.Split(';')[0]);
-                ImageHeight = Int32.Parse(widthHeight.Split(';')[1]);
+                var w = int.Parse(widthHeight.Split(';')[0]);
+                var h = int.Parse(widthHeight.Split(';')[1]);
+
                 // New Image
-                canvasImage.NewImage(ImageWidth, ImageHeight, (int)sliderZoom.Value); // TODO: update UI binding
+                canvasImage.NewImage(w, h);
             }
         }
 
@@ -206,16 +207,6 @@ namespace Pixellation
         {
             var aboutDialog = new AboutDialog();
             aboutDialog.ShowDialog();
-        }
-
-        private void ZoomChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (canvasImage != null)
-            {
-                int newZoom = (int)e.NewValue;
-                canvasImage.UpdateMagnification(newZoom);
-                canvasImage.InvalidateMeasure();
-            }
         }
     }
 }
