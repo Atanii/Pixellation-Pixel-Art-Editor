@@ -49,5 +49,14 @@ namespace Pixellation.Properties {
                 return ((int)(this["DefaultMagnification"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
+        public float DefaultTiledOpacity {
+            get {
+                return ((float)(this["DefaultTiledOpacity"]));
+            }
+        }
     }
 }
