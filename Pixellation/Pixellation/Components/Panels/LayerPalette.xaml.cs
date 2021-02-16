@@ -64,24 +64,36 @@ namespace Pixellation.Components.Panels
             var newLayerDialog = new StringInputDialog("New Layer", "Layername");
             if (newLayerDialog.ShowDialog() == true)
             {
-                LayerManager?.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
-                SelectLayer();
+                int index = LayerManager.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
+                SelectLayer(index);
             }
         }
 
         private void DeleteLayer(object sender, RoutedEventArgs e)
         {
-            LayerManager?.RemoveLayer(layerList.SelectedIndex);
+            int index = LayerManager.RemoveLayer(layerList.SelectedIndex);
+            if (index != -1)
+            {
+                SelectLayer(index);
+            }
+        }
+
+        private void DuplicateLayer(object sender, RoutedEventArgs e)
+        {
+            int index = LayerManager.DuplicateLayer(layerList.SelectedIndex);
+            SelectLayer(index);
         }
 
         private void MoveLayerUp(object sender, RoutedEventArgs e)
         {
-            LayerManager?.MoveUp(layerList.SelectedIndex);
+            int index = LayerManager.MoveUp(layerList.SelectedIndex);
+            SelectLayer(index);
         }
 
         private void MoveLayerDown(object sender, RoutedEventArgs e)
         {
-            LayerManager?.MoveDown(layerList.SelectedIndex);
+            int index = LayerManager.MoveDown(layerList.SelectedIndex);
+            SelectLayer(index);
         }
 
         private void OpenLayerSettingsDialog(object sender, System.Windows.Input.MouseButtonEventArgs e)

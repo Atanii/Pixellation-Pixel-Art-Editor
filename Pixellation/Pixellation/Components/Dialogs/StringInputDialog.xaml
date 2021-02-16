@@ -12,8 +12,8 @@
             <TextBox x:Name="txtInput" HorizontalAlignment="Left" Width="120"/>
         </WrapPanel>
         <WrapPanel Margin="10">
-            <Button Click="Cancel" Content="Cancel" Width="70" Margin="0, 0, 10, 0"/>
-            <Button Click="Create" Content="Ok" Width="70" Margin="0, 0, 10, 0"/>
+            <Button Click="Create" Content="Ok" Width="70" Margin="0, 0, 10, 0" IsDefault="True"/>
+            <Button Click="Cancel" Content="Cancel" Width="70" Margin="0, 0, 10, 0" IsCancel="True"/>
         </WrapPanel>
         
     </StackPanel>

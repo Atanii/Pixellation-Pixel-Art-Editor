@@ -11,7 +11,7 @@
         <Label Content="Height" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="114"/>
         <TextBox x:Name="txtWidth" HorizontalAlignment="Center" Margin="0,14,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="txtHeight" HorizontalAlignment="Center" Margin="0,45,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button Click="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="220,84,0,0" VerticalAlignment="Top"/>
-        <Button Click="Create" Content="Create" HorizontalAlignment="Left" Margin="160,84,0,0" VerticalAlignment="Top"/>
+        <Button Click="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="220,84,0,0" VerticalAlignment="Top" IsCancel="True"/>
+        <Button Click="Create" Content="Create" HorizontalAlignment="Left" Margin="160,84,0,0" VerticalAlignment="Top" IsDefault="True"/>
     </Grid>
 </Window>

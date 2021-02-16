@@ -15,6 +15,7 @@ namespace Pixellation.Components.Dialogs.NewImageDialog
         public NewImageDialog()
         {
             InitializeComponent();
+            txtWidth.Focus();
         }
 
         private void Create(object sender, RoutedEventArgs e)

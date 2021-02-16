@@ -7,7 +7,7 @@
              xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d"
              d:DesignHeight="180" d:DesignWidth="180">
-    <UniformGrid Columns="5" Rows="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <UniformGrid Columns="5" Rows="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Button
             Click="ToolButton_Click"
             x:Name="BtnPencil"
@@ -39,16 +39,6 @@
                 <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/pipette.png"></ImageBrush>
             </Button.Background>
         </Button>
-        <!--<Button
-            Click="ToolButton_Click"
-            x:Name="BtnGrid"
-            BorderThickness="0"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons-fugue/grid-dot.png"></ImageBrush>
-            </Button.Background>
-        </Button>-->
         <Button
             Click="ToolButton_Click"
             x:Name="BtnLine"

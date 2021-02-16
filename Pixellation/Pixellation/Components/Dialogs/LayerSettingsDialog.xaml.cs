@@ -14,13 +14,14 @@ namespace Pixellation.Components.Dialogs
         public LayerSettingsDialog()
         {
             InitializeComponent();
+            txtLayerOpacity.Focus();
         }
 
         private void Save(object sender, RoutedEventArgs e)
         {
             l.LayerName = txtLayerName.Text;
             var strTmp = txtLayerOpacity.Text.Replace('.', ',');
-            if (Double.TryParse(strTmp, out double newOpacity))
+            if (double.TryParse(strTmp, out double newOpacity))
             {
                 newOpacity = Math.Clamp(newOpacity, 0.0, 1.0);
                 l.Opacity = newOpacity;

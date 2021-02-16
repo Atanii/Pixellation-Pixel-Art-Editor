@@ -173,52 +173,6 @@ namespace Pixellation.Components.Editor
 
             public DrawingLayer GetLayer(int layerIndex = 0) => Layers.ElementAtOrDefault(layerIndex);
 
-            public void AddLayer(DrawingLayer layer, int layerIndex = 0)
-            {
-                Layers.Insert(layerIndex, layer);
-                _pe.AddVisualChild(Layers[layerIndex]);
-                ++VisualCount;
-
-                RefreshMiscVisuals();
-
-                VisualsChanged?.Invoke(this, EventArgs.Empty);
-            }
-
-            public void AddLayer(string name, int layerIndex = 0)
-            {
-                Layers.Insert(layerIndex, new DrawingLayer(_pe, name));
-                _pe.AddVisualChild(Layers[layerIndex]);
-                ++VisualCount;
-
-                RefreshMiscVisuals();
-
-                VisualsChanged?.Invoke(this, EventArgs.Empty);
-            }
-
-            public void MoveUp(int layerIndex)
-            {
-                if (layerIndex > 0)
-                {
-                    var tmp = Layers[layerIndex];
-                    Layers.RemoveAt(layerIndex);
-                    Layers.Insert(--layerIndex, tmp);
-                    RefreshLayerVisuals();
-                    VisualsChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-
-            public void MoveDown(int layerIndex)
-            {
-                if (layerIndex < Layers.Count() - 1)
-                {
-                    var tmp = Layers[layerIndex];
-                    Layers.RemoveAt(layerIndex);
-                    Layers.Insert(++layerIndex, tmp);
-                    RefreshLayerVisuals();
-                    VisualsChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-
             /// <summary>
             /// Merges the layers in the given index range into a single WriteableBitmap.
             /// The indexing is reverse!
@@ -254,27 +208,6 @@ namespace Pixellation.Components.Editor
 
             public ImageSource GetAllMergedImageSource() => Merge(Layers.Count() - 1, 0).ToImageSource();
 
-            public void RemoveLayer(DrawingLayer layer)
-            {
-                _pe.RemoveVisualChild(layer);
-                Layers.Remove(layer);
-                --VisualCount;
-
-                VisualsChanged?.Invoke(this, EventArgs.Empty);
-            }
-
-            public void RemoveLayer(int layerIndex)
-            {
-                if (Layers.ElementAtOrDefault(layerIndex) != null)
-                {
-                    _pe.RemoveVisualChild(Layers[layerIndex]);
-                    Layers.RemoveAt(layerIndex);
-                    --VisualCount;
-
-                    VisualsChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-
             public List<LayerModel> GetLayerModels()
             {
                 var list = new List<LayerModel>();
@@ -285,6 +218,12 @@ namespace Pixellation.Components.Editor
                 return list;
             }
 
+            public Size GetSize()
+            {
+                return new Size(_pe.PixelWidth, _pe.PixelHeight);
+            }
+
+            #region Transform
             public void Mirror(bool horizontally, bool allLayers)
             {
                 if (!allLayers && _pe._activeLayer != null)
@@ -328,11 +267,107 @@ namespace Pixellation.Components.Editor
                 VisualsChanged?.Invoke(this, EventArgs.Empty);
                 _pe.Resize(newWidth, newHeight);
             }
+            #endregion Transform
 
-            public Size GetSize()
+            #region Add, Delete, Duplicate, Move Up, Move Down
+            public int AddLayer(DrawingLayer layer, int layerIndex = 0)
             {
-                return new Size(_pe.PixelWidth, _pe.PixelHeight);
+                Layers.Insert(layerIndex, layer);
+                _pe.AddVisualChild(Layers[layerIndex]);
+                ++VisualCount;
+
+                RefreshMiscVisuals();
+
+                VisualsChanged?.Invoke(this, EventArgs.Empty);
+
+                return layerIndex;
             }
+
+            public int AddLayer(string name, int layerIndex = 0)
+            {
+                Layers.Insert(layerIndex, new DrawingLayer(_pe, name));
+                _pe.AddVisualChild(Layers[layerIndex]);
+                ++VisualCount;
+
+                RefreshMiscVisuals();
+
+                VisualsChanged?.Invoke(this, EventArgs.Empty);
+
+                return layerIndex;
+            }
+
+            public int DuplicateLayer(int layerIndex = 0)
+            {
+                Layers.Insert(layerIndex, Layers[layerIndex].Clone());
+                _pe.AddVisualChild(Layers[layerIndex]);
+                ++VisualCount;
+
+                RefreshMiscVisuals();
+
+                VisualsChanged?.Invoke(this, EventArgs.Empty);
+
+                return layerIndex;
+            }
+
+            public int MoveUp(int layerIndex)
+            {
+                if (layerIndex > 0)
+                {
+                    var tmp = Layers[layerIndex];
+                    Layers.RemoveAt(layerIndex);
+                    Layers.Insert(--layerIndex, tmp);
+                    RefreshLayerVisuals();
+                    VisualsChanged?.Invoke(this, EventArgs.Empty);
+                }
+                return layerIndex;
+            }
+
+            public int MoveDown(int layerIndex)
+            {
+                if (layerIndex < Layers.Count() - 1)
+                {
+                    var tmp = Layers[layerIndex];
+                    Layers.RemoveAt(layerIndex);
+                    Layers.Insert(++layerIndex, tmp);
+                    RefreshLayerVisuals();
+                    VisualsChanged?.Invoke(this, EventArgs.Empty);
+                }
+                return layerIndex;
+            }
+
+            public void RemoveLayer(DrawingLayer layer)
+            {
+                _pe.RemoveVisualChild(layer);
+                Layers.Remove(layer);
+                --VisualCount;
+
+                VisualsChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+            public int RemoveLayer(int layerIndex)
+            {
+                if (Layers.ElementAtOrDefault(layerIndex) != null)
+                {
+                    _pe.RemoveVisualChild(Layers[layerIndex]);
+                    Layers.RemoveAt(layerIndex);
+                    --VisualCount;
+
+                    VisualsChanged?.Invoke(this, EventArgs.Empty);
+                }
+                if (Layers.Count == 0)
+                {
+                    return -1;
+                }
+                else if ((layerIndex - 1) >= 0)
+                {
+                    return layerIndex - 1;
+                }
+                else
+                {
+                    return layerIndex;
+                }
+            }
+            #endregion Add, Delete, Duplicate, Move Up, Move Down
         }
     }
 }

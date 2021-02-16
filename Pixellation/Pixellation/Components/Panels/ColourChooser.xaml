@@ -61,9 +61,9 @@
 
     <StackPanel>
         <StackPanel Orientation="Horizontal">
-            <Rectangle  x:Name="colourGradientCanvas" Fill="{StaticResource LevelSaturationBrush}" Width="180" Height="180" Margin="0"
+            <Rectangle  x:Name="colourGradientCanvas" Fill="{StaticResource LevelSaturationBrush}" Width="170" Height="170" Margin="5"
                     StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True"  MouseLeftButtonDown="ColourWheelVisual_MouseLeftButtonDown" />
-            <Rectangle  x:Name="colourGradientHue" Fill="{StaticResource HueGradientBrush}" Width="18" Height="180" Margin="0"
+            <Rectangle  x:Name="colourGradientHue" Fill="{StaticResource HueGradientBrush}" Width="10" Height="170" Margin="5"
                     StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True" MouseLeftButtonDown="ColourWheelVisualHue_MouseLeftButtonDown" />
         </StackPanel>
         <GroupBox Header="Colour (RGBA)" Height="50">

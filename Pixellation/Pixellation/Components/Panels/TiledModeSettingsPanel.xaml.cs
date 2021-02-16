@@ -21,6 +21,7 @@ namespace Pixellation.Components.Panels
         public TiledModeSettingsPanel()
         {
             InitializeComponent();
+            tiledModeOpacitySlider.Value = Properties.Settings.Default.DefaultTiledOpacity * 100d;
         }
 
         private void TiledModeToggle_Click(object sender, RoutedEventArgs e)

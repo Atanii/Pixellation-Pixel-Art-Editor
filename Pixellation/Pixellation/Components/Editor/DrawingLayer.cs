@@ -85,5 +85,11 @@ namespace Pixellation.Components.Editor
                 Opacity = Opacity
             };
         }
+
+        public DrawingLayer Clone()
+        {
+            var bmp2 = _bitmap.Clone();
+            return new DrawingLayer(_owner, bmp2, LayerName, Visible);
+        }
     }
 }

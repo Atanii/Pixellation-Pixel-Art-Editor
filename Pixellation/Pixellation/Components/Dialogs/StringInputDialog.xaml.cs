@@ -20,12 +20,15 @@ namespace Pixellation.Components.Dialogs.StringInputDialog
             DialogTitle = title;
             LabelText = labelText;
             InitializeComponent();
+            txtInput.Focus();
         }
 
         private void Create(object sender, RoutedEventArgs e)
         {
             if (Answer != "")
+            {
                 this.DialogResult = true;
+            }
         }
 
         private void Cancel(object sender, RoutedEventArgs e)

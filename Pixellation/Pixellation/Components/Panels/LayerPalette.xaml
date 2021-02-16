@@ -5,11 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Pixellation.Components.Panels"
              mc:Ignorable="d" x:Name="layerManager"
-             d:DesignHeight="250" d:DesignWidth="180">
+             d:DesignHeight="250" d:DesignWidth="200">
     <StackPanel>
         <WrapPanel HorizontalAlignment="Stretch" Margin="10,10,10,0">
             <Button Width="25" Height="25" Margin="0,0,10,0" Content="+" Click="AddLayer"></Button>
             <Button Width="25" Height="25" Margin="0,0,10,0" Content="-" Click="DeleteLayer"></Button>
+            <Button Width="25" Height="25" Margin="0,0,10,0" Content="D" Click="DuplicateLayer"></Button>
             <Button Width="25" Height="25" Margin="0,0,10,0" Content="↑" Click="MoveLayerUp"></Button>
             <Button Width="25" Height="25" Margin="0,0,10,0" Content="↓" Click="MoveLayerDown"></Button>
         </WrapPanel>
