@@ -11,50 +11,7 @@ namespace Pixellation.Components.Editor
 {
     public partial class PixelEditor
     {
-        public interface IVisualManager
-        {
-            public event EventHandler VisualsChanged;
-
-            public void SetActiveLayer(int layerIndex = 0);
-
-            public List<DrawingLayer> GetLayers();
-
-            public DrawingLayer GetLayer(int layerIndex = 0);
-
-            public void AddLayer(DrawingLayer layer, int layerIndex = 0);
-
-            public void AddLayer(string name, int layerIndex = 0);
-
-            public void RemoveLayer(DrawingLayer layer);
-
-            public void RemoveLayer(int layerIndex);
-
-            public WriteableBitmap Merge(int from, int to = 0, WriteableBitmapExtensions.BlendMode mode = WriteableBitmapExtensions.BlendMode.Alpha);
-
-            public DrawingLayer GetAllMerged();
-
-            public WriteableBitmap GetAllMergedWriteableBitmap();
-
-            public ImageSource GetAllMergedImageSource();
-
-            public Bitmap GetAllMergedBitmap();
-
-            public void MoveUp(int layerIndex);
-
-            public void MoveDown(int layerIndex);
-
-            public List<LayerModel> GetLayerModels();
-
-            public void Mirror(bool horizontally, bool allLayers = false);
-
-            public void Rotate(int angleInDegree, bool allLayers = false, bool counterClockWise = false);
-
-            public void Resize(int newWidth, int newHeight);
-
-            public Size GetSize();
-        }
-
-        private class VisualManager : IVisualManager
+        public class VisualManager
         {
             private readonly PixelEditor _pe;
             public List<DrawingLayer> Layers { get; set; }
@@ -103,7 +60,7 @@ namespace Pixellation.Components.Editor
                 {
                     _pe.AddVisualChild(lines);
                     ++VisualCount;
-                }                
+                }
 
                 VisualsChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -247,7 +204,7 @@ namespace Pixellation.Components.Editor
                     Layers.Insert(--layerIndex, tmp);
                     RefreshLayerVisuals();
                     VisualsChanged?.Invoke(this, EventArgs.Empty);
-                }                
+                }
             }
 
             public void MoveDown(int layerIndex)
@@ -361,7 +318,7 @@ namespace Pixellation.Components.Editor
                 VisualsChanged?.Invoke(this, EventArgs.Empty);
             }
 
-            void IVisualManager.Resize(int newWidth, int newHeight)
+            public void Resize(int newWidth, int newHeight)
             {
                 foreach (var l in Layers)
                 {
@@ -372,7 +329,7 @@ namespace Pixellation.Components.Editor
                 _pe.Resize(newWidth, newHeight);
             }
 
-            Size IVisualManager.GetSize()
+            public Size GetSize()
             {
                 return new Size(_pe.PixelWidth, _pe.PixelHeight);
             }

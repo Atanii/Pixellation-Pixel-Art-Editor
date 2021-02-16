@@ -14,14 +14,14 @@ namespace Pixellation.Components.Panels
     {
         private static event EventHandler<DependencyPropertyChangedEventArgs> RaiseLayerListPropertyInitialized;
 
-        public IVisualManager LayerManager
+        public VisualManager LayerManager
         {
-            get { return (IVisualManager)GetValue(LayerListProperty); }
+            get { return (VisualManager)GetValue(LayerListProperty); }
             set { SetValue(LayerListProperty, value); }
         }
 
         public static readonly DependencyProperty LayerListProperty =
-         DependencyProperty.Register("LayerManager", typeof(IVisualManager), typeof(LayerPalette), new FrameworkPropertyMetadata(
+         DependencyProperty.Register("LayerManager", typeof(VisualManager), typeof(LayerPalette), new FrameworkPropertyMetadata(
              default,
              (s, e) => { RaiseLayerListPropertyInitialized?.Invoke(s, e); }
         ));

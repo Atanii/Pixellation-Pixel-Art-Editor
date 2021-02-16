@@ -8,7 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Pixellation.Utils.FilePackage
+namespace Pixellation.Utils.FilePackaging
 {
     internal class FilePackageReader
     {

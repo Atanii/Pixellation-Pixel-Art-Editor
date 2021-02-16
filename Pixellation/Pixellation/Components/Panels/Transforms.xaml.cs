@@ -9,15 +9,15 @@ namespace Pixellation.Components.Panels
     /// </summary>
     public partial class Transforms : UserControl
     {
-        public IVisualManager LayerManager
+        public VisualManager LayerManager
         {
-            get { return (IVisualManager)GetValue(LayerListProperty); }
+            get { return (VisualManager)GetValue(LayerListProperty); }
             set { SetValue(LayerListProperty, value); }
         }
 
         public static readonly DependencyProperty LayerListProperty = DependencyProperty.Register(
              "LayerManager",
-             typeof(IVisualManager),
+             typeof(VisualManager),
              typeof(Transforms),
              new FrameworkPropertyMetadata()
         );

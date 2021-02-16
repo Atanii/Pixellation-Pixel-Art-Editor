@@ -2,7 +2,7 @@
 
 namespace Pixellation.Models
 {
-    internal class ProjectModel
+    public class ProjectModel
     {
         public List<LayerModel> Layers { get; set; }
         public ProjectDataModel ProjectData { get; set; }

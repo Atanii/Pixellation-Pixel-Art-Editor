@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
-namespace Pixellation.Utils.FilePackage
+namespace Pixellation.Utils.FilePackaging
 {
     internal class FilePackageWriter
     {

@@ -81,7 +81,7 @@ namespace Pixellation.Components.Editor
         public event PropertyChangedEventHandler PropertyChanged;
 
         private readonly VisualManager _vm;
-        public IVisualManager VisualAndLayerManager => _vm;
+        public VisualManager VisualAndLayerManager => _vm;
 
         public PixelEditor()
         {

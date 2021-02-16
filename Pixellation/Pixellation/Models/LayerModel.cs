@@ -5,10 +5,10 @@ namespace Pixellation.Models
     [Serializable()]
     public class LayerModel
     {
-        public byte[] LayerBitmap;
-        public int Width;
-        public int Height;
-        public int Stride;
-        public string LayerName;
+        public byte[] LayerBitmap { get; set; }
+        public string LayerName { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int Stride { get; set; }
     }
 }

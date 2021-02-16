@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Pixellation.Utils.FilePackage
+namespace Pixellation.Utils.FilePackaging
 {
     internal class FilePackage
     {

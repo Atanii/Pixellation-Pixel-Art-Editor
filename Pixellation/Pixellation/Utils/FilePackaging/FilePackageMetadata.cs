@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pixellation.Utils.FilePackage
+namespace Pixellation.Utils.FilePackaging
 {
     class FilePackageMetadata
     {
