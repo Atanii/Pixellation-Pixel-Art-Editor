@@ -10,5 +10,6 @@ namespace Pixellation.Models
         public int Width { get; set; }
         public int Height { get; set; }
         public int Stride { get; set; }
+        public double Opacity { get; set; }
     }
 }

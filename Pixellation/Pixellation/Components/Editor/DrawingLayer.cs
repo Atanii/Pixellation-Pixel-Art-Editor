@@ -53,6 +53,7 @@ namespace Pixellation.Components.Editor
                 _name = model.LayerName;
             }
             Visible = visible;
+            Opacity = model.Opacity;
         }
 
         public event EventHandler RaiseImageUpdatedEvent;
@@ -66,9 +67,9 @@ namespace Pixellation.Components.Editor
         {
             var src = _bitmap.ToImageSource();
 
-            var width = src.PixelWidth;
-            var height = src.PixelHeight;
-            var stride = width * ((src.Format.BitsPerPixel + 7) / 8);
+            var width = _bitmap.PixelWidth;
+            var height = _bitmap.PixelHeight;
+            var stride = _bitmap.BackBufferStride;
 
             var bitmapData = new byte[height * stride];
 
@@ -77,10 +78,11 @@ namespace Pixellation.Components.Editor
             return new LayerModel
             {
                 LayerBitmap = bitmapData,
-                Width = _owner.PixelWidth,
-                Height = _owner.PixelHeight,
+                LayerName = _name,
+                Width = width,
+                Height = height,
                 Stride = stride,
-                LayerName = _name
+                Opacity = Opacity
             };
         }
     }
