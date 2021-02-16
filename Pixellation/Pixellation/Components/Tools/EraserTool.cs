@@ -1,5 +1,4 @@
-﻿using Pixellation.Utils;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Input;
 
 namespace Pixellation.Components.Tools

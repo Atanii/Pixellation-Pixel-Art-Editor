@@ -32,7 +32,7 @@ namespace Pixellation.Utils
         {
             using MemoryStream outStream = new MemoryStream();
             BitmapEncoder enc = new BmpBitmapEncoder();
-            enc.Frames.Add(BitmapFrame.Create((BitmapSource)writeBmp));
+            enc.Frames.Add(BitmapFrame.Create(writeBmp));
             enc.Save(outStream);
             return new Bitmap(outStream);
         }
@@ -65,7 +65,7 @@ namespace Pixellation.Utils
             return new WriteableBitmap(bitmap.ToBitmapSource());
         }
 
-        public static System.Drawing.Bitmap ToBitmap(this BitmapSource srs)
+        public static Bitmap ToBitmap(this BitmapSource srs)
         {
             int width = srs.PixelWidth;
             int height = srs.PixelHeight;
@@ -75,11 +75,11 @@ namespace Pixellation.Utils
             {
                 ptr = Marshal.AllocHGlobal(height * stride);
                 srs.CopyPixels(new Int32Rect(0, 0, width, height), ptr, height * stride, stride);
-                using (var btm = new System.Drawing.Bitmap(width, height, stride, System.Drawing.Imaging.PixelFormat.Format1bppIndexed, ptr))
+                using (var btm = new Bitmap(width, height, stride, System.Drawing.Imaging.PixelFormat.Format1bppIndexed, ptr))
                 {
                     // Clone the bitmap so that we can dispose it and
                     // release the unmanaged memory at ptr
-                    return new System.Drawing.Bitmap(btm);
+                    return new Bitmap(btm);
                 }
             }
             finally
@@ -89,14 +89,14 @@ namespace Pixellation.Utils
             }
         }
 
-        public static System.Windows.Media.Color ToMediaColor(this System.Drawing.Color color)
+        public static System.Windows.Media.Color ToMediaColor(this Color color)
         {
             return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
-        public static System.Drawing.Color ToDrawingColor(this System.Windows.Media.Color color)
+        public static Color ToDrawingColor(this System.Windows.Media.Color color)
         {
-            return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
+            return Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
         public static WriteableBitmap ToWriteableBitmap(this byte[] bytes, int width, int height, int stride)
