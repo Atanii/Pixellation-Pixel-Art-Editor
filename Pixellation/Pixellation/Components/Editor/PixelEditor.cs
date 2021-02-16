@@ -341,7 +341,7 @@ namespace Pixellation.Components.Editor
             pen.Freeze();
 
             dc.DrawLine(pen, new Point(0, 0), new Point(w * m, 0));
-            dc.DrawLine(pen, new Point(0, h * m), new Point(h * m, w * m));
+            dc.DrawLine(pen, new Point(0, h * m), new Point(w * m, h * m));
 
             dc.DrawLine(pen, new Point(0, 0), new Point(0, h * m));
             dc.DrawLine(pen, new Point(w * m, 0), new Point(w * m, h * m));
