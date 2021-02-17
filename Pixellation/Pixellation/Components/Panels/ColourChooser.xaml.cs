@@ -53,6 +53,8 @@ namespace Pixellation.Components.Tools
         public ColourChooser()
         {
             InitializeComponent();
+            Resources["HueColor"] = Properties.Settings.Default.DefaultHueColor.ToMediaColor();
+            SetCcRectanglesFill();
             RaiseChosenColourPropertyChangeEventHandlerEvent += (s, a) => {
                 SetCcRectanglesFill();
                 SetRGBATxtInputs();
@@ -196,6 +198,13 @@ namespace Pixellation.Components.Tools
             {
                 SecondaryColor = Color.FromArgb(A, R, G, B);
             }
+        }
+
+        private void btnSwapColors_Click(object sender, RoutedEventArgs e)
+        {
+            var tmp = SecondaryColor;
+            SecondaryColor = PrimaryColor;
+            PrimaryColor = tmp;
         }
     }
 }

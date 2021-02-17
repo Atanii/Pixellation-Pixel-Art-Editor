@@ -5,11 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pixellation.Components.Dialogs.AboutDialog"
         mc:Ignorable="d" KeyDown="Window_KeyDown"
-        Title="About" Height="180" Width="525">
+        Title="About" Height="135" Width="525">
     <StackPanel>
-        <Label>Pixellation Pixelart Editor</Label>
-        <GroupBox Header="Design, Programming">Jeremi Emánuel Kádár</GroupBox>
-        <GroupBox Header="Icons">Some icons by Yusuke Kamiyamane. Licensed under a Creative Commons Attribution 3.0 License.</GroupBox>
-        <GroupBox Header="License">MIT License, Copyright (c) 2020 Kádár Jeremi Emánuel</GroupBox>
+        <Label>Title: Pixellation Pixelart Editor</Label>
+        <GroupBox Header="Design, Programming, Icons">Jeremi Emánuel Kádár</GroupBox>
+        <GroupBox Header="License">MIT License, Copyright (c) 2020-2021 Kádár Jeremi Emánuel</GroupBox>
     </StackPanel>
 </Window>

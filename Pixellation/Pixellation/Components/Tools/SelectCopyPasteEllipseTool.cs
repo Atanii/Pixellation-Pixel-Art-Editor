@@ -54,6 +54,8 @@ namespace Pixellation.Components.Tools
                     _copySrc.Clear();
                 }
 
+                _previewLayer.GetWriteableBitmap().Clear();
+
                 _selectionArea.X = p0.X;
                 _selectionArea.Y = p0.Y;
                 _selectionArea.Width = 0;

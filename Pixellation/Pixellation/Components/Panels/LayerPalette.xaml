@@ -9,39 +9,39 @@
              d:DesignHeight="250" d:DesignWidth="200">
     <StackPanel>
         <UniformGrid Rows="1" Columns="5" HorizontalAlignment="Stretch" Margin="10,10,10,0">
-            <Button Click="AddLayer"
+            <Button Click="AddLayer" ToolTip="Add New Layer"
                 Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                 Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
-                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/layers/layer-blank.png"></ImageBrush>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-blank.png"></ImageBrush>
                 </Button.Background>
             </Button>
-            <Button Click="DuplicateLayer"
+            <Button Click="DuplicateLayer" ToolTip="Duplicate Layer"
                 Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                 Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
-                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/layers/layer-duplicate.png"></ImageBrush>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-duplicate.png"></ImageBrush>
                 </Button.Background>
             </Button>
-            <Button Click="DeleteLayer"
+            <Button Click="DeleteLayer" ToolTip="Delete Layer"
                 Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                 Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
-                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/layers/layer-remove.png"></ImageBrush>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-remove.png"></ImageBrush>
                 </Button.Background>
             </Button>
-            <Button Click="MoveLayerUp"
+            <Button Click="MoveLayerUp" ToolTip="Move Layer Up"
                 Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                 Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
-                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/layers/layer-up.png"></ImageBrush>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-up.png"></ImageBrush>
                 </Button.Background>
             </Button>
-            <Button Click="MoveLayerDown"
+            <Button Click="MoveLayerDown" ToolTip="Move Layer Down"
                 Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                 Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
-                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons-common/layers/layer-down.png"></ImageBrush>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-down.png"></ImageBrush>
                 </Button.Background>
             </Button>
         </UniformGrid>

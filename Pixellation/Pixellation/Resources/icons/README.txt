@@ -1,6 +1,6 @@
-﻿Common Icons
+﻿Tool And Other Icons
 
-(C) 2020 Jeremi Emánuel Kádár. All rights reserved.
+(C) 2020-2021 Jeremi Emánuel Kádár. All rights reserved.
 
 These icons are licensed under a Creative Commons
 Attribution 3.0 License.

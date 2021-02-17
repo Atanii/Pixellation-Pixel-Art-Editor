@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using Pixellation.Utils;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Tools
@@ -25,12 +26,12 @@ namespace Pixellation.Components.Tools
 
         private void Draw()
         {
-            _layer.GetWriteableBitmap().DrawEllipse((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
+            _layer.GetWriteableBitmap().DrawEllipse((int)p0.X, (int)p0.Y, (int)p1.X, (int)p1.Y, ToolColor);
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)
         {
-            p0 = e.GetPosition(_layer);
+            p0 = e.GetPosition(_layer).IntDivide(_magnification, true);
         }
 
         public override void OnMouseUp(MouseButtonEventArgs e)
@@ -42,9 +43,9 @@ namespace Pixellation.Components.Tools
         {
             if (IsMouseDown(e))
             {
-                p1 = e.GetPosition(_layer);
+                p1 = e.GetPosition(_layer).IntDivide(_magnification, true);
                 _previewLayer.GetWriteableBitmap().Clear();
-                _previewLayer.GetWriteableBitmap().DrawEllipse((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
+                _previewLayer.GetWriteableBitmap().DrawEllipse((int)p0.X, (int)p0.Y, (int)p1.X, (int)p1.Y, ToolColor);
             }   
         }
     }

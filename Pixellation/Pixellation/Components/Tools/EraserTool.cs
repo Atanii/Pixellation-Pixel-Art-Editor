@@ -25,12 +25,15 @@ namespace Pixellation.Components.Tools
             var p = Mouse.GetPosition(_layer);
 
             if (p.X < 0 || p.X >= _surfaceWidth || p.Y < 0 || p.Y >= _surfaceHeight)
+            {
                 return;
+            }
 
             _layer.SetColor(
                 (int)(p.X / _magnification),
                 (int)(p.Y / _magnification),
-                ToolColor);
+                System.Windows.Media.Color.FromArgb(0,0,0,0)
+            );
 
             _layer.InvalidateVisual();
         }
@@ -48,7 +51,9 @@ namespace Pixellation.Components.Tools
         public override void OnMouseMove(MouseEventArgs e)
         {
             if (IsMouseDown(e))
+            {
                 Draw();
+            }
         }
     }
 }

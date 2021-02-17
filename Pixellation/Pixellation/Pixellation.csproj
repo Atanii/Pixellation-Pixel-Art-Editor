@@ -6,9 +6,9 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject></StartupObject>
-    <Version>0.0.5.8</Version>
-    <AssemblyVersion>0.0.5.8</AssemblyVersion>
-    <FileVersion>0.0.5.8</FileVersion>
+    <Version>0.0.5.9</Version>
+    <AssemblyVersion>0.0.5.9</AssemblyVersion>
+    <FileVersion>0.0.5.9</FileVersion>
     <Authors>Jeremi Emánuel Kádár</Authors>
     <Copyright>Jeremi Emánuel Kádár</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -24,22 +24,23 @@
   <ItemGroup>
     <None Remove="Resources\application-icon.ico" />
     <None Remove="Resources\application-icon.png" />
-    <None Remove="Resources\icons-common\circle.png" />
-    <None Remove="Resources\icons-common\circle_selection.png" />
-    <None Remove="Resources\icons-common\layers\layer-blank.png" />
-    <None Remove="Resources\icons-common\layers\layer-down.png" />
-    <None Remove="Resources\icons-common\layers\layer-duplicate.png" />
-    <None Remove="Resources\icons-common\layers\layer-remove.png" />
-    <None Remove="Resources\icons-common\layers\layer-up.png" />
-    <None Remove="Resources\icons-common\rectangle.png" />
-    <None Remove="Resources\icons-fugue\eraser.png" />
-    <None Remove="Resources\icons-fugue\grid-dot.png" />
-    <None Remove="Resources\icons-fugue\layer-shape-line.png" />
-    <None Remove="Resources\icons-fugue\paint-can.png" />
-    <None Remove="Resources\icons-fugue\pencil-field.png" />
-    <None Remove="Resources\icons-fugue\pencil.png" />
-    <None Remove="Resources\icons-fugue\pipette.png" />
-    <None Remove="Resources\icons-fugue\selection.png" />
+    <None Remove="Resources\icons\circle.png" />
+    <None Remove="Resources\icons\circle_selection.png" />
+    <None Remove="Resources\icons\layers\layer-blank.png" />
+    <None Remove="Resources\icons\layers\layer-down.png" />
+    <None Remove="Resources\icons\layers\layer-duplicate.png" />
+    <None Remove="Resources\icons\layers\layer-remove.png" />
+    <None Remove="Resources\icons\layers\layer-up.png" />
+    <None Remove="Resources\icons\rectangle.png" />
+    <None Remove="Resources\icons\swap.png" />
+    <None Remove="Resources\icons\tools\bucket.png" />
+    <None Remove="Resources\icons\tools\dithering.png" />
+    <None Remove="Resources\icons\tools\eraser.png" />
+    <None Remove="Resources\icons\tools\line.png" />
+    <None Remove="Resources\icons\tools\mirror.png" />
+    <None Remove="Resources\icons\tools\pencil.png" />
+    <None Remove="Resources\icons\tools\pipette.png" />
+    <None Remove="Resources\icons\tools\rectangle_selection.png" />
     <None Remove="Resources\logo-splash.png" />
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
@@ -62,22 +63,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\icons-common\circle.png" />
-    <Resource Include="Resources\icons-common\circle_selection.png" />
-    <Resource Include="Resources\icons-common\layers\layer-blank.png" />
-    <Resource Include="Resources\icons-common\layers\layer-down.png" />
-    <Resource Include="Resources\icons-common\layers\layer-duplicate.png" />
-    <Resource Include="Resources\icons-common\layers\layer-remove.png" />
-    <Resource Include="Resources\icons-common\layers\layer-up.png" />
-    <Resource Include="Resources\icons-common\rectangle.png" />
-    <Resource Include="Resources\icons-fugue\eraser.png" />
-    <Resource Include="Resources\icons-fugue\grid-dot.png" />
-    <Resource Include="Resources\icons-fugue\layer-shape-line.png" />
-    <Resource Include="Resources\icons-fugue\paint-can.png" />
-    <Resource Include="Resources\icons-fugue\pencil-field.png" />
-    <Resource Include="Resources\icons-fugue\pencil.png" />
-    <Resource Include="Resources\icons-fugue\pipette.png" />
-    <Resource Include="Resources\icons-fugue\selection.png" />
+    <Resource Include="Resources\icons\tools\bucket.png" />
+    <Resource Include="Resources\icons\tools\circle.png" />
+    <Resource Include="Resources\icons\tools\circle_selection.png" />
+    <Resource Include="Resources\icons\layers\layer-blank.png" />
+    <Resource Include="Resources\icons\layers\layer-down.png" />
+    <Resource Include="Resources\icons\layers\layer-duplicate.png" />
+    <Resource Include="Resources\icons\layers\layer-remove.png" />
+    <Resource Include="Resources\icons\layers\layer-up.png" />
+    <Resource Include="Resources\icons\tools\dithering.png" />
+    <Resource Include="Resources\icons\tools\eraser.png" />
+    <Resource Include="Resources\icons\tools\line.png" />
+    <Resource Include="Resources\icons\tools\mirror.png" />
+    <Resource Include="Resources\icons\tools\pencil.png" />
+    <Resource Include="Resources\icons\tools\pipette.png" />
+    <Resource Include="Resources\icons\tools\rectangle.png" />
+    <Resource Include="Resources\icons\swap.png" />
+    <Resource Include="Resources\icons\tools\rectangle_selection.png" />
     <SplashScreen Include="Resources\logo-splash.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </SplashScreen>

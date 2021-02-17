@@ -3,12 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d" x:Name="cc"
-             d:DesignHeight="360" d:DesignWidth="200">
+             d:DesignHeight="400" d:DesignWidth="200">
 
     <UserControl.Resources>
 
         <Color x:Key="HueColor">#FFFFFF</Color>
+        
         <Color x:Key="PrimaryColor">#000000</Color>
         <Color x:Key="SecondaryColor">#FFFFFF</Color>
 
@@ -88,6 +90,14 @@
             <Rectangle Fill="{DynamicResource BrushPrimary}" Height="50" Width="50" Canvas.Left="70" Canvas.Top="0" Panel.ZIndex="1"></Rectangle>
             <Rectangle Fill="{DynamicResource BrushSecondary}" Height="50" Width="50" Canvas.Left="80" Canvas.Bottom="0" Panel.ZIndex="0"></Rectangle>
         </Canvas>
-        
+        <Button x:Name="btnSwapColors" Click="btnSwapColors_Click"
+                ToolTip="Swap Primary- And SecondaryColor"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+            <Button.Background>
+                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/swap.png"></ImageBrush>
+            </Button.Background>
+        </Button>
     </StackPanel>
 </UserControl>

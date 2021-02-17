@@ -8,7 +8,7 @@
              d:DesignHeight="350" d:DesignWidth="200">
     <StackPanel Orientation="Vertical">
         <GroupBox Header="Settings">
-            <CheckBox x:Name="cbAllLayers" Content="All Layers" Margin="5"></CheckBox>
+            <CheckBox x:Name="cbAllLayers" ToolTip="Apply Transformation To All Layers" Content="All Layers" Margin="5"></CheckBox>
         </GroupBox>
         <GroupBox Header="Mirror">
             <StackPanel Orientation="Vertical">
@@ -30,8 +30,8 @@
                     <Label>Height:</Label>
                     <TextBox x:Name="txtHeight" Width="35" Margin="5" LostFocus="txtHeight_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
-                <CheckBox x:Name="cbResizeProportional" Content="Proportional" Margin="5"></CheckBox>
-                <Button x:Name="btnResize" Content="Apply" Margin="5" Click="btnResize_Click"></Button>
+                <CheckBox x:Name="cbResizeProportional" Content="Proportional" ToolTip="Apply same amount of changes to other size attribute." Margin="5"></CheckBox>
+                <Button x:Name="btnResize" Content="Apply" Margin="5" Click="btnResize_Click" IsDefault="True"></Button>
             </StackPanel>
         </GroupBox>
     </StackPanel>
