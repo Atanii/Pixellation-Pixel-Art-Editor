@@ -28,19 +28,19 @@ namespace Pixellation.Components.Tools
             _layer.GetWriteableBitmap().DrawLine((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
         }
 
-        public override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(MouseButtonEventArgs e)
         {
             p0 = e.GetPosition(_layer);
         }
 
-        public override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(MouseButtonEventArgs e)
         {
             Draw();
         }
 
         public override void OnMouseMove(MouseEventArgs e)
         {
-            if (p0 != null && e.LeftButton == MouseButtonState.Pressed)
+            if (p0 != null && IsMouseDown(e))
             {   
                 p1 = e.GetPosition(_layer);
                 _previewLayer.GetWriteableBitmap().Clear();

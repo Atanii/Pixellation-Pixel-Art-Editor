@@ -16,20 +16,35 @@ namespace Pixellation.Components.Tools
     /// </summary>
     public partial class ColourChooser : UserControl
     {   
-        public Color ChosenColour
+        public Color PrimaryColor
         {
-            get { return (Color)GetValue(ChosenColourProperty); }
+            get { return (Color)GetValue(PrimaryColourProperty); }
             set
             {
-                SetValue(ChosenColourProperty, value);
-                SetCcRectangleFill();
+                SetValue(PrimaryColourProperty, value);
+                SetCcRectanglesFill();
                 SetRGBATxtInputs();
             }
         }
 
-        public static readonly DependencyProperty ChosenColourProperty =
-         DependencyProperty.Register("ChosenColour", typeof(Color), typeof(ColourChooser), new FrameworkPropertyMetadata(
-            Color.Black, (d, e) => { RaiseChosenColourPropertyChangeEventHandlerEvent?.Invoke(default, EventArgs.Empty); }));
+        public static readonly DependencyProperty PrimaryColourProperty =
+         DependencyProperty.Register("PrimaryColor", typeof(Color), typeof(ColourChooser), new FrameworkPropertyMetadata(
+            Properties.Settings.Default.DefaultPrimaryColor, (d, e) => { RaiseChosenColourPropertyChangeEventHandlerEvent?.Invoke(default, EventArgs.Empty); }));
+
+        public Color SecondaryColor
+        {
+            get { return (Color)GetValue(SecondaryColourProperty); }
+            set
+            {
+                SetValue(SecondaryColourProperty, value);
+                SetCcRectanglesFill();
+                SetRGBATxtInputs();
+            }
+        }
+
+        public static readonly DependencyProperty SecondaryColourProperty =
+         DependencyProperty.Register("SecondaryColor", typeof(Color), typeof(ColourChooser), new FrameworkPropertyMetadata(
+            Properties.Settings.Default.DefaultSecondaryColor, (d, e) => { RaiseChosenColourPropertyChangeEventHandlerEvent?.Invoke(default, EventArgs.Empty); }));
 
         private delegate void ChosenColourPropertyChangeEventHandler(object sender, EventArgs args);
 
@@ -39,12 +54,14 @@ namespace Pixellation.Components.Tools
         {
             InitializeComponent();
             Init();
-            SetRGBATxtInputs();
         }
 
         private void Init()
         {
-            RaiseChosenColourPropertyChangeEventHandlerEvent += (s, a) => { SetCcRectangleFill(); };
+            RaiseChosenColourPropertyChangeEventHandlerEvent += (s, a) => {
+                SetCcRectanglesFill();
+                SetRGBATxtInputs();
+            };
         }
 
         private Color GetPixelColor(Rectangle cvs, Point mousePos)
@@ -96,12 +113,19 @@ namespace Pixellation.Components.Tools
             return Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
         }
 
-        private void SetChosenColourFromMousePosition(Point mousePos)
+        private void SetChosenColourFromMousePosition(MouseButtonEventArgs e)
         {
-            var colour = GetPixelColor(colourGradientCanvas, mousePos);
+            var colour = GetPixelColor(colourGradientCanvas, e.GetPosition(colourGradientCanvas));
             if (colour != null)
             {
-                ChosenColour = colour;
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    PrimaryColor = colour;
+                }
+                else if (e.RightButton == MouseButtonState.Pressed)
+                {
+                    SecondaryColor = colour;
+                }
             }
         }
 
@@ -110,26 +134,32 @@ namespace Pixellation.Components.Tools
             var colour = GetPixelColor(colourGradientHue, mousePos);
             if (colour != null)
             {
-                Resources["CurrentColor"] = colour.ToMediaColor();
+                Resources["CurrentHueColor"] = colour.ToMediaColor();
             }
         }
 
-        private void SetCcRectangleFill()
+        private void SetCcRectanglesFill()
         {
-            ccRectangle.Fill = new SolidColorBrush(ChosenColour.ToMediaColor());
+            Resources["PrimaryColor"] = PrimaryColor.ToMediaColor();
+            Resources["SecondaryColor"] = SecondaryColor.ToMediaColor();
         }
 
         private void SetRGBATxtInputs()
         {
-            scR.Text = ChosenColour.R.ToString();
-            scG.Text = ChosenColour.G.ToString();
-            scB.Text = ChosenColour.B.ToString();
-            scA.Text = ChosenColour.A.ToString();
+            scR.Text = PrimaryColor.R.ToString();
+            scG.Text = PrimaryColor.G.ToString();
+            scB.Text = PrimaryColor.B.ToString();
+            scA.Text = PrimaryColor.A.ToString();
+
+            scR2.Text = SecondaryColor.R.ToString();
+            scG2.Text = SecondaryColor.G.ToString();
+            scB2.Text = SecondaryColor.B.ToString();
+            scA2.Text = SecondaryColor.A.ToString();
         }
 
-        private void ColourWheelVisual_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ColourWheelVisual_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            SetChosenColourFromMousePosition(e.GetPosition(colourGradientCanvas));
+            SetChosenColourFromMousePosition(e);
         }
 
         private void ColourWheelVisualHue_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -137,31 +167,8 @@ namespace Pixellation.Components.Tools
             SetHueColourFromMousePosition(e.GetPosition(colourGradientHue));
         }
 
-        private void ColourWheelVisual_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                SetChosenColourFromMousePosition(e.GetPosition(colourGradientCanvas));
-            }
-        }
 
-        public void SetHueColor(Color c)
-        {
-            if (c != null)
-            {
-                Resources["CurrentColor"] = c.ToMediaColor();
-            }
-        }
-
-        public void SetHueColor(System.Windows.Media.Color c)
-        {
-            if (c != null)
-            {
-                Resources["CurrentColor"] = c;
-            }
-        }
-
-        private void sc_TextInput(object sender, KeyEventArgs e)
+        private void sc_TextInput(object sender, RoutedEventArgs e)
         {
             if (int.TryParse(scR.Text, out int R) &&
                 int.TryParse(scG.Text, out int G) &&
@@ -170,7 +177,20 @@ namespace Pixellation.Components.Tools
                 R <= 255 && G <= 255 && B <= 255 && A <= 255 &&
                 R >= 0 && G >= 0 && B >= 0 && A >= 0)
             {
-                ChosenColour = Color.FromArgb(A, R, G, B);
+                PrimaryColor = Color.FromArgb(A, R, G, B);
+            }
+        }
+
+        private void sc2_TextInput(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(scR2.Text, out int R) &&
+                int.TryParse(scG2.Text, out int G) &&
+                int.TryParse(scB2.Text, out int B) &&
+                int.TryParse(scA2.Text, out int A) &&
+                R <= 255 && G <= 255 && B <= 255 && A <= 255 &&
+                R >= 0 && G >= 0 && B >= 0 && A >= 0)
+            {
+                SecondaryColor = Color.FromArgb(A, R, G, B);
             }
         }
     }

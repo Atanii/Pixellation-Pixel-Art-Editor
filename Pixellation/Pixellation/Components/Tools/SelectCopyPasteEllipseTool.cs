@@ -41,7 +41,7 @@ namespace Pixellation.Components.Tools
             return _instance;
         }
 
-        public override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(MouseButtonEventArgs e)
         {
             p0 = e.GetPosition(_previewLayer);
             p1prev = p0;
@@ -69,7 +69,7 @@ namespace Pixellation.Components.Tools
             }
         }
 
-        public override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(MouseButtonEventArgs e)
         {
             _creating = false;
         }

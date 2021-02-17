@@ -19,12 +19,23 @@ namespace Pixellation.Components.Tools
             return _instance;
         }
 
-        private void Draw()
+        private void Draw(bool leftButtonPressed = true)
         {
             var p = Mouse.GetPosition(_layer);
 
             // odd X or even Y -> return
-            if (((int)(p.X / _magnification) & 1) == 1 || ((int)(p.Y / _magnification) & 1) != 1)
+            if ( leftButtonPressed && 
+                ((((int)(p.X / _magnification) & 1) == 1 || ((int)(p.Y / _magnification) & 1) != 1) ^
+                (((int)(p.X / _magnification) & 1) != 1 || ((int)(p.Y / _magnification) & 1) == 1))
+            )
+            {
+                return;
+            }
+            // odd + odd ^ even + even
+            if ( !leftButtonPressed &&
+                ((((int)( p.X / _magnification) & 1) == 1 && ((int)( p.Y / _magnification) & 1) == 1) ^
+                (((int)( p.X / _magnification) & 1) != 1 && ((int)( p.Y / _magnification) & 1) != 1))
+            )
             {
                 return;
             }
@@ -40,15 +51,21 @@ namespace Pixellation.Components.Tools
             _layer.InvalidateVisual();
         }
 
-        public override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(MouseButtonEventArgs e)
         {
-            Draw();
+            Draw(e.LeftButton == MouseButtonState.Pressed);
         }
 
         public override void OnMouseMove(MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
-                Draw();
+            {
+                Draw(true);
+            }
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                Draw(false);
+            }
         }
     }
 }

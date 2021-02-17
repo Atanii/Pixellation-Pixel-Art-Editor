@@ -34,14 +34,14 @@ namespace Pixellation.Components.Tools
             _layer.InvalidateVisual();
         }
 
-        public override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(MouseButtonEventArgs e)
         {
             Draw();
         }
 
         public override void OnMouseMove(MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (IsMouseDown(e))
                 Draw();
         }
     }

@@ -57,14 +57,24 @@ namespace Pixellation.Components.Editor
         public float TiledOpacity { get; private set; } = Settings.Default.DefaultTiledOpacity;
         public List<DrawingLayer> Layers { get; private set; }
 
-        public System.Drawing.Color ChosenColour
+        public System.Drawing.Color PrimaryColor
         {
-            get { return (System.Drawing.Color)GetValue(ChosenColourProperty); }
-            set { SetValue(ChosenColourProperty, value); }
+            get { return (System.Drawing.Color)GetValue(PrimaryColorProperty); }
+            set { SetValue(PrimaryColorProperty, value); OnPropertyChanged(); }
         }
-        public static readonly DependencyProperty ChosenColourProperty =
-         DependencyProperty.Register("ChosenColour", typeof(System.Drawing.Color), typeof(PixelEditor), new FrameworkPropertyMetadata(
-            System.Drawing.Color.Black
+        public static readonly DependencyProperty PrimaryColorProperty =
+         DependencyProperty.Register("PrimaryColor", typeof(System.Drawing.Color), typeof(PixelEditor), new FrameworkPropertyMetadata(
+            Settings.Default.DefaultPrimaryColor
+        ));
+
+        public System.Drawing.Color SecondaryColor
+        {
+            get { return (System.Drawing.Color)GetValue(SecondaryColorProperty); }
+            set { SetValue(SecondaryColorProperty, value); OnPropertyChanged(); }
+        }
+        public static readonly DependencyProperty SecondaryColorProperty =
+         DependencyProperty.Register("SecondaryColor", typeof(System.Drawing.Color), typeof(PixelEditor), new FrameworkPropertyMetadata(
+            Settings.Default.DefaultSecondaryColor
         ));
 
         public BaseTool ChosenTool
@@ -81,13 +91,12 @@ namespace Pixellation.Components.Editor
         public event EventHandler RaiseImageUpdatedEvent;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly VisualManager _vm;
-        public VisualManager VisualAndLayerManager => _vm;
+        public VisualManager VisualAndLayerManager { get; private set; }
 
         public PixelEditor()
         {
             Magnification = Settings.Default.DefaultMagnification;
-            _vm = new VisualManager(this);
+            VisualAndLayerManager = new VisualManager(this);
             Init(Settings.Default.DefaultImageSize, Settings.Default.DefaultImageSize);
             RefreshMeasureAndMagnification();
         }
@@ -95,7 +104,7 @@ namespace Pixellation.Components.Editor
         public PixelEditor(int width, int height, int defaultMagnification)
         {
             Magnification = defaultMagnification;
-            _vm = new VisualManager(this);
+            VisualAndLayerManager = new VisualManager(this);
             Init(width, height);
             RefreshMeasureAndMagnification();
         }
@@ -105,8 +114,10 @@ namespace Pixellation.Components.Editor
             PixelWidth = width;
             PixelHeight = height;
 
-            var layers = new List<DrawingLayer>();
-            layers.Add(new DrawingLayer(this, "default"));
+            var layers = new List<DrawingLayer>
+            {
+                new DrawingLayer(this, "default")
+            };
 
             _gridLines = CreateGridLines();
             _borderLine = CreateBorderLines();
@@ -117,9 +128,9 @@ namespace Pixellation.Components.Editor
             BaseTool.RaiseToolEvent += HandleToolEvent;
             RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
 
-            _vm.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
+            VisualAndLayerManager.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
 
-            _vm.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
+            VisualAndLayerManager.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
         }
 
         private void Init(WriteableBitmap imageToEdit = null)
@@ -143,9 +154,9 @@ namespace Pixellation.Components.Editor
             BaseTool.RaiseToolEvent += HandleToolEvent;
             RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
 
-            _vm.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
+            VisualAndLayerManager.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
 
-            _vm.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
+            VisualAndLayerManager.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
         }
 
         private void Init(List<DrawingLayer> layers)
@@ -159,21 +170,21 @@ namespace Pixellation.Components.Editor
             BaseTool.RaiseToolEvent += HandleToolEvent;
             RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
 
-            _vm.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
+            VisualAndLayerManager.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
 
-            _vm.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
+            VisualAndLayerManager.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
         }
 
         public void ToggleTiled()
         {
             Tiled = !Tiled;
-            _vm.InvalidateAllLayerVisual();
+            VisualAndLayerManager.InvalidateAllLayerVisual();
         }
 
         public void SetTiledOpacity(float newOpacity)
         {
             TiledOpacity = newOpacity;
-            _vm.InvalidateAllLayerVisual();
+            VisualAndLayerManager.InvalidateAllLayerVisual();
         }
 
         public void NewImage(int width = 32, int height = 32)
@@ -181,7 +192,7 @@ namespace Pixellation.Components.Editor
             PixelWidth = width;
             PixelHeight = height;
 
-            _vm.DeleteAllVisualChildren();
+            VisualAndLayerManager.DeleteAllVisualChildren();
 
             Init();
 
@@ -193,7 +204,7 @@ namespace Pixellation.Components.Editor
             PixelWidth = imageToEdit.PixelWidth;
             PixelHeight = imageToEdit.PixelHeight;
 
-            _vm.DeleteAllVisualChildren();
+            VisualAndLayerManager.DeleteAllVisualChildren();
 
             Init(imageToEdit);
 
@@ -208,7 +219,7 @@ namespace Pixellation.Components.Editor
             PixelWidth = width;
             PixelHeight = height;
 
-            _vm.DeleteAllVisualChildren();
+            VisualAndLayerManager.DeleteAllVisualChildren();
 
             var layers = new List<DrawingLayer>();
             foreach(var model in models)
@@ -255,7 +266,7 @@ namespace Pixellation.Components.Editor
             switch (e.Type)
             {
                 case ToolEventType.COLOR:
-                    ChosenColour = (System.Drawing.Color)e.Value;
+                    PrimaryColor = (System.Drawing.Color)e.Value;
                     break;
 
                 case ToolEventType.NOTHING:
@@ -264,9 +275,9 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        protected override int VisualChildrenCount => _vm.VisualCount;
+        protected override int VisualChildrenCount => VisualAndLayerManager.VisualCount;
 
-        protected override Visual GetVisualChild(int index) => _vm.GetVisualChild(index);
+        protected override Visual GetVisualChild(int index) => VisualAndLayerManager.GetVisualChild(index);
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -282,15 +293,33 @@ namespace Pixellation.Components.Editor
 
             CaptureMouse();
 
-            ChosenTool.SetDrawColor(ChosenColour);
-            ChosenTool.OnMouseLeftButtonDown(e);
+            ChosenTool.SetDrawColor(PrimaryColor);
+            ChosenTool.OnMouseDown(e);
+        }
+
+        protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseRightButtonDown(e);
+
+            CaptureMouse();
+
+            ChosenTool.SetDrawColor(SecondaryColor);
+            ChosenTool.OnMouseDown(e);
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
             ReleaseMouseCapture();
-            ChosenTool.OnMouseLeftButtonUp(e);
+            ChosenTool.OnMouseUp(e);
+            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonUp(e);
+            ReleaseMouseCapture();
+            ChosenTool.OnMouseUp(e);
             RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
@@ -309,14 +338,14 @@ namespace Pixellation.Components.Editor
             var magnification = Magnification;
             var size = new Size(PixelWidth * magnification, PixelHeight * magnification);
 
-            _vm?.MeasureAllLayer(size);
+            VisualAndLayerManager?.MeasureAllLayer(size);
 
             return size;
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            _vm?.ArrangeAllLayer(new Rect(finalSize));
+            VisualAndLayerManager?.ArrangeAllLayer(new Rect(finalSize));
             return finalSize;
         }
 
@@ -385,7 +414,7 @@ namespace Pixellation.Components.Editor
             AddVisualChild(_borderLine);
             AddVisualChild(_gridLines);
 
-            _vm?.InvalidateAllLayerVisual();
+            VisualAndLayerManager?.InvalidateAllLayerVisual();
 
             RenderTransformOrigin = new Point(ActualWidth, ActualHeight);
             HorizontalAlignment = HorizontalAlignment.Center;
@@ -413,7 +442,7 @@ namespace Pixellation.Components.Editor
             AddVisualChild(_borderLine);
             AddVisualChild(_gridLines);
 
-            _vm.InvalidateAllLayerVisual();
+            VisualAndLayerManager.InvalidateAllLayerVisual();
 
             RenderTransformOrigin = new Point(ActualWidth, ActualHeight);
             HorizontalAlignment = HorizontalAlignment.Center;
@@ -429,9 +458,9 @@ namespace Pixellation.Components.Editor
             return this._activeLayer.GetWriteableBitmap();
         }
 
-        public ImageSource GetImageSource() => _vm.GetAllMergedImageSource();
+        public ImageSource GetImageSource() => VisualAndLayerManager.GetAllMergedImageSource();
 
-        public List<LayerModel> GetLayerModels() => _vm.GetLayerModels();
+        public List<LayerModel> GetLayerModels() => VisualAndLayerManager.GetLayerModels();
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {

@@ -70,22 +70,20 @@ namespace Pixellation.Components.Tools
             ToolColor = c.ToMediaColor();
         }
 
-        public virtual void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        protected bool IsMouseDown(MouseButtonEventArgs e) => e.LeftButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed;
+        protected bool IsMouseDown(MouseEventArgs e) => e.LeftButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed;
+
+        public virtual void OnMouseDown(MouseButtonEventArgs e)
         {
             return;
         }
 
-        public virtual void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        public virtual void OnMouseUp(MouseButtonEventArgs e)
         {
             return;
         }
 
         public virtual void OnMouseMove(MouseEventArgs e)
-        {
-            return;
-        }
-
-        public virtual void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
             return;
         }

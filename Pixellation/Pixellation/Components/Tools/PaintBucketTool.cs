@@ -113,7 +113,7 @@ namespace Pixellation.Components.Tools
             }
         }
 
-        public override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(MouseButtonEventArgs e)
         {
             Draw();
         }

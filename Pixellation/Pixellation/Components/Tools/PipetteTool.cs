@@ -40,7 +40,7 @@ namespace Pixellation.Components.Tools
             return;
         }
 
-        public override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(MouseButtonEventArgs e)
         {
             TakeColor();
         }

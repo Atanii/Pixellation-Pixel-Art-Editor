@@ -3,12 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             d:DesignHeight="270" d:DesignWidth="200">
+             mc:Ignorable="d" x:Name="cc"
+             d:DesignHeight="360" d:DesignWidth="200">
 
     <UserControl.Resources>
 
-        <Color x:Key="CurrentColor">#FFFFFF</Color>
+        <Color x:Key="CurrentHueColor">#FFFFFF</Color>
+
+        <Color x:Key="PrimaryColor">#000000</Color>
+        <Color x:Key="SecondaryColor">#FFFFFF</Color>
+
+        <SolidColorBrush x:Key="BrushPrimary" Color="{DynamicResource PrimaryColor}"></SolidColorBrush>
+        <SolidColorBrush x:Key="BrushSecondary" Color="{DynamicResource SecondaryColor}"></SolidColorBrush>
 
         <VisualBrush x:Key="HueGradientBrush" TileMode="None">
             <VisualBrush.Visual>
@@ -40,7 +46,7 @@
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                 <LinearGradientBrush.GradientStops>
                                     <GradientStop Color="White" Offset="0" />
-                                    <GradientStop Color="{DynamicResource CurrentColor}" Offset="1" />
+                                    <GradientStop Color="{DynamicResource CurrentHueColor}" Offset="1" />
                                 </LinearGradientBrush.GradientStops>
                             </LinearGradientBrush>
                         </Rectangle.Fill>
@@ -62,22 +68,27 @@
     <StackPanel>
         <StackPanel Orientation="Horizontal">
             <Rectangle  x:Name="colourGradientCanvas" Fill="{StaticResource LevelSaturationBrush}" Width="170" Height="170" Margin="5"
-                    StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True"  MouseLeftButtonDown="ColourWheelVisual_MouseLeftButtonDown" />
+                    StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True" MouseDown="ColourWheelVisual_MouseDown" />
             <Rectangle  x:Name="colourGradientHue" Fill="{StaticResource HueGradientBrush}" Width="10" Height="170" Margin="5"
                     StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True" MouseLeftButtonDown="ColourWheelVisualHue_MouseLeftButtonDown" />
         </StackPanel>
-        <GroupBox Header="Colour (RGBA)" Height="50">
-            <UniformGrid Columns="4" Rows="1">
-                <TextBox x:Name="scR" Margin="5" KeyUp="sc_TextInput" Height="20"></TextBox>
-                <TextBox x:Name="scG" Margin="5" KeyUp="sc_TextInput" Height="20"></TextBox>
-                <TextBox x:Name="scB" Margin="5" KeyUp="sc_TextInput" Height="20"></TextBox>
-                <TextBox x:Name="scA" Margin="5" KeyUp="sc_TextInput" Height="20"></TextBox>
+        <GroupBox Header="Primary/Secondary Colour (RGBA)" Height="100">
+            <UniformGrid Columns="4" Rows="2">
+                <TextBox x:Name="scR" Margin="5" LostFocus="sc_TextInput" Text="{Binding ElementName=cc, Path=PrimaryColor.R, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
+                <TextBox x:Name="scG" Margin="5" LostFocus="sc_TextInput" Text="{Binding ElementName=cc, Path=PrimaryColor.G, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
+                <TextBox x:Name="scB" Margin="5" LostFocus="sc_TextInput" Text="{Binding ElementName=cc, Path=PrimaryColor.B, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
+                <TextBox x:Name="scA" Margin="5" LostFocus="sc_TextInput" Text="{Binding ElementName=cc, Path=PrimaryColor.A, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
+
+                <TextBox x:Name="scR2" Margin="5" LostFocus="sc2_TextInput" Text="{Binding ElementName=cc, Path=SecondaryColor.R, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
+                <TextBox x:Name="scG2" Margin="5" LostFocus="sc2_TextInput" Text="{Binding ElementName=cc, Path=SecondaryColor.G, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
+                <TextBox x:Name="scB2" Margin="5" LostFocus="sc2_TextInput" Text="{Binding ElementName=cc, Path=SecondaryColor.B, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
+                <TextBox x:Name="scA2" Margin="5" LostFocus="sc2_TextInput" Text="{Binding ElementName=cc, Path=SecondaryColor.A, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
             </UniformGrid>
         </GroupBox>
-        <GroupBox Header="Chosen Colour" Height="40">
-            <StackPanel>
-                <Rectangle x:Name="ccRectangle" Fill="Black" Height="20"></Rectangle>
-            </StackPanel>
-        </GroupBox>
+        <Canvas Width="200" Height="60" Margin="0,10,0,10">
+            <Rectangle x:Name="ccRectangle" Fill="{DynamicResource BrushPrimary}" Height="50" Width="50" Canvas.Left="70" Canvas.Top="0" Panel.ZIndex="1"></Rectangle>
+            <Rectangle x:Name="ccRectangleSecondary" Fill="{DynamicResource BrushSecondary}" Height="50" Width="50" Canvas.Left="80" Canvas.Bottom="0" Panel.ZIndex="0"></Rectangle>
+        </Canvas>
+        
     </StackPanel>
 </UserControl>
