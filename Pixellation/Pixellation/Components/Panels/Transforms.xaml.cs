@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
 using static Pixellation.Components.Editor.PixelEditor;
 
@@ -22,12 +24,35 @@ namespace Pixellation.Components.Panels
              new FrameworkPropertyMetadata()
         );
 
+        public int LayerWidth
+        {
+            get { return (int)GetValue(LayerWidthProperty); }
+            set { SetValue(LayerWidthProperty, value); }
+        }
+
+        public static readonly DependencyProperty LayerWidthProperty = DependencyProperty.Register(
+             "LayerWidth",
+             typeof(int),
+             typeof(Transforms),
+             new FrameworkPropertyMetadata()
+        );
+
+        public int LayerHeight
+        {
+            get { return (int)GetValue(LayerHeightProperty); }
+            set { SetValue(LayerHeightProperty, value); }
+        }
+
+        public static readonly DependencyProperty LayerHeightProperty = DependencyProperty.Register(
+             "LayerHeight",
+             typeof(int),
+             typeof(Transforms),
+             new FrameworkPropertyMetadata()
+        );
+
         public Transforms()
         {
             InitializeComponent();
-
-            /*txtWidth.Text = LayerManager.GetSize().Width.ToString();
-            txtHeight.Text = LayerManager.GetSize().Height.ToString();*/
         }
 
         private void mHorizontal_Click(object sender, RoutedEventArgs e)
@@ -56,27 +81,25 @@ namespace Pixellation.Components.Panels
             }
         }
 
-        private void txtWidth_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void txtWidth_LostFocus(object sender, RoutedEventArgs e)
         {
-            var w = txtWidth.Text;
             if ((bool)cbResizeProportional.IsChecked && 
-                double.TryParse(w, out double width) &&
-                width > 0)
+                double.TryParse(txtWidth.Text, out double width) && double.TryParse(txtHeight.Text, out double height) &&
+                width > 0 && height > 0)
             {
-                double prop = width / LayerManager.GetSize().Width;
-                txtHeight.Text = ((int)(LayerManager.GetSize().Height * prop)).ToString();
+                double prop = width / LayerWidth;
+                txtHeight.Text = ((int)(height * prop)).ToString();
             }
         }
 
-        private void txtHeight_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void txtHeight_LostFocus(object sender, RoutedEventArgs e)
         {
-            var h = txtHeight.Text;
             if ((bool)cbResizeProportional.IsChecked &&
-                double.TryParse(h, out double height) &&
-                height > 0)
+                double.TryParse(txtHeight.Text, out double height) && double.TryParse(txtWidth.Text, out double width) &&
+                height > 0 && width > 0)
             {
-                double prop = height / LayerManager.GetSize().Height;
-                txtWidth.Text = ((int)(LayerManager.GetSize().Width * prop)).ToString();
+                double prop = height / LayerHeight;
+                txtWidth.Text = ((int)(width * prop)).ToString();
             }
         }
     }

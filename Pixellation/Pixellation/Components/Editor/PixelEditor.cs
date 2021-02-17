@@ -20,7 +20,8 @@ namespace Pixellation.Components.Editor
         private DrawingLayer _drawPreview;
 
         private int _pixelWidth;
-        public int PixelWidth {
+        public int PixelWidth
+        {
             get { return _pixelWidth; }
             private set
             {
@@ -85,22 +86,40 @@ namespace Pixellation.Components.Editor
 
         public PixelEditor()
         {
-            PixelWidth = Settings.Default.DefaultImageSize;
-            PixelHeight = Settings.Default.DefaultImageSize;
             Magnification = Settings.Default.DefaultMagnification;
             _vm = new VisualManager(this);
-            Init();
+            Init(Settings.Default.DefaultImageSize, Settings.Default.DefaultImageSize);
             RefreshMeasureAndMagnification();
         }
 
         public PixelEditor(int width, int height, int defaultMagnification)
         {
-            PixelWidth = width;
-            PixelHeight = height;
             Magnification = defaultMagnification;
             _vm = new VisualManager(this);
-            Init();
+            Init(width, height);
             RefreshMeasureAndMagnification();
+        }
+
+        private void Init(int width, int height)
+        {
+            PixelWidth = width;
+            PixelHeight = height;
+
+            var layers = new List<DrawingLayer>();
+            layers.Add(new DrawingLayer(this, "default"));
+
+            _gridLines = CreateGridLines();
+            _borderLine = CreateBorderLines();
+            _drawPreview = new DrawingLayer(this, "DrawPreview");
+
+            Cursor = Cursors.Pen;
+
+            BaseTool.RaiseToolEvent += HandleToolEvent;
+            RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
+
+            _vm.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
+
+            _vm.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
         }
 
         private void Init(WriteableBitmap imageToEdit = null)

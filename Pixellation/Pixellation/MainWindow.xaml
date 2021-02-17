@@ -36,7 +36,7 @@
         <!-- STATUSBAR -->
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
-                <TextBlock Name="statWidth" Text="{Binding ElementName=canvasImage, Path=PixelWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' Width: {0}px'}" />
+                <TextBlock Name="statWidth" Text="{Binding ElementName=canvasImage, Path=PixelWidth, Mode=OneWay, StringFormat=' Width: {0}px'}" />
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock Name="statHeight" Text="{Binding ElementName=canvasImage, Path=PixelHeight, Mode=OneWay, StringFormat=' Height: {0}px'}" />
@@ -61,7 +61,11 @@
                     <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}"></Panels:LayerPalette>
 
                     <Label Content="Transforms"></Label>
-                    <Panels:Transforms LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}"></Panels:Transforms>
+                    <Panels:Transforms 
+                        LayerWidth="{Binding ElementName=canvasImage, Path=PixelWidth, Mode=OneWay}"
+                        LayerHeight="{Binding ElementName=canvasImage, Path=PixelHeight, Mode=OneWay}"
+                        LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}">
+                    </Panels:Transforms>
                 </StackPanel>
             </ScrollViewer>
         </Border>

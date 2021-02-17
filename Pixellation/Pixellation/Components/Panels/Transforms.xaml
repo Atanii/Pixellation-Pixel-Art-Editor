@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Pixellation.Components.Panels"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" x:Name="transformsWindow"
              d:DesignHeight="350" d:DesignWidth="200">
     <StackPanel Orientation="Vertical">
         <GroupBox Header="Settings">
@@ -26,9 +26,9 @@
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <Label>Width: </Label>
-                    <TextBox x:Name="txtWidth" Width="35" Margin="5" KeyUp="txtWidth_KeyUp"></TextBox>
+                    <TextBox x:Name="txtWidth" Width="35" Margin="5" LostFocus="txtWidth_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     <Label>Height:</Label>
-                    <TextBox x:Name="txtHeight" Width="35" Margin="5" KeyUp="txtHeight_KeyUp"></TextBox>
+                    <TextBox x:Name="txtHeight" Width="35" Margin="5" LostFocus="txtHeight_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
                 <CheckBox x:Name="cbResizeProportional" Content="Proportional" Margin="5"></CheckBox>
                 <Button x:Name="btnResize" Content="Apply" Margin="5" Click="btnResize_Click"></Button>
