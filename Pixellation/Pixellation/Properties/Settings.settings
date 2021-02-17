@@ -18,7 +18,7 @@
       <Value Profile="(Default)">Black</Value>
     </Setting>
     <Setting Name="DefaultSecondaryColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">White</Value>
+      <Value Profile="(Default)">DarkSlateGray</Value>
     </Setting>
   </Settings>
 </SettingsFile>

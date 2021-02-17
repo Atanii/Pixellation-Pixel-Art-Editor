@@ -8,8 +8,7 @@
 
     <UserControl.Resources>
 
-        <Color x:Key="CurrentHueColor">#FFFFFF</Color>
-
+        <Color x:Key="HueColor">#FFFFFF</Color>
         <Color x:Key="PrimaryColor">#000000</Color>
         <Color x:Key="SecondaryColor">#FFFFFF</Color>
 
@@ -46,7 +45,7 @@
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                 <LinearGradientBrush.GradientStops>
                                     <GradientStop Color="White" Offset="0" />
-                                    <GradientStop Color="{DynamicResource CurrentHueColor}" Offset="1" />
+                                    <GradientStop Color="{DynamicResource HueColor}" Offset="1" />
                                 </LinearGradientBrush.GradientStops>
                             </LinearGradientBrush>
                         </Rectangle.Fill>
@@ -68,7 +67,7 @@
     <StackPanel>
         <StackPanel Orientation="Horizontal">
             <Rectangle  x:Name="colourGradientCanvas" Fill="{StaticResource LevelSaturationBrush}" Width="170" Height="170" Margin="5"
-                    StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True" MouseDown="ColourWheelVisual_MouseDown" />
+                    StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True" MouseMove="colourGradientCanvas_MouseMove" MouseDown="ColourWheelVisual_MouseDown" />
             <Rectangle  x:Name="colourGradientHue" Fill="{StaticResource HueGradientBrush}" Width="10" Height="170" Margin="5"
                     StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True" MouseLeftButtonDown="ColourWheelVisualHue_MouseLeftButtonDown" />
         </StackPanel>
@@ -86,8 +85,8 @@
             </UniformGrid>
         </GroupBox>
         <Canvas Width="200" Height="60" Margin="0,10,0,10">
-            <Rectangle x:Name="ccRectangle" Fill="{DynamicResource BrushPrimary}" Height="50" Width="50" Canvas.Left="70" Canvas.Top="0" Panel.ZIndex="1"></Rectangle>
-            <Rectangle x:Name="ccRectangleSecondary" Fill="{DynamicResource BrushSecondary}" Height="50" Width="50" Canvas.Left="80" Canvas.Bottom="0" Panel.ZIndex="0"></Rectangle>
+            <Rectangle Fill="{DynamicResource BrushPrimary}" Height="50" Width="50" Canvas.Left="70" Canvas.Top="0" Panel.ZIndex="1"></Rectangle>
+            <Rectangle Fill="{DynamicResource BrushSecondary}" Height="50" Width="50" Canvas.Left="80" Canvas.Bottom="0" Panel.ZIndex="0"></Rectangle>
         </Canvas>
         
     </StackPanel>

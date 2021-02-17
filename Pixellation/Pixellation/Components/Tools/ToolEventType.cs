@@ -2,6 +2,6 @@
 {
     public enum ToolEventType
     {
-        NOTHING, COLOR
+        NOTHING, PRIMARYCOLOR, SECONDARY
     }
 }

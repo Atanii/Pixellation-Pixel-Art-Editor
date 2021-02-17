@@ -265,8 +265,12 @@ namespace Pixellation.Components.Editor
         {
             switch (e.Type)
             {
-                case ToolEventType.COLOR:
+                case ToolEventType.PRIMARYCOLOR:
                     PrimaryColor = (System.Drawing.Color)e.Value;
+                    break;
+
+                case ToolEventType.SECONDARY:
+                    SecondaryColor = (System.Drawing.Color)e.Value;
                     break;
 
                 case ToolEventType.NOTHING:

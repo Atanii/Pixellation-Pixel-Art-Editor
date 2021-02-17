@@ -73,7 +73,7 @@ namespace Pixellation.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("White")]
+        [global::System.Configuration.DefaultSettingValueAttribute("DarkSlateGray")]
         public global::System.Drawing.Color DefaultSecondaryColor {
             get {
                 return ((global::System.Drawing.Color)(this["DefaultSecondaryColor"]));

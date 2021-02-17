@@ -21,7 +21,7 @@ namespace Pixellation.Components.Tools
             return _instance;
         }
 
-        private void TakeColor()
+        private void TakeColor(ToolEventType e)
         {
             var p = Mouse.GetPosition(_layer);
 
@@ -32,7 +32,7 @@ namespace Pixellation.Components.Tools
                 (int)(p.X / _magnification),
                 (int)(p.Y / _magnification));
 
-            OnRaiseToolEvent(this, new ToolEventArgs { Type = ToolEventType.COLOR, Value = ToolColor.ToDrawingColor() });
+            OnRaiseToolEvent(this, new ToolEventArgs { Type = e, Value = ToolColor.ToDrawingColor() });
         }
 
         public override void SetDrawColor(Color c)
@@ -42,7 +42,14 @@ namespace Pixellation.Components.Tools
 
         public override void OnMouseDown(MouseButtonEventArgs e)
         {
-            TakeColor();
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                TakeColor(ToolEventType.PRIMARYCOLOR);
+            }
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                TakeColor(ToolEventType.SECONDARY);
+            }
         }
     }
 }

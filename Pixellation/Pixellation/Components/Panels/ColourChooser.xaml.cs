@@ -53,11 +53,6 @@ namespace Pixellation.Components.Tools
         public ColourChooser()
         {
             InitializeComponent();
-            Init();
-        }
-
-        private void Init()
-        {
             RaiseChosenColourPropertyChangeEventHandlerEvent += (s, a) => {
                 SetCcRectanglesFill();
                 SetRGBATxtInputs();
@@ -113,16 +108,20 @@ namespace Pixellation.Components.Tools
             return Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
         }
 
-        private void SetChosenColourFromMousePosition(MouseButtonEventArgs e)
+        private void SetChosenColourFromMousePosition(MouseEventArgs e)
         {
-            var colour = GetPixelColor(colourGradientCanvas, e.GetPosition(colourGradientCanvas));
-            if (colour != null)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
+                var colour = GetPixelColor(colourGradientCanvas, e.GetPosition(colourGradientCanvas));
+                if (colour != null)
                 {
                     PrimaryColor = colour;
                 }
-                else if (e.RightButton == MouseButtonState.Pressed)
+            }
+            else if (e.RightButton == MouseButtonState.Pressed)
+            {
+                var colour = GetPixelColor(colourGradientCanvas, e.GetPosition(colourGradientCanvas));
+                if (colour != null)
                 {
                     SecondaryColor = colour;
                 }
@@ -134,7 +133,7 @@ namespace Pixellation.Components.Tools
             var colour = GetPixelColor(colourGradientHue, mousePos);
             if (colour != null)
             {
-                Resources["CurrentHueColor"] = colour.ToMediaColor();
+                Resources["HueColor"] = colour.ToMediaColor();
             }
         }
 
@@ -158,6 +157,11 @@ namespace Pixellation.Components.Tools
         }
 
         private void ColourWheelVisual_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            SetChosenColourFromMousePosition(e);
+        }
+
+        private void colourGradientCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             SetChosenColourFromMousePosition(e);
         }
