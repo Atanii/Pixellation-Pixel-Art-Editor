@@ -175,11 +175,20 @@ namespace Pixellation.Utils
         /// </summary>
         /// <param name="p">Caller <see cref="System.Windows.Point"/>.</param>
         /// <param name="divisor">An <see cref="int"/> divisor.</param>
+        /// <param name="round">Should round X and Y in the and by using <see cref="Math.Round(double)"/>?</param>
         /// <returns>Divided <see cref="System.Windows.Point"/>.</returns>
-        public static System.Windows.Point IntDivide(this System.Windows.Point p, int divisor)
+        public static System.Windows.Point IntDivide(this System.Windows.Point p, int divisor, bool round = false)
         {
-            p.X /= divisor;
-            p.Y /= divisor;
+            if (round)
+            {
+                p.X = Math.Round(p.X / divisor);
+                p.Y = Math.Round(p.Y / divisor);
+            }
+            else
+            {
+                p.X /= divisor;
+                p.Y /= divisor;
+            }
 
             return p;
         }
