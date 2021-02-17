@@ -14,5 +14,11 @@
     <Setting Name="DefaultTiledOpacity" Type="System.Single" Scope="Application">
       <Value Profile="(Default)">0.5</Value>
     </Setting>
+    <Setting Name="DefaultPrimaryColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Black</Value>
+    </Setting>
+    <Setting Name="DefaultSecondaryColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

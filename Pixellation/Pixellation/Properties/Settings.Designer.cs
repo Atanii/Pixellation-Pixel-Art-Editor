@@ -58,5 +58,29 @@ namespace Pixellation.Properties {
                 return ((float)(this["DefaultTiledOpacity"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
+        public global::System.Drawing.Color DefaultPrimaryColor {
+            get {
+                return ((global::System.Drawing.Color)(this["DefaultPrimaryColor"]));
+            }
+            set {
+                this["DefaultPrimaryColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("White")]
+        public global::System.Drawing.Color DefaultSecondaryColor {
+            get {
+                return ((global::System.Drawing.Color)(this["DefaultSecondaryColor"]));
+            }
+            set {
+                this["DefaultSecondaryColor"] = value;
+            }
+        }
     }
 }
