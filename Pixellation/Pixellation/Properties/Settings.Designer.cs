@@ -94,5 +94,41 @@ namespace Pixellation.Properties {
                 this["DefaultHueColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DefaultShowBorder {
+            get {
+                return ((bool)(this["DefaultShowBorder"]));
+            }
+            set {
+                this["DefaultShowBorder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DefaultShowGrid {
+            get {
+                return ((bool)(this["DefaultShowGrid"]));
+            }
+            set {
+                this["DefaultShowGrid"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DefaultTiledModeOn {
+            get {
+                return ((bool)(this["DefaultTiledModeOn"]));
+            }
+            set {
+                this["DefaultTiledModeOn"] = value;
+            }
+        }
     }
 }

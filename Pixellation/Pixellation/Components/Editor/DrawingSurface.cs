@@ -36,7 +36,7 @@ namespace Pixellation.Components.Editor
 
             dc.DrawImage(_bitmap, new Rect(0, 0, width, height));
 
-            if (_owner.Tiled)
+            if (_owner.TiledModeOn)
             {
                 var temp = (WriteableBitmap)_bitmap.Clone();
                 temp.BlitRender(temp, false, _owner.TiledOpacity);

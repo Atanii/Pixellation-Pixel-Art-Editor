@@ -7,8 +7,9 @@
              xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d"
              d:DesignHeight="180" d:DesignWidth="180">
-    <UniformGrid Columns="5" Rows="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Button
+    <StackPanel Orientation="Vertical">
+        <UniformGrid Columns="5" Rows="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="50">
+            <Button
             Click="ToolButton_Click"
             ToolTip="Pencil"
             x:Name="BtnPencil"
@@ -16,108 +17,111 @@
             BorderBrush="Black"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/pencil.png"></ImageBrush>
-            </Button.Background>
-        </Button>
-        <Button
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/pencil.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button
             Click="ToolButton_Click"
             ToolTip="Dithering Tool"
             x:Name="BtnDithering"
             BorderThickness="0"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/line.png"></ImageBrush>
-            </Button.Background>
-        </Button>
-        <Button
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/line.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button
             Click="ToolButton_Click"
             ToolTip="Colorpicker"
             x:Name="BtnPipette"
             BorderThickness="0"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/pipette.png"></ImageBrush>
-            </Button.Background>
-        </Button>
-        <Button
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/pipette.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button
             Click="ToolButton_Click"
             ToolTip="Line Tool"
             x:Name="BtnLine"
             BorderThickness="0"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/dithering.png"></ImageBrush>
-            </Button.Background>
-        </Button>
-        <Button
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/dithering.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button
             Click="ToolButton_Click"
             ToolTip="Paintbucket"
             x:Name="BtnPaintBucket"
             BorderThickness="0"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/bucket.png"></ImageBrush>
-            </Button.Background>
-        </Button>
-        <Button
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/bucket.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button
             Click="ToolButton_Click"
             ToolTip="Eraser"
             x:Name="BtnEraser"
             BorderThickness="0"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/eraser.png"></ImageBrush>
-            </Button.Background>
-        </Button>
-        <Button
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/eraser.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button
             Click="ToolButton_Click"
             ToolTip="Circle Tool"
             x:Name="BtnCircle"
             BorderThickness="0"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/circle.png"></ImageBrush>
-            </Button.Background>
-        </Button>
-        <Button
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/circle.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button
             Click="ToolButton_Click"
             ToolTip="Rectangle Tool"
             x:Name="BtnRectangle"
             BorderThickness="0"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/rectangle.png"></ImageBrush>
-            </Button.Background>
-        </Button>
-        <Button
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/rectangle.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button
             Click="ToolButton_Click"
             ToolTip="Rectangle Selection"
             x:Name="BtnSelection"
             BorderThickness="0"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/rectangle_selection.png"></ImageBrush>
-            </Button.Background>
-        </Button>
-        <Button
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/rectangle_selection.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button
             Click="ToolButton_Click"
             ToolTip="Ellipse Selection"
             x:Name="BtnEllipseSelection"
             BorderThickness="0"
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
-            <Button.Background>
-                <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/circle_selection.png"></ImageBrush>
-            </Button.Background>
-        </Button>
-    </UniformGrid>
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/circle_selection.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+        </UniformGrid>
+        <Label>Tool Settings</Label>
+        <CheckBox Margin="5" x:Name="cbEraserMode" Click="cbEraserMode_Click" ToolTip="Use tools with transparency as color.">Eraser Mode</CheckBox>
+    </StackPanel>
 </UserControl>

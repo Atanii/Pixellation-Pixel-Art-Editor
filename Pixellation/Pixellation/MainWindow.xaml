@@ -55,7 +55,7 @@
             <ScrollViewer>
                 <StackPanel>
                     <Label Content="Tools"></Label>
-                    <Panels:ToolPalette Width="180" Height="80" x:Name="toolPalette" />
+                    <Panels:ToolPalette Width="180" Height="100" x:Name="toolPalette" />
 
                     <Label Content="Layers"></Label>
                     <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}"></Panels:LayerPalette>
@@ -78,7 +78,7 @@
                     <Panels:Preview Width="200" Height="200" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}" />
 
                     <Label Content="Tiled"></Label>
-                    <Panels:TiledModeSettingsPanel Editor="{Binding ElementName=canvasImage, Mode=OneTime}" />
+                    <Panels:EditorSettingsPanel x:Name="editorSettings"/>
 
                     <Label Content="Colour"></Label>
                     <l2:ColourChooser Width="200" Height="400" x:Name="colorChooser"
@@ -101,6 +101,11 @@
             </ScrollViewer.Background>
             
             <l:PixelEditor ChosenTool="{Binding ElementName=toolPalette, Path=ChosenTool, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                           EraserModeOn="{Binding ElementName=toolPalette, Path=EraserModeOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                           TiledModeOn="{Binding ElementName=editorSettings, Path=TiledModeOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                           TiledOpacity="{Binding ElementName=editorSettings, Path=TiledOpacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                           ShowBorder="{Binding ElementName=editorSettings, Path=ShowBorderOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                           ShowGrid="{Binding ElementName=editorSettings, Path=ShowGridOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
         </ScrollViewer>
     </DockPanel>

@@ -14,10 +14,16 @@ namespace Pixellation.Components.Editor
 {
     public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged
     {
+        #region PrivateFields
         private DrawingLayer _activeLayer;
         private Visual _gridLines;
         private Visual _borderLine;
         private DrawingLayer _drawPreview;
+        #endregion PrivateFields
+
+        #region Properties
+        public List<DrawingLayer> Layers { get; private set; }
+        public VisualManager VisualAndLayerManager { get; private set; }
 
         private int _pixelWidth;
         public int PixelWidth
@@ -48,14 +54,32 @@ namespace Pixellation.Components.Editor
             set
             {
                 _magnification = value;
-                RefreshMeasureAndMagnification();
+                RefreshMeasureVisualsMagnification();
                 OnPropertyChanged();
             }
         }
+        #endregion Properties
 
-        public bool Tiled { get; private set; } = false;
-        public float TiledOpacity { get; private set; } = Settings.Default.DefaultTiledOpacity;
-        public List<DrawingLayer> Layers { get; private set; }
+        #region DependencyProperties
+        public float TiledOpacity
+        {
+            get { return (float)GetValue(TiledOpacityProperty); }
+            set { SetValue(TiledOpacityProperty, value); OnPropertyChanged(); }
+        }
+        public static readonly DependencyProperty TiledOpacityProperty =
+         DependencyProperty.Register("TiledOpacity", typeof(float), typeof(PixelEditor), new FrameworkPropertyMetadata(
+            Settings.Default.DefaultTiledOpacity, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
+        ));
+
+        public bool TiledModeOn
+        {
+            get { return (bool)GetValue(TiledModeOnProperty); }
+            set { SetValue(TiledModeOnProperty, value); OnPropertyChanged(); }
+        }
+        public static readonly DependencyProperty TiledModeOnProperty =
+         DependencyProperty.Register("TiledModeOn", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
+            Settings.Default.DefaultTiledModeOn, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
+        ));
 
         public System.Drawing.Color PrimaryColor
         {
@@ -77,6 +101,36 @@ namespace Pixellation.Components.Editor
             Settings.Default.DefaultSecondaryColor
         ));
 
+        public bool EraserModeOn
+        {
+            get { return (bool)GetValue(EraserModeOnProperty); }
+            set { SetValue(EraserModeOnProperty, value); OnPropertyChanged(); }
+        }
+        public static readonly DependencyProperty EraserModeOnProperty =
+         DependencyProperty.Register("EraserModeOn", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
+            false
+        ));
+
+        public bool ShowBorder
+        {
+            get { return (bool)GetValue(ShowBorderProperty); }
+            set { SetValue(ShowBorderProperty, value); OnPropertyChanged(); }
+        }
+        public static readonly DependencyProperty ShowBorderProperty =
+         DependencyProperty.Register("ShowBorder", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
+            Settings.Default.DefaultShowBorder, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
+        ));
+
+        public bool ShowGrid
+        {
+            get { return (bool)GetValue(ShowGridProperty); }
+            set { SetValue(ShowGridProperty, value); OnPropertyChanged(); }
+        }
+        public static readonly DependencyProperty ShowGridProperty =
+         DependencyProperty.Register("ShowGrid", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
+            Settings.Default.DefaultShowGrid, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
+        ));
+
         public BaseTool ChosenTool
         {
             get { return (BaseTool)GetValue(ChosenToolProperty); }
@@ -86,55 +140,60 @@ namespace Pixellation.Components.Editor
          DependencyProperty.Register("ChosenTool", typeof(ITool), typeof(PixelEditor), new PropertyMetadata(
              null, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
         ));
+        #endregion DependencyProperties
 
+        #region Event
         private static event EventHandler RaiseToolChangeEvent;
+        private static event EventHandler EditorSettingsChangeEvent;
         public event EventHandler RaiseImageUpdatedEvent;
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public VisualManager VisualAndLayerManager { get; private set; }
+        #endregion Event
 
         public PixelEditor()
         {
+            Cursor = Cursors.Pen;
+
             Magnification = Settings.Default.DefaultMagnification;
-            VisualAndLayerManager = new VisualManager(this);
-            Init(Settings.Default.DefaultImageSize, Settings.Default.DefaultImageSize);
-            RefreshMeasureAndMagnification();
-        }
-
-        public PixelEditor(int width, int height, int defaultMagnification)
-        {
-            Magnification = defaultMagnification;
-            VisualAndLayerManager = new VisualManager(this);
-            Init(width, height);
-            RefreshMeasureAndMagnification();
-        }
-
-        private void Init(int width, int height)
-        {
-            PixelWidth = width;
-            PixelHeight = height;
+            PixelWidth = Settings.Default.DefaultImageSize;
+            PixelHeight = Settings.Default.DefaultImageSize;
 
             var layers = new List<DrawingLayer>
             {
                 new DrawingLayer(this, "default")
             };
 
-            _gridLines = CreateGridLines();
-            _borderLine = CreateBorderLines();
-            _drawPreview = new DrawingLayer(this, "DrawPreview");
-
-            Cursor = Cursors.Pen;
-
             BaseTool.RaiseToolEvent += HandleToolEvent;
             RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
+            EditorSettingsChangeEvent += (d, e) => { RefreshMeasureVisualsMagnification(); };
 
-            VisualAndLayerManager.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
-
-            VisualAndLayerManager.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
+            Init(layers);
         }
 
-        private void Init(WriteableBitmap imageToEdit = null)
+        #region Init And New Image
+        public void NewImage(int width = 32, int height = 32)
         {
+            Magnification = Settings.Default.DefaultMagnification;
+            PixelWidth = width;
+            PixelHeight = height;
+
+            VisualAndLayerManager.DeleteAllVisualChildren();
+
+            var layers = new List<DrawingLayer>
+            {
+                new DrawingLayer(this, "default")
+            };
+
+            Init(layers);
+        }
+
+        public void NewImage(WriteableBitmap imageToEdit)
+        {
+            Magnification = Settings.Default.DefaultMagnification;
+            PixelWidth = imageToEdit.PixelWidth;
+            PixelHeight = imageToEdit.PixelHeight;
+
+            VisualAndLayerManager.DeleteAllVisualChildren();
+
             var layers = new List<DrawingLayer>();
             if (imageToEdit == null)
             {
@@ -145,84 +204,19 @@ namespace Pixellation.Components.Editor
                 layers.Add(new DrawingLayer(this, imageToEdit, "default"));
             }
 
-            _gridLines = CreateGridLines();
-            _borderLine = CreateBorderLines();
-            _drawPreview = new DrawingLayer(this, "DrawPreview");
-
-            Cursor = Cursors.Pen;
-
-            BaseTool.RaiseToolEvent += HandleToolEvent;
-            RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
-
-            VisualAndLayerManager.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
-
-            VisualAndLayerManager.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
-        }
-
-        private void Init(List<DrawingLayer> layers)
-        {
-            _gridLines = CreateGridLines();
-            _borderLine = CreateBorderLines();
-            _drawPreview = new DrawingLayer(this, "DrawPreview");
-
-            Cursor = Cursors.Pen;
-
-            BaseTool.RaiseToolEvent += HandleToolEvent;
-            RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
-
-            VisualAndLayerManager.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
-
-            VisualAndLayerManager.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
-        }
-
-        public void ToggleTiled()
-        {
-            Tiled = !Tiled;
-            VisualAndLayerManager.InvalidateAllLayerVisual();
-        }
-
-        public void SetTiledOpacity(float newOpacity)
-        {
-            TiledOpacity = newOpacity;
-            VisualAndLayerManager.InvalidateAllLayerVisual();
-        }
-
-        public void NewImage(int width = 32, int height = 32)
-        {
-            PixelWidth = width;
-            PixelHeight = height;
-
-            VisualAndLayerManager.DeleteAllVisualChildren();
-
-            Init();
-
-            RefreshMeasureAndMagnification();
-        }
-
-        public void NewImage(WriteableBitmap imageToEdit)
-        {
-            PixelWidth = imageToEdit.PixelWidth;
-            PixelHeight = imageToEdit.PixelHeight;
-
-            VisualAndLayerManager.DeleteAllVisualChildren();
-
-            Init(imageToEdit);
-
-            UpdateToolProperties();
-
-            InvalidateMeasure();
-            InvalidateVisual();
+            Init(layers);
         }
 
         public void NewImage(List<LayerModel> models, int width = 32, int height = 32)
         {
+            Magnification = Settings.Default.DefaultMagnification;
             PixelWidth = width;
             PixelHeight = height;
 
             VisualAndLayerManager.DeleteAllVisualChildren();
 
             var layers = new List<DrawingLayer>();
-            foreach(var model in models)
+            foreach (var model in models)
             {
                 layers.Add(new DrawingLayer(
                     this,
@@ -231,112 +225,78 @@ namespace Pixellation.Components.Editor
             }
 
             Init(layers);
-
-            RefreshMeasureAndMagnification();
         }
 
+        private void Init(List<DrawingLayer> layers)
+        {
+            _gridLines = CreateGridLines();
+            _borderLine = CreateBorderLines();
+            _drawPreview = new DrawingLayer(this, "DrawPreview");
+
+            VisualAndLayerManager = new VisualManager(this);
+            VisualAndLayerManager.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
+            VisualAndLayerManager.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
+
+            RefreshMeasureVisualsMagnification();
+        }
+        #endregion Init And New Image
+
+        #region Transforms
         private void Resize(int newWidth, int newHeight)
         {
             PixelWidth = newWidth;
             PixelHeight = newHeight;
             Magnification = Settings.Default.DefaultMagnification;
         }
+        #endregion Transforms
 
-        public void RefreshMeasureAndMagnification()
+        #region Update, refresh...
+        public void RefreshMeasureVisualsMagnification()
         {
             UpdateToolProperties();
+            RefreshHelperVisuals();
+            RefreshPositionAndAlignment();
             InvalidateMeasure();
-            UpdateMagnification();
+            InvalidateVisual();
+            VisualAndLayerManager?.InvalidateAllLayerVisual();
+        }
+
+        public void RefreshHelperVisuals()
+        {
+            RemoveVisualChild(_gridLines);
+            _gridLines = CreateGridLines();
+
+            RemoveVisualChild(_borderLine);
+            _borderLine = CreateBorderLines();
+
+            RemoveVisualChild(_drawPreview);
+            _drawPreview = new DrawingLayer(this, "DrawPreview");
+
+            AddVisualChild(_drawPreview);
+            AddVisualChild(_borderLine);
+            AddVisualChild(_gridLines);
+        }
+
+        public void RefreshPositionAndAlignment()
+        {
+            RenderTransformOrigin = new Point(ActualWidth, ActualHeight);
+            HorizontalAlignment = HorizontalAlignment.Center;
+            VerticalAlignment = VerticalAlignment.Center;
         }
 
         public void UpdateVisualRelated()
         {
-            InvalidateVisual();
+            RefreshMeasureVisualsMagnification();
             RaiseImageUpdatedEvent?.Invoke(default, EventArgs.Empty);
-            ChosenTool.SetActiveLayer(_activeLayer);
         }
 
         private void UpdateToolProperties()
         {
             ChosenTool?.SetDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview);
         }
+        #endregion Update, refresh...
 
-        private void HandleToolEvent(object sender, ToolEventArgs e)
-        {
-            switch (e.Type)
-            {
-                case ToolEventType.PRIMARYCOLOR:
-                    PrimaryColor = (System.Drawing.Color)e.Value;
-                    break;
-
-                case ToolEventType.SECONDARY:
-                    SecondaryColor = (System.Drawing.Color)e.Value;
-                    break;
-
-                case ToolEventType.NOTHING:
-                default:
-                    break;
-            }
-        }
-
-        protected override int VisualChildrenCount => VisualAndLayerManager.VisualCount;
-
-        protected override Visual GetVisualChild(int index) => VisualAndLayerManager.GetVisualChild(index);
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-
-            if (IsMouseCaptured)
-                ChosenTool.OnMouseMove(e);
-        }
-
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonDown(e);
-
-            CaptureMouse();
-
-            ChosenTool.SetDrawColor(PrimaryColor);
-            ChosenTool.OnMouseDown(e);
-        }
-
-        protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseRightButtonDown(e);
-
-            CaptureMouse();
-
-            ChosenTool.SetDrawColor(SecondaryColor);
-            ChosenTool.OnMouseDown(e);
-        }
-
-        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonUp(e);
-            ReleaseMouseCapture();
-            ChosenTool.OnMouseUp(e);
-            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonUp(e);
-            ReleaseMouseCapture();
-            ChosenTool.OnMouseUp(e);
-            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void OnKeyDown(object sender, KeyEventArgs e)
-        {
-            if (IsMouseOver)
-            {
-                base.OnKeyDown(e);
-                ChosenTool.OnKeyDown(e);
-                RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
+        #region Misc overrides
         protected override Size MeasureOverride(Size availableSize)
         {
             var magnification = Magnification;
@@ -353,6 +313,9 @@ namespace Pixellation.Components.Editor
             return finalSize;
         }
 
+        #endregion Misc overrides
+
+        #region Create visuals
         private Visual CreateGridLines()
         {
             var dv = new DrawingVisual();
@@ -403,72 +366,106 @@ namespace Pixellation.Components.Editor
             return dv;
         }
 
-        public void UpdateMagnification()
-        {
-            RemoveVisualChild(_gridLines);
-            _gridLines = CreateGridLines();
+        #endregion Create visuals
 
-            RemoveVisualChild(_borderLine);
-            _borderLine = CreateBorderLines();
+        #region Getters
+        protected override int VisualChildrenCount => VisualAndLayerManager.VisualCount;
 
-            RemoveVisualChild(_drawPreview);
-            _drawPreview = new DrawingLayer(this, "DrawPreview");
+        protected override Visual GetVisualChild(int index) => VisualAndLayerManager.GetVisualChild(index);
 
-            AddVisualChild(_drawPreview);
-            AddVisualChild(_borderLine);
-            AddVisualChild(_gridLines);
-
-            VisualAndLayerManager?.InvalidateAllLayerVisual();
-
-            RenderTransformOrigin = new Point(ActualWidth, ActualHeight);
-            HorizontalAlignment = HorizontalAlignment.Center;
-            VerticalAlignment = VerticalAlignment.Center;
-
-            UpdateToolProperties();
-
-            InvalidateVisual();
-        }
-
-        public void UpdateMagnification(int zoom)
-        {
-            Magnification = zoom;
-
-            RemoveVisualChild(_gridLines);
-            _gridLines = CreateGridLines();
-
-            RemoveVisualChild(_borderLine);
-            _borderLine = CreateBorderLines();
-
-            RemoveVisualChild(_drawPreview);
-            _drawPreview = new DrawingLayer(this, "DrawPreview");
-
-            AddVisualChild(_drawPreview);
-            AddVisualChild(_borderLine);
-            AddVisualChild(_gridLines);
-
-            VisualAndLayerManager.InvalidateAllLayerVisual();
-
-            RenderTransformOrigin = new Point(ActualWidth, ActualHeight);
-            HorizontalAlignment = HorizontalAlignment.Center;
-            VerticalAlignment = VerticalAlignment.Center;
-
-            UpdateToolProperties();
-
-            InvalidateVisual();
-        }
-
-        public WriteableBitmap GetWriteableBitmap()
-        {
-            return this._activeLayer.GetWriteableBitmap();
-        }
+        public WriteableBitmap GetWriteableBitmap() => _activeLayer.GetWriteableBitmap();
 
         public ImageSource GetImageSource() => VisualAndLayerManager.GetAllMergedImageSource();
 
         public List<LayerModel> GetLayerModels() => VisualAndLayerManager.GetLayerModels();
+        #endregion Getters
+
+        #region Handlers for custom events
+        private void HandleToolEvent(object sender, ToolEventArgs e)
+        {
+            switch (e.Type)
+            {
+                case ToolEventType.PRIMARYCOLOR:
+                    PrimaryColor = (System.Drawing.Color)e.Value;
+                    break;
+
+                case ToolEventType.SECONDARY:
+                    SecondaryColor = (System.Drawing.Color)e.Value;
+                    break;
+
+                case ToolEventType.NOTHING:
+                default:
+                    break;
+            }
+        }
+        #endregion Handlers for custom events
+
+        #region On... Event handler functions
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            if (IsMouseCaptured)
+                ChosenTool.OnMouseMove(e);
+        }
+
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+
+            CaptureMouse();
+
+            if (EraserModeOn)
+            {
+                ChosenTool.SetDrawColor(System.Drawing.Color.Transparent);
+            }
+            else
+            {
+                ChosenTool.SetDrawColor(PrimaryColor);
+            }
+            ChosenTool.OnMouseDown(e);
+        }
+
+        protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseRightButtonDown(e);
+
+            CaptureMouse();
+
+            ChosenTool.SetDrawColor(SecondaryColor);
+            ChosenTool.OnMouseDown(e);
+        }
+
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonUp(e);
+            ReleaseMouseCapture();
+            ChosenTool.OnMouseUp(e);
+            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonUp(e);
+            ReleaseMouseCapture();
+            ChosenTool.OnMouseUp(e);
+            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (IsMouseOver)
+            {
+                base.OnKeyDown(e);
+                ChosenTool.OnKeyDown(e);
+                RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        #endregion On... Event handler functions
     }
 }

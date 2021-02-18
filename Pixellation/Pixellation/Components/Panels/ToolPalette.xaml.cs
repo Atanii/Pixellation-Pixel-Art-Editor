@@ -1,4 +1,6 @@
 ﻿using Pixellation.Components.Tools;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -7,7 +9,7 @@ namespace Pixellation.Components.Panels
     /// <summary>
     /// Interaction logic for ToolPalette.xaml
     /// </summary>
-    public partial class ToolPalette : UserControl
+    public partial class ToolPalette : UserControl, INotifyPropertyChanged
     {
         public static readonly ITool Pencil = PencilTool.GetInstance();
         public static readonly ITool Eraser = EraserTool.GetInstance();
@@ -32,6 +34,15 @@ namespace Pixellation.Components.Panels
         }
         public static readonly DependencyProperty ChosenToolProperty =
          DependencyProperty.Register("ChosenTool", typeof(ITool), typeof(ToolPalette), new PropertyMetadata(Pencil));
+
+        private bool _eraserModeOn;
+        public bool EraserModeOn
+        {
+            get { return _eraserModeOn; }
+            set { _eraserModeOn = value; OnPropertyChanged(); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public ToolPalette()
         {
@@ -90,6 +101,16 @@ namespace Pixellation.Components.Panels
                 "BtnEllipseSelection" => SelectionEllipse,
                 _ => Pencil,
             };
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        private void cbEraserMode_Click(object sender, RoutedEventArgs e)
+        {
+            EraserModeOn = (bool)cbEraserMode.IsChecked;
         }
     }
 }
