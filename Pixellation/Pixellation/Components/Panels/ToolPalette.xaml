@@ -29,7 +29,7 @@
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
-                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/line.png"></ImageBrush>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/dithering.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
@@ -51,7 +51,7 @@
             Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
             Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
-                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/dithering.png"></ImageBrush>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/line.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
