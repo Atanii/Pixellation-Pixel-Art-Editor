@@ -38,7 +38,7 @@ namespace Pixellation.Components.Editor
 
             if (_owner.TiledModeOn)
             {
-                var temp = (WriteableBitmap)_bitmap.Clone();
+                var temp = _bitmap.Clone();
                 temp.BlitRender(temp, false, _owner.TiledOpacity);
                 for (int x = -5 * width; x <= 5 * width; x += width)
                 {

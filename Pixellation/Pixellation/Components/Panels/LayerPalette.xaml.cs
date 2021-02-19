@@ -1,9 +1,9 @@
 ﻿using Pixellation.Components.Dialogs;
 using Pixellation.Components.Dialogs.StringInputDialog;
+using Pixellation.Interfaces;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using static Pixellation.Components.Editor.PixelEditor;
 
 namespace Pixellation.Components.Panels
 {
@@ -14,14 +14,14 @@ namespace Pixellation.Components.Panels
     {
         private static event EventHandler<DependencyPropertyChangedEventArgs> RaiseLayerListPropertyInitialized;
 
-        public VisualManager LayerManager
+        public IVisualManager LayerManager
         {
-            get { return (VisualManager)GetValue(LayerListProperty); }
+            get { return (IVisualManager)GetValue(LayerListProperty); }
             set { SetValue(LayerListProperty, value); }
         }
 
         public static readonly DependencyProperty LayerListProperty =
-         DependencyProperty.Register("LayerManager", typeof(VisualManager), typeof(LayerPalette), new FrameworkPropertyMetadata(
+         DependencyProperty.Register("LayerManager", typeof(IVisualManager), typeof(LayerPalette), new FrameworkPropertyMetadata(
              default,
              (s, e) => { RaiseLayerListPropertyInitialized?.Invoke(s, e); }
         ));
@@ -30,7 +30,7 @@ namespace Pixellation.Components.Panels
         {
             RaiseLayerListPropertyInitialized += (a, b) =>
             {
-                LayerManager.VisualsChanged += UpdateLayerList;
+                LayerManager.RaiseImageUpdatedEvent += UpdateLayerList;
                 UpdateLayerList(a, EventArgs.Empty);
                 // Initial layer selection
                 SelectLayer();
@@ -86,13 +86,13 @@ namespace Pixellation.Components.Panels
 
         private void MoveLayerUp(object sender, RoutedEventArgs e)
         {
-            int index = LayerManager.MoveUp(layerList.SelectedIndex);
+            int index = LayerManager.MoveLayerUp(layerList.SelectedIndex);
             SelectLayer(index);
         }
 
         private void MoveLayerDown(object sender, RoutedEventArgs e)
         {
-            int index = LayerManager.MoveDown(layerList.SelectedIndex);
+            int index = LayerManager.MoveLayerDown(layerList.SelectedIndex);
             SelectLayer(index);
         }
 

@@ -13,7 +13,7 @@ namespace Pixellation
     /// </summary>
     public partial class MainWindow : Window
     {
-        private PersistenceManager pm;
+        private readonly PersistenceManager pm;
 
         public MainWindow()
         {
@@ -83,7 +83,7 @@ namespace Pixellation
             if (saveFileDialog.ShowDialog() == true)
             {
                 string fileName = saveFileDialog.FileName;
-                pm.ExportAsImage(fileName, canvasImage.VisualAndLayerManager);
+                pm.ExportAsImage(fileName, canvasImage);
             }
         }
 

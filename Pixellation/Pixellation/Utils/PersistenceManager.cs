@@ -1,4 +1,4 @@
-﻿using Pixellation.Components.Editor;
+﻿using Pixellation.Interfaces;
 using Pixellation.Models;
 using Pixellation.Properties;
 using Pixellation.Utils.FilePackaging;
@@ -11,7 +11,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using static Pixellation.Components.Editor.PixelEditor;
 
 namespace Pixellation.Utils
 {
@@ -42,7 +41,7 @@ namespace Pixellation.Utils
             return writeableBitmap;
         }
 
-        public void SaveProject(string filePath, PixelEditor pe)
+        public void SaveProject(string filePath, IVisualManager vm)
         {
             var filePaths = new List<string>();
 
@@ -50,7 +49,7 @@ namespace Pixellation.Utils
             var layersPath = Resources.PackageContentFileNameForLayers + "." + Resources.ExtensionForLayersFile;
             var formatter = new BinaryFormatter();
             var stream = new FileStream(layersPath, FileMode.Create, FileAccess.Write);
-            formatter.Serialize(stream, pe.GetLayerModels());
+            formatter.Serialize(stream, vm.GetLayerModels());
             stream.Close();
             filePaths.Add(layersPath);
 
@@ -88,7 +87,7 @@ namespace Pixellation.Utils
             fpwr.SaveProjectModel();
         }
 
-        public void ExportAsImage(string filePath, VisualManager vm)
+        public void ExportAsImage(string filePath, IVisualManager vm)
         {
             var wrBitmap = vm.GetAllMergedWriteableBitmap();
             SaveBitmapSourceToFile(filePath, wrBitmap);

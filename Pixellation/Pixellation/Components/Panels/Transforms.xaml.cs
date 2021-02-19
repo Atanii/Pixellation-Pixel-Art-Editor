@@ -1,8 +1,6 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using Pixellation.Interfaces;
 using System.Windows;
 using System.Windows.Controls;
-using static Pixellation.Components.Editor.PixelEditor;
 
 namespace Pixellation.Components.Panels
 {
@@ -11,15 +9,15 @@ namespace Pixellation.Components.Panels
     /// </summary>
     public partial class Transforms : UserControl
     {
-        public VisualManager LayerManager
+        public IVisualManager LayerManager
         {
-            get { return (VisualManager)GetValue(LayerListProperty); }
+            get { return (IVisualManager)GetValue(LayerListProperty); }
             set { SetValue(LayerListProperty, value); }
         }
 
         public static readonly DependencyProperty LayerListProperty = DependencyProperty.Register(
              "LayerManager",
-             typeof(VisualManager),
+             typeof(IVisualManager),
              typeof(Transforms),
              new FrameworkPropertyMetadata()
         );

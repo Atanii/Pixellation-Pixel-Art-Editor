@@ -30,8 +30,6 @@ namespace Pixellation.Components.Tools
                 (int)(p.X / _magnification),
                 (int)(p.Y / _magnification),
                 ToolColor);
-
-            _layer.InvalidateVisual();
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)

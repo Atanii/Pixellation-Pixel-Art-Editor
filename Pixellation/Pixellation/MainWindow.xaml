@@ -58,13 +58,13 @@
                     <Panels:ToolPalette Width="180" Height="100" x:Name="toolPalette" />
 
                     <Label Content="Layers"></Label>
-                    <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}"></Panels:LayerPalette>
+                    <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}"></Panels:LayerPalette>
 
                     <Label Content="Transforms"></Label>
                     <Panels:Transforms 
                         LayerWidth="{Binding ElementName=canvasImage, Path=PixelWidth, Mode=OneWay}"
                         LayerHeight="{Binding ElementName=canvasImage, Path=PixelHeight, Mode=OneWay}"
-                        LayerManager="{Binding ElementName=canvasImage, Path=VisualAndLayerManager, Mode=OneTime}">
+                        LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}">
                     </Panels:Transforms>
                 </StackPanel>
             </ScrollViewer>

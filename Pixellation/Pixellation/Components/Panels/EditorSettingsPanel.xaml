@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Pixellation.Components.Panels"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" x:Name="editorSettings"
              d:DesignHeight="100" d:DesignWidth="180">
     <StackPanel Orientation="Vertical">
-        <CheckBox Margin="5" ToolTip="Toggle Tiled Mode" x:Name="cbTiledMode" Click="TiledModeToggle_Click">Tiled Mode</CheckBox>
+        <CheckBox Margin="5" ToolTip="Toggle Tiled Mode" IsChecked="{Binding ElementName=editorSettings, Path=TiledModeOn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Tiled Mode</CheckBox>
         <StackPanel Orientation="Horizontal">
             <Slider Margin="5" Width="85" Height="15" ToolTip="Opacity of the tiles shown around the canvas."
                 x:Name="tiledModeOpacitySlider" VerticalAlignment="Top"
@@ -16,7 +16,7 @@
                 IsSnapToTickEnabled="True"/>
             <Label>Tile Opacity</Label>
         </StackPanel>
-        <CheckBox Margin="5" ToolTip="Toggle Canvas Border" x:Name="cbEditorBorder" Click="cbEditorBorder_Click">Show Border</CheckBox>
-        <CheckBox Margin="5" ToolTip="Toggle Canvas Grid" x:Name="cbEditorGrid" Click="cbEditorGrid_Click">Show Grid</CheckBox>
+        <CheckBox Margin="5" ToolTip="Toggle Canvas Border" IsChecked="{Binding ElementName=editorSettings, Path=ShowBorderOn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Show Border</CheckBox>
+        <CheckBox Margin="5" ToolTip="Toggle Canvas Grid" IsChecked="{Binding ElementName=editorSettings, Path=ShowGridOn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Show Grid</CheckBox>
     </StackPanel>
 </UserControl>

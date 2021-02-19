@@ -1,5 +1,4 @@
-﻿using Pixellation.Components.Editor;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -58,27 +57,17 @@ namespace Pixellation.Components.Panels
         public EditorSettingsPanel()
         {
             InitializeComponent();
+
             tiledModeOpacitySlider.Value = Properties.Settings.Default.DefaultTiledOpacity * 100d;
+
+            ShowBorderOn = Properties.Settings.Default.DefaultShowBorder;
+            ShowGridOn = Properties.Settings.Default.DefaultShowGrid;
+            TiledModeOn = Properties.Settings.Default.DefaultTiledModeOn;
         }
 
         private void TiledModeOpacitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             TiledOpacity = ((float)e.NewValue / 100.0f);
-        }
-
-        private void TiledModeToggle_Click(object sender, RoutedEventArgs e)
-        {
-            TiledModeOn = (bool)cbTiledMode.IsChecked;
-        }
-
-        private void cbEditorBorder_Click(object sender, RoutedEventArgs e)
-        {
-            ShowBorderOn = (bool)cbEditorBorder.IsChecked;
-        }
-
-        private void cbEditorGrid_Click(object sender, RoutedEventArgs e)
-        {
-            ShowGridOn = (bool)cbEditorGrid.IsChecked;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)

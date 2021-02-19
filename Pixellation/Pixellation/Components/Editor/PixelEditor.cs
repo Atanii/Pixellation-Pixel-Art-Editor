@@ -12,6 +12,9 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
+    /// <summary>
+    /// Class representing the edited image and the corresponding framework element.
+    /// </summary>
     public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged
     {
         #region PrivateFields
@@ -22,10 +25,15 @@ namespace Pixellation.Components.Editor
         #endregion PrivateFields
 
         #region Properties
-        public List<DrawingLayer> Layers { get; private set; }
-        public VisualManager VisualAndLayerManager { get; private set; }
+        /// <summary>
+        /// List of <see cref="DrawingLayer"/>s the edited image consists of.
+        /// </summary>
+        public List<DrawingLayer> Layers { get; private set; } = new List<DrawingLayer>();
 
         private int _pixelWidth;
+        /// <summary>
+        /// Current width of the edited image in pixels.
+        /// </summary>
         public int PixelWidth
         {
             get { return _pixelWidth; }
@@ -37,6 +45,9 @@ namespace Pixellation.Components.Editor
         }
 
         private int _pixelHeight;
+        /// <summary>
+        /// Current height of the edited image in pixels.
+        /// </summary>
         public int PixelHeight
         {
             get { return _pixelHeight; }
@@ -48,19 +59,25 @@ namespace Pixellation.Components.Editor
         }
 
         private int _magnification;
+        /// <summary>
+        /// Image is zoomed in this times on the UI.
+        /// </summary>
         public int Magnification
         {
             get { return _magnification; }
             set
             {
                 _magnification = value;
-                RefreshMeasureVisualsMagnification();
+                UpdateMagnification();
                 OnPropertyChanged();
             }
         }
         #endregion Properties
 
         #region DependencyProperties
+        /// <summary>
+        /// Opacity of tiles in tiled-mode.
+        /// </summary>
         public float TiledOpacity
         {
             get { return (float)GetValue(TiledOpacityProperty); }
@@ -71,6 +88,9 @@ namespace Pixellation.Components.Editor
             Settings.Default.DefaultTiledOpacity, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
         ));
 
+        /// <summary>
+        /// Is tiled mode on or not.
+        /// </summary>
         public bool TiledModeOn
         {
             get { return (bool)GetValue(TiledModeOnProperty); }
@@ -81,6 +101,9 @@ namespace Pixellation.Components.Editor
             Settings.Default.DefaultTiledModeOn, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
         ));
 
+        /// <summary>
+        /// Primary (left-click) color used in drawing.
+        /// </summary>
         public System.Drawing.Color PrimaryColor
         {
             get { return (System.Drawing.Color)GetValue(PrimaryColorProperty); }
@@ -91,6 +114,9 @@ namespace Pixellation.Components.Editor
             Settings.Default.DefaultPrimaryColor
         ));
 
+        /// <summary>
+        /// Secondary (right-click) color used in drawing.
+        /// </summary>
         public System.Drawing.Color SecondaryColor
         {
             get { return (System.Drawing.Color)GetValue(SecondaryColorProperty); }
@@ -101,6 +127,9 @@ namespace Pixellation.Components.Editor
             Settings.Default.DefaultSecondaryColor
         ));
 
+        /// <summary>
+        /// Using chosen tool as eraser (using transparent as primary color).
+        /// </summary>
         public bool EraserModeOn
         {
             get { return (bool)GetValue(EraserModeOnProperty); }
@@ -111,6 +140,9 @@ namespace Pixellation.Components.Editor
             false
         ));
 
+        /// <summary>
+        /// Shows border around edited image.
+        /// </summary>
         public bool ShowBorder
         {
             get { return (bool)GetValue(ShowBorderProperty); }
@@ -121,6 +153,9 @@ namespace Pixellation.Components.Editor
             Settings.Default.DefaultShowBorder, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
         ));
 
+        /// <summary>
+        /// Shows grid on canvas.
+        /// </summary>
         public bool ShowGrid
         {
             get { return (bool)GetValue(ShowGridProperty); }
@@ -131,6 +166,9 @@ namespace Pixellation.Components.Editor
             Settings.Default.DefaultShowGrid, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
         ));
 
+        /// <summary>
+        /// Current drawing tool.
+        /// </summary>
         public BaseTool ChosenTool
         {
             get { return (BaseTool)GetValue(ChosenToolProperty); }
@@ -143,140 +181,169 @@ namespace Pixellation.Components.Editor
         #endregion DependencyProperties
 
         #region Event
+        /// <summary>
+        /// Event for changing tool.
+        /// </summary>
         private static event EventHandler RaiseToolChangeEvent;
+
+        /// <summary>
+        /// Event for changing editor settings (eg. toggle <see cref="ShowBorder"/>)
+        /// </summary>
         private static event EventHandler EditorSettingsChangeEvent;
+
+        /// <summary>
+        /// Event for signaling change in the edited image.
+        /// </summary>
         public event EventHandler RaiseImageUpdatedEvent;
+
+        /// <summary>
+        /// Event used for one- and twoway databinding.
+        /// Marks change regarding one of the properties.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Event
 
+        /// <summary>
+        /// Binds eventhandlers and initializes an editable image with the default size, magnification and layer settings.
+        /// </summary>
         public PixelEditor()
         {
             Cursor = Cursors.Pen;
 
-            Magnification = Settings.Default.DefaultMagnification;
             PixelWidth = Settings.Default.DefaultImageSize;
             PixelHeight = Settings.Default.DefaultImageSize;
+            Magnification = Settings.Default.DefaultMagnification;
 
-            var layers = new List<DrawingLayer>
-            {
-                new DrawingLayer(this, "default")
-            };
+            Layers.Add(new DrawingLayer(this, "default"));
 
             BaseTool.RaiseToolEvent += HandleToolEvent;
             RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
-            EditorSettingsChangeEvent += (d, e) => { RefreshMeasureVisualsMagnification(); };
+            EditorSettingsChangeEvent += (d, e) => { SetOrRefreshMeasureVisualsMagnification(); };
 
-            Init(layers);
+            Init();
         }
 
         #region Init And New Image
-        public void NewImage(int width = 32, int height = 32)
+        /// <summary>
+        /// Starts new image (dropping the previous one if there was).
+        /// <see cref="Magnification"/> will be reset to the default value.
+        /// </summary>
+        /// <param name="pixelWidth">New <see cref="PixelWidth"/>.</param>
+        /// <param name="pixelHeight">New <see cref="PixelHeight"/>.</param>
+        public void NewImage(int pixelWidth = 32, int pixelHeight = 32)
         {
+            DeleteAllVisualChildren();
+
+            PixelWidth = pixelWidth;
+            PixelHeight = pixelHeight;
             Magnification = Settings.Default.DefaultMagnification;
-            PixelWidth = width;
-            PixelHeight = height;
 
-            VisualAndLayerManager.DeleteAllVisualChildren();
+            Layers.Add(new DrawingLayer(this, "default"));
 
-            var layers = new List<DrawingLayer>
-            {
-                new DrawingLayer(this, "default")
-            };
-
-            Init(layers);
+            Init();
         }
 
+        /// <summary>
+        /// Starts new image (dropping the previous one if there was).
+        /// <see cref="Magnification"/> will be reset to the default value.
+        /// </summary>
+        /// <param name="imageToEdit">Image to edit.</param>
         public void NewImage(WriteableBitmap imageToEdit)
         {
-            Magnification = Settings.Default.DefaultMagnification;
+            DeleteAllVisualChildren();
+
             PixelWidth = imageToEdit.PixelWidth;
             PixelHeight = imageToEdit.PixelHeight;
+            Magnification = Settings.Default.DefaultMagnification;
 
-            VisualAndLayerManager.DeleteAllVisualChildren();
-
-            var layers = new List<DrawingLayer>();
             if (imageToEdit == null)
             {
-                layers.Add(new DrawingLayer(this, "default"));
+                Layers.Add(new DrawingLayer(this, "default"));
             }
             else
             {
-                layers.Add(new DrawingLayer(this, imageToEdit, "default"));
+                Layers.Add(new DrawingLayer(this, imageToEdit, "default"));
             }
 
-            Init(layers);
+            Init();
         }
 
-        public void NewImage(List<LayerModel> models, int width = 32, int height = 32)
+        /// <summary>
+        /// Starts new image (dropping the previous one if there was).
+        /// <see cref="Magnification"/> will be reset to the default value.
+        /// </summary>
+        /// <param name="models"><see cref="List<LayerModel>"/> containing the layers for edit.</param>
+        /// <param name="pixelWidth">New <see cref="PixelWidth"/>.</param>
+        /// <param name="pixelHeight">New <see cref="PixelHeight"/>.</param>
+        public void NewImage(List<LayerModel> models, int pixelWidth = 32, int pixelHeight = 32)
         {
+            DeleteAllVisualChildren();
+
+            PixelWidth = pixelWidth;
+            PixelHeight = pixelHeight;
             Magnification = Settings.Default.DefaultMagnification;
-            PixelWidth = width;
-            PixelHeight = height;
 
-            VisualAndLayerManager.DeleteAllVisualChildren();
-
-            var layers = new List<DrawingLayer>();
             foreach (var model in models)
             {
-                layers.Add(new DrawingLayer(
+                Layers.Add(new DrawingLayer(
                     this,
                     model
                 ));
             }
 
-            Init(layers);
+            Init();
         }
 
-        private void Init(List<DrawingLayer> layers)
+        /// <summary>
+        /// Sets default actively edited layer and refresh.
+        /// </summary>
+        private void Init()
         {
-            _gridLines = CreateGridLines();
-            _borderLine = CreateBorderLines();
-            _drawPreview = new DrawingLayer(this, "DrawPreview");
+            if (Layers.Count > 0)
+            {
+                _activeLayer = Layers[0];
+            }
 
-            VisualAndLayerManager = new VisualManager(this);
-            VisualAndLayerManager.SetVisuals(layers, _gridLines, _borderLine, _drawPreview);
-            VisualAndLayerManager.VisualsChanged += (a, b) => { UpdateVisualRelated(); };
-
-            RefreshMeasureVisualsMagnification();
+            RefreshVisualsThenSignalUpdate();
         }
         #endregion Init And New Image
 
-        #region Transforms
-        private void Resize(int newWidth, int newHeight)
-        {
-            PixelWidth = newWidth;
-            PixelHeight = newHeight;
-            Magnification = Settings.Default.DefaultMagnification;
-        }
-        #endregion Transforms
-
         #region Update, refresh...
-        public void RefreshMeasureVisualsMagnification()
+        /// <summary>
+        /// Refresh visuals, magnification related properties.
+        /// </summary>
+        public void SetOrRefreshMeasureVisualsMagnification()
         {
-            UpdateToolProperties();
-            RefreshHelperVisuals();
+            // Setting up layers and helper visuals
+            ResetLayerAndHelperVisuals();
+            // Refresh canvas position
             RefreshPositionAndAlignment();
+            // Setting up tools
+            UpdateToolProperties();
+            // Refresh size and visuals
             InvalidateMeasure();
             InvalidateVisual();
-            VisualAndLayerManager?.InvalidateAllLayerVisual();
         }
 
-        public void RefreshHelperVisuals()
+        /// <summary>
+        /// Refresh visuals (excluding editable layers), magnification related properties.
+        /// </summary>
+        public void UpdateMagnification()
         {
-            RemoveVisualChild(_gridLines);
-            _gridLines = CreateGridLines();
-
-            RemoveVisualChild(_borderLine);
-            _borderLine = CreateBorderLines();
-
-            RemoveVisualChild(_drawPreview);
-            _drawPreview = new DrawingLayer(this, "DrawPreview");
-
-            AddVisualChild(_drawPreview);
-            AddVisualChild(_borderLine);
-            AddVisualChild(_gridLines);
+            // Reset helpers
+            ResetHelperVisuals();
+            // Refresh canvas position
+            RefreshPositionAndAlignment();
+            // Setting up tools
+            UpdateToolProperties();
+            // Refresh size and visuals
+            InvalidateMeasure();
+            InvalidateVisual();
         }
 
+        /// <summary>
+        /// Refresh position and alignment, origin of <see cref="PixelEditor"/> on the UI.
+        /// </summary>
         public void RefreshPositionAndAlignment()
         {
             RenderTransformOrigin = new Point(ActualWidth, ActualHeight);
@@ -284,12 +351,18 @@ namespace Pixellation.Components.Editor
             VerticalAlignment = VerticalAlignment.Center;
         }
 
-        public void UpdateVisualRelated()
+        /// <summary>
+        /// Refresh then signal changes with <see cref="RaiseImageUpdatedEvent"/>.
+        /// </summary>
+        public void RefreshVisualsThenSignalUpdate()
         {
-            RefreshMeasureVisualsMagnification();
+            SetOrRefreshMeasureVisualsMagnification();
             RaiseImageUpdatedEvent?.Invoke(default, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Resets properties in <see cref="ChosenTool"/> like <see cref="Magnification"/> or <see cref="PixelWidth"/>.
+        /// </summary>
         private void UpdateToolProperties()
         {
             ChosenTool?.SetDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview);
@@ -297,25 +370,106 @@ namespace Pixellation.Components.Editor
         #endregion Update, refresh...
 
         #region Misc overrides
+        /// <summary>
+        /// Overrides <see cref="MeasureOverride(Size)"/> to take <see cref="Magnification"/> and layers into account.
+        /// </summary>
+        /// <param name="availableSize"></param>
+        /// <returns></returns>
         protected override Size MeasureOverride(Size availableSize)
         {
-            var magnification = Magnification;
-            var size = new Size(PixelWidth * magnification, PixelHeight * magnification);
-
-            VisualAndLayerManager?.MeasureAllLayer(size);
-
+            var size = new Size(PixelWidth * Magnification, PixelHeight * Magnification);
+            MeasureAllLayer(size);
             return size;
         }
 
+        /// <summary>
+        /// Overrides <see cref="ArrangeOverride(Size)"/> to take layers into account.
+        /// </summary>
+        /// <param name="finalSize"></param>
+        /// <returns></returns>
         protected override Size ArrangeOverride(Size finalSize)
         {
-            VisualAndLayerManager?.ArrangeAllLayer(new Rect(finalSize));
+            ArrangeAllLayer(new Rect(finalSize));
             return finalSize;
         }
 
+        /// <summary>
+        /// Overrides <see cref="VisualChildrenCount"/> to return <see cref="VisualCount"/>.
+        /// </summary>
+        protected override int VisualChildrenCount => VisualCount;
+
+        /// <summary>
+        /// Gives the child <see cref="Visual"/> based on the index.
+        /// </summary>
+        /// <param name="index">Index of the descendant <see cref="Visual"/></param>
+        /// <returns></returns>
+        protected override Visual GetVisualChild(int index)
+        {
+            // Layers are on the bottom of the stack.
+            if (index < Layers.Count)
+            {
+                return Layers[(Layers.Count - 1) - index];
+            }
+            // Preview is located bet
+            else if (index == VisualCount - 3)
+            {
+                return _drawPreview;
+            }
+            else if (index == VisualCount - 2)
+            {
+                if (_gridLines != null)
+                {
+                    return _gridLines;
+                }
+                else
+                {
+                    return _borderLine;
+                }
+            }
+            else if (index == VisualCount - 1)
+            {
+                if (_borderLine != null)
+                {
+                    return _borderLine;
+                }
+                else
+                {
+                    return _gridLines;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Handle <see cref="Visual"/> children being added or removed.
+        /// </summary>
+        /// <param name="visualAdded"><see cref="Visual"/> child added.</param>
+        /// <param name="visualRemoved"><see cref="Visual"/> child removed.</param>
+        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
+        {
+            // Track when objects are added and removed
+            if (visualAdded != null)
+            {
+                ++VisualCount;
+            }
+            if (visualRemoved != null)
+            {
+                --VisualCount;
+            }
+
+            // Call base function
+            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
+        }
         #endregion Misc overrides
 
         #region Create visuals
+        /// <summary>
+        /// Creates gridlines <see cref="Visual"/> for showing grid on the canvas.
+        /// </summary>
+        /// <returns>Gridlines <see cref="Visual"/>.</returns>
         private Visual CreateGridLines()
         {
             var dv = new DrawingVisual();
@@ -341,6 +495,10 @@ namespace Pixellation.Components.Editor
             return dv;
         }
 
+        /// <summary>
+        /// Creates borderlines <see cref="Visual"/> for showing grid on the canvas.
+        /// </summary>
+        /// <returns>Borderlines <see cref="Visual"/>.</returns>
         private Visual CreateBorderLines()
         {
             var dv = new DrawingVisual();
@@ -368,19 +526,12 @@ namespace Pixellation.Components.Editor
 
         #endregion Create visuals
 
-        #region Getters
-        protected override int VisualChildrenCount => VisualAndLayerManager.VisualCount;
-
-        protected override Visual GetVisualChild(int index) => VisualAndLayerManager.GetVisualChild(index);
-
-        public WriteableBitmap GetWriteableBitmap() => _activeLayer.GetWriteableBitmap();
-
-        public ImageSource GetImageSource() => VisualAndLayerManager.GetAllMergedImageSource();
-
-        public List<LayerModel> GetLayerModels() => VisualAndLayerManager.GetLayerModels();
-        #endregion Getters
-
         #region Handlers for custom events
+        /// <summary>
+        /// Handles events regarding drawing tools.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void HandleToolEvent(object sender, ToolEventArgs e)
         {
             switch (e.Type)
@@ -401,6 +552,10 @@ namespace Pixellation.Components.Editor
         #endregion Handlers for custom events
 
         #region On... Event handler functions
+        /// <summary>
+        /// Routes <see cref="OnMouseMove(MouseEventArgs)"/> to <see cref="ChosenTool"/>.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -409,6 +564,11 @@ namespace Pixellation.Components.Editor
                 ChosenTool.OnMouseMove(e);
         }
 
+        /// <summary>
+        /// Routes <see cref="OnMouseLeftButtonDown(MouseButtonEventArgs)"/> to <see cref="ChosenTool"/>.
+        /// Based on <see cref="EraserModeOn"/> it sets <see cref="System.Drawing.Color.Transparent"/> or <see cref="PrimaryColor"/> as drawing color.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
@@ -426,6 +586,11 @@ namespace Pixellation.Components.Editor
             ChosenTool.OnMouseDown(e);
         }
 
+        /// <summary>
+        /// Routes <see cref="OnMouseRightButtonDown(MouseButtonEventArgs)"/> to <see cref="ChosenTool"/>.
+        /// It sets <see cref="SecondaryColor"/> as drawing color.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonDown(e);
@@ -436,6 +601,11 @@ namespace Pixellation.Components.Editor
             ChosenTool.OnMouseDown(e);
         }
 
+        /// <summary>
+        /// Routes <see cref="OnMouseLeftButtonUp(MouseButtonEventArgs)"/> to <see cref="ChosenTool"/>.
+        /// Signals an <see cref="RaiseImageUpdatedEvent"/>.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
@@ -444,6 +614,11 @@ namespace Pixellation.Components.Editor
             RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Routes <see cref="OnMouseRightButtonUp(MouseButtonEventArgs)"/> to <see cref="ChosenTool"/>.
+        /// Signals an <see cref="RaiseImageUpdatedEvent"/>.
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
@@ -452,6 +627,12 @@ namespace Pixellation.Components.Editor
             RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Routes <see cref="OnKeyDown(object, KeyEventArgs)"/> to <see cref="ChosenTool"/>.
+        /// Signals an <see cref="RaiseImageUpdatedEvent"/>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (IsMouseOver)
@@ -462,6 +643,10 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Used as change notification for one- and twoway binding with <see cref="DependencyProperty"/> objects.
+        /// </summary>
+        /// <param name="name"></param>
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

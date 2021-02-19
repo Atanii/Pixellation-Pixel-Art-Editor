@@ -10,7 +10,7 @@ namespace Pixellation.Components.Editor
         private string _name;
         public string LayerName {
             get { return _name; }
-            set { _name = value; _owner.UpdateVisualRelated(); }
+            set { _name = value; _owner.RefreshVisualsThenSignalUpdate(); }
         }
         public bool Visible { get; set; }
 
