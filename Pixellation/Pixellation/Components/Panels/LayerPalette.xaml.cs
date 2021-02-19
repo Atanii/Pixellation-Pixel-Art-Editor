@@ -96,6 +96,12 @@ namespace Pixellation.Components.Panels
             SelectLayer(index);
         }
 
+        private void MergeLayer(object sender, RoutedEventArgs e)
+        {
+            int index = LayerManager.MergeLayerDownward(layerList.SelectedIndex);
+            SelectLayer(index);
+        }
+
         private void OpenLayerSettingsDialog(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (LayerManager != null)

@@ -94,6 +94,14 @@ namespace Pixellation.Components.Editor
             return this._bitmap.ToBitmap();
         }
 
+        public void SetBitmap(WriteableBitmap bmp)
+        {
+            if (bmp != null && bmp.PixelWidth == _bitmap.PixelWidth && bmp.PixelHeight == _bitmap.PixelHeight)
+            {
+                _bitmap = bmp;
+            }
+        }
+
         public ImageSource GetImageSource()
         {
             return _bitmap.ToImageSource();

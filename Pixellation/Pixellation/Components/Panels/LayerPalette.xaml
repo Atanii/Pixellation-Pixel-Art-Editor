@@ -8,7 +8,7 @@
              mc:Ignorable="d" x:Name="layerManager"
              d:DesignHeight="250" d:DesignWidth="200">
     <StackPanel>
-        <UniformGrid Rows="1" Columns="5" HorizontalAlignment="Stretch" Margin="10,10,10,0">
+        <UniformGrid Rows="1" Columns="6" HorizontalAlignment="Stretch" Margin="10,10,10,0">
             <Button Click="AddLayer" ToolTip="Add New Layer"
                 Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                 Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
@@ -21,6 +21,13 @@
                 Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-duplicate.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button Click="MergeLayer" ToolTip="Merge With A Single Layer Below"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-merge.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button Click="DeleteLayer" ToolTip="Delete Layer"

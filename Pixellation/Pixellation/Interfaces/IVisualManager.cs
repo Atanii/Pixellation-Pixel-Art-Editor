@@ -34,6 +34,8 @@ namespace Pixellation.Interfaces
 
         public int MoveLayerDown(int layerIndex);
 
+        public int MergeLayerDownward(int layerIndex);
+
         public List<LayerModel> GetLayerModels();
 
         public void Mirror(bool horizontally, bool allLayers = false);

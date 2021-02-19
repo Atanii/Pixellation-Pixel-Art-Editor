@@ -222,7 +222,7 @@ namespace Pixellation.Components.Editor
         }
         #endregion Transform
 
-        #region Add, Delete, Duplicate, Move Up, Move Down
+        #region Add, Delete, Duplicate, Move Up, Move Down, Merge
         public int AddLayer(DrawingLayer layer, int layerIndex = 0)
         {
             Layers.Insert(layerIndex, layer);
@@ -304,6 +304,18 @@ namespace Pixellation.Components.Editor
             {
                 return layerIndex;
             }
+        }
+
+        public int MergeLayerDownward(int layerIndex)
+        {
+            if (Layers.Count >= (layerIndex + 2))
+            {
+                var bmp = Merge(layerIndex + 1, layerIndex);
+                Layers[layerIndex].SetBitmap(bmp);
+                RemoveLayer(layerIndex + 1);
+                return layerIndex;
+            }
+            return -1;
         }
         #endregion Add, Delete, Duplicate, Move Up, Move Down
     }
