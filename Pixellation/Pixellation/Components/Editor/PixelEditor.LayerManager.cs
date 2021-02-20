@@ -145,6 +145,11 @@ namespace Pixellation.Components.Editor
             }
             return list;
         }
+
+        public int GetIndex(DrawingLayer layer)
+        {
+            return Layers.FindIndex(x => x.LayerName == layer.LayerName);
+        }
         #endregion Getters
 
         #region Merge
@@ -179,6 +184,8 @@ namespace Pixellation.Components.Editor
         #region Transform
         public void Mirror(bool horizontally, bool allLayers)
         {
+            _mementoCaretaker.Clear();
+
             if (!allLayers && _activeLayer != null)
             {
                 _activeLayer.Mirror(horizontally);
@@ -195,6 +202,8 @@ namespace Pixellation.Components.Editor
 
         public void Rotate(int angleInDegree, bool allLayers, bool counterClockWise)
         {
+            _mementoCaretaker.Clear();
+
             if (!allLayers && _activeLayer != null)
             {
                 _activeLayer.Rotate(counterClockWise ? 360 - angleInDegree : angleInDegree);
@@ -211,6 +220,8 @@ namespace Pixellation.Components.Editor
 
         public void Resize(int newWidth, int newHeight)
         {
+            _mementoCaretaker.Clear();
+
             foreach (var l in Layers)
             {
                 l.Resize(newWidth, newHeight);
@@ -279,6 +290,7 @@ namespace Pixellation.Components.Editor
 
         public void RemoveLayer(DrawingLayer layer)
         {
+            _mementoCaretaker.Clear();
             RemoveVisualChild(layer);
             Layers.Remove(layer);
             RefreshVisualsThenSignalUpdate();
@@ -286,6 +298,7 @@ namespace Pixellation.Components.Editor
 
         public int RemoveLayer(int layerIndex)
         {
+            _mementoCaretaker.Clear();
             if (Layers.ElementAtOrDefault(layerIndex) != null)
             {
                 RemoveVisualChild(Layers[layerIndex]);
@@ -308,6 +321,7 @@ namespace Pixellation.Components.Editor
 
         public int MergeLayerDownward(int layerIndex)
         {
+            _mementoCaretaker.Clear();
             if (Layers.Count >= (layerIndex + 2))
             {
                 var bmp = Merge(layerIndex + 1, layerIndex);

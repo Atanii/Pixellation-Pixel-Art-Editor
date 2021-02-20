@@ -1,5 +1,6 @@
 ﻿using Pixellation.Components.Editor;
 using Pixellation.Utils;
+using Pixellation.Utils.UndoRedo;
 using System.Drawing;
 using System.Windows.Input;
 
@@ -19,24 +20,31 @@ namespace Pixellation.Components.Tools
 
         public static event ToolEventHandler RaiseToolEvent;
 
+        private static Caretaker _mementoCaretaker;
+        private bool _isMementoLocked = false;
+
         protected BaseTool()
         {
+            _mementoCaretaker = Caretaker.GetInstance();
             ToolColor = System.Windows.Media.Color.FromRgb(0, 0, 0);
         }
 
         protected BaseTool(Color c)
         {
+            _mementoCaretaker = Caretaker.GetInstance();
             ToolColor = c.ToMediaColor();
         }
 
         protected BaseTool(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer)
         {
+            _mementoCaretaker = Caretaker.GetInstance();
             ToolColor = System.Windows.Media.Color.FromRgb(0, 0, 0);
             SetDrawingCircumstances(magnification, pixelWidth, pixelHeight, ds, previewLayer);
         }
 
         protected BaseTool(Color c, int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer)
         {
+            _mementoCaretaker = Caretaker.GetInstance();
             ToolColor = c.ToMediaColor();
             SetDrawingCircumstances(magnification, pixelWidth, pixelHeight, ds, previewLayer);
         }
@@ -48,16 +56,16 @@ namespace Pixellation.Components.Tools
 
         public void SetDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer)
         {
-            this._magnification = magnification;
-            this._surfaceWidth = pixelWidth * magnification;
-            this._surfaceHeight = pixelHeight * magnification;
-            this._layer = ds;
-            this._previewLayer = previewLayer;
+            _magnification = magnification;
+            _surfaceWidth = pixelWidth * magnification;
+            _surfaceHeight = pixelHeight * magnification;
+            _layer = ds;
+            _previewLayer = previewLayer;
         }
 
         public void SetActiveLayer(DrawingLayer ds)
         {
-            this._layer = ds;
+            _layer = ds;
         }
 
         public virtual Color GetDrawColor()
@@ -96,6 +104,23 @@ namespace Pixellation.Components.Tools
         public virtual void Reset()
         {
             return;
+        }
+
+        protected void SaveLayerMemento(bool lockMemento = false)
+        {
+            if (!_isMementoLocked)
+            {
+                _mementoCaretaker.Save(_layer.GetMemento(MementoType.DRAWONLAYER));
+            }
+            if (lockMemento)
+            {
+                _isMementoLocked = true;
+            }
+        }
+
+        protected void UnlockMemento()
+        {
+            _isMementoLocked = false;
         }
     }
 }

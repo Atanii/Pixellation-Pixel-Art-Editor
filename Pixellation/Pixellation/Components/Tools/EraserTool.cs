@@ -22,6 +22,8 @@ namespace Pixellation.Components.Tools
 
         private void Draw()
         {
+            SaveLayerMemento(true);
+
             var p = Mouse.GetPosition(_layer);
 
             if (p.X < 0 || p.X >= _surfaceWidth || p.Y < 0 || p.Y >= _surfaceHeight)
@@ -36,6 +38,11 @@ namespace Pixellation.Components.Tools
             );
 
             _layer.InvalidateVisual();
+        }
+
+        public override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            UnlockMemento();
         }
 
         public override void SetDrawColor(Color c)

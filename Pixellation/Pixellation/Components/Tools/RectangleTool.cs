@@ -25,6 +25,7 @@ namespace Pixellation.Components.Tools
 
         private void Draw()
         {
+            SaveLayerMemento();
             _layer.GetWriteableBitmap().DrawRectangle((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
         }
 

@@ -1,6 +1,7 @@
 ﻿using Pixellation.Components.Tools;
 using Pixellation.Models;
 using Pixellation.Properties;
+using Pixellation.Utils.UndoRedo;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,13 +16,14 @@ namespace Pixellation.Components.Editor
     /// <summary>
     /// Class representing the edited image and the corresponding framework element.
     /// </summary>
-    public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged
+    public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged, IOriginatorHandler<DrawingLayer.Memento>
     {
         #region PrivateFields
         private DrawingLayer _activeLayer;
         private Visual _gridLines;
         private Visual _borderLine;
         private DrawingLayer _drawPreview;
+        private Caretaker _mementoCaretaker;
         #endregion PrivateFields
 
         #region Properties
@@ -208,6 +210,8 @@ namespace Pixellation.Components.Editor
         /// </summary>
         public PixelEditor()
         {
+            _mementoCaretaker = Caretaker.GetInstance();
+
             Cursor = Cursors.Pen;
 
             PixelWidth = Settings.Default.DefaultImageSize;
@@ -232,6 +236,8 @@ namespace Pixellation.Components.Editor
         /// <param name="pixelHeight">New <see cref="PixelHeight"/>.</param>
         public void NewImage(int pixelWidth = 32, int pixelHeight = 32)
         {
+            _mementoCaretaker.Clear();
+
             DeleteAllVisualChildren();
 
             PixelWidth = pixelWidth;
@@ -250,6 +256,8 @@ namespace Pixellation.Components.Editor
         /// <param name="imageToEdit">Image to edit.</param>
         public void NewImage(WriteableBitmap imageToEdit)
         {
+            _mementoCaretaker.Clear();
+
             DeleteAllVisualChildren();
 
             PixelWidth = imageToEdit.PixelWidth;
@@ -277,6 +285,8 @@ namespace Pixellation.Components.Editor
         /// <param name="pixelHeight">New <see cref="PixelHeight"/>.</param>
         public void NewImage(List<LayerModel> models, int pixelWidth = 32, int pixelHeight = 32)
         {
+            _mementoCaretaker.Clear();
+
             DeleteAllVisualChildren();
 
             PixelWidth = pixelWidth;
@@ -652,5 +662,26 @@ namespace Pixellation.Components.Editor
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion On... Event handler functions
+
+        #region Memento
+        public DrawingLayer.Memento HandleRestore(DrawingLayer.Memento mem)
+        {
+            switch(mem.GetMementoType())
+            {
+                case MementoType.DRAWONLAYER:
+                    var originator = Layers.Find(x => x.LayerName == mem.LayerName);
+                    if (originator != null)
+                    {
+                        var redoMem = originator.GetMemento(MementoType.DRAWONLAYER);
+                        originator.Restore(mem);
+                        RefreshVisualsThenSignalUpdate();
+                        return redoMem;
+                    }
+                    return null;
+                default:
+                    return null;
+            }
+        }
+        #endregion Memento
     }
 }

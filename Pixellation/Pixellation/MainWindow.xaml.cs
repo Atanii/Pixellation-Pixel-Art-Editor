@@ -3,6 +3,7 @@ using Pixellation.Components.Dialogs.AboutDialog;
 using Pixellation.Components.Dialogs.NewImageDialog;
 using Pixellation.Properties;
 using Pixellation.Utils;
+using Pixellation.Utils.UndoRedo;
 using System.Windows;
 using System.Windows.Input;
 
@@ -14,12 +15,14 @@ namespace Pixellation
     public partial class MainWindow : Window
     {
         private readonly PersistenceManager pm;
+        private Caretaker _mementoCaretaker;
 
         public MainWindow()
         {
             InitializeComponent();
             GetWindow(this).KeyDown += canvasImage.OnKeyDown;
             pm = PersistenceManager.GetInstance();
+            _mementoCaretaker = Caretaker.GetInstance();
         }
 
         private async void Open(object sender, RoutedEventArgs e)
@@ -116,6 +119,19 @@ namespace Pixellation
         {
             var aboutDialog = new AboutDialog();
             aboutDialog.ShowDialog();
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.Z)
+            {
+                _mementoCaretaker.Undo();
+            }
+            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.Y)
+            {
+                _mementoCaretaker.Redo();
+            }
         }
     }
 }
