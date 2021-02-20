@@ -1,7 +1,7 @@
-﻿namespace Pixellation.Utils.UndoRedo
+﻿namespace Pixellation.Utils.MementoPattern
 {
-    public interface IOriginatorHandler<T> where T : IMemento
+    public interface IOriginatorHandler<T, O> where T : IMemento<O> where O : IMementoType
     {
-        public T HandleRestore(T mem);
+        public IMemento<O> HandleRestore(T mem);
     }
 }

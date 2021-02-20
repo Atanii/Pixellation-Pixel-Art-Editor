@@ -1,7 +1,7 @@
 ﻿using Pixellation.Components.Tools;
 using Pixellation.Models;
 using Pixellation.Properties;
-using Pixellation.Utils.UndoRedo;
+using Pixellation.Utils.MementoPattern;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,14 +16,14 @@ namespace Pixellation.Components.Editor
     /// <summary>
     /// Class representing the edited image and the corresponding framework element.
     /// </summary>
-    public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged, IOriginatorHandler<DrawingLayer.Memento>
+    public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged
     {
         #region PrivateFields
         private DrawingLayer _activeLayer;
         private Visual _gridLines;
         private Visual _borderLine;
         private DrawingLayer _drawPreview;
-        private Caretaker _mementoCaretaker;
+        private readonly Caretaker<IEditorEventType> _mementoCaretaker = Caretaker<IEditorEventType>.GetInstance();
         #endregion PrivateFields
 
         #region Properties
@@ -74,6 +74,8 @@ namespace Pixellation.Components.Editor
                 OnPropertyChanged();
             }
         }
+
+        public int VisualCount { get; set; } = 0;
         #endregion Properties
 
         #region DependencyProperties
@@ -203,6 +205,8 @@ namespace Pixellation.Components.Editor
         /// Marks change regarding one of the properties.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public event LayerListEventHandler LayerListChanged;
         #endregion Event
 
         /// <summary>
@@ -210,8 +214,6 @@ namespace Pixellation.Components.Editor
         /// </summary>
         public PixelEditor()
         {
-            _mementoCaretaker = Caretaker.GetInstance();
-
             Cursor = Cursors.Pen;
 
             PixelWidth = Settings.Default.DefaultImageSize;
@@ -662,26 +664,5 @@ namespace Pixellation.Components.Editor
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion On... Event handler functions
-
-        #region Memento
-        public DrawingLayer.Memento HandleRestore(DrawingLayer.Memento mem)
-        {
-            switch(mem.GetMementoType())
-            {
-                case MementoType.DRAWONLAYER:
-                    var originator = Layers.Find(x => x.LayerName == mem.LayerName);
-                    if (originator != null)
-                    {
-                        var redoMem = originator.GetMemento(MementoType.DRAWONLAYER);
-                        originator.Restore(mem);
-                        RefreshVisualsThenSignalUpdate();
-                        return redoMem;
-                    }
-                    return null;
-                default:
-                    return null;
-            }
-        }
-        #endregion Memento
     }
 }

@@ -64,7 +64,7 @@ namespace Pixellation.Components.Editor
 
         public WriteableBitmap GetWriteableBitmap()
         {
-            return this._bitmap;
+            return this._bitmap.Clone();
         }
 
         public WriteableBitmap GetWriteableBitmapWithAppliedOpacity()

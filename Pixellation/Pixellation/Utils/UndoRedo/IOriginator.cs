@@ -1,9 +1,14 @@
-﻿namespace Pixellation.Utils.UndoRedo
+﻿namespace Pixellation.Utils.MementoPattern
 {
-    public interface IOriginator<T> where T : IMemento
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="_Memento"></typeparam>
+    /// <typeparam name="_MementoType"></typeparam>
+    public interface IOriginator<_Memento, _MementoType> where _Memento : IMemento<_MementoType> where _MementoType : IMementoType
     {
-        public void Restore(T mem);
+        public void Restore(_Memento mem);
 
-        public T GetMemento(MementoType mType);
+        public _Memento GetMemento(int mTypeValue);
     }
 }

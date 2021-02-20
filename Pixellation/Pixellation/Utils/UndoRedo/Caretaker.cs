@@ -3,37 +3,38 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace Pixellation.Utils.UndoRedo
+namespace Pixellation.Utils.MementoPattern
 {
     /// <summary>
     /// Singleton class responsible for organizing and handling the list of saved states for <see cref="Undo()"/> and <see cref="Redo()"/>.
     /// </summary>
-    public class Caretaker
+    /// <typeparam name="_MementoType">Type implemeting <see cref="IMementoType"/> that indicates what kind of event preceeded the save.</typeparam>
+    public class Caretaker<_MementoType> where _MementoType : IMementoType
     {
-        private static Caretaker instance;
+        private static Caretaker<_MementoType> instance;
 
-        private Stack<IMemento> _undoStack = new Stack<IMemento>();
-        private Stack<IMemento> _redoStack = new Stack<IMemento>();
+        private readonly Stack<IMemento<_MementoType>> _undoStack = new Stack<IMemento<_MementoType>>();
+        private readonly Stack<IMemento<_MementoType>> _redoStack = new Stack<IMemento<_MementoType>>();
 
         /// <summary>
-        /// Returns an instance for <see cref="Caretaker"/>.
+        /// Returns an instance for <see cref="Caretaker{_MementoType}"/>.
         /// </summary>
-        /// <returns>Singleton <see cref="Caretaker"/> instance.</returns>
-        public static Caretaker GetInstance()
+        /// <returns>Singleton <see cref="Caretaker{_MementoType}"/> instance.</returns>
+        public static Caretaker<_MementoType> GetInstance()
         {
             if (instance == null)
             {
-                instance = new Caretaker();
+                instance = new Caretaker<_MementoType>();
             }
             return instance;
         }
 
         /// <summary>
-        /// Saves a <see cref="IMemento"/> for posibble undoing.
+        /// Saves a <see cref="IMemento{T}"/> for posibble undoing.
         /// Clears the list of possible redos!
         /// </summary>
-        /// <param name="mem"><see cref="IMemento"/> to be saved.</param>
-        public void Save(IMemento mem)
+        /// <param name="mem"><see cref="IMemento{T}"/> to be saved.</param>
+        public void Save(IMemento<_MementoType> mem)
         {
             _undoStack.Push(mem);
             Debug.WriteLine($"Memento added, current count: {_undoStack.Count}");
@@ -50,12 +51,19 @@ namespace Pixellation.Utils.UndoRedo
                 var mem = _undoStack.Pop();
                 Debug.WriteLine($"Memento removed, current count: {_undoStack.Count}");
                 var redoMem = mem.Restore();
-                _redoStack.Push(redoMem);
+                if (redoMem != null)
+                {
+                    _redoStack.Push(redoMem);
+                }
+                else
+                {
+                    Clear();
+                }
             }
         }
 
         /// <summary>
-        /// Redos the state before the last undo if another operation wasn't saved since than with <see cref="Save(IMemento)"/>
+        /// Redos the state before the last undo if another operation wasn't saved since than with <see cref="Save(IMemento{T})"/>
         /// </summary>
         public void Redo()
         {
@@ -63,7 +71,14 @@ namespace Pixellation.Utils.UndoRedo
             {
                 var mem = _redoStack.Pop();
                 var undoMem = mem.Restore();
-                _undoStack.Push(undoMem);
+                if (undoMem != null)
+                {
+                    _undoStack.Push(undoMem);
+                }
+                else
+                {
+                    Clear();
+                }
             }
         }
 

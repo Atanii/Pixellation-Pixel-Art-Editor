@@ -1,20 +1,23 @@
-﻿namespace Pixellation.Utils.UndoRedo
+﻿using Pixellation.Components.Editor;
+
+namespace Pixellation.Utils.MementoPattern
 {
     /// <summary>
     /// Represents a saved state for an object.
     /// </summary>
-    public interface IMemento
+    /// <typeparam name="_MementoType">Type implemeting <see cref="IMementoType"/> that indicates what kind of event preceeded the save.</typeparam>
+    public interface IMemento<_MementoType> where _MementoType : IMementoType
     {
         /// <summary>
         /// Get the type of the operation applied after creating this memento.
         /// </summary>
-        /// <returns>Corresponding <see cref="MementoType"/>.</returns>
-        public MementoType GetMementoType();
+        /// <returns>Value of the corresponding <see cref="_MementoType"/>.</returns>
+        public int GetMementoType();
 
         /// <summary>
         /// Restore saved state.
         /// </summary>
-        /// <returns>Memento for <see cref="Caretaker.Redo()"/>.</returns>
-        public IMemento Restore();
+        /// <returns><see cref="IMemento{_MementoType}"/> for <see cref="Caretaker.Redo()"/>.</returns>
+        public IMemento<_MementoType> Restore();
     }
 }

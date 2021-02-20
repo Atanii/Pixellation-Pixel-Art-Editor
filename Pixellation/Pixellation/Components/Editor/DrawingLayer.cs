@@ -1,12 +1,13 @@
-﻿using Pixellation.Models;
+﻿using Pixellation.Components.Editor.Memento;
+using Pixellation.Models;
 using Pixellation.Utils;
-using Pixellation.Utils.UndoRedo;
+using Pixellation.Utils.MementoPattern;
 using System;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public class DrawingLayer : DrawingSurface, IPreviewable, IOriginator<DrawingLayer.Memento>
+    public class DrawingLayer : DrawingSurface, IOriginator<LayerMemento, IEditorEventType>
     {
         private string _name;
         public string LayerName {
@@ -31,40 +32,6 @@ namespace Pixellation.Components.Editor
         }
 
         public bool Visible { get; set; }
-
-        public event EventHandler RaiseImageUpdatedEvent;
-
-        public class Memento : IMemento
-        {
-            private readonly MementoType _mType;
-            private readonly IOriginatorHandler<Memento> _originator;
-
-            public int LayerIndex { get; private set; }
-            public string LayerName { get; private set; }
-            public double Opacity { get; private set; }
-            public bool Visible { get; private set; }
-            public WriteableBitmap Bitmap { get; private set; }
-
-            public Memento(IOriginatorHandler<Memento> originator, MementoType type, int layerIndex, DrawingLayer original)
-            {
-                _originator = originator;
-                _mType = type;
-
-                LayerIndex = layerIndex;
-
-                LayerName = original.LayerName;
-                Opacity = original.Opacity;
-                Visible = original.Visible;
-                Bitmap = original._bitmap.Clone();
-            }
-
-            public IMemento Restore()
-            {
-                return _originator.HandleRestore(this);
-            }
-
-            public MementoType GetMementoType() => _mType;
-        }
 
         public DrawingLayer(PixelEditor owner, string layerName = "", bool visible = true) : base(owner)
         {
@@ -108,7 +75,7 @@ namespace Pixellation.Components.Editor
             Opacity = model.Opacity;
         }
 
-        public DrawingLayer(PixelEditor owner, Memento mem) : base(
+        public DrawingLayer(PixelEditor owner, LayerMemento mem) : base(
             owner,
             mem.Bitmap
         )
@@ -159,7 +126,7 @@ namespace Pixellation.Components.Editor
             return new DrawingLayer(_owner, bmp2, LayerName, Visible);
         }
 
-        public void Restore(Memento mem)
+        public void Restore(LayerMemento mem)
         {   
             if (mem.LayerName == "")
             {
@@ -174,12 +141,12 @@ namespace Pixellation.Components.Editor
             SetBitmap(mem.Bitmap);
         }
 
-        public Memento GetMemento(MementoType mType)
+        public LayerMemento GetMemento(int mTypeValue)
         {
-            return new Memento
+            return new LayerMemento
             (
                 _owner,
-                mType,
+                mTypeValue,
                 _owner.GetIndex(this),
                 this
             );

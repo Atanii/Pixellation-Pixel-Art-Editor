@@ -1,9 +1,10 @@
 ﻿using Microsoft.Win32;
 using Pixellation.Components.Dialogs.AboutDialog;
 using Pixellation.Components.Dialogs.NewImageDialog;
+using Pixellation.Components.Editor;
 using Pixellation.Properties;
 using Pixellation.Utils;
-using Pixellation.Utils.UndoRedo;
+using Pixellation.Utils.MementoPattern;
 using System.Windows;
 using System.Windows.Input;
 
@@ -14,15 +15,13 @@ namespace Pixellation
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly PersistenceManager pm;
-        private Caretaker _mementoCaretaker;
+        private readonly PersistenceManager pm = PersistenceManager.GetInstance();
+        private readonly Caretaker<IEditorEventType> _mementoCaretaker = Caretaker<IEditorEventType>.GetInstance();
 
         public MainWindow()
         {
             InitializeComponent();
             GetWindow(this).KeyDown += canvasImage.OnKeyDown;
-            pm = PersistenceManager.GetInstance();
-            _mementoCaretaker = Caretaker.GetInstance();
         }
 
         private async void Open(object sender, RoutedEventArgs e)
