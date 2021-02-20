@@ -36,7 +36,7 @@
         /// <summary>
         /// Returns the value of the <see cref="_MementoType"/> for this <see cref="BaseMemento{_Memento, _MementoType}"/>.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Value of the <see cref="_MementoType"/>.</returns>
         public int GetMementoType() => _mTypeValue;
     }
 }

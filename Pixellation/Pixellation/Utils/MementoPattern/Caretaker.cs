@@ -17,6 +17,31 @@ namespace Pixellation.Utils.MementoPattern
         private readonly Stack<IMemento<_MementoType>> _redoStack = new Stack<IMemento<_MementoType>>();
 
         /// <summary>
+        /// Marks that a new saved state has just been added for undo.
+        /// </summary>
+        public event CaretakerEventHandler OnNewUndoAdded;
+
+        /// <summary>
+        /// Marks that a new saved state has just been added for redo.
+        /// </summary>
+        public event CaretakerEventHandler OnNewRedoAdded;
+
+        /// <summary>
+        /// Marks that all undos and redos have just been cleared.
+        /// </summary>
+        public event CaretakerEventHandler OnCleared;
+
+        /// <summary>
+        /// Marks that an operation has just been undone.
+        /// </summary>
+        public event CaretakerEventHandler OnUndone;
+
+        /// <summary>
+        /// Marks that an operation has just been redone.
+        /// </summary>
+        public event CaretakerEventHandler OnRedone;
+
+        /// <summary>
         /// Returns an instance for <see cref="Caretaker{_MementoType}"/>.
         /// </summary>
         /// <returns>Singleton <see cref="Caretaker{_MementoType}"/> instance.</returns>
@@ -37,7 +62,7 @@ namespace Pixellation.Utils.MementoPattern
         public void Save(IMemento<_MementoType> mem)
         {
             _undoStack.Push(mem);
-            Debug.WriteLine($"Memento added, current count: {_undoStack.Count}");
+            OnNewUndoAdded?.Invoke(this, new CaretakerEventArgs(this._undoStack.Count, this._redoStack.Count));
             _redoStack.Clear();
         }
 
@@ -49,11 +74,12 @@ namespace Pixellation.Utils.MementoPattern
             if (_undoStack.Count > 0)
             {
                 var mem = _undoStack.Pop();
-                Debug.WriteLine($"Memento removed, current count: {_undoStack.Count}");
                 var redoMem = mem.Restore();
+                OnUndone?.Invoke(this, new CaretakerEventArgs(this._undoStack.Count, this._redoStack.Count));
                 if (redoMem != null)
                 {
                     _redoStack.Push(redoMem);
+                    OnNewRedoAdded?.Invoke(this, new CaretakerEventArgs(this._undoStack.Count, this._redoStack.Count));
                 }
                 else
                 {
@@ -71,9 +97,11 @@ namespace Pixellation.Utils.MementoPattern
             {
                 var mem = _redoStack.Pop();
                 var undoMem = mem.Restore();
+                OnRedone?.Invoke(this, new CaretakerEventArgs(this._undoStack.Count, this._redoStack.Count));
                 if (undoMem != null)
                 {
                     _undoStack.Push(undoMem);
+                    OnNewUndoAdded?.Invoke(this, new CaretakerEventArgs(this._undoStack.Count, this._redoStack.Count));
                 }
                 else
                 {
@@ -89,6 +117,7 @@ namespace Pixellation.Utils.MementoPattern
         {
             _undoStack.Clear();
             _redoStack.Clear();
+            OnCleared?.Invoke(this, CaretakerEventArgs.Empty);
         }
     }
 }
