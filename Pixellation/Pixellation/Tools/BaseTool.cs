@@ -1,4 +1,5 @@
 ﻿using Pixellation.Components.Editor;
+using Pixellation.Models;
 using Pixellation.Utils;
 using Pixellation.Utils.MementoPattern;
 using System.Drawing;
@@ -41,8 +42,8 @@ namespace Pixellation.Tools
         public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer)
         {
             _magnification = magnification;
-            _surfaceWidth = pixelWidth * magnification;
-            _surfaceHeight = pixelHeight * magnification;
+            _surfaceWidth = pixelWidth;
+            _surfaceHeight = pixelHeight;
             _layer = ds;
             _drawSurface = ds.Bitmap;
             _previewLayer = previewLayer;
@@ -126,5 +127,11 @@ namespace Pixellation.Tools
         {
             _isMementoLocked = false;
         }
+
+        public static bool OutOfBounds(IntPoint p) => p.X < 0 || p.X >= _surfaceWidth || p.Y < 0 || p.Y >= _surfaceHeight;
+
+        public static int Min(int a, int b) => a <= b ? a : b;
+
+        public static int Max(int a, int b) => a >= b ? a : b;
     }
 }

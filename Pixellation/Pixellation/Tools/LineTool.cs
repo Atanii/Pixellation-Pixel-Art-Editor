@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using Pixellation.Models;
+using Pixellation.Utils;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
@@ -7,8 +9,10 @@ namespace Pixellation.Tools
     {
         private static LineTool _instance;
 
-        private System.Windows.Point p0;
-        private System.Windows.Point p1;
+        private IntPoint p0;
+        private IntPoint p1;
+
+        private bool _creating = false;
 
         private LineTool() : base()
         {
@@ -26,26 +30,28 @@ namespace Pixellation.Tools
         private void Draw()
         {
             SaveLayerMemento();
-            _layer.Bitmap.DrawLine((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
+            _drawSurface.DrawLine(p0.X, p0.Y, p1.X, p1.Y, ToolColor);
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)
         {
-            p0 = e.GetPosition(_layer);
+            p0 = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+            _creating = true;
         }
 
         public override void OnMouseUp(MouseButtonEventArgs e)
         {
             Draw();
+            _creating = false;
         }
 
         public override void OnMouseMove(MouseEventArgs e)
         {
-            if (p0 != null && IsMouseDown(e))
-            {   
-                p1 = e.GetPosition(_layer);
-                _previewLayer.Bitmap.Clear();
-                _previewLayer.Bitmap.DrawLine((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
+            if (IsMouseDown(e) && _creating)
+            {
+                p1 = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+                _previewDrawSurface.Clear();
+                _previewDrawSurface.DrawLine(p0.X, p0.Y, p1.X, p1.Y, ToolColor);
             }
         }
     }

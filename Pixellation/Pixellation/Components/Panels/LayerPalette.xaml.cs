@@ -69,8 +69,16 @@ namespace Pixellation.Components.Panels
             var newLayerDialog = new StringInputDialog("New Layer", "Layername");
             if (newLayerDialog.ShowDialog() == true)
             {
-                LayerManager.SaveState(IPixelEditorEventType.ADDLAYER, layerList.Items.Count > 0 ? layerList.SelectedIndex : -1);
-                LayerManager.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
+                if (layerList.Items.Count == 0)
+                {
+                    LayerManager.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
+                    LayerManager.SaveState(IPixelEditorEventType.ADDLAYER, layerList.Items.Count > 0 ? layerList.SelectedIndex : -1);
+                }
+                else
+                {
+                    LayerManager.SaveState(IPixelEditorEventType.ADDLAYER, layerList.Items.Count > 0 ? layerList.SelectedIndex : -1);
+                    LayerManager.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
+                }
             }
         }
 

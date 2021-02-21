@@ -30,27 +30,28 @@ namespace Pixellation.Tools
             // odd X or even Y -> return
             if ( leftButtonPressed && 
                 (((p.X & 1) == 1 || (p.Y & 1) != 1) ^
-                ((p.X & 1) != 1 || (p.Y & 1) == 1))
-            )
+                ((p.X & 1) != 1 || (p.Y & 1) == 1)) )
             {
                 return;
             }
             // odd + odd ^ even + even
             if ( !leftButtonPressed &&
                 (((p.X & 1) == 1 && (p.Y & 1) == 1) ^
-                ((p.X & 1) != 1 && (p.Y & 1) != 1))
-            )
+                ((p.X & 1) != 1 && (p.Y & 1) != 1)) )
             {
                 return;
             }
 
-            if (p.X < 0 || p.X >= _surfaceWidth || p.Y < 0 || p.Y >= _surfaceHeight)
+            if (OutOfBounds(p))
+            {
                 return;
+            }
 
             _drawSurface.SetPixel(
                 p.X,
                 p.Y,
-                ToolColor);
+                ToolColor
+            );
         }
 
         public override void OnMouseUp(MouseButtonEventArgs e)

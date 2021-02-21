@@ -29,9 +29,6 @@ namespace Pixellation.Tools
 
             var p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
-            _surfaceWidth = _drawSurface.PixelWidth;
-            _surfaceHeight = _drawSurface.PixelHeight;
-
             var targetColor = _layer.GetPixel(p.X, p.Y);
             var replacementColor = ToolColor;
 

@@ -1,4 +1,5 @@
-﻿using Pixellation.Utils;
+﻿using Pixellation.Models;
+using Pixellation.Utils;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -11,19 +12,20 @@ namespace Pixellation.Tools
     {
         private static SelectCopyPasteRectangleTool _instance;
 
-        private Point p0;
-        private Point p1;
-        private Point p1prev;
+        private IntPoint p0;
+        private IntPoint p1;
+        private IntPoint p1prev;
 
         private Color _selectionFillColour;
 
-        private static Rect _selectionArea;
-        private static Rect _copyArea;
+        private static IntRect _selectionArea = new IntRect();
+        private static IntRect _copyArea = new IntRect();
 
         private WriteableBitmap _copySrc;
 
         private bool _creating = false;
         private bool _dragging = false;
+        private bool _click = false;
 
         private SelectCopyPasteRectangleTool() : base()
         {
@@ -42,9 +44,8 @@ namespace Pixellation.Tools
 
         public override void OnMouseDown(MouseButtonEventArgs e)
         {
-            p0 = e.GetPosition(_previewLayer);
+            p0 = e.GetPosition(_previewLayer).DivideByIntAsIntPoint(_magnification);
             p1prev = p0;
-            p0 = p0.DivideByInt(_magnification);
 
             if (!_selectionArea.Contains(p0))
             {
@@ -60,6 +61,7 @@ namespace Pixellation.Tools
 
                 _creating = true;
                 _dragging = false;
+                _click = true;
             }
             else
             {
@@ -71,18 +73,24 @@ namespace Pixellation.Tools
         public override void OnMouseUp(MouseButtonEventArgs e)
         {
             _creating = false;
+            if (_click)
+            {
+                _dragging = false;
+                Reset();
+            }
         }
 
         public override void OnMouseMove(MouseEventArgs e)
         {
+
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                p1 = e.GetPosition(_previewLayer);
+                _click = false;
+
+                p1 = e.GetPosition(_previewLayer).DivideByIntAsIntPoint(_magnification);
 
                 if (_creating)
                 {
-                    p1 = p1.DivideByInt(_magnification);
-
                     var diff = (p1 - p0);
 
                     if (diff.X < 0)
@@ -97,10 +105,10 @@ namespace Pixellation.Tools
                     _selectionArea.Width = Math.Abs(diff.X);
                     _selectionArea.Height = Math.Abs(diff.Y);
 
-                    var x1 = (int)_selectionArea.X;
-                    var y1 = (int)_selectionArea.Y;
-                    var x2 = (int)(_selectionArea.X + _selectionArea.Width);
-                    var y2 = (int)(_selectionArea.Y + _selectionArea.Height);
+                    var x1 = _selectionArea.X;
+                    var y1 = _selectionArea.Y;
+                    var x2 = _selectionArea.Right;
+                    var y2 = _selectionArea.Bottom;
 
                     _previewDrawSurface.Clear();
                     _previewDrawSurface.FillRectangle(
@@ -112,8 +120,8 @@ namespace Pixellation.Tools
                 {
                     var diff = p1 - p1prev;
 
-                    var tmpX = _selectionArea.X + (Math.Ceiling(diff.X) / _magnification);
-                    var tmpY = _selectionArea.Y + (Math.Ceiling(diff.Y) / _magnification);
+                    var tmpX = _selectionArea.X + diff.X;
+                    var tmpY = _selectionArea.Y + diff.Y;
                     var tmpX2 = tmpX + _selectionArea.Width;
                     var tmpY2 = tmpY + _selectionArea.Height;
 
@@ -122,9 +130,9 @@ namespace Pixellation.Tools
                         tmpX = 0;
                         tmpX2 = tmpX + _selectionArea.Width;
                     }
-                    else if (tmpX2 >= _previewLayer.ActualWidth / _magnification)
+                    else if (tmpX2 >= _surfaceWidth)
                     {
-                        tmpX2 = _previewLayer.ActualWidth / _magnification;
+                        tmpX2 = _surfaceWidth;
                         tmpX = tmpX2 - _selectionArea.Width;
                     }
 
@@ -133,19 +141,19 @@ namespace Pixellation.Tools
                         tmpY = 0;
                         tmpY2 = tmpY + _selectionArea.Height;
                     }
-                    else if (tmpY2 >= _previewLayer.ActualHeight / _magnification)
+                    else if (tmpY2 >= _surfaceHeight)
                     {
-                        tmpY2 = _previewLayer.ActualHeight / _magnification;
+                        tmpY2 = _surfaceHeight;
                         tmpY = tmpY2 - _selectionArea.Height;
                     }
 
                     _selectionArea.X = tmpX;
                     _selectionArea.Y = tmpY;
 
-                    var x1 = (int)_selectionArea.X;
-                    var y1 = (int)_selectionArea.Y;
-                    var x2 = (int)tmpX2;
-                    var y2 = (int)tmpY2;
+                    var x1 = _selectionArea.X;
+                    var y1 = _selectionArea.Y;
+                    var x2 = tmpX2;
+                    var y2 = tmpY2;
 
                     _previewDrawSurface.Clear();
                     _previewDrawSurface.FillRectangle(
@@ -167,12 +175,12 @@ namespace Pixellation.Tools
                 _copyArea.Height = _selectionArea.Height;
                 _copySrc = _drawSurface.Clone();
 
-                var x1 = (int)_selectionArea.X;
-                var y1 = (int)_selectionArea.Y;
-                var x2 = (int)(_selectionArea.X + _selectionArea.Width);
-                var y2 = (int)(_selectionArea.Y + _selectionArea.Height);
+                var x1 = _selectionArea.X;
+                var y1 =  _selectionArea.Y;
+                var x2 = _selectionArea.Right;
+                var y2 = _selectionArea.Bottom;
                 _drawSurface.FillRectangle(
-                        x1, y1, x2, y2, Colors.Transparent
+                    x1, y1, x2, y2, Colors.Transparent
                 );
             }
             else if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.C)
@@ -185,21 +193,17 @@ namespace Pixellation.Tools
             }
             else if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.V)
             {
-                _drawSurface.Blit(_selectionArea, _copySrc, _copyArea, WriteableBitmapExtensions.BlendMode.Alpha);
+                var dest = new Rect(_selectionArea.X, _selectionArea.Y, _selectionArea.Width, _selectionArea.Y);
+                var cpy = new Rect(_copyArea.X, _copyArea.Y, _copyArea.Width, _copyArea.Y);
+                _drawSurface.Blit(dest, _copySrc, cpy, WriteableBitmapExtensions.BlendMode.Alpha);
             }
         }
 
         public override void Reset()
         {
-            _selectionArea.X = 0;
-            _selectionArea.Y = 0;
-            _selectionArea.Width = 0;
-            _selectionArea.Height = 0;
+            _selectionArea = new IntRect();
 
-            _copyArea.X = 0;
-            _copyArea.Y = 0;
-            _copyArea.Width = 0;
-            _copyArea.Height = 0;
+            _copyArea = new IntRect();
 
             if (_copySrc != null)
             {

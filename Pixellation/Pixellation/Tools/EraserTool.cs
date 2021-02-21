@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using Pixellation.Utils;
+using System.Drawing;
 using System.Windows.Input;
 
 namespace Pixellation.Tools
@@ -24,16 +25,15 @@ namespace Pixellation.Tools
         {
             SaveLayerMemento(true);
 
-            var p = Mouse.GetPosition(_layer);
+            var p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
-            if (p.X < 0 || p.X >= _surfaceWidth || p.Y < 0 || p.Y >= _surfaceHeight)
+            if (OutOfBounds(p))
             {
                 return;
             }
 
             _layer.SetPixel(
-                (int)(p.X / _magnification),
-                (int)(p.Y / _magnification),
+                p.X, p.Y,
                 System.Windows.Media.Color.FromArgb(0,0,0,0)
             );
 

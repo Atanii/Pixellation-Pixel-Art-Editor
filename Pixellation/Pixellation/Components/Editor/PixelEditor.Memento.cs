@@ -82,6 +82,10 @@ namespace Pixellation.Components.Editor
                     _mementoCaretaker.Save(mergeMemento);
                     break;
 
+                case IPixelEditorEventType.ADDLAYER:
+                    _mementoCaretaker.Save(Layers[selectedLayerIndex].GetMemento(eTypeValue));
+                    break;
+
                 default:
                     _mementoCaretaker.Save(Layers[selectedLayerIndex].GetMemento(eTypeValue));
                     break;

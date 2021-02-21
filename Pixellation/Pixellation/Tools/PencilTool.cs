@@ -27,7 +27,7 @@ namespace Pixellation.Tools
 
             var p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
-            if (p.X < 0 || p.X >= (_surfaceWidth / _magnification) || p.Y < 0 || p.Y >= (_surfaceHeight / _magnification))
+            if (OutOfBounds(p))
                 return;
 
             _drawSurface.SetPixel(
