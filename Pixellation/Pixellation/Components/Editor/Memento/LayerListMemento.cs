@@ -2,13 +2,13 @@
 
 namespace Pixellation.Components.Editor.Memento
 {
-    public class LayerListMemento : BaseMemento<LayerListMemento, IEditorEventType>
+    public class LayerListMemento : BaseMemento<LayerListMemento, IPixelEditorEventType>
     {
         public int LayerIndex { get; private set; }
         public int PixelWidth { get; private set; }
         public int PixelHeight { get; private set; }
 
-        public LayerListMemento(IOriginatorHandler<LayerListMemento, IEditorEventType> originator, int typeValue, int layerIndex, int pixelWidth, int pixelHeight)
+        public LayerListMemento(IOriginatorHandler<LayerListMemento, IPixelEditorEventType> originator, int typeValue, int layerIndex, int pixelWidth, int pixelHeight)
             : base(typeValue, originator)
         {
             LayerIndex = layerIndex;
@@ -16,7 +16,7 @@ namespace Pixellation.Components.Editor.Memento
             PixelHeight = pixelHeight;
         }
 
-        public override IMemento<IEditorEventType> Restore()
+        public override IMemento<IPixelEditorEventType> Restore()
         {
             return _originatorHandler.HandleRestore(this);
         }

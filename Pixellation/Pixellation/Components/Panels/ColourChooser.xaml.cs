@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Pixellation.Components.Tools
+namespace Pixellation.Tools
 {
     using Rectangle = System.Windows.Shapes.Rectangle;
     using Color = System.Drawing.Color;
@@ -163,7 +163,7 @@ namespace Pixellation.Components.Tools
             SetChosenColourFromMousePosition(e);
         }
 
-        private void colourGradientCanvas_MouseMove(object sender, MouseEventArgs e)
+        private void ColourGradientCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             SetChosenColourFromMousePosition(e);
         }
@@ -174,7 +174,7 @@ namespace Pixellation.Components.Tools
         }
 
 
-        private void sc_TextInput(object sender, RoutedEventArgs e)
+        private void Sc_TextInput(object sender, RoutedEventArgs e)
         {
             if (int.TryParse(scR.Text, out int R) &&
                 int.TryParse(scG.Text, out int G) &&
@@ -187,7 +187,7 @@ namespace Pixellation.Components.Tools
             }
         }
 
-        private void sc2_TextInput(object sender, RoutedEventArgs e)
+        private void Sc2_TextInput(object sender, RoutedEventArgs e)
         {
             if (int.TryParse(scR2.Text, out int R) &&
                 int.TryParse(scG2.Text, out int G) &&
@@ -200,7 +200,7 @@ namespace Pixellation.Components.Tools
             }
         }
 
-        private void btnSwapColors_Click(object sender, RoutedEventArgs e)
+        private void BtnSwapColors_Click(object sender, RoutedEventArgs e)
         {
             var tmp = SecondaryColor;
             SecondaryColor = PrimaryColor;

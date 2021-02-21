@@ -1,4 +1,4 @@
-﻿namespace Pixellation.Components.Tools
+﻿namespace Pixellation.Tools
 {
     public enum ToolEventType
     {

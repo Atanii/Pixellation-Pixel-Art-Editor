@@ -19,7 +19,7 @@ namespace Pixellation
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly PersistenceManager _pm = PersistenceManager.GetInstance();
-        private readonly Caretaker<IEditorEventType> _mementoCaretaker = Caretaker<IEditorEventType>.GetInstance();
+        private readonly Caretaker<IPixelEditorEventType> _mementoCaretaker = Caretaker<IPixelEditorEventType>.GetInstance();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -1,12 +1,15 @@
-﻿using Pixellation.Utils;
-using System.Drawing;
+﻿using Pixellation.Models;
+using Pixellation.Utils;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
-namespace Pixellation.Components.Tools
+namespace Pixellation.Tools
 {
     public class PipetteTool : BaseTool
     {
         private static PipetteTool _instance;
+
+        private IntPoint p;
 
         private PipetteTool() : base()
         {
@@ -23,21 +26,12 @@ namespace Pixellation.Components.Tools
 
         private void TakeColor(ToolEventType e)
         {
-            var p = Mouse.GetPosition(_layer);
+            p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
-            if (p.X < 0 || p.X >= _surfaceWidth || p.Y < 0 || p.Y >= _surfaceHeight)
+            if (OutOfBounds(p))
                 return;
 
-            ToolColor = _layer.GetColor(
-                (int)(p.X / _magnification),
-                (int)(p.Y / _magnification));
-
-            OnRaiseToolEvent(this, new ToolEventArgs { Type = e, Value = ToolColor.ToDrawingColor() });
-        }
-
-        public override void SetDrawColor(Color c)
-        {
-            return;
+            OnRaiseToolEvent(this, new ToolEventArgs { Type = e, Value = _drawSurface.GetPixel(p.X, p.Y).ToDrawingColor() });
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)

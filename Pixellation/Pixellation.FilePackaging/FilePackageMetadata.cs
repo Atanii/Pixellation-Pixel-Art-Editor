@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Pixellation.Utils.FilePackaging
+﻿namespace Pixellation.FilePackaging
 {
-    class FilePackageMetadata
+    public class FilePackageMetadata
     {
         public string Version { get; set; }
         public string SaveDate { get; set; }

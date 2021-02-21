@@ -1,6 +1,8 @@
-﻿using System.Windows.Input;
+﻿using Pixellation.Utils;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
-namespace Pixellation.Components.Tools
+namespace Pixellation.Tools
 {
     public class DitheringTool : BaseTool
     {
@@ -23,34 +25,33 @@ namespace Pixellation.Components.Tools
         {
             SaveLayerMemento(true);
 
-            var p = Mouse.GetPosition(_layer);
+            var p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
             // odd X or even Y -> return
             if ( leftButtonPressed && 
-                ((((int)(p.X / _magnification) & 1) == 1 || ((int)(p.Y / _magnification) & 1) != 1) ^
-                (((int)(p.X / _magnification) & 1) != 1 || ((int)(p.Y / _magnification) & 1) == 1))
-            )
+                (((p.X & 1) == 1 || (p.Y & 1) != 1) ^
+                ((p.X & 1) != 1 || (p.Y & 1) == 1)) )
             {
                 return;
             }
             // odd + odd ^ even + even
             if ( !leftButtonPressed &&
-                ((((int)( p.X / _magnification) & 1) == 1 && ((int)( p.Y / _magnification) & 1) == 1) ^
-                (((int)( p.X / _magnification) & 1) != 1 && ((int)( p.Y / _magnification) & 1) != 1))
-            )
+                (((p.X & 1) == 1 && (p.Y & 1) == 1) ^
+                ((p.X & 1) != 1 && (p.Y & 1) != 1)) )
             {
                 return;
             }
 
-            if (p.X < 0 || p.X >= _surfaceWidth || p.Y < 0 || p.Y >= _surfaceHeight)
+            if (OutOfBounds(p))
+            {
                 return;
+            }
 
-            _layer.SetColor(
-                (int)(p.X / _magnification),
-                (int)(p.Y / _magnification),
-                ToolColor);
-
-            _layer.InvalidateVisual();
+            _drawSurface.SetPixel(
+                p.X,
+                p.Y,
+                ToolColor
+            );
         }
 
         public override void OnMouseUp(MouseButtonEventArgs e)

@@ -1,4 +1,4 @@
-﻿using Pixellation.Components.Tools;
+﻿using Pixellation.Tools;
 using Pixellation.Models;
 using Pixellation.Properties;
 using Pixellation.Utils.MementoPattern;
@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Pixellation.Interfaces;
 
 namespace Pixellation.Components.Editor
 {
@@ -23,7 +24,7 @@ namespace Pixellation.Components.Editor
         private Visual _gridLines;
         private Visual _borderLine;
         private DrawingLayer _drawPreview;
-        private readonly Caretaker<IEditorEventType> _mementoCaretaker = Caretaker<IEditorEventType>.GetInstance();
+        private readonly Caretaker<IPixelEditorEventType> _mementoCaretaker = Caretaker<IPixelEditorEventType>.GetInstance();
         #endregion PrivateFields
 
         #region Properties
@@ -206,11 +207,11 @@ namespace Pixellation.Components.Editor
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public event LayerListEventHandler LayerListChanged;
+        public event PixelEditorEventHandler LayerListChanged;
         #endregion Event
 
         /// <summary>
-        /// Binds eventhandlers and initializes an editable image with the default size, magnification and layer settings.
+        /// Default and only constructor. Binds eventhandlers and initializes an editable image with the default size, magnification and layer settings.
         /// </summary>
         public PixelEditor()
         {
@@ -220,11 +221,11 @@ namespace Pixellation.Components.Editor
             PixelHeight = Settings.Default.DefaultImageSize;
             Magnification = Settings.Default.DefaultMagnification;
 
-            Layers.Add(new DrawingLayer(this, "default"));
-
             BaseTool.RaiseToolEvent += HandleToolEvent;
             RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
             EditorSettingsChangeEvent += (d, e) => { SetOrRefreshMeasureVisualsMagnification(); };
+
+            AddLayer(new DrawingLayer(this, "default"));
 
             Init();
         }
@@ -264,11 +265,11 @@ namespace Pixellation.Components.Editor
 
             if (imageToEdit == null)
             {
-                Layers.Add(new DrawingLayer(this, "default"));
+                AddLayer(new DrawingLayer(this, "default"));
             }
             else
             {
-                Layers.Add(new DrawingLayer(this, imageToEdit, "default"));
+                AddLayer(new DrawingLayer(this, imageToEdit, "default"));
             }
 
             Init();
@@ -289,25 +290,24 @@ namespace Pixellation.Components.Editor
             PixelHeight = pixelHeight;
             Magnification = Settings.Default.DefaultMagnification;
 
-            foreach (var model in models)
-            {
-                Layers.Add(new DrawingLayer(
-                    this,
-                    model
-                ));
-            }
+            AddLayer(models);
 
             Init();
         }
 
         /// <summary>
-        /// Sets default actively edited layer and refresh.
+        /// Sets default actively edited layer then refresh.
         /// </summary>
         private void Init()
         {
             if (Layers.Count > 0)
             {
                 _activeLayer = Layers[0];
+                LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+                (
+                    IPixelEditorEventType.NONE,
+                    0, 0, new int[] {0}
+                ));
             }
 
             RefreshVisualsThenSignalUpdate();
@@ -341,7 +341,7 @@ namespace Pixellation.Components.Editor
             // Refresh canvas position
             RefreshPositionAndAlignment();
             // Setting up tools
-            UpdateToolProperties();
+            ChosenTool?.SetMagnification(Magnification);
             // Refresh size and visuals
             InvalidateMeasure();
             InvalidateVisual();
@@ -371,7 +371,7 @@ namespace Pixellation.Components.Editor
         /// </summary>
         private void UpdateToolProperties()
         {
-            ChosenTool?.SetDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview);
+            ChosenTool?.SetAllDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview);
         }
         #endregion Update, refresh...
 

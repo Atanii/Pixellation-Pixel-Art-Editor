@@ -3,7 +3,7 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor.Memento
 {
-    public class LayerMemento : BaseMemento<LayerMemento, IEditorEventType>
+    public class LayerMemento : BaseMemento<LayerMemento, IPixelEditorEventType>
     {
         public int LayerIndex { get; private set; }
         public string LayerName { get; private set; }
@@ -12,7 +12,7 @@ namespace Pixellation.Components.Editor.Memento
         public WriteableBitmap Bitmap { get; private set; }
         public LayerMemento ChainedOperationMemento { get; private set; }
 
-        public LayerMemento(IOriginatorHandler<LayerMemento, IEditorEventType> originator, int mTypevalue, int layerIndex, DrawingLayer original)
+        public LayerMemento(IOriginatorHandler<LayerMemento, IPixelEditorEventType> originator, int mTypevalue, int layerIndex, DrawingLayer original)
             : base(mTypevalue, originator)
         {
             LayerIndex = layerIndex;
@@ -31,7 +31,7 @@ namespace Pixellation.Components.Editor.Memento
             }
         }
 
-        public override IMemento<IEditorEventType> Restore()
+        public override IMemento<IPixelEditorEventType> Restore()
         {
             if (ChainedOperationMemento != null)
             {

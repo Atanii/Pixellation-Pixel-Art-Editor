@@ -8,9 +8,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Pixellation.Utils.FilePackaging
+namespace Pixellation.FilePackaging
 {
-    internal class FilePackageReader
+    public class FilePackageReader
     {
         private readonly string _filepath;
 
@@ -19,7 +19,7 @@ namespace Pixellation.Utils.FilePackaging
             _filepath = filepath;
         }
 
-        public async Task<ProjectModel> LoadProjectModel()
+        public async Task<ProjectModel> LoadProjectModel(string metadataFileName, string projectDataFileName, string layersFileName)
         {
             try
             {
@@ -32,10 +32,6 @@ namespace Pixellation.Utils.FilePackaging
                     // Open the package file as a ZIP
                     using (var archive = new ZipArchive(fs))
                     {
-                        var metadataFileName = Properties.Resources.PackageContentFileNameForMetaData + "." + Properties.Resources.ExtensionForDataFile;
-                        var projectDataFileName = Properties.Resources.PackageContentFileNameForProjectData + "." + Properties.Resources.ExtensionForDataFile;
-                        var layersFileName = Properties.Resources.PackageContentFileNameForLayers + "." + Properties.Resources.ExtensionForLayersFile;
-
                         // Metadata
                         var metadataFile = archive.Entries.Where(x => x.Name == metadataFileName).FirstOrDefault();
                         if (metadataFile != null)

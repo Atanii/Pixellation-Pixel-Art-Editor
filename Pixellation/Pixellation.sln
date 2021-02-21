@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pixellation", "Pixellation\Pixellation.csproj", "{A8C823BE-0F81-4A54-9FC0-D6942BE33468}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixellation", "Pixellation\Pixellation.csproj", "{A8C823BE-0F81-4A54-9FC0-D6942BE33468}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pixellation.MementoPattern", "Pixellation.MementoPattern\Pixellation.MementoPattern.csproj", "{0BFE5900-25AE-4072-A889-8DBB695816CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pixellation.Models", "Pixellation.Models\Pixellation.Models.csproj", "{84DEFE62-8FE1-4BF0-8F3B-89AA17F47785}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pixellation.FilePackaging", "Pixellation.FilePackaging\Pixellation.FilePackaging.csproj", "{81834688-9AF0-4AED-89CB-C35D329D6018}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{A8C823BE-0F81-4A54-9FC0-D6942BE33468}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8C823BE-0F81-4A54-9FC0-D6942BE33468}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8C823BE-0F81-4A54-9FC0-D6942BE33468}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BFE5900-25AE-4072-A889-8DBB695816CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BFE5900-25AE-4072-A889-8DBB695816CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BFE5900-25AE-4072-A889-8DBB695816CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BFE5900-25AE-4072-A889-8DBB695816CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84DEFE62-8FE1-4BF0-8F3B-89AA17F47785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84DEFE62-8FE1-4BF0-8F3B-89AA17F47785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84DEFE62-8FE1-4BF0-8F3B-89AA17F47785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84DEFE62-8FE1-4BF0-8F3B-89AA17F47785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81834688-9AF0-4AED-89CB-C35D329D6018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81834688-9AF0-4AED-89CB-C35D329D6018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81834688-9AF0-4AED-89CB-C35D329D6018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81834688-9AF0-4AED-89CB-C35D329D6018}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

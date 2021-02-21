@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
-namespace Pixellation.Utils.FilePackaging
+namespace Pixellation.FilePackaging
 {
-    internal class FilePackageWriter
+    public class FilePackageWriter
     {
         private readonly string _filepath;
         private readonly IEnumerable<string> _contentFilePathList;

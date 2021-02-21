@@ -5,7 +5,7 @@
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:l="clr-namespace:Pixellation.Components.Editor"
           xmlns:Panels="clr-namespace:Pixellation.Components.Panels"
-          xmlns:l2="clr-namespace:Pixellation.Components.Tools"
+          xmlns:l2="clr-namespace:Pixellation.Tools"
           xmlns:resource="clr-namespace:Pixellation.Properties"
           Title="{Binding ElementName=mainWindow, Path=Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
           Closing="MainWindow_Closing"
@@ -70,7 +70,7 @@
             <ScrollViewer>
                 <StackPanel>
                     <Label Content="Preview"></Label>
-                    <Panels:Preview Width="200" Height="200" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}" />
+                    <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}"></l:DrawingPreview>
 
                     <Label Content="Tiled"></Label>
                     <Panels:EditorSettingsPanel x:Name="editorSettings"/>
