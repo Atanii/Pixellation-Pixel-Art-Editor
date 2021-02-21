@@ -1,6 +1,7 @@
 ﻿using Pixellation.Components.Tools;
 using Pixellation.Models;
 using Pixellation.Properties;
+using Pixellation.Utils.MementoPattern;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +23,7 @@ namespace Pixellation.Components.Editor
         private Visual _gridLines;
         private Visual _borderLine;
         private DrawingLayer _drawPreview;
+        private readonly Caretaker<IEditorEventType> _mementoCaretaker = Caretaker<IEditorEventType>.GetInstance();
         #endregion PrivateFields
 
         #region Properties
@@ -72,6 +74,8 @@ namespace Pixellation.Components.Editor
                 OnPropertyChanged();
             }
         }
+
+        public int VisualCount { get; set; } = 0;
         #endregion Properties
 
         #region DependencyProperties
@@ -201,6 +205,8 @@ namespace Pixellation.Components.Editor
         /// Marks change regarding one of the properties.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public event LayerListEventHandler LayerListChanged;
         #endregion Event
 
         /// <summary>

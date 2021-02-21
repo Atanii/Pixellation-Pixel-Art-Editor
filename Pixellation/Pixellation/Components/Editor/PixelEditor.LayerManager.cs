@@ -11,8 +11,6 @@ namespace Pixellation.Components.Editor
 {
     public partial class PixelEditor : IVisualManager
     {
-        public int VisualCount { get; set; } = 0;
-
         public void MeasureAllLayer(System.Windows.Size s)
         {
             foreach (var l in Layers)
@@ -145,6 +143,16 @@ namespace Pixellation.Components.Editor
             }
             return list;
         }
+
+        public int GetIndex(DrawingLayer layer)
+        {
+            return Layers.FindIndex(x => x.LayerName == layer.LayerName);
+        }
+
+        public int GetActiveLayerIndex()
+        {
+            return Layers.FindIndex(x => x.LayerName == _activeLayer.LayerName);
+        }
         #endregion Getters
 
         #region Merge
@@ -193,7 +201,7 @@ namespace Pixellation.Components.Editor
             RefreshVisualsThenSignalUpdate();
         }
 
-        public void Rotate(int angleInDegree, bool allLayers, bool counterClockWise)
+        public void Rotate(bool allLayers, bool counterClockWise, int angleInDegree = 90)
         {
             if (!allLayers && _activeLayer != null)
             {
@@ -223,69 +231,103 @@ namespace Pixellation.Components.Editor
         #endregion Transform
 
         #region Add, Delete, Duplicate, Move Up, Move Down, Merge
-        public int AddLayer(DrawingLayer layer, int layerIndex = 0)
+        public void AddLayer(DrawingLayer layer, int layerIndex = 0)
         {
             Layers.Insert(layerIndex, layer);
             AddVisualChild(Layers[layerIndex]);
 
             RefreshVisualsThenSignalUpdate();
 
-            return layerIndex;
+            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            (
+                IEditorEventType.ADDLAYER,
+                layerIndex,
+                layerIndex,
+                new int[] { layerIndex }
+            ));
         }
 
-        public int AddLayer(string name, int layerIndex = 0)
+        public void AddLayer(string name, int layerIndex = 0)
         {
             Layers.Insert(layerIndex, new DrawingLayer(this, name));
             AddVisualChild(Layers[layerIndex]);
 
             RefreshVisualsThenSignalUpdate();
 
-            return layerIndex;
+            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            (
+                IEditorEventType.ADDLAYER,
+                layerIndex,
+                layerIndex,
+                new int[] { layerIndex }
+            ));
         }
 
-        public int DuplicateLayer(int layerIndex = 0)
+        public void DuplicateLayer(int layerIndex = 0)
         {
             Layers.Insert(layerIndex, Layers[layerIndex].Clone());
             AddVisualChild(Layers[layerIndex]);
 
             RefreshVisualsThenSignalUpdate();
 
-            return layerIndex;
+            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            (
+                IEditorEventType.DUPLICATELAYER,
+                layerIndex,
+                layerIndex,
+                new int[] { layerIndex }
+            ));
         }
 
-        public int MoveLayerUp(int layerIndex)
+        public void MoveLayerUp(int layerIndex)
         {
+            var newLayerIndex = layerIndex;
             if (layerIndex > 0)
             {
                 var tmp = Layers[layerIndex];
                 Layers.RemoveAt(layerIndex);
-                Layers.Insert(--layerIndex, tmp);
+                --newLayerIndex;
+                Layers.Insert(newLayerIndex, tmp);
                 RefreshVisualsThenSignalUpdate();
             }
-            return layerIndex;
+            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            (
+                IEditorEventType.MOVELAYERUP,
+                layerIndex,
+                newLayerIndex,
+                new int[] { layerIndex }
+            ));
         }
 
-        public int MoveLayerDown(int layerIndex)
+        public void MoveLayerDown(int layerIndex)
         {
+            var newLayerIndex = layerIndex;
             if (layerIndex < Layers.Count() - 1)
             {
                 var tmp = Layers[layerIndex];
                 Layers.RemoveAt(layerIndex);
-                Layers.Insert(++layerIndex, tmp);
+                ++newLayerIndex;
+                Layers.Insert(newLayerIndex, tmp);
                 RefreshVisualsThenSignalUpdate();
             }
-            return layerIndex;
+            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            (
+                IEditorEventType.MOVELAYERDOWN,
+                layerIndex,
+                newLayerIndex,
+                new int[] { layerIndex }
+            ));
         }
 
-        public void RemoveLayer(DrawingLayer layer)
+        private void RemoveLayer(DrawingLayer layer)
         {
             RemoveVisualChild(layer);
             Layers.Remove(layer);
-            RefreshVisualsThenSignalUpdate();
         }
 
-        public int RemoveLayer(int layerIndex)
+        public void RemoveLayer(int layerIndex)
         {
+            var newLayerIndex = layerIndex;
             if (Layers.ElementAtOrDefault(layerIndex) != null)
             {
                 RemoveVisualChild(Layers[layerIndex]);
@@ -294,28 +336,40 @@ namespace Pixellation.Components.Editor
             }
             if (Layers.Count == 0)
             {
-                return -1;
+                newLayerIndex = - 1;
             }
             else if ((layerIndex - 1) >= 0)
             {
-                return layerIndex - 1;
+                newLayerIndex = layerIndex - 1;
             }
-            else
-            {
-                return layerIndex;
-            }
+            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            (
+                IEditorEventType.REMOVELAYER,
+                layerIndex,
+                newLayerIndex,
+                new int[] { layerIndex }
+            ));
         }
 
-        public int MergeLayerDownward(int layerIndex)
+        public void MergeLayerDownward(int layerIndex)
         {
+            var newLayerIndex = layerIndex;
             if (Layers.Count >= (layerIndex + 2))
-            {
+            {   
                 var bmp = Merge(layerIndex + 1, layerIndex);
                 Layers[layerIndex].SetBitmap(bmp);
-                RemoveLayer(layerIndex + 1);
-                return layerIndex;
+                RemoveLayer(Layers[layerIndex + 1]);
+
+                RefreshVisualsThenSignalUpdate();
+
+                LayerListChanged?.Invoke(this, new LayerListEventArgs
+                (
+                    IEditorEventType.MERGELAYER,
+                    layerIndex,
+                    newLayerIndex,
+                    new int[] { layerIndex, layerIndex + 1 }
+                ));
             }
-            return -1;
         }
         #endregion Add, Delete, Duplicate, Move Up, Move Down
     }

@@ -64,12 +64,12 @@ namespace Pixellation.Components.Editor
 
         public WriteableBitmap GetWriteableBitmap()
         {
-            return this._bitmap;
+            return this._bitmap.Clone();
         }
 
         public WriteableBitmap GetWriteableBitmapWithAppliedOpacity()
         {
-            var tmp = BitmapFactory.New(_owner.PixelWidth, _owner.PixelHeight);
+            var tmp = BitmapFactory.New(_bitmap.PixelWidth, _bitmap.PixelHeight);
             tmp.Clear(Colors.Transparent);
 
             for (int i = 0; i < tmp.Width; i++)
@@ -96,7 +96,7 @@ namespace Pixellation.Components.Editor
 
         public void SetBitmap(WriteableBitmap bmp)
         {
-            if (bmp != null && bmp.PixelWidth == _bitmap.PixelWidth && bmp.PixelHeight == _bitmap.PixelHeight)
+            if (bmp != null)
             {
                 _bitmap = bmp;
             }

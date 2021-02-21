@@ -61,6 +61,15 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unsaved Project.
+        /// </summary>
+        public static string DefaultProjectTitle {
+            get {
+                return ResourceManager.GetString("DefaultProjectTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image Files (*.png, *.bmp, *.jpg, *.tiff, *.gif)|*.png;*.bmp;*.jpg;*.tiff;*.gif.
         /// </summary>
         public static string ExportFilter {

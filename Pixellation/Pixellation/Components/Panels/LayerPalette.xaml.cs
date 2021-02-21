@@ -1,5 +1,6 @@
 ﻿using Pixellation.Components.Dialogs;
 using Pixellation.Components.Dialogs.StringInputDialog;
+using Pixellation.Components.Editor;
 using Pixellation.Interfaces;
 using System;
 using System.Windows;
@@ -30,8 +31,8 @@ namespace Pixellation.Components.Panels
         {
             RaiseLayerListPropertyInitialized += (a, b) =>
             {
-                LayerManager.RaiseImageUpdatedEvent += UpdateLayerList;
-                UpdateLayerList(a, EventArgs.Empty);
+                LayerManager.LayerListChanged += UpdateLayerList;
+                UpdateLayerList(a, LayerListEventArgs.Empty);
                 // Initial layer selection
                 SelectLayer();
             };
@@ -48,10 +49,14 @@ namespace Pixellation.Components.Panels
             }
         }
 
-        private void UpdateLayerList(object sender, EventArgs e)
+        private void UpdateLayerList(object sender, LayerListEventArgs e)
         {
             layerList.ItemsSource = LayerManager.GetLayers();
             layerList.Items.Refresh();
+            if (e != LayerListEventArgs.Empty && e.NewIndexOfActiveLayer != -1)
+            {
+                SelectLayer(e.NewIndexOfActiveLayer);
+            }
         }
 
         private void LayerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -64,42 +69,54 @@ namespace Pixellation.Components.Panels
             var newLayerDialog = new StringInputDialog("New Layer", "Layername");
             if (newLayerDialog.ShowDialog() == true)
             {
-                int index = LayerManager.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
-                SelectLayer(index);
+                LayerManager.SaveState(IEditorEventType.ADDLAYER, layerList.Items.Count > 0 ? layerList.SelectedIndex : -1);
+                LayerManager.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
             }
         }
 
         private void DeleteLayer(object sender, RoutedEventArgs e)
         {
-            int index = LayerManager.RemoveLayer(layerList.SelectedIndex);
-            if (index != -1)
+            if (layerList.Items.Count > 0)
             {
-                SelectLayer(index);
+                LayerManager.SaveState(IEditorEventType.REMOVELAYER, layerList.SelectedIndex);
+                LayerManager.RemoveLayer(layerList.SelectedIndex);
             }
         }
 
         private void DuplicateLayer(object sender, RoutedEventArgs e)
         {
-            int index = LayerManager.DuplicateLayer(layerList.SelectedIndex);
-            SelectLayer(index);
+            if (layerList.Items.Count > 0)
+            {
+                LayerManager.SaveState(IEditorEventType.DUPLICATELAYER, layerList.SelectedIndex);
+                LayerManager.DuplicateLayer(layerList.SelectedIndex);
+            }
         }
 
         private void MoveLayerUp(object sender, RoutedEventArgs e)
         {
-            int index = LayerManager.MoveLayerUp(layerList.SelectedIndex);
-            SelectLayer(index);
+            if (layerList.SelectedIndex > 0)
+            {
+                LayerManager.SaveState(IEditorEventType.MOVELAYERUP, layerList.SelectedIndex);
+                LayerManager.MoveLayerUp(layerList.SelectedIndex);
+            }
         }
 
         private void MoveLayerDown(object sender, RoutedEventArgs e)
         {
-            int index = LayerManager.MoveLayerDown(layerList.SelectedIndex);
-            SelectLayer(index);
+            if (layerList.SelectedIndex < (layerList.Items.Count - 1))
+            {
+                LayerManager.SaveState(IEditorEventType.MOVELAYERDOWN, layerList.SelectedIndex);
+                LayerManager.MoveLayerDown(layerList.SelectedIndex);
+            }
         }
 
         private void MergeLayer(object sender, RoutedEventArgs e)
         {
-            int index = LayerManager.MergeLayerDownward(layerList.SelectedIndex);
-            SelectLayer(index);
+            if (layerList.SelectedIndex < (layerList.Items.Count - 1))
+            {
+                LayerManager.SaveState(IEditorEventType.MERGELAYER, layerList.SelectedIndex);
+                LayerManager.MergeLayerDownward(layerList.SelectedIndex);
+            }
         }
 
         private void OpenLayerSettingsDialog(object sender, System.Windows.Input.MouseButtonEventArgs e)

@@ -22,14 +22,14 @@ namespace Pixellation.Components.Tools
 
         private void Draw()
         {
+            SaveLayerMemento();
+
             var p = Mouse.GetPosition(_layer);
 
             var targetColor = _layer.GetColor((int)(p.X / _magnification), (int)(p.Y / _magnification));
             var replacementColor = ToolColor;
 
             FloodFill(p, targetColor, replacementColor);
-
-            _layer.InvalidateVisual();
         }
 
         private void FloodFill(System.Windows.Point startingPoint, System.Windows.Media.Color targetColor, System.Windows.Media.Color replacementColor)

@@ -12,26 +12,26 @@
         </GroupBox>
         <GroupBox Header="Mirror">
             <StackPanel Orientation="Vertical">
-                <Button x:Name="mVertical" Margin="5" Click="mVertical_Click">Horizontally</Button>
-                <Button x:Name="mHorizontal" Margin="5" Click="mHorizontal_Click">Vertically</Button>
+                <Button x:Name="mVertical" Margin="5" Click="MVertical_Click">Horizontally</Button>
+                <Button x:Name="mHorizontal" Margin="5" Click="MHorizontal_Click">Vertically</Button>
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Rotate">
             <StackPanel Orientation="Vertical">
                 <CheckBox x:Name="cbCounterClockWise" Content="Counterclockwise" Margin="5"></CheckBox>
-                <Button x:Name="r90" Margin="5" Click="r90_Click">90°</Button>
+                <Button x:Name="r90" Margin="5" Click="R90_Click">90°</Button>
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Resize Image">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <Label>Width: </Label>
-                    <TextBox x:Name="txtWidth" Width="35" Margin="5" LostFocus="txtWidth_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBox x:Name="txtWidth" Width="35" Margin="5" LostFocus="TxtWidth_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     <Label>Height:</Label>
-                    <TextBox x:Name="txtHeight" Width="35" Margin="5" LostFocus="txtHeight_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBox x:Name="txtHeight" Width="35" Margin="5" LostFocus="TxtHeight_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
                 <CheckBox x:Name="cbResizeProportional" Content="Proportional" ToolTip="Apply same amount of changes to other size attribute." Margin="5"></CheckBox>
-                <Button x:Name="btnResize" Content="Apply" Margin="5" Click="btnResize_Click" IsDefault="True"></Button>
+                <Button x:Name="btnResize" Content="Apply" Margin="5" Click="BtnResize_Click" IsDefault="True"></Button>
             </StackPanel>
         </GroupBox>
     </StackPanel>

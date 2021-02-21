@@ -21,6 +21,8 @@ namespace Pixellation.Components.Tools
 
         private void Draw(bool leftButtonPressed = true)
         {
+            SaveLayerMemento(true);
+
             var p = Mouse.GetPosition(_layer);
 
             // odd X or even Y -> return
@@ -49,6 +51,11 @@ namespace Pixellation.Components.Tools
                 ToolColor);
 
             _layer.InvalidateVisual();
+        }
+
+        public override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            UnlockMemento();
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)

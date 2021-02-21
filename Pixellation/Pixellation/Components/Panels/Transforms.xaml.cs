@@ -1,4 +1,5 @@
-﻿using Pixellation.Interfaces;
+﻿using Pixellation.Components.Editor;
+using Pixellation.Interfaces;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -53,33 +54,63 @@ namespace Pixellation.Components.Panels
             InitializeComponent();
         }
 
-        private void mHorizontal_Click(object sender, RoutedEventArgs e)
+        private void MHorizontal_Click(object sender, RoutedEventArgs e)
         {
-            LayerManager.Mirror(true, (bool)cbAllLayers.IsChecked);
+            var all = (bool)cbAllLayers.IsChecked;
+            LayerManager.SaveState(
+                all ? IEditorEventType.MIRROR_HORIZONTAL_ALL : IEditorEventType.MIRROR_HORIZONTAL,
+                LayerManager.GetActiveLayerIndex()
+            );
+            LayerManager.Mirror(true, all);
         }
 
-        private void mVertical_Click(object sender, RoutedEventArgs e)
+        private void MVertical_Click(object sender, RoutedEventArgs e)
         {
-            LayerManager.Mirror(false, (bool)cbAllLayers.IsChecked);
+            var all = (bool)cbAllLayers.IsChecked;
+            LayerManager.SaveState(
+                all ? IEditorEventType.MIRROR_VERTICAL_ALL : IEditorEventType.MIRROR_VERTICAL,
+                LayerManager.GetActiveLayerIndex()
+            );
+            LayerManager.Mirror(false, all);
         }
 
-        private void r90_Click(object sender, RoutedEventArgs e)
+        private void R90_Click(object sender, RoutedEventArgs e)
         {
-            LayerManager.Rotate(90, (bool)cbAllLayers.IsChecked, (bool)cbCounterClockWise.IsChecked);
+            var all = (bool)cbAllLayers.IsChecked;
+            var counterClockWise = (bool)cbCounterClockWise.IsChecked;
+            if (counterClockWise)
+            {
+                LayerManager.SaveState(
+                    all ? IEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL : IEditorEventType.ROTATE_COUNTERCLOCKWISE,
+                    LayerManager.GetActiveLayerIndex()
+                );
+            }
+            else
+            {
+                LayerManager.SaveState(
+                    all ? IEditorEventType.ROTATE_ALL : IEditorEventType.ROTATE,
+                    LayerManager.GetActiveLayerIndex()
+                );
+            }
+            LayerManager.Rotate(all, counterClockWise);
         }
 
-        private void btnResize_Click(object sender, RoutedEventArgs e)
+        private void BtnResize_Click(object sender, RoutedEventArgs e)
         {
             var w = txtWidth.Text;
             var h = txtHeight.Text;
             if (int.TryParse(w, out int width) && int.TryParse(h, out int height) &&
                 width > 0 && height > 0)
             {
+                LayerManager.SaveState(
+                    IEditorEventType.RESIZE,
+                    LayerManager.GetActiveLayerIndex()
+                );
                 LayerManager.Resize(width, height);
             }
         }
 
-        private void txtWidth_LostFocus(object sender, RoutedEventArgs e)
+        private void TxtWidth_LostFocus(object sender, RoutedEventArgs e)
         {
             if ((bool)cbResizeProportional.IsChecked && 
                 double.TryParse(txtWidth.Text, out double width) && double.TryParse(txtHeight.Text, out double height) &&
@@ -90,7 +121,7 @@ namespace Pixellation.Components.Panels
             }
         }
 
-        private void txtHeight_LostFocus(object sender, RoutedEventArgs e)
+        private void TxtHeight_LostFocus(object sender, RoutedEventArgs e)
         {
             if ((bool)cbResizeProportional.IsChecked &&
                 double.TryParse(txtHeight.Text, out double height) && double.TryParse(txtWidth.Text, out double width) &&

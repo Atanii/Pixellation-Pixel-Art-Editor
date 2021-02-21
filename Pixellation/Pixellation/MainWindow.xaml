@@ -7,23 +7,18 @@
           xmlns:Panels="clr-namespace:Pixellation.Components.Panels"
           xmlns:l2="clr-namespace:Pixellation.Components.Tools"
           xmlns:resource="clr-namespace:Pixellation.Properties"
-          mc:Ignorable="d" Name="mainWindow"
-          Title="{x:Static resource:Resources.Title}" Height="768" Width="1024">
-
-    <Window.CommandBindings>
-        <CommandBinding Command="New" CanExecute="CommonCommandBinding_True" />
-        <CommandBinding Command="Open" CanExecute="CommonCommandBinding_True" />
-        <CommandBinding Command="Save" CanExecute="CommonCommandBinding_True" />
-    </Window.CommandBindings>
+          Title="{Binding ElementName=mainWindow, Path=Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+          Closing="MainWindow_Closing"
+          mc:Ignorable="d" Name="mainWindow" Height="768" Width="1024">
 
     <!-- MAINPANEL -->
     <DockPanel LastChildFill="True">
         <!-- MENUBAR -->
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
-                <Button Command="New" Content="New" Click="OpenNewImageDialog" />
-                <Button Command="Open" Content="Open" Click="Open" />
-                <Button Command="Save" Content="Save Project" Click="SaveProject" />
+                <Button Content="New" Click="OpenNewImageDialog" />
+                <Button Content="Open" Click="Open" />
+                <Button Content="Save Project" Click="SaveProject" />
             </ToolBar>
             <ToolBar>
                 <Button Content="Export" Click="ExportAsImage" />

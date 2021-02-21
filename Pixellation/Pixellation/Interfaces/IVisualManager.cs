@@ -1,5 +1,6 @@
 ﻿using Pixellation.Components.Editor;
 using Pixellation.Models;
+using Pixellation.Utils.MementoPattern;
 using System;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
@@ -10,38 +11,42 @@ namespace Pixellation.Interfaces
     {
         public event EventHandler RaiseImageUpdatedEvent;
 
+        public event LayerListEventHandler LayerListChanged;
+
         public void SetActiveLayer(int layerIndex = 0);
 
         public List<DrawingLayer> GetLayers();
 
         public DrawingLayer GetLayer(int layerIndex = 0);
 
-        public int AddLayer(DrawingLayer layer, int layerIndex = 0);
+        public void AddLayer(DrawingLayer layer, int layerIndex = 0);
 
-        public int AddLayer(string name, int layerIndex = 0);
+        public void AddLayer(string name, int layerIndex = 0);
 
-        public int DuplicateLayer(int layerIndex = 0);
+        public void DuplicateLayer(int layerIndex = 0);
 
-        public void RemoveLayer(DrawingLayer layer);
-
-        public int RemoveLayer(int layerIndex);
+        public void RemoveLayer(int layerIndex);
 
         public WriteableBitmap Merge(int from, int to = 0, WriteableBitmapExtensions.BlendMode mode = WriteableBitmapExtensions.BlendMode.Alpha);
 
         public WriteableBitmap GetAllMergedWriteableBitmap();
 
-        public int MoveLayerUp(int layerIndex);
+        public void MoveLayerUp(int layerIndex);
 
-        public int MoveLayerDown(int layerIndex);
+        public void MoveLayerDown(int layerIndex);
 
-        public int MergeLayerDownward(int layerIndex);
+        public void MergeLayerDownward(int layerIndex);
 
         public List<LayerModel> GetLayerModels();
 
         public void Mirror(bool horizontally, bool allLayers = false);
 
-        public void Rotate(int angleInDegree, bool allLayers = false, bool counterClockWise = false);
+        public void Rotate(bool allLayers = false, bool counterClockWise = false, int angleInDegree = 90);
 
         public void Resize(int newWidth, int newHeight);
+
+        public void SaveState(int eTypeValue, int layerIndex);
+
+        public int GetActiveLayerIndex();
     }
 }

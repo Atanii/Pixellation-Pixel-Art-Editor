@@ -1,5 +1,6 @@
 ﻿using Pixellation.Components.Editor;
 using Pixellation.Utils;
+using Pixellation.Utils.MementoPattern;
 using System.Drawing;
 using System.Windows.Input;
 
@@ -18,6 +19,9 @@ namespace Pixellation.Components.Tools
         public delegate void ToolEventHandler(object sender, ToolEventArgs args);
 
         public static event ToolEventHandler RaiseToolEvent;
+
+        private static readonly Caretaker<IEditorEventType> _mementoCaretaker = Caretaker<IEditorEventType>.GetInstance();
+        private bool _isMementoLocked = false;
 
         protected BaseTool()
         {
@@ -48,16 +52,16 @@ namespace Pixellation.Components.Tools
 
         public void SetDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer)
         {
-            this._magnification = magnification;
-            this._surfaceWidth = pixelWidth * magnification;
-            this._surfaceHeight = pixelHeight * magnification;
-            this._layer = ds;
-            this._previewLayer = previewLayer;
+            _magnification = magnification;
+            _surfaceWidth = pixelWidth * magnification;
+            _surfaceHeight = pixelHeight * magnification;
+            _layer = ds;
+            _previewLayer = previewLayer;
         }
 
         public void SetActiveLayer(DrawingLayer ds)
         {
-            this._layer = ds;
+            _layer = ds;
         }
 
         public virtual Color GetDrawColor()
@@ -96,6 +100,23 @@ namespace Pixellation.Components.Tools
         public virtual void Reset()
         {
             return;
+        }
+
+        protected void SaveLayerMemento(bool lockMemento = false)
+        {
+            if (!_isMementoLocked)
+            {
+                _mementoCaretaker.Save(_layer.GetMemento(IEditorEventType.LAYER_PIXELS_CHANGED));
+            }
+            if (lockMemento)
+            {
+                _isMementoLocked = true;
+            }
+        }
+
+        protected void UnlockMemento()
+        {
+            _isMementoLocked = false;
         }
     }
 }

@@ -1,33 +1,42 @@
-﻿using Pixellation.Models;
+﻿using Pixellation.Components.Editor.Memento;
+using Pixellation.Models;
 using Pixellation.Utils;
+using Pixellation.Utils.MementoPattern;
 using System;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public class DrawingLayer : DrawingSurface, IPreviewable
+    public class DrawingLayer : DrawingSurface, IOriginator<LayerMemento, IEditorEventType>
     {
+        #region Fields And Properties
         private string _name;
         public string LayerName {
             get { return _name; }
             set { _name = value; _owner.RefreshVisualsThenSignalUpdate(); }
         }
-        public bool Visible { get; set; }
 
-        public DrawingLayer(PixelEditor owner, string layerName = "", bool visible = true) : base(owner)
+        public new double Opacity
         {
-            if (layerName == "")
+            get
             {
-                _name = "Layer-" + (new DateTime()).Ticks;
+                if (Visible)
+                {
+                    return base.Opacity;
+                }
+                return base.Opacity;
             }
-            else
+            set
             {
-                _name = layerName;
+                base.Opacity = value;
             }
-            Visible = visible;
         }
 
-        public DrawingLayer(PixelEditor owner, WriteableBitmap bitmap, string layerName = "", bool visible = true) : base(owner, bitmap)
+        public bool Visible { get; set; }
+        #endregion Fields And Properties
+
+        #region Constructors
+        public DrawingLayer(PixelEditor owner, string layerName = "", bool visible = true, double opacity = 1.0) : base(owner)
         {
             if (layerName == "")
             {
@@ -38,6 +47,21 @@ namespace Pixellation.Components.Editor
                 _name = layerName;
             }
             Visible = visible;
+            Opacity = opacity;
+        }
+
+        public DrawingLayer(PixelEditor owner, WriteableBitmap bitmap, string layerName = "", bool visible = true, double opacity = 1.0) : base(owner, bitmap)
+        {
+            if (layerName == "")
+            {
+                _name = "Layer-" + (new DateTime()).Ticks;
+            }
+            else
+            {
+                _name = layerName;
+            }
+            Visible = visible;
+            Opacity = opacity;
         }
 
         public DrawingLayer(PixelEditor owner, LayerModel model, bool visible = true) : base(
@@ -56,8 +80,25 @@ namespace Pixellation.Components.Editor
             Opacity = model.Opacity;
         }
 
-        public event EventHandler RaiseImageUpdatedEvent;
+        public DrawingLayer(PixelEditor owner, LayerMemento mem) : base(
+            owner,
+            mem.Bitmap
+        )
+        {
+            if (mem.LayerName == "")
+            {
+                _name = "Layer-" + (new DateTime()).Ticks;
+            }
+            else
+            {
+                _name = mem.LayerName;
+            }
+            Visible = mem.Visible;
+            Opacity = mem.Opacity;
+        }
+        #endregion Constructors
 
+        #region Conversions, Cloning
         public override string ToString()
         {
             return LayerName;
@@ -91,5 +132,34 @@ namespace Pixellation.Components.Editor
             var bmp2 = _bitmap.Clone();
             return new DrawingLayer(_owner, bmp2, LayerName, Visible);
         }
+        #endregion Conversions, Cloning
+
+        #region Memento
+        public void Restore(LayerMemento mem)
+        {   
+            if (mem.LayerName == "")
+            {
+                _name = "Layer-" + (new DateTime()).Ticks;
+            }
+            else
+            {
+                _name = mem.LayerName;
+            }
+            Visible = mem.Visible;
+            Opacity = mem.Opacity;
+            SetBitmap(mem.Bitmap);
+        }
+
+        public LayerMemento GetMemento(int mTypeValue)
+        {
+            return new LayerMemento
+            (
+                _owner,
+                mTypeValue,
+                _owner.GetIndex(this),
+                this
+            );
+        }
+        #endregion Memento
     }
 }
