@@ -93,6 +93,7 @@ namespace Pixellation.Components.Editor
             LayerMemento redoMem;
             DrawingLayer originator;
             int origIndex;
+
             var typeValue = mem.GetMementoType();
             switch (typeValue)
             {
@@ -115,6 +116,7 @@ namespace Pixellation.Components.Editor
                     {
                         redoMem = Layers[origIndex].GetMemento(-typeValue);
                         Layers[origIndex].Restore(mem);
+
                         // Set original pre-merge selected layerindex
                         LayerListChanged?.Invoke(this, new LayerListEventArgs
                         (
@@ -122,6 +124,7 @@ namespace Pixellation.Components.Editor
                             origIndex, origIndex,
                             new int[] { origIndex, origIndex + 1 }
                         ));
+
                         RefreshVisualsThenSignalUpdate();
                         return redoMem;
                     }
@@ -129,7 +132,7 @@ namespace Pixellation.Components.Editor
 
                 case IEditorEventType.REMOVELAYER:
                     originator = new DrawingLayer(this, mem);
-                    redoMem = originator.GetMemento(IEditorEventType.ADDLAYER);
+                    redoMem = originator.GetMemento(-typeValue);
                     AddLayer(originator, mem.LayerIndex);
                     return redoMem;
 

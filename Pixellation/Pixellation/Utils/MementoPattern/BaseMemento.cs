@@ -3,11 +3,12 @@
     /// <summary>
     /// Base memento class storing the corresponding <see cref="_MementoType"/> and <see cref="IOriginator{_Memento, _MementoType}"/>.
     /// </summary>
-    /// <typeparam name="_Memento">Class inherited from <see cref="BaseMemento{_Memento, _MementoType}"/>.</typeparam>
+    /// <typeparam name="_Memento">Object containing the saved state.</typeparam>
+    /// <typeparam name="_MementoType">Interface with consts representing the possible reasons that caused <see cref="IMemento{_MementoType}"/> to be saved.</typeparam>
     public abstract class BaseMemento<_Memento, _MementoType> : IMemento<_MementoType> where _Memento : IMemento<_MementoType> where _MementoType : IMementoType
     {
         /// <summary>
-        /// Value of the <see cref="_MementoType"/> indicating the change preceeding the creation of this <see cref="_Memento"/>.
+        /// Value of the <see cref="_MementoType"/> indicating the change following the creation of this <see cref="_Memento"/>.
         /// </summary>
         protected readonly int _mTypeValue;
 
@@ -28,9 +29,9 @@
         }
 
         /// <summary>
-        /// Override this method to call <see cref="IOriginatorHandler{T, O}.HandleRestore(T)"/> from the inherited class.
+        /// Restore saved state.
         /// </summary>
-        /// <returns><see cref="IMemento"/>.</returns>
+        /// <returns><see cref="IMemento{_MementoType}"/> for <see cref="Caretaker{_MementoType}.Undo"/> or <see cref="Caretaker{_MementoType}.Redo"/>.</returns>
         public abstract IMemento<_MementoType> Restore();
 
         /// <summary>

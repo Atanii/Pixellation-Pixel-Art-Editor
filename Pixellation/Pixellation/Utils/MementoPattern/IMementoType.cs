@@ -5,7 +5,7 @@
     /// </summary>
     public interface IMementoType {
         /// <summary>
-        /// Default, "empty" event value.
+        /// Default, "empty" value.
         /// </summary>
         public const int NONE = 0;
     }
