@@ -59,75 +59,66 @@ namespace Pixellation.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Black")]
         public global::System.Drawing.Color DefaultPrimaryColor {
             get {
                 return ((global::System.Drawing.Color)(this["DefaultPrimaryColor"]));
             }
-            set {
-                this["DefaultPrimaryColor"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("DarkSlateGray")]
         public global::System.Drawing.Color DefaultSecondaryColor {
             get {
                 return ((global::System.Drawing.Color)(this["DefaultSecondaryColor"]));
             }
-            set {
-                this["DefaultSecondaryColor"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("White")]
         public global::System.Drawing.Color DefaultHueColor {
             get {
                 return ((global::System.Drawing.Color)(this["DefaultHueColor"]));
             }
-            set {
-                this["DefaultHueColor"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool DefaultShowBorder {
             get {
                 return ((bool)(this["DefaultShowBorder"]));
             }
-            set {
-                this["DefaultShowBorder"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool DefaultShowGrid {
             get {
                 return ((bool)(this["DefaultShowGrid"]));
             }
-            set {
-                this["DefaultShowGrid"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool DefaultTiledModeOn {
             get {
                 return ((bool)(this["DefaultTiledModeOn"]));
             }
-            set {
-                this["DefaultTiledModeOn"] = value;
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#646464DD")]
+        public global::System.Windows.Media.Color DefaultSelectionFillColor {
+            get {
+                return ((global::System.Windows.Media.Color)(this["DefaultSelectionFillColor"]));
             }
         }
     }

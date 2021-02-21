@@ -211,7 +211,7 @@ namespace Pixellation.Components.Editor
         #endregion Event
 
         /// <summary>
-        /// Binds eventhandlers and initializes an editable image with the default size, magnification and layer settings.
+        /// Default and only constructor. Binds eventhandlers and initializes an editable image with the default size, magnification and layer settings.
         /// </summary>
         public PixelEditor()
         {
