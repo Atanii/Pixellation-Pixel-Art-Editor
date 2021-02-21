@@ -5,7 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Pixellation.Components.Tools
+namespace Pixellation.Tools
 {
     internal class SelectCopyPasteRectangleTool : BaseTool
     {
@@ -44,7 +44,7 @@ namespace Pixellation.Components.Tools
         {
             p0 = e.GetPosition(_previewLayer);
             p1prev = p0;
-            p0 = p0.IntDivide(_magnification);
+            p0 = p0.DivideByInt(_magnification);
 
             if (!_selectionArea.Contains(p0))
             {
@@ -81,7 +81,7 @@ namespace Pixellation.Components.Tools
 
                 if (_creating)
                 {
-                    p1 = p1.IntDivide(_magnification);
+                    p1 = p1.DivideByInt(_magnification);
 
                     var diff = (p1 - p0);
 
@@ -102,8 +102,8 @@ namespace Pixellation.Components.Tools
                     var x2 = (int)(_selectionArea.X + _selectionArea.Width);
                     var y2 = (int)(_selectionArea.Y + _selectionArea.Height);
 
-                    _previewLayer.GetWriteableBitmap().Clear();
-                    _previewLayer.GetWriteableBitmap().FillRectangle(
+                    _previewDrawSurface.Clear();
+                    _previewDrawSurface.FillRectangle(
                         x1, y1, x2, y2, _selectionFillColour
                     );
                 }
@@ -147,8 +147,8 @@ namespace Pixellation.Components.Tools
                     var x2 = (int)tmpX2;
                     var y2 = (int)tmpY2;
 
-                    _previewLayer.GetWriteableBitmap().Clear();
-                    _previewLayer.GetWriteableBitmap().FillRectangle(
+                    _previewDrawSurface.Clear();
+                    _previewDrawSurface.FillRectangle(
                         x1, y1, x2, y2, _selectionFillColour
                     );
                 }
@@ -165,13 +165,13 @@ namespace Pixellation.Components.Tools
                 _copyArea.Y = _selectionArea.Y;
                 _copyArea.Width = _selectionArea.Width;
                 _copyArea.Height = _selectionArea.Height;
-                _copySrc = _layer.GetWriteableBitmap().Clone();
+                _copySrc = _drawSurface.Clone();
 
                 var x1 = (int)_selectionArea.X;
                 var y1 = (int)_selectionArea.Y;
                 var x2 = (int)(_selectionArea.X + _selectionArea.Width);
                 var y2 = (int)(_selectionArea.Y + _selectionArea.Height);
-                _layer.GetWriteableBitmap().FillRectangle(
+                _drawSurface.FillRectangle(
                         x1, y1, x2, y2, Colors.Transparent
                 );
             }
@@ -181,11 +181,11 @@ namespace Pixellation.Components.Tools
                 _copyArea.Y = _selectionArea.Y;
                 _copyArea.Width = _selectionArea.Width;
                 _copyArea.Height = _selectionArea.Height;
-                _copySrc = _layer.GetWriteableBitmap().Clone();
+                _copySrc = _drawSurface.Clone();
             }
             else if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.V)
             {
-                _layer.GetWriteableBitmap().Blit(_selectionArea, _copySrc, _copyArea, WriteableBitmapExtensions.BlendMode.Alpha);
+                _drawSurface.Blit(_selectionArea, _copySrc, _copyArea, WriteableBitmapExtensions.BlendMode.Alpha);
             }
         }
 
@@ -206,7 +206,7 @@ namespace Pixellation.Components.Tools
                 _copySrc.Clear();
             }
 
-            _previewLayer.GetWriteableBitmap().Clear();
+            _previewDrawSurface.Clear();
         }
     }
 }

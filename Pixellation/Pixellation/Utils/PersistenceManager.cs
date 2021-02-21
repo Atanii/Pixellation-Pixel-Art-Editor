@@ -1,7 +1,7 @@
-﻿using Pixellation.Interfaces;
+﻿using Pixellation.FilePackaging;
+using Pixellation.Interfaces;
 using Pixellation.Models;
 using Pixellation.Properties;
-using Pixellation.Utils.FilePackaging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,29 +14,32 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Utils
 {
-    public class PersistenceManager
+    internal class PersistenceManager
     {
+        public readonly string MetadataFileName = Resources.PackageContentFileNameForMetaData + "." + Resources.ExtensionForDataFile;
+        public readonly string ProjectDataFileName = Resources.PackageContentFileNameForProjectData + "." + Resources.ExtensionForDataFile;
+        public readonly string LayersFileName = Resources.PackageContentFileNameForLayers + "." + Resources.ExtensionForLayersFile;
+
         public bool AlreadySaved { get; private set; }
 
         public string PreviousFullPath { get; private set; }
 
-
-        private static PersistenceManager instance;
+        private static PersistenceManager _instance;
 
         public static PersistenceManager GetInstance()
         {
-            if (instance == null)
+            if (_instance == null)
             {
-                instance = new PersistenceManager();
+                _instance = new PersistenceManager();
             }
-            return instance;
+            return _instance;
         }
 
         public async Task<ProjectModel> LoadProject(string filePath)
         {
             PreviousFullPath = filePath;
             var fpr = new FilePackageReader(filePath);
-            var data = await fpr.LoadProjectModel();
+            var data = await fpr.LoadProjectModel(MetadataFileName, ProjectDataFileName, LayersFileName);
             return data;
         }
 

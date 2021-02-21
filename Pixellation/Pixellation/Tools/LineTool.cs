@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
-namespace Pixellation.Components.Tools
+namespace Pixellation.Tools
 {
     public class LineTool : BaseTool
     {
@@ -26,7 +26,7 @@ namespace Pixellation.Components.Tools
         private void Draw()
         {
             SaveLayerMemento();
-            _layer.GetWriteableBitmap().DrawLine((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
+            _layer.Bitmap.DrawLine((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)
@@ -44,8 +44,8 @@ namespace Pixellation.Components.Tools
             if (p0 != null && IsMouseDown(e))
             {   
                 p1 = e.GetPosition(_layer);
-                _previewLayer.GetWriteableBitmap().Clear();
-                _previewLayer.GetWriteableBitmap().DrawLine((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
+                _previewLayer.Bitmap.Clear();
+                _previewLayer.Bitmap.DrawLine((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
-namespace Pixellation.Components.Tools
+namespace Pixellation.Tools
 {
     public class RectangleTool : BaseTool
     {
@@ -26,7 +26,7 @@ namespace Pixellation.Components.Tools
         private void Draw()
         {
             SaveLayerMemento();
-            _layer.GetWriteableBitmap().DrawRectangle((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
+            _drawSurface.DrawRectangle((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)
@@ -44,8 +44,8 @@ namespace Pixellation.Components.Tools
             if (IsMouseDown(e))
             {
                 p1 = e.GetPosition(_layer);
-                _previewLayer.GetWriteableBitmap().Clear();
-                _previewLayer.GetWriteableBitmap().DrawRectangle((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
+                _previewDrawSurface.Clear();
+                _previewDrawSurface.DrawRectangle((int)p0.X / _magnification, (int)p0.Y / _magnification, (int)p1.X / _magnification, (int)p1.Y / _magnification, ToolColor);
             }   
         }
     }

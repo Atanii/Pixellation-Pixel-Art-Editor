@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pixellation.Models;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -177,7 +178,7 @@ namespace Pixellation.Utils
         /// <param name="divisor">An <see cref="int"/> divisor.</param>
         /// <param name="round">Should round X and Y in the and by using <see cref="Math.Round(double)"/>?</param>
         /// <returns>Divided <see cref="System.Windows.Point"/>.</returns>
-        public static System.Windows.Point IntDivide(this System.Windows.Point p, int divisor, bool round = false)
+        public static System.Windows.Point DivideByInt(this System.Windows.Point p, int divisor, bool round = false)
         {
             if (round)
             {
@@ -191,6 +192,31 @@ namespace Pixellation.Utils
             }
 
             return p;
+        }
+
+        /// <summary>
+        /// Divides the X and the Y component of a <see cref="System.Windows.Point"/> by an <see cref="int"/> divisor and returns the result as an <see cref="IntPoint"/>.
+        /// </summary>
+        /// <param name="p">Caller <see cref="System.Windows.Point"/>.</param>
+        /// <param name="divisor">An <see cref="int"/> divisor.</param>
+        /// <param name="round">Should round X and Y in the and by using <see cref="Math.Round(double)"/>?</param>
+        /// <returns>Divided <see cref="IntPoint"/>.</returns>
+        public static IntPoint DivideByIntAsIntPoint(this System.Windows.Point p, int divisor, bool round = false)
+        {
+            var _p = new IntPoint(0, 0);
+
+            if (round)
+            {
+                _p.X = (int) Math.Round(p.X / divisor);
+                _p.Y = (int) Math.Round(p.Y / divisor);
+            }
+            else
+            {
+                _p.X = (int) (p.X / divisor);
+                _p.Y = (int) (p.Y / divisor);
+            }
+
+            return _p;
         }
 
         /// <summary>

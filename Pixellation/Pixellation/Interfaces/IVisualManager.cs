@@ -1,6 +1,5 @@
 ﻿using Pixellation.Components.Editor;
 using Pixellation.Models;
-using Pixellation.Utils.MementoPattern;
 using System;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
@@ -11,7 +10,7 @@ namespace Pixellation.Interfaces
     {
         public event EventHandler RaiseImageUpdatedEvent;
 
-        public event LayerListEventHandler LayerListChanged;
+        public event PixelEditorEventHandler LayerListChanged;
 
         public void SetActiveLayer(int layerIndex = 0);
 

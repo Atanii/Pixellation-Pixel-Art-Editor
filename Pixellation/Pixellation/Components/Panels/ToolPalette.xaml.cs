@@ -1,4 +1,4 @@
-﻿using Pixellation.Components.Tools;
+﻿using Pixellation.Tools;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;

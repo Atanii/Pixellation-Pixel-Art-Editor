@@ -1,6 +1,8 @@
-﻿using System.Windows.Input;
+﻿using Pixellation.Utils;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
-namespace Pixellation.Components.Tools
+namespace Pixellation.Tools
 {
     public class PencilTool : BaseTool
     {
@@ -23,15 +25,15 @@ namespace Pixellation.Components.Tools
         {
             SaveLayerMemento(true);
 
-            var p = Mouse.GetPosition(_layer);
+            var p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
-            if (p.X < 0 || p.X >= _surfaceWidth || p.Y < 0 || p.Y >= _surfaceHeight)
+            if (p.X < 0 || p.X >= (_surfaceWidth / _magnification) || p.Y < 0 || p.Y >= (_surfaceHeight / _magnification))
                 return;
 
-            _layer.SetColor(
-                (int)(p.X / _magnification),
-                (int)(p.Y / _magnification),
-                ToolColor);
+            _drawSurface.SetPixel(
+                p.X, p.Y,
+                ToolColor
+            );
         }
 
         public override void OnMouseUp(MouseButtonEventArgs e)

@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Input;
 
-namespace Pixellation.Components.Tools
+namespace Pixellation.Tools
 {
     public class EraserTool : BaseTool
     {
@@ -31,7 +31,7 @@ namespace Pixellation.Components.Tools
                 return;
             }
 
-            _layer.SetColor(
+            _layer.SetPixel(
                 (int)(p.X / _magnification),
                 (int)(p.Y / _magnification),
                 System.Windows.Media.Color.FromArgb(0,0,0,0)
@@ -43,11 +43,6 @@ namespace Pixellation.Components.Tools
         public override void OnMouseUp(MouseButtonEventArgs e)
         {
             UnlockMemento();
-        }
-
-        public override void SetDrawColor(Color c)
-        {
-            return;
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)

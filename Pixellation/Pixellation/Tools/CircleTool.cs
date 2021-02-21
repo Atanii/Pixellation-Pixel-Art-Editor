@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
-namespace Pixellation.Components.Tools
+namespace Pixellation.Tools
 {
     public class CircleTool : BaseTool
     {
@@ -30,12 +30,12 @@ namespace Pixellation.Components.Tools
         private void Draw()
         {
             SaveLayerMemento();
-            _layer.GetWriteableBitmap().DrawEllipse((int)p0.X, (int)p0.Y, (int)p1.X, (int)p1.Y, ToolColor);
+            _drawSurface.DrawEllipse((int)p0.X, (int)p0.Y, (int)p1.X, (int)p1.Y, ToolColor);
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)
         {
-            p0 = e.GetPosition(_layer).IntDivide(_magnification, true);
+            p0 = e.GetPosition(_layer).DivideByInt(_magnification, true);
             p1 = p0;
             _creating = true;
         }
@@ -57,9 +57,9 @@ namespace Pixellation.Components.Tools
                 _dragging = true;
                 if (_creating && _dragging)
                 {
-                    p1 = e.GetPosition(_layer).IntDivide(_magnification, true);
-                    _previewLayer.GetWriteableBitmap().Clear();
-                    _previewLayer.GetWriteableBitmap().DrawEllipse((int)p0.X, (int)p0.Y, (int)p1.X, (int)p1.Y, ToolColor);
+                    p1 = e.GetPosition(_layer).DivideByInt(_magnification, true);
+                    _previewDrawSurface.Clear();
+                    _previewDrawSurface.DrawEllipse((int)p0.X, (int)p0.Y, (int)p1.X, (int)p1.Y, ToolColor);
                 }
             }   
         }

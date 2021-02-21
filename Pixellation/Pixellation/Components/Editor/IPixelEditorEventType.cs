@@ -2,7 +2,7 @@
 
 namespace Pixellation.Components.Editor
 {
-    public interface IEditorEventType : IMementoType
+    public interface IPixelEditorEventType : IMementoType
     {
         // LayerMemento
         public const int ADDLAYER = 1;
@@ -31,10 +31,11 @@ namespace Pixellation.Components.Editor
         public const int MIRROR_VERTICAL = 12;
         public const int MIRROR_VERTICAL_ALL = 13;
 
-
         public const int ROTATE = 14;
         public const int ROTATE_COUNTERCLOCKWISE = -ROTATE;
         public const int ROTATE_ALL = 15;
         public const int ROTATE_COUNTERCLOCKWISE_ALL = -ROTATE_ALL;
+
+        public const int CLEAR = 16;
     }
 }

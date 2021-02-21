@@ -3,7 +3,7 @@ using Pixellation.Utils.MementoPattern;
 
 namespace Pixellation.Components.Editor
 {
-    public partial class PixelEditor : IOriginatorHandler<LayerMemento, IEditorEventType>, IOriginatorHandler<LayerListMemento, IEditorEventType>, IOriginator<LayerListMemento, IEditorEventType>
+    public partial class PixelEditor : IOriginatorHandler<LayerMemento, IPixelEditorEventType>, IOriginatorHandler<LayerListMemento, IPixelEditorEventType>, IOriginator<LayerListMemento, IPixelEditorEventType>
     {
         public LayerListMemento GetMemento(int type)
         {
@@ -14,40 +14,40 @@ namespace Pixellation.Components.Editor
         {
             switch (mem.GetMementoType())
             {
-                case IEditorEventType.MOVELAYERUP:
+                case IPixelEditorEventType.MOVELAYERUP:
                     MoveLayerDown(mem.LayerIndex);
                     break;
-                case IEditorEventType.MOVELAYERDOWN:
+                case IPixelEditorEventType.MOVELAYERDOWN:
                     MoveLayerUp(mem.LayerIndex);
                     break;
 
-                case IEditorEventType.MIRROR_HORIZONTAL:
+                case IPixelEditorEventType.MIRROR_HORIZONTAL:
                     Mirror(true, false);
                     break;
-                case IEditorEventType.MIRROR_HORIZONTAL_ALL:
+                case IPixelEditorEventType.MIRROR_HORIZONTAL_ALL:
                     Mirror(true, true);
                     break;
-                case IEditorEventType.MIRROR_VERTICAL:
+                case IPixelEditorEventType.MIRROR_VERTICAL:
                     Mirror(false, false);
                     break;
-                case IEditorEventType.MIRROR_VERTICAL_ALL:
+                case IPixelEditorEventType.MIRROR_VERTICAL_ALL:
                     Mirror(false, true);
                     break;
 
-                case IEditorEventType.ROTATE:
+                case IPixelEditorEventType.ROTATE:
                     Rotate(false, true);
                     break;
-                case IEditorEventType.ROTATE_ALL:
+                case IPixelEditorEventType.ROTATE_ALL:
                     Rotate(true, true);
                     break;
-                case IEditorEventType.ROTATE_COUNTERCLOCKWISE:
+                case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE:
                     Rotate(false, false);
                     break;
-                case IEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL:
+                case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL:
                     Rotate(true, false);
                     break;
 
-                case IEditorEventType.RESIZE:
+                case IPixelEditorEventType.RESIZE:
                     Resize(mem.PixelWidth, mem.PixelHeight);
                     break;
 
@@ -61,24 +61,24 @@ namespace Pixellation.Components.Editor
             switch (eTypeValue)
             {
                 // LayerListMemento
-                case IEditorEventType.MOVELAYERUP:
-                case IEditorEventType.MOVELAYERDOWN:
-                case IEditorEventType.MIRROR_HORIZONTAL:
-                case IEditorEventType.MIRROR_HORIZONTAL_ALL:
-                case IEditorEventType.MIRROR_VERTICAL:
-                case IEditorEventType.MIRROR_VERTICAL_ALL:
-                case IEditorEventType.ROTATE:
-                case IEditorEventType.ROTATE_ALL:
-                case IEditorEventType.ROTATE_COUNTERCLOCKWISE:
-                case IEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL:
-                case IEditorEventType.RESIZE:
+                case IPixelEditorEventType.MOVELAYERUP:
+                case IPixelEditorEventType.MOVELAYERDOWN:
+                case IPixelEditorEventType.MIRROR_HORIZONTAL:
+                case IPixelEditorEventType.MIRROR_HORIZONTAL_ALL:
+                case IPixelEditorEventType.MIRROR_VERTICAL:
+                case IPixelEditorEventType.MIRROR_VERTICAL_ALL:
+                case IPixelEditorEventType.ROTATE:
+                case IPixelEditorEventType.ROTATE_ALL:
+                case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE:
+                case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL:
+                case IPixelEditorEventType.RESIZE:
                     _mementoCaretaker.Save(GetMemento(eTypeValue));
                     break;
 
                 // LayerMemento
-                case IEditorEventType.MERGELAYER:
+                case IPixelEditorEventType.MERGELAYER:
                     var mergeMemento = Layers[selectedLayerIndex].GetMemento(eTypeValue);
-                    mergeMemento.SetChainedMemento(Layers[selectedLayerIndex + 1].GetMemento(IEditorEventType.REMOVELAYER));
+                    mergeMemento.SetChainedMemento(Layers[selectedLayerIndex + 1].GetMemento(IPixelEditorEventType.REMOVELAYER));
                     _mementoCaretaker.Save(mergeMemento);
                     break;
 
@@ -88,7 +88,7 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public IMemento<IEditorEventType> HandleRestore(LayerMemento mem)
+        public IMemento<IPixelEditorEventType> HandleRestore(LayerMemento mem)
         {
             LayerMemento redoMem;
             DrawingLayer originator;
@@ -97,9 +97,9 @@ namespace Pixellation.Components.Editor
             var typeValue = mem.GetMementoType();
             switch (typeValue)
             {
-                case IEditorEventType.LAYER_PIXELS_CHANGED:
-                case IEditorEventType.LAYER_OPACITYCHANGED:
-                case IEditorEventType.LAYER_VISIBILITYCHANGED:
+                case IPixelEditorEventType.LAYER_PIXELS_CHANGED:
+                case IPixelEditorEventType.LAYER_OPACITYCHANGED:
+                case IPixelEditorEventType.LAYER_VISIBILITYCHANGED:
                     origIndex = Layers.FindIndex(x => x.LayerName == mem.LayerName);
                     if (origIndex != -1)
                     {
@@ -110,7 +110,7 @@ namespace Pixellation.Components.Editor
                     }
                     return null;
 
-                case IEditorEventType.MERGELAYER:
+                case IPixelEditorEventType.MERGELAYER:
                     origIndex = Layers.FindIndex(x => x.LayerName == mem.LayerName);
                     if (origIndex != -1)
                     {
@@ -118,9 +118,9 @@ namespace Pixellation.Components.Editor
                         Layers[origIndex].Restore(mem);
 
                         // Set original pre-merge selected layerindex
-                        LayerListChanged?.Invoke(this, new LayerListEventArgs
+                        LayerListChanged?.Invoke(this, new PixelEditorEventArgs
                         (
-                            IEditorEventType.REVERSE_MERGELAYER,
+                            IPixelEditorEventType.REVERSE_MERGELAYER,
                             origIndex, origIndex,
                             new int[] { origIndex, origIndex + 1 }
                         ));
@@ -130,24 +130,24 @@ namespace Pixellation.Components.Editor
                     }
                     return null;
 
-                case IEditorEventType.REMOVELAYER:
+                case IPixelEditorEventType.REMOVELAYER:
                     originator = new DrawingLayer(this, mem);
                     redoMem = originator.GetMemento(-typeValue);
                     AddLayer(originator, mem.LayerIndex);
                     return redoMem;
 
-                case IEditorEventType.ADDLAYER:
-                case IEditorEventType.DUPLICATELAYER:
+                case IPixelEditorEventType.ADDLAYER:
+                case IPixelEditorEventType.DUPLICATELAYER:
                     origIndex = Layers.FindIndex(x => x.LayerName == mem.LayerName);
                     if (origIndex != -1)
                     {
-                        redoMem = Layers[origIndex].GetMemento(IEditorEventType.REMOVELAYER);
+                        redoMem = Layers[origIndex].GetMemento(IPixelEditorEventType.REMOVELAYER);
                         RemoveLayer(origIndex);
                         return redoMem;
                     }
                     return null;
 
-                case IEditorEventType.RENAMELAYER:
+                case IPixelEditorEventType.RENAMELAYER:
                     originator = Layers[mem.LayerIndex];
                     if (originator != null)
                     {
@@ -159,12 +159,12 @@ namespace Pixellation.Components.Editor
                     return null;
 
 
-                case IEditorEventType.REVERSE_MERGELAYER:
+                case IPixelEditorEventType.REVERSE_MERGELAYER:
                     origIndex = Layers.FindIndex(x => x.LayerName == mem.LayerName);
                     if (origIndex != -1 && Layers.Count >= (origIndex + 2))
                     {
                         redoMem = Layers[origIndex].GetMemento(-typeValue);
-                        redoMem.SetChainedMemento(Layers[origIndex + 1].GetMemento(IEditorEventType.REMOVELAYER));
+                        redoMem.SetChainedMemento(Layers[origIndex + 1].GetMemento(IPixelEditorEventType.REMOVELAYER));
                         MergeLayerDownward(origIndex);
                         return redoMem;
                     }
@@ -175,27 +175,27 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public IMemento<IEditorEventType> HandleRestore(LayerListMemento mem)
+        public IMemento<IPixelEditorEventType> HandleRestore(LayerListMemento mem)
         {
             LayerListMemento redoMem;
             var typeValue = mem.GetMementoType();
             switch (typeValue)
             {
-                case IEditorEventType.MOVELAYERUP:
-                case IEditorEventType.MOVELAYERDOWN:
-                case IEditorEventType.ROTATE:
-                case IEditorEventType.ROTATE_ALL:
-                case IEditorEventType.ROTATE_COUNTERCLOCKWISE:
-                case IEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL:
+                case IPixelEditorEventType.MOVELAYERUP:
+                case IPixelEditorEventType.MOVELAYERDOWN:
+                case IPixelEditorEventType.ROTATE:
+                case IPixelEditorEventType.ROTATE_ALL:
+                case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE:
+                case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL:
                     redoMem = GetMemento(-typeValue);
                     Restore(mem);
                     return redoMem;
 
-                case IEditorEventType.MIRROR_HORIZONTAL:
-                case IEditorEventType.MIRROR_HORIZONTAL_ALL:
-                case IEditorEventType.MIRROR_VERTICAL:
-                case IEditorEventType.MIRROR_VERTICAL_ALL:
-                case IEditorEventType.RESIZE:
+                case IPixelEditorEventType.MIRROR_HORIZONTAL:
+                case IPixelEditorEventType.MIRROR_HORIZONTAL_ALL:
+                case IPixelEditorEventType.MIRROR_VERTICAL:
+                case IPixelEditorEventType.MIRROR_VERTICAL_ALL:
+                case IPixelEditorEventType.RESIZE:
                     redoMem = GetMemento(typeValue);
                     Restore(mem);
                     return redoMem;

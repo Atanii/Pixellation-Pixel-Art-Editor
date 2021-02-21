@@ -58,7 +58,7 @@ namespace Pixellation.Components.Panels
         {
             var all = (bool)cbAllLayers.IsChecked;
             LayerManager.SaveState(
-                all ? IEditorEventType.MIRROR_HORIZONTAL_ALL : IEditorEventType.MIRROR_HORIZONTAL,
+                all ? IPixelEditorEventType.MIRROR_HORIZONTAL_ALL : IPixelEditorEventType.MIRROR_HORIZONTAL,
                 LayerManager.GetActiveLayerIndex()
             );
             LayerManager.Mirror(true, all);
@@ -68,7 +68,7 @@ namespace Pixellation.Components.Panels
         {
             var all = (bool)cbAllLayers.IsChecked;
             LayerManager.SaveState(
-                all ? IEditorEventType.MIRROR_VERTICAL_ALL : IEditorEventType.MIRROR_VERTICAL,
+                all ? IPixelEditorEventType.MIRROR_VERTICAL_ALL : IPixelEditorEventType.MIRROR_VERTICAL,
                 LayerManager.GetActiveLayerIndex()
             );
             LayerManager.Mirror(false, all);
@@ -81,14 +81,14 @@ namespace Pixellation.Components.Panels
             if (counterClockWise)
             {
                 LayerManager.SaveState(
-                    all ? IEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL : IEditorEventType.ROTATE_COUNTERCLOCKWISE,
+                    all ? IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL : IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE,
                     LayerManager.GetActiveLayerIndex()
                 );
             }
             else
             {
                 LayerManager.SaveState(
-                    all ? IEditorEventType.ROTATE_ALL : IEditorEventType.ROTATE,
+                    all ? IPixelEditorEventType.ROTATE_ALL : IPixelEditorEventType.ROTATE,
                     LayerManager.GetActiveLayerIndex()
                 );
             }
@@ -103,7 +103,7 @@ namespace Pixellation.Components.Panels
                 width > 0 && height > 0)
             {
                 LayerManager.SaveState(
-                    IEditorEventType.RESIZE,
+                    IPixelEditorEventType.RESIZE,
                     LayerManager.GetActiveLayerIndex()
                 );
                 LayerManager.Resize(width, height);

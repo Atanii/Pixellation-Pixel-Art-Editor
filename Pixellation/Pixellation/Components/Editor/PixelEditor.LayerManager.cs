@@ -58,6 +58,11 @@ namespace Pixellation.Components.Editor
                 RemoveVisualChild(_gridLines);
                 _gridLines = null;
             }
+
+            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            (
+                IPixelEditorEventType.CLEAR, -1, -1, new int[] { }
+            ));
         }
 
         public void ResetLayerAndHelperVisuals(bool includeHelperVisuals = true)
@@ -238,12 +243,33 @@ namespace Pixellation.Components.Editor
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
             (
-                IEditorEventType.ADDLAYER,
+                IPixelEditorEventType.ADDLAYER,
                 layerIndex,
                 layerIndex,
                 new int[] { layerIndex }
+            ));
+        }
+
+        public void AddLayer(List<LayerModel> models, int layerIndex = 0)
+        {
+            for (int i = 0; i < models.Count; i++)
+            {
+                var tmp = new DrawingLayer(
+                    this,
+                    models[i]
+                );
+                Layers.Add(tmp);
+                AddVisualChild(tmp);
+            }
+
+            RefreshVisualsThenSignalUpdate();
+
+            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            (
+                IPixelEditorEventType.ADDLAYER,
+                0, 0, new int[] {0}
             ));
         }
 
@@ -254,9 +280,9 @@ namespace Pixellation.Components.Editor
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
             (
-                IEditorEventType.ADDLAYER,
+                IPixelEditorEventType.ADDLAYER,
                 layerIndex,
                 layerIndex,
                 new int[] { layerIndex }
@@ -270,9 +296,9 @@ namespace Pixellation.Components.Editor
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
             (
-                IEditorEventType.DUPLICATELAYER,
+                IPixelEditorEventType.DUPLICATELAYER,
                 layerIndex,
                 layerIndex,
                 new int[] { layerIndex }
@@ -290,9 +316,9 @@ namespace Pixellation.Components.Editor
                 Layers.Insert(newLayerIndex, tmp);
                 RefreshVisualsThenSignalUpdate();
             }
-            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
             (
-                IEditorEventType.MOVELAYERUP,
+                IPixelEditorEventType.MOVELAYERUP,
                 layerIndex,
                 newLayerIndex,
                 new int[] { layerIndex }
@@ -310,9 +336,9 @@ namespace Pixellation.Components.Editor
                 Layers.Insert(newLayerIndex, tmp);
                 RefreshVisualsThenSignalUpdate();
             }
-            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
             (
-                IEditorEventType.MOVELAYERDOWN,
+                IPixelEditorEventType.MOVELAYERDOWN,
                 layerIndex,
                 newLayerIndex,
                 new int[] { layerIndex }
@@ -342,9 +368,9 @@ namespace Pixellation.Components.Editor
             {
                 newLayerIndex = layerIndex - 1;
             }
-            LayerListChanged?.Invoke(this, new LayerListEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
             (
-                IEditorEventType.REMOVELAYER,
+                IPixelEditorEventType.REMOVELAYER,
                 layerIndex,
                 newLayerIndex,
                 new int[] { layerIndex }
@@ -357,14 +383,14 @@ namespace Pixellation.Components.Editor
             if (Layers.Count >= (layerIndex + 2))
             {   
                 var bmp = Merge(layerIndex + 1, layerIndex);
-                Layers[layerIndex].SetBitmap(bmp);
+                Layers[layerIndex].Bitmap = bmp;
                 RemoveLayer(Layers[layerIndex + 1]);
 
                 RefreshVisualsThenSignalUpdate();
 
-                LayerListChanged?.Invoke(this, new LayerListEventArgs
+                LayerListChanged?.Invoke(this, new PixelEditorEventArgs
                 (
-                    IEditorEventType.MERGELAYER,
+                    IPixelEditorEventType.MERGELAYER,
                     layerIndex,
                     newLayerIndex,
                     new int[] { layerIndex, layerIndex + 1 }
