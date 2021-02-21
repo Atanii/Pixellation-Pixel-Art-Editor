@@ -148,6 +148,11 @@ namespace Pixellation.Components.Editor
         {
             return Layers.FindIndex(x => x.LayerName == layer.LayerName);
         }
+
+        public int GetActiveLayerIndex()
+        {
+            return Layers.FindIndex(x => x.LayerName == _activeLayer.LayerName);
+        }
         #endregion Getters
 
         #region Merge
@@ -182,8 +187,6 @@ namespace Pixellation.Components.Editor
         #region Transform
         public void Mirror(bool horizontally, bool allLayers)
         {
-            _mementoCaretaker.Clear();
-
             if (!allLayers && _activeLayer != null)
             {
                 _activeLayer.Mirror(horizontally);
@@ -198,10 +201,8 @@ namespace Pixellation.Components.Editor
             RefreshVisualsThenSignalUpdate();
         }
 
-        public void Rotate(int angleInDegree, bool allLayers, bool counterClockWise)
+        public void Rotate(bool allLayers, bool counterClockWise, int angleInDegree = 90)
         {
-            _mementoCaretaker.Clear();
-
             if (!allLayers && _activeLayer != null)
             {
                 _activeLayer.Rotate(counterClockWise ? 360 - angleInDegree : angleInDegree);
@@ -218,8 +219,6 @@ namespace Pixellation.Components.Editor
 
         public void Resize(int newWidth, int newHeight)
         {
-            _mementoCaretaker.Clear();
-
             foreach (var l in Layers)
             {
                 l.Resize(newWidth, newHeight);
@@ -360,7 +359,6 @@ namespace Pixellation.Components.Editor
                 var bmp = Merge(layerIndex + 1, layerIndex);
                 Layers[layerIndex].SetBitmap(bmp);
                 RemoveLayer(Layers[layerIndex + 1]);
-                _mementoCaretaker.Clear();
 
                 RefreshVisualsThenSignalUpdate();
 

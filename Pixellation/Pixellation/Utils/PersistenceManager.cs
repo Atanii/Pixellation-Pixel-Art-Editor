@@ -16,6 +16,11 @@ namespace Pixellation.Utils
 {
     public class PersistenceManager
     {
+        public bool AlreadySaved { get; private set; }
+
+        public string PreviousFullPath { get; private set; }
+
+
         private static PersistenceManager instance;
 
         public static PersistenceManager GetInstance()
@@ -29,6 +34,7 @@ namespace Pixellation.Utils
 
         public async Task<ProjectModel> LoadProject(string filePath)
         {
+            PreviousFullPath = filePath;
             var fpr = new FilePackageReader(filePath);
             var data = await fpr.LoadProjectModel();
             return data;
@@ -41,7 +47,7 @@ namespace Pixellation.Utils
             return writeableBitmap;
         }
 
-        public void SaveProject(string filePath, IVisualManager vm)
+        public bool SaveProject(string filePath, IVisualManager vm)
         {
             var filePaths = new List<string>();
 
@@ -85,6 +91,71 @@ namespace Pixellation.Utils
 
             var fpwr = new FilePackageWriter(fp);
             fpwr.SaveProjectModel();
+
+            AlreadySaved = true;
+            PreviousFullPath = filePath;
+            return true;
+        }
+
+        public bool SaveProject(IVisualManager vm)
+        {
+            if (!AlreadySaved && PreviousFullPath != "")
+            {
+                return false;
+            }
+
+            var filePaths = new List<string>();
+            var filePath = PreviousFullPath;
+
+            // Saving LayerModels
+            var layersPath = Resources.PackageContentFileNameForLayers + "." + Resources.ExtensionForLayersFile;
+            var formatter = new BinaryFormatter();
+            var stream = new FileStream(layersPath, FileMode.Create, FileAccess.Write);
+            formatter.Serialize(stream, vm.GetLayerModels());
+            stream.Close();
+            filePaths.Add(layersPath);
+
+            // Saving Metadata
+            var fpmd = new FilePackageMetadata
+            {
+                Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                SaveDate = DateTime.Now.ToString()
+            };
+
+            var metaDataPath = Resources.PackageContentFileNameForMetaData + "." + Resources.ExtensionForDataFile;
+            string jsonString = JsonSerializer.Serialize(fpmd);
+            File.WriteAllText(metaDataPath, jsonString);
+            filePaths.Add(metaDataPath);
+
+            // Saving Project Data
+            var fppd = new ProjectDataModel
+            {
+                ProjectName = filePath.Split('.')[0].Split('\\')[^1]
+            };
+
+            var projectInfoPath = Resources.PackageContentFileNameForProjectData + "." + Resources.ExtensionForDataFile;
+            jsonString = JsonSerializer.Serialize(fppd);
+            File.WriteAllText(projectInfoPath, jsonString);
+            filePaths.Add(projectInfoPath);
+
+            // Packaging
+            var fp = new FilePackage
+            {
+                FilePath = filePath,
+                ContentFilePathList = filePaths
+            };
+
+            var fpwr = new FilePackageWriter(fp);
+            fpwr.SaveProjectModel();
+
+            AlreadySaved = true;
+            return true;
+        }
+
+        public void Reset()
+        {
+            AlreadySaved = false;
+            PreviousFullPath = "";
         }
 
         public void ExportAsImage(string filePath, IVisualManager vm)

@@ -10,6 +10,7 @@ namespace Pixellation.Components.Editor.Memento
         public double Opacity { get; private set; }
         public bool Visible { get; private set; }
         public WriteableBitmap Bitmap { get; private set; }
+        public LayerMemento ChainedOperationMemento { get; private set; }
 
         public LayerMemento(IOriginatorHandler<LayerMemento, IEditorEventType> originator, int mTypevalue, int layerIndex, DrawingLayer original)
             : base(mTypevalue, originator)
@@ -22,8 +23,20 @@ namespace Pixellation.Components.Editor.Memento
             Bitmap = original.GetWriteableBitmap();
         }
 
+        public void SetChainedMemento(LayerMemento chained)
+        {
+            if (chained != null)
+            {
+                ChainedOperationMemento = chained;
+            }
+        }
+
         public override IMemento<IEditorEventType> Restore()
         {
+            if (ChainedOperationMemento != null)
+            {
+                _originatorHandler.HandleRestore(ChainedOperationMemento);
+            }
             return _originatorHandler.HandleRestore(this);
         }
     }

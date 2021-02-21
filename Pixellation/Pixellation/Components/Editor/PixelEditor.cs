@@ -238,8 +238,6 @@ namespace Pixellation.Components.Editor
         /// <param name="pixelHeight">New <see cref="PixelHeight"/>.</param>
         public void NewImage(int pixelWidth = 32, int pixelHeight = 32)
         {
-            _mementoCaretaker.Clear();
-
             DeleteAllVisualChildren();
 
             PixelWidth = pixelWidth;
@@ -258,8 +256,6 @@ namespace Pixellation.Components.Editor
         /// <param name="imageToEdit">Image to edit.</param>
         public void NewImage(WriteableBitmap imageToEdit)
         {
-            _mementoCaretaker.Clear();
-
             DeleteAllVisualChildren();
 
             PixelWidth = imageToEdit.PixelWidth;
@@ -287,8 +283,6 @@ namespace Pixellation.Components.Editor
         /// <param name="pixelHeight">New <see cref="PixelHeight"/>.</param>
         public void NewImage(List<LayerModel> models, int pixelWidth = 32, int pixelHeight = 32)
         {
-            _mementoCaretaker.Clear();
-
             DeleteAllVisualChildren();
 
             PixelWidth = pixelWidth;

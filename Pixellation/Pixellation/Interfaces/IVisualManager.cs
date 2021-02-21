@@ -41,10 +41,12 @@ namespace Pixellation.Interfaces
 
         public void Mirror(bool horizontally, bool allLayers = false);
 
-        public void Rotate(int angleInDegree, bool allLayers = false, bool counterClockWise = false);
+        public void Rotate(bool allLayers = false, bool counterClockWise = false, int angleInDegree = 90);
 
         public void Resize(int newWidth, int newHeight);
 
         public void SaveState(int eTypeValue, int layerIndex);
+
+        public int GetActiveLayerIndex();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Pixellation.Utils.MementoPattern
+﻿#nullable enable
+
+namespace Pixellation.Utils.MementoPattern
 {
     public delegate void CaretakerEventHandler(object? sender, CaretakerEventArgs e);
 }

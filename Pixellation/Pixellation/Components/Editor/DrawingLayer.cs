@@ -9,6 +9,7 @@ namespace Pixellation.Components.Editor
 {
     public class DrawingLayer : DrawingSurface, IOriginator<LayerMemento, IEditorEventType>
     {
+        #region Fields And Properties
         private string _name;
         public string LayerName {
             get { return _name; }
@@ -32,8 +33,10 @@ namespace Pixellation.Components.Editor
         }
 
         public bool Visible { get; set; }
+        #endregion Fields And Properties
 
-        public DrawingLayer(PixelEditor owner, string layerName = "", bool visible = true) : base(owner)
+        #region Constructors
+        public DrawingLayer(PixelEditor owner, string layerName = "", bool visible = true, double opacity = 1.0) : base(owner)
         {
             if (layerName == "")
             {
@@ -44,9 +47,10 @@ namespace Pixellation.Components.Editor
                 _name = layerName;
             }
             Visible = visible;
+            Opacity = opacity;
         }
 
-        public DrawingLayer(PixelEditor owner, WriteableBitmap bitmap, string layerName = "", bool visible = true) : base(owner, bitmap)
+        public DrawingLayer(PixelEditor owner, WriteableBitmap bitmap, string layerName = "", bool visible = true, double opacity = 1.0) : base(owner, bitmap)
         {
             if (layerName == "")
             {
@@ -57,6 +61,7 @@ namespace Pixellation.Components.Editor
                 _name = layerName;
             }
             Visible = visible;
+            Opacity = opacity;
         }
 
         public DrawingLayer(PixelEditor owner, LayerModel model, bool visible = true) : base(
@@ -91,7 +96,9 @@ namespace Pixellation.Components.Editor
             Visible = mem.Visible;
             Opacity = mem.Opacity;
         }
+        #endregion Constructors
 
+        #region Conversions, Cloning
         public override string ToString()
         {
             return LayerName;
@@ -125,7 +132,9 @@ namespace Pixellation.Components.Editor
             var bmp2 = _bitmap.Clone();
             return new DrawingLayer(_owner, bmp2, LayerName, Visible);
         }
+        #endregion Conversions, Cloning
 
+        #region Memento
         public void Restore(LayerMemento mem)
         {   
             if (mem.LayerName == "")
@@ -151,5 +160,6 @@ namespace Pixellation.Components.Editor
                 this
             );
         }
+        #endregion Memento
     }
 }
