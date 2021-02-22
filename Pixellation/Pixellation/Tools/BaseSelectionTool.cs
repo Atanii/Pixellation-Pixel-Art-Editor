@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    internal abstract class BaseSelectionTool : BaseTool
+    internal abstract class BaseSelectionTool<T> : BaseMultitonTool<T> where T : class
     {
         protected IntPoint p0;
         protected IntPoint p1;
@@ -195,8 +195,8 @@ namespace Pixellation.Tools
             _previewDrawSurface.Clear();
         }
 
-        public abstract void CutClear(int x1, int y1, int x2, int y2, Color c, WriteableBitmap surface);
+        protected abstract void CutClear(int x1, int y1, int x2, int y2, Color c, WriteableBitmap surface);
 
-        public abstract void DrawSelection(int x1, int y1, int x2, int y2, Color c, WriteableBitmap surface);
+        protected abstract void DrawSelection(int x1, int y1, int x2, int y2, Color c, WriteableBitmap surface);
     }
 }

@@ -4,21 +4,10 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    public class DitheringTool : BaseTool
+    public class DitheringTool : BaseMultitonTool<DitheringTool>
     {
-        private static DitheringTool _instance;
-
         private DitheringTool() : base()
         {
-        }
-
-        public static DitheringTool GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new DitheringTool();
-            }
-            return _instance;
         }
 
         private void Draw(ToolMouseEventArgs e)

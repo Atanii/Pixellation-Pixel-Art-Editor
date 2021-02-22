@@ -5,23 +5,12 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    public class PipetteTool : BaseTool
+    public class PipetteTool : BaseMultitonTool<PipetteTool>
     {
-        private static PipetteTool _instance;
-
         private IntPoint p;
 
         private PipetteTool() : base()
         {
-        }
-
-        public static PipetteTool GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new PipetteTool();
-            }
-            return _instance;
         }
 
         private void TakeColor(ToolEventType e)

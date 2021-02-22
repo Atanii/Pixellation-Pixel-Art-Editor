@@ -4,10 +4,8 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    public class LineTool : BaseTool
+    public class LineTool : BaseMultitonTool<LineTool>
     {
-        private static LineTool _instance;
-
         private IntPoint p0;
         private IntPoint p1;
 
@@ -15,15 +13,6 @@ namespace Pixellation.Tools
 
         private LineTool() : base()
         {
-        }
-
-        public static LineTool GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new LineTool();
-            }
-            return _instance;
         }
 
         private void Draw()

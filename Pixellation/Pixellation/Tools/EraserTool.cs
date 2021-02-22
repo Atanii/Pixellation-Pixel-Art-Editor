@@ -2,21 +2,10 @@
 
 namespace Pixellation.Tools
 {
-    public class EraserTool : BaseTool
+    public class EraserTool : BaseMultitonTool<EraserTool>
     {
-        private static EraserTool _instance;
-
         private EraserTool() : base()
         {
-        }
-
-        public static EraserTool GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new EraserTool();
-            }
-            return _instance;
         }
 
         private void Draw(ToolMouseEventArgs e)

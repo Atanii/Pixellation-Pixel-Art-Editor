@@ -1,26 +1,14 @@
 ﻿using Pixellation.Models;
 using Pixellation.Utils;
 using System.Collections.Generic;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    public class PaintBucketTool : BaseTool
+    public class PaintBucketTool : BaseMultitonTool<PaintBucketTool>
     {
-        private static PaintBucketTool _instance;
-
         private PaintBucketTool() : base()
         {
-        }
-
-        public static PaintBucketTool GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new PaintBucketTool();
-            }
-            return _instance;
         }
 
         private void Draw(ToolMouseEventArgs e)
@@ -44,7 +32,7 @@ namespace Pixellation.Tools
 
             Stack<IntPoint> nodes = new Stack<IntPoint>();
             nodes.Push(point);
-            
+
             IntPoint current;
 
             while (nodes.Count > 0)

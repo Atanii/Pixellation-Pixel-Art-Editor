@@ -11,16 +11,16 @@ namespace Pixellation.Components.Panels
     /// </summary>
     public partial class ToolPalette : UserControl, INotifyPropertyChanged
     {
-        public static readonly ITool Pencil = PencilTool.GetInstance();
-        public static readonly ITool Eraser = EraserTool.GetInstance();
-        public static readonly ITool PaintBucket = PaintBucketTool.GetInstance();
-        public static readonly ITool Line = LineTool.GetInstance();
-        public static readonly ITool Dithering = DitheringTool.GetInstance();
-        public static readonly ITool Pipette = PipetteTool.GetInstance();
-        public static readonly ITool Circle = CircleTool.GetInstance();
-        public static readonly ITool Rectangle = RectangleTool.GetInstance();
-        public static readonly ITool SelectionRectangle = SelectCopyPasteRectangleTool.GetInstance();
-        public static readonly ITool SelectionEllipse = SelectCopyPasteEllipseTool.GetInstance();
+        public static readonly ITool Pencil = PencilTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Eraser = EraserTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool PaintBucket = PaintBucketTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Line = LineTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Dithering = DitheringTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Pipette = PipetteTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Circle = CircleTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Rectangle = RectangleTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool SelectionRectangle = SelectCopyPasteRectangleTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool SelectionEllipse = SelectCopyPasteEllipseTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
 
         private readonly Thickness ThicknessClicked;
         private readonly Thickness ThicknessDefault;

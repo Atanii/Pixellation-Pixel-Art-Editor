@@ -175,9 +175,9 @@ namespace Pixellation.Components.Editor
         /// <summary>
         /// Current drawing tool.
         /// </summary>
-        public BaseTool ChosenTool
+        public ITool ChosenTool
         {
-            get { return (BaseTool)GetValue(ChosenToolProperty); }
+            get { return (ITool)GetValue(ChosenToolProperty); }
             set { SetValue(ChosenToolProperty, value); }
         }
         public readonly DependencyProperty ChosenToolProperty =
@@ -235,7 +235,7 @@ namespace Pixellation.Components.Editor
             PixelHeight = Settings.Default.DefaultImageSize;
             Magnification = Settings.Default.DefaultMagnification;
 
-            BaseTool.RaiseToolEvent += HandleToolEvent;
+            ITool.RaiseToolEvent += HandleToolEvent;
             RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
             EditorSettingsChangeEvent += (d, e) => { SetOrRefreshMeasureVisualsMagnification(); };
 

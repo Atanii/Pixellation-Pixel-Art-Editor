@@ -24,6 +24,7 @@ namespace Pixellation.Tools
         protected static WriteableBitmap _previewDrawSurface;
 
         public delegate void ToolEventHandler(object sender, ToolEventArgs args);
+
         public static event ToolEventHandler RaiseToolEvent;
 
         private static readonly Caretaker<IPixelEditorEventType> _mementoCaretaker = Caretaker<IPixelEditorEventType>.GetInstance();
