@@ -50,7 +50,7 @@
             <ScrollViewer>
                 <StackPanel>
                     <Label Content="Tools"></Label>
-                    <Panels:ToolPalette Width="180" Height="100" x:Name="toolPalette" />
+                    <Panels:ToolPalette Height="200" x:Name="toolPalette" />
 
                     <Label Content="Layers"></Label>
                     <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}"></Panels:LayerPalette>

@@ -1,5 +1,6 @@
 ﻿using Pixellation.Tools;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,6 +43,28 @@ namespace Pixellation.Components.Panels
             set { _eraserModeOn = value; OnPropertyChanged(); }
         }
 
+        private MirrorModeStates _mirrorModeState;
+        public MirrorModeStates MirrorModeState
+        {
+            get { return _mirrorModeState; }
+            set {
+                _mirrorModeState = value;
+                switch (value)
+                {
+                    case MirrorModeStates.OFF:
+                        rbMMNone.IsChecked = true;
+                        break;
+                    case MirrorModeStates.HORIZONTAL:
+                        rbMMHorizontal.IsChecked = true;
+                        break;
+                    case MirrorModeStates.VERTICAL:
+                        rbMMVertical.IsChecked = true;
+                        break;
+                }
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ToolPalette()
@@ -66,6 +89,9 @@ namespace Pixellation.Components.Panels
             // Selected by default
             PreviouslyClicked = BtnPencil;
             BtnPencil.BorderThickness = ThicknessClicked;
+
+            MirrorModeState = MirrorModeStates.OFF;
+            rbMMNone.IsChecked = true;
         }
 
         private void ToolButton_Click(object sender, RoutedEventArgs e)
@@ -111,6 +137,21 @@ namespace Pixellation.Components.Panels
         private void cbEraserMode_Click(object sender, RoutedEventArgs e)
         {
             EraserModeOn = (bool)cbEraserMode.IsChecked;
+        }
+
+        private void rbMMNone_Click(object sender, RoutedEventArgs e)
+        {
+            MirrorModeState = MirrorModeStates.OFF;
+        }
+
+        private void rbMMHorizontal_Click(object sender, RoutedEventArgs e)
+        {
+            MirrorModeState = MirrorModeStates.HORIZONTAL;
+        }
+
+        private void rbMMVertical_Click(object sender, RoutedEventArgs e)
+        {
+            MirrorModeState = MirrorModeStates.VERTICAL;
         }
     }
 }
