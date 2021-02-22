@@ -7,9 +7,7 @@ namespace Pixellation.Tools
 {
     public interface ITool
     {
-        public static event ToolEventHandler RaiseToolEvent;
-
-        public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer);
+        public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF);
 
         public void SetPixelSize(int pixelWidth, int pixelHeight);
 
@@ -23,14 +21,18 @@ namespace Pixellation.Tools
 
         public Color GetDrawColor();
 
-        public void OnMouseMove(ToolMouseEventArgs e);
+        public void SetMirrorMode(MirrorModeStates mirrorMode);
 
-        public void OnMouseDown(ToolMouseEventArgs e);
+        public void OnMouseMove(MouseEventArgs e);
 
-        public void OnMouseUp(ToolMouseEventArgs e);
+        public void OnMouseDown(MouseButtonEventArgs e);
+
+        public void OnMouseUp(MouseButtonEventArgs e);
 
         public void OnKeyDown(KeyEventArgs e);
 
         public void Reset();
+
+        public ITool GetInstanceByKey(string key);
     }
 }

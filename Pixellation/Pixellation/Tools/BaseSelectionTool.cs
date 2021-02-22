@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    internal abstract class BaseSelectionTool<T> : BaseMultitonTool<T> where T : class
+    internal abstract class BaseSelectionTool<T> : BaseMultitonTool<T> where T : class, ITool
     {
         protected IntPoint p0;
         protected IntPoint p1;
@@ -29,7 +29,7 @@ namespace Pixellation.Tools
         {
         }
 
-        public override void OnMouseDown(ToolMouseEventArgs e)
+        public override void OnMouseDown(MouseButtonEventArgs e)
         {
             p0 = e.GetPosition(_previewLayer).DivideByIntAsIntPoint(_magnification);
             p1prev = p0;
@@ -57,7 +57,7 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseUp(ToolMouseEventArgs e)
+        public override void OnMouseUp(MouseButtonEventArgs e)
         {
             _creating = false;
             if (_click)
@@ -67,7 +67,7 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseMove(ToolMouseEventArgs e)
+        public override void OnMouseMove(MouseEventArgs e)
         {
 
             if (e.LeftButton == MouseButtonState.Pressed)

@@ -17,7 +17,7 @@ namespace Pixellation.Components.Panels
         public static readonly ITool Line = LineTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
         public static readonly ITool Dithering = DitheringTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
         public static readonly ITool Pipette = PipetteTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
-        public static readonly ITool Circle = CircleTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Circle = EllipseTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
         public static readonly ITool Rectangle = RectangleTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
         public static readonly ITool SelectionRectangle = SelectCopyPasteRectangleTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
         public static readonly ITool SelectionEllipse = SelectCopyPasteEllipseTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);

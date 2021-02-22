@@ -18,16 +18,26 @@ namespace Pixellation.Tools
             OnRaiseToolEvent(this, new ToolEventArgs { Type = e, Value = _drawSurface.GetPixel(p.X, p.Y).ToDrawingColor() });
         }
 
-        public override void OnMouseDown(ToolMouseEventArgs e)
+        public override void OnMouseDown(MouseButtonEventArgs e)
         {
             p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
             if (!OutOfBounds(p) && e.LeftButton == MouseButtonState.Pressed)
             {
                 TakeColor(ToolEventType.PRIMARYCOLOR);
+                if (_mirrorModeState != MirrorModeStates.OFF)
+                {
+                    p = Mirr(p);
+                    TakeColor(ToolEventType.SECONDARY);
+                }
             }
-            if (!OutOfBounds(p) && e.RightButton == MouseButtonState.Pressed)
+            else if (!OutOfBounds(p) && e.RightButton == MouseButtonState.Pressed)
             {
                 TakeColor(ToolEventType.SECONDARY);
+                if (_mirrorModeState != MirrorModeStates.OFF)
+                {
+                    p = Mirr(p);
+                    TakeColor(ToolEventType.PRIMARYCOLOR);
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Pixellation.Utils;
+using System.Windows.Input;
 
 namespace Pixellation.Tools
 {
@@ -8,7 +9,7 @@ namespace Pixellation.Tools
         {
         }
 
-        private void Draw(ToolMouseEventArgs e)
+        private void Draw(MouseEventArgs e)
         {
             SaveLayerMemento(true);
 
@@ -23,21 +24,27 @@ namespace Pixellation.Tools
                 p.X, p.Y,
                 System.Windows.Media.Color.FromArgb(0, 0, 0, 0)
             );
-
-            _layer.InvalidateVisual();
+            if (_mirrorModeState != MirrorModeStates.OFF)
+            {
+                p = Mirr(p);
+                _layer.SetPixel(
+                    p.X, p.Y,
+                    System.Windows.Media.Color.FromArgb(0, 0, 0, 0)
+                );
+            }
         }
 
-        public override void OnMouseUp(ToolMouseEventArgs e)
+        public override void OnMouseUp(MouseButtonEventArgs e)
         {
             UnlockMemento();
         }
 
-        public override void OnMouseDown(ToolMouseEventArgs e)
+        public override void OnMouseDown(MouseButtonEventArgs e)
         {
             Draw(e);
         }
 
-        public override void OnMouseMove(ToolMouseEventArgs e)
+        public override void OnMouseMove(MouseEventArgs e)
         {
             if (IsMouseDown(e))
             {

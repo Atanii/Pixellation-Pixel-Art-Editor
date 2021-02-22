@@ -1,6 +1,7 @@
-﻿using Pixellation.Tools;
+﻿using Pixellation.Interfaces;
 using Pixellation.Models;
 using Pixellation.Properties;
+using Pixellation.Tools;
 using Pixellation.Utils.MementoPattern;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Pixellation.Interfaces;
 
 namespace Pixellation.Components.Editor
 {
@@ -20,21 +20,25 @@ namespace Pixellation.Components.Editor
     public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged
     {
         #region PrivateFields
+
         private DrawingLayer _activeLayer;
         private Visual _gridLines;
         private Visual _borderLine;
         private DrawingLayer _drawPreview;
         private readonly Caretaker<IPixelEditorEventType> _mementoCaretaker = Caretaker<IPixelEditorEventType>.GetInstance();
         private readonly ToolMouseEventArgs toolMouseArgs = new ToolMouseEventArgs();
+
         #endregion PrivateFields
 
         #region Properties
+
         /// <summary>
         /// List of <see cref="DrawingLayer"/>s the edited image consists of.
         /// </summary>
         public List<DrawingLayer> Layers { get; private set; } = new List<DrawingLayer>();
 
         private int _pixelWidth;
+
         /// <summary>
         /// Current width of the edited image in pixels.
         /// </summary>
@@ -49,6 +53,7 @@ namespace Pixellation.Components.Editor
         }
 
         private int _pixelHeight;
+
         /// <summary>
         /// Current height of the edited image in pixels.
         /// </summary>
@@ -63,6 +68,7 @@ namespace Pixellation.Components.Editor
         }
 
         private int _magnification;
+
         /// <summary>
         /// Image is zoomed in this times on the UI.
         /// </summary>
@@ -78,9 +84,11 @@ namespace Pixellation.Components.Editor
         }
 
         public int VisualCount { get; set; } = 0;
+
         #endregion Properties
 
         #region DependencyProperties
+
         /// <summary>
         /// Opacity of tiles in tiled-mode.
         /// </summary>
@@ -89,6 +97,7 @@ namespace Pixellation.Components.Editor
             get { return (float)GetValue(TiledOpacityProperty); }
             set { SetValue(TiledOpacityProperty, value); OnPropertyChanged(); }
         }
+
         public static readonly DependencyProperty TiledOpacityProperty =
          DependencyProperty.Register("TiledOpacity", typeof(float), typeof(PixelEditor), new FrameworkPropertyMetadata(
             Settings.Default.DefaultTiledOpacity, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
@@ -102,6 +111,7 @@ namespace Pixellation.Components.Editor
             get { return (bool)GetValue(TiledModeOnProperty); }
             set { SetValue(TiledModeOnProperty, value); OnPropertyChanged(); }
         }
+
         public static readonly DependencyProperty TiledModeOnProperty =
          DependencyProperty.Register("TiledModeOn", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
             Settings.Default.DefaultTiledModeOn, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
@@ -115,6 +125,7 @@ namespace Pixellation.Components.Editor
             get { return (System.Drawing.Color)GetValue(PrimaryColorProperty); }
             set { SetValue(PrimaryColorProperty, value); OnPropertyChanged(); }
         }
+
         public static readonly DependencyProperty PrimaryColorProperty =
          DependencyProperty.Register("PrimaryColor", typeof(System.Drawing.Color), typeof(PixelEditor), new FrameworkPropertyMetadata(
             Settings.Default.DefaultPrimaryColor
@@ -128,6 +139,7 @@ namespace Pixellation.Components.Editor
             get { return (System.Drawing.Color)GetValue(SecondaryColorProperty); }
             set { SetValue(SecondaryColorProperty, value); OnPropertyChanged(); }
         }
+
         public static readonly DependencyProperty SecondaryColorProperty =
          DependencyProperty.Register("SecondaryColor", typeof(System.Drawing.Color), typeof(PixelEditor), new FrameworkPropertyMetadata(
             Settings.Default.DefaultSecondaryColor
@@ -141,6 +153,7 @@ namespace Pixellation.Components.Editor
             get { return (bool)GetValue(EraserModeOnProperty); }
             set { SetValue(EraserModeOnProperty, value); OnPropertyChanged(); }
         }
+
         public static readonly DependencyProperty EraserModeOnProperty =
          DependencyProperty.Register("EraserModeOn", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
             false
@@ -154,6 +167,7 @@ namespace Pixellation.Components.Editor
             get { return (bool)GetValue(ShowBorderProperty); }
             set { SetValue(ShowBorderProperty, value); OnPropertyChanged(); }
         }
+
         public static readonly DependencyProperty ShowBorderProperty =
          DependencyProperty.Register("ShowBorder", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
             Settings.Default.DefaultShowBorder, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
@@ -167,6 +181,7 @@ namespace Pixellation.Components.Editor
             get { return (bool)GetValue(ShowGridProperty); }
             set { SetValue(ShowGridProperty, value); OnPropertyChanged(); }
         }
+
         public static readonly DependencyProperty ShowGridProperty =
          DependencyProperty.Register("ShowGrid", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
             Settings.Default.DefaultShowGrid, (d, e) => { EditorSettingsChangeEvent?.Invoke(default, EventArgs.Empty); }
@@ -178,8 +193,12 @@ namespace Pixellation.Components.Editor
         public ITool ChosenTool
         {
             get { return (ITool)GetValue(ChosenToolProperty); }
-            set { SetValue(ChosenToolProperty, value); }
+            set
+            {
+                SetValue(ChosenToolProperty, value);
+            }
         }
+
         public readonly DependencyProperty ChosenToolProperty =
          DependencyProperty.Register("ChosenTool", typeof(ITool), typeof(PixelEditor), new PropertyMetadata(
              null, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
@@ -191,15 +210,18 @@ namespace Pixellation.Components.Editor
         public MirrorModeStates MirrorModeState
         {
             get { return (MirrorModeStates)GetValue(MirrorModeStateProperty); }
-            set { SetValue(MirrorModeStateProperty, value); }
+            set { SetValue(MirrorModeStateProperty, value); ChosenTool?.SetMirrorMode(value); }
         }
+
         public readonly DependencyProperty MirrorModeStateProperty =
          DependencyProperty.Register("MirrorModeState", typeof(MirrorModeStates), typeof(PixelEditor), new PropertyMetadata(
              MirrorModeStates.OFF, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
         ));
+
         #endregion DependencyProperties
 
         #region Event
+
         /// <summary>
         /// Event for changing tool.
         /// </summary>
@@ -222,6 +244,7 @@ namespace Pixellation.Components.Editor
         public event PropertyChangedEventHandler PropertyChanged;
 
         public event PixelEditorEventHandler LayerListChanged;
+
         #endregion Event
 
         /// <summary>
@@ -235,7 +258,7 @@ namespace Pixellation.Components.Editor
             PixelHeight = Settings.Default.DefaultImageSize;
             Magnification = Settings.Default.DefaultMagnification;
 
-            ITool.RaiseToolEvent += HandleToolEvent;
+            BaseTool.RaiseToolEvent += HandleToolEvent;
             RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
             EditorSettingsChangeEvent += (d, e) => { SetOrRefreshMeasureVisualsMagnification(); };
 
@@ -245,6 +268,7 @@ namespace Pixellation.Components.Editor
         }
 
         #region Init And New Image
+
         /// <summary>
         /// Starts new image (dropping the previous one if there was).
         /// <see cref="Magnification"/> will be reset to the default value.
@@ -320,15 +344,17 @@ namespace Pixellation.Components.Editor
                 LayerListChanged?.Invoke(this, new PixelEditorEventArgs
                 (
                     IPixelEditorEventType.NONE,
-                    0, 0, new int[] {0}
+                    0, 0, new int[] { 0 }
                 ));
             }
 
             RefreshVisualsThenSignalUpdate();
         }
+
         #endregion Init And New Image
 
         #region Update, refresh...
+
         /// <summary>
         /// Refresh visuals, magnification related properties.
         /// </summary>
@@ -381,15 +407,17 @@ namespace Pixellation.Components.Editor
         }
 
         /// <summary>
-        /// Resets properties in <see cref="ChosenTool"/> like <see cref="Magnification"/> or <see cref="PixelWidth"/>.
+        /// Resets properties in <see cref="ChosenTool"/> like <see cref="Magnification"/> or <see cref="PixelWidth"/> .
         /// </summary>
         private void UpdateToolProperties()
         {
-            ChosenTool?.SetAllDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview);
+            ChosenTool?.SetAllDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview, MirrorModeState);
         }
+
         #endregion Update, refresh...
 
         #region Misc overrides
+
         /// <summary>
         /// Overrides <see cref="MeasureOverride(Size)"/> to take <see cref="Magnification"/> and layers into account.
         /// </summary>
@@ -483,9 +511,11 @@ namespace Pixellation.Components.Editor
             // Call base function
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
         }
+
         #endregion Misc overrides
 
         #region Create visuals
+
         /// <summary>
         /// Creates gridlines <see cref="Visual"/> for showing grid on the canvas.
         /// </summary>
@@ -547,6 +577,7 @@ namespace Pixellation.Components.Editor
         #endregion Create visuals
 
         #region Handlers for custom events
+
         /// <summary>
         /// Handles events regarding drawing tools.
         /// </summary>
@@ -569,9 +600,11 @@ namespace Pixellation.Components.Editor
                     break;
             }
         }
+
         #endregion Handlers for custom events
 
         #region On... Event handler functions
+
         /// <summary>
         /// Routes <see cref="OnMouseMove(MouseEventArgs)"/> to <see cref="ChosenTool"/>.
         /// </summary>
@@ -581,15 +614,7 @@ namespace Pixellation.Components.Editor
             base.OnMouseMove(e);
 
             if (IsMouseCaptured)
-            {
-                toolMouseArgs.Set(e, PixelWidth * Magnification, PixelHeight * Magnification);
-                ChosenTool.OnMouseMove(toolMouseArgs);
-                if (MirrorModeState != MirrorModeStates.OFF)
-                {
-                    toolMouseArgs.MirrorModeState = MirrorModeState;
-                    ChosenTool.OnMouseMove(toolMouseArgs);
-                }
-            }   
+                ChosenTool.OnMouseMove(e);
         }
 
         /// <summary>
@@ -603,8 +628,6 @@ namespace Pixellation.Components.Editor
 
             CaptureMouse();
 
-            toolMouseArgs.Set(e, PixelWidth * Magnification, PixelHeight * Magnification);
-
             if (EraserModeOn)
             {
                 ChosenTool.SetDrawColor(System.Drawing.Color.Transparent);
@@ -613,13 +636,7 @@ namespace Pixellation.Components.Editor
             {
                 ChosenTool.SetDrawColor(PrimaryColor);
             }
-
-            ChosenTool.OnMouseDown(toolMouseArgs);
-            if (MirrorModeState != MirrorModeStates.OFF)
-            {
-                toolMouseArgs.MirrorModeState = MirrorModeState;
-                ChosenTool.OnMouseDown(toolMouseArgs);
-            }
+            ChosenTool.OnMouseDown(e);
         }
 
         /// <summary>
@@ -633,16 +650,8 @@ namespace Pixellation.Components.Editor
 
             CaptureMouse();
 
-            toolMouseArgs.Set(e, PixelWidth * Magnification, PixelHeight * Magnification);
-
             ChosenTool.SetDrawColor(SecondaryColor);
-
-            ChosenTool.OnMouseDown(toolMouseArgs);
-            if (MirrorModeState != MirrorModeStates.OFF)
-            {
-                toolMouseArgs.MirrorModeState = MirrorModeState;
-                ChosenTool.OnMouseDown(toolMouseArgs);
-            }
+            ChosenTool.OnMouseDown(e);
         }
 
         /// <summary>
@@ -656,14 +665,8 @@ namespace Pixellation.Components.Editor
 
             ReleaseMouseCapture();
 
-            toolMouseArgs.Set(e, PixelWidth * Magnification, PixelHeight * Magnification);
-
-            ChosenTool.OnMouseUp(toolMouseArgs);
-            if (MirrorModeState != MirrorModeStates.OFF)
-            {
-                toolMouseArgs.MirrorModeState = MirrorModeState;
-                ChosenTool.OnMouseUp(toolMouseArgs);
-            }
+            ChosenTool.OnMouseUp(e);
+            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -677,14 +680,8 @@ namespace Pixellation.Components.Editor
 
             ReleaseMouseCapture();
 
-            toolMouseArgs.Set(e, PixelWidth * Magnification, PixelHeight * Magnification);
-
-            ChosenTool.OnMouseUp(toolMouseArgs);
-            if (MirrorModeState != MirrorModeStates.OFF)
-            {
-                toolMouseArgs.MirrorModeState = MirrorModeState;
-                ChosenTool.OnMouseUp(toolMouseArgs);
-            }
+            ChosenTool.OnMouseUp(e);
+            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -699,6 +696,7 @@ namespace Pixellation.Components.Editor
             {
                 base.OnKeyDown(e);
                 ChosenTool.OnKeyDown(e);
+                RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -710,6 +708,7 @@ namespace Pixellation.Components.Editor
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
         #endregion On... Event handler functions
     }
 }

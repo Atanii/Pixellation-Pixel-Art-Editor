@@ -1,6 +1,7 @@
 ﻿using Pixellation.Models;
 using Pixellation.Utils;
 using System.Collections.Generic;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
@@ -11,7 +12,7 @@ namespace Pixellation.Tools
         {
         }
 
-        private void Draw(ToolMouseEventArgs e)
+        private void Draw(MouseButtonEventArgs e)
         {
             SaveLayerMemento();
 
@@ -77,7 +78,7 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseUp(ToolMouseEventArgs e)
+        public override void OnMouseUp(MouseButtonEventArgs e)
         {
             Draw(e);
         }

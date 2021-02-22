@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Pixellation.Tools
 {
-    public abstract class BaseMultitonTool<T> : BaseTool where T : class
+    public abstract class BaseMultitonTool<T> : BaseTool, ITool where T : class, ITool
     {
         public class MultitonException : Exception
         {
@@ -30,19 +30,26 @@ namespace Pixellation.Tools
                 }
                 else
                 {
-                    throw new MultitonException($"Classes inherited from {typeof(BaseMultitonTool<T>)} must have a private constructor.");
+                    throw new MultitonException($"Classes inherited from {typeof(BaseMultitonTool<T>)} must have a private constructor!");
                 }
             }
 
             private static readonly Dictionary<string, T> instances = new Dictionary<string, T>();
 
-            internal static T Get(string id)
+            internal static T Get(string key)
             {
-                if (!instances.ContainsKey(id))
+                if (key == string.Empty || key == null)
                 {
-                    instances.Add(id, CreateInstance());
+                    throw new MultitonException($"Instance key cannot be empty string or null!");
                 }
-                return instances[id];
+
+                var _key = key.ToLower();
+                if (!instances.ContainsKey(_key))
+                {
+                    instances.Add(_key, CreateInstance());
+                }
+
+                return instances[_key];
             }
         }
 
@@ -50,6 +57,8 @@ namespace Pixellation.Tools
         {
         }
 
-        public static T GetInstance(string id) => MultitonToolCreator.Get(id);
+        public static T GetInstance(string key) => MultitonToolCreator.Get(key);
+
+        public ITool GetInstanceByKey(string key) => MultitonToolCreator.Get(key);
     }
 }
