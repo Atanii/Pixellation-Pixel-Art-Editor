@@ -5,10 +5,8 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    public class LineTool : BaseTool
+    public class LineTool : BaseMultitonTool<LineTool>
     {
-        private static LineTool _instance;
-
         private IntPoint p0;
         private IntPoint p1;
 
@@ -18,19 +16,18 @@ namespace Pixellation.Tools
         {
         }
 
-        public static LineTool GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new LineTool();
-            }
-            return _instance;
-        }
-
         private void Draw()
         {
             SaveLayerMemento();
             _drawSurface.DrawLine(p0.X, p0.Y, p1.X, p1.Y, ToolColor);
+            if (_mirrorModeState != MirrorModeStates.OFF)
+            {
+                var p2 = Mirr(p0);
+                var p3 = Mirr(p1);
+                _drawSurface.DrawLine(
+                    p2.X, p2.Y, p3.X, p3.Y, ToolColor
+                );
+            }
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)
@@ -52,6 +49,14 @@ namespace Pixellation.Tools
                 p1 = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
                 _previewDrawSurface.Clear();
                 _previewDrawSurface.DrawLine(p0.X, p0.Y, p1.X, p1.Y, ToolColor);
+                if (_mirrorModeState != MirrorModeStates.OFF)
+                {
+                    var p2 = Mirr(p0);
+                    var p3 = Mirr(p1);
+                    _previewDrawSurface.DrawLine(
+                        p2.X, p2.Y, p3.X, p3.Y, ToolColor
+                    );
+                }
             }
         }
     }

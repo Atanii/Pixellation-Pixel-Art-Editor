@@ -142,11 +142,29 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ToolInstancePrimary.
+        /// </summary>
+        public static string PrimaryToolInstanceKey {
+            get {
+                return ResourceManager.GetString("PrimaryToolInstanceKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pixellation Project Files (*.pix)|*.pix.
         /// </summary>
         public static string SaveFileFilter {
             get {
                 return ResourceManager.GetString("SaveFileFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ToolInstanceSecondary.
+        /// </summary>
+        public static string SecondaryToolInstanceKey {
+            get {
+                return ResourceManager.GetString("SecondaryToolInstanceKey", resourceCulture);
             }
         }
         

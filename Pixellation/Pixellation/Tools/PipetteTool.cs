@@ -5,44 +5,39 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    public class PipetteTool : BaseTool
+    public class PipetteTool : BaseMultitonTool<PipetteTool>
     {
-        private static PipetteTool _instance;
-
         private IntPoint p;
 
         private PipetteTool() : base()
         {
         }
 
-        public static PipetteTool GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new PipetteTool();
-            }
-            return _instance;
-        }
-
         private void TakeColor(ToolEventType e)
         {
-            p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
-
-            if (OutOfBounds(p))
-                return;
-
             OnRaiseToolEvent(this, new ToolEventArgs { Type = e, Value = _drawSurface.GetPixel(p.X, p.Y).ToDrawingColor() });
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+            if (!OutOfBounds(p) && e.LeftButton == MouseButtonState.Pressed)
             {
                 TakeColor(ToolEventType.PRIMARYCOLOR);
+                if (_mirrorModeState != MirrorModeStates.OFF)
+                {
+                    p = Mirr(p);
+                    TakeColor(ToolEventType.SECONDARY);
+                }
             }
-            if (e.RightButton == MouseButtonState.Pressed)
+            else if (!OutOfBounds(p) && e.RightButton == MouseButtonState.Pressed)
             {
                 TakeColor(ToolEventType.SECONDARY);
+                if (_mirrorModeState != MirrorModeStates.OFF)
+                {
+                    p = Mirr(p);
+                    TakeColor(ToolEventType.PRIMARYCOLOR);
+                }
             }
         }
     }

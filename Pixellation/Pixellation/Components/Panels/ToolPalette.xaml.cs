@@ -11,16 +11,16 @@ namespace Pixellation.Components.Panels
     /// </summary>
     public partial class ToolPalette : UserControl, INotifyPropertyChanged
     {
-        public static readonly ITool Pencil = PencilTool.GetInstance();
-        public static readonly ITool Eraser = EraserTool.GetInstance();
-        public static readonly ITool PaintBucket = PaintBucketTool.GetInstance();
-        public static readonly ITool Line = LineTool.GetInstance();
-        public static readonly ITool Dithering = DitheringTool.GetInstance();
-        public static readonly ITool Pipette = PipetteTool.GetInstance();
-        public static readonly ITool Circle = CircleTool.GetInstance();
-        public static readonly ITool Rectangle = RectangleTool.GetInstance();
-        public static readonly ITool SelectionRectangle = SelectCopyPasteRectangleTool.GetInstance();
-        public static readonly ITool SelectionEllipse = SelectCopyPasteEllipseTool.GetInstance();
+        public static readonly ITool Pencil = PencilTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Eraser = EraserTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool PaintBucket = PaintBucketTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Line = LineTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Dithering = DitheringTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Pipette = PipetteTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Circle = EllipseTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool Rectangle = RectangleTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool SelectionRectangle = SelectCopyPasteRectangleTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public static readonly ITool SelectionEllipse = SelectCopyPasteEllipseTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
 
         private readonly Thickness ThicknessClicked;
         private readonly Thickness ThicknessDefault;
@@ -40,6 +40,28 @@ namespace Pixellation.Components.Panels
         {
             get { return _eraserModeOn; }
             set { _eraserModeOn = value; OnPropertyChanged(); }
+        }
+
+        private MirrorModeStates _mirrorModeState;
+        public MirrorModeStates MirrorModeState
+        {
+            get { return _mirrorModeState; }
+            set {
+                _mirrorModeState = value;
+                switch (value)
+                {
+                    case MirrorModeStates.OFF:
+                        rbMMNone.IsChecked = true;
+                        break;
+                    case MirrorModeStates.HORIZONTAL:
+                        rbMMHorizontal.IsChecked = true;
+                        break;
+                    case MirrorModeStates.VERTICAL:
+                        rbMMVertical.IsChecked = true;
+                        break;
+                }
+                OnPropertyChanged();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -66,6 +88,9 @@ namespace Pixellation.Components.Panels
             // Selected by default
             PreviouslyClicked = BtnPencil;
             BtnPencil.BorderThickness = ThicknessClicked;
+
+            MirrorModeState = MirrorModeStates.OFF;
+            rbMMNone.IsChecked = true;
         }
 
         private void ToolButton_Click(object sender, RoutedEventArgs e)
@@ -111,6 +136,21 @@ namespace Pixellation.Components.Panels
         private void cbEraserMode_Click(object sender, RoutedEventArgs e)
         {
             EraserModeOn = (bool)cbEraserMode.IsChecked;
+        }
+
+        private void rbMMNone_Click(object sender, RoutedEventArgs e)
+        {
+            MirrorModeState = MirrorModeStates.OFF;
+        }
+
+        private void rbMMHorizontal_Click(object sender, RoutedEventArgs e)
+        {
+            MirrorModeState = MirrorModeStates.HORIZONTAL;
+        }
+
+        private void rbMMVertical_Click(object sender, RoutedEventArgs e)
+        {
+            MirrorModeState = MirrorModeStates.VERTICAL;
         }
     }
 }

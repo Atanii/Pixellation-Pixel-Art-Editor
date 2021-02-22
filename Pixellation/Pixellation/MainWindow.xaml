@@ -50,7 +50,7 @@
             <ScrollViewer>
                 <StackPanel>
                     <Label Content="Tools"></Label>
-                    <Panels:ToolPalette Width="180" Height="100" x:Name="toolPalette" />
+                    <Panels:ToolPalette Height="200" x:Name="toolPalette" />
 
                     <Label Content="Layers"></Label>
                     <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}"></Panels:LayerPalette>
@@ -101,6 +101,7 @@
                            TiledOpacity="{Binding ElementName=editorSettings, Path=TiledOpacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            ShowBorder="{Binding ElementName=editorSettings, Path=ShowBorderOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            ShowGrid="{Binding ElementName=editorSettings, Path=ShowGridOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                           MirrorModeState="{Binding ElementName=toolPalette, Path=MirrorModeState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
         </ScrollViewer>
     </DockPanel>

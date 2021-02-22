@@ -4,28 +4,17 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    public class PencilTool : BaseTool
+    public class PencilTool : BaseMultitonTool<PencilTool>
     {
-        private static PencilTool _instance;
-
         private PencilTool() : base()
         {
         }
 
-        public static PencilTool GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new PencilTool();
-            }
-            return _instance;
-        }
-
-        private void Draw()
+        private void Draw(MouseEventArgs e)
         {
             SaveLayerMemento(true);
 
-            var p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+            var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
             if (OutOfBounds(p))
                 return;
@@ -34,6 +23,14 @@ namespace Pixellation.Tools
                 p.X, p.Y,
                 ToolColor
             );
+            if (_mirrorModeState != MirrorModeStates.OFF)
+            {
+                p = Mirr(p);
+                _drawSurface.SetPixel(
+                    p.X, p.Y,
+                    ToolColor
+                );
+            }
         }
 
         public override void OnMouseUp(MouseButtonEventArgs e)
@@ -43,13 +40,13 @@ namespace Pixellation.Tools
 
         public override void OnMouseDown(MouseButtonEventArgs e)
         {
-            Draw();
+            Draw(e);
         }
 
         public override void OnMouseMove(MouseEventArgs e)
         {
             if (IsMouseDown(e))
-                Draw();
+                Draw(e);
         }
     }
 }

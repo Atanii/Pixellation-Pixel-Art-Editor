@@ -6,28 +6,17 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    public class PaintBucketTool : BaseTool
+    public class PaintBucketTool : BaseMultitonTool<PaintBucketTool>
     {
-        private static PaintBucketTool _instance;
-
         private PaintBucketTool() : base()
         {
         }
 
-        public static PaintBucketTool GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new PaintBucketTool();
-            }
-            return _instance;
-        }
-
-        private void Draw()
+        private void Draw(MouseButtonEventArgs e)
         {
             SaveLayerMemento();
 
-            var p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+            var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
             var targetColor = _layer.GetPixel(p.X, p.Y);
             var replacementColor = ToolColor;
@@ -44,7 +33,7 @@ namespace Pixellation.Tools
 
             Stack<IntPoint> nodes = new Stack<IntPoint>();
             nodes.Push(point);
-            
+
             IntPoint current;
 
             while (nodes.Count > 0)
@@ -91,7 +80,7 @@ namespace Pixellation.Tools
 
         public override void OnMouseUp(MouseButtonEventArgs e)
         {
-            Draw();
+            Draw(e);
         }
     }
 }

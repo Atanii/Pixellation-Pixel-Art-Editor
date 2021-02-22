@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Pixellation.Components.Panels"
              xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d"
-             d:DesignHeight="180" d:DesignWidth="180">
+             d:DesignHeight="200" d:DesignWidth="180">
     <StackPanel Orientation="Vertical">
         <UniformGrid Columns="5" Rows="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="50">
             <Button
@@ -123,5 +123,12 @@
         </UniformGrid>
         <Label>Tool Settings</Label>
         <CheckBox Margin="5" x:Name="cbEraserMode" Click="cbEraserMode_Click" ToolTip="Use tools with transparency as color.">Eraser Mode</CheckBox>
+        <GroupBox Margin="5" Header="Mirror Mode">
+            <StackPanel Orientation="Vertical" Margin="5">
+                <RadioButton x:Name="rbMMNone" GroupName="MirrorMode" Click="rbMMNone_Click">Off</RadioButton>
+                <RadioButton x:Name="rbMMHorizontal" GroupName="MirrorMode" Click="rbMMHorizontal_Click">Horizontal</RadioButton>
+                <RadioButton x:Name="rbMMVertical" GroupName="MirrorMode" Click="rbMMVertical_Click">Vertical</RadioButton>
+            </StackPanel>
+        </GroupBox>
     </StackPanel>
 </UserControl>

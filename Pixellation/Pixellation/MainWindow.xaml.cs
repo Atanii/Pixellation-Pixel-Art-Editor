@@ -92,6 +92,8 @@ namespace Pixellation
 
             _mementoCaretaker.OnNewUndoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
             _mementoCaretaker.OnNewRedoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
+
+            WindowState = WindowState.Maximized;
         }
 
         private async void Open(object sender, RoutedEventArgs e)

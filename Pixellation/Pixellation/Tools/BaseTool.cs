@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    public abstract class BaseTool : ITool
+    public abstract class BaseTool
     {
         protected static System.Windows.Media.Color ToolColor;
 
@@ -24,10 +24,13 @@ namespace Pixellation.Tools
         protected static WriteableBitmap _previewDrawSurface;
 
         public delegate void ToolEventHandler(object sender, ToolEventArgs args);
+
         public static event ToolEventHandler RaiseToolEvent;
 
         private static readonly Caretaker<IPixelEditorEventType> _mementoCaretaker = Caretaker<IPixelEditorEventType>.GetInstance();
         private static bool _isMementoLocked = false;
+
+        protected MirrorModeStates _mirrorModeState;
 
         protected BaseTool()
         {
@@ -39,7 +42,7 @@ namespace Pixellation.Tools
             RaiseToolEvent?.Invoke(sender, e);
         }
 
-        public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer)
+        public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF)
         {
             _magnification = magnification;
             _surfaceWidth = pixelWidth;
@@ -48,6 +51,7 @@ namespace Pixellation.Tools
             _drawSurface = ds.Bitmap;
             _previewLayer = previewLayer;
             _previewDrawSurface = _previewLayer.Bitmap;
+            _mirrorModeState = mirrorModeState;
         }
 
         public void SetPixelSize(int pixelWidth, int pixelHeight)
@@ -81,6 +85,11 @@ namespace Pixellation.Tools
         public void SetDrawColor(Color c)
         {
             ToolColor = c.ToMediaColor();
+        }
+
+        public void SetMirrorMode(MirrorModeStates mirrorMode)
+        {
+            _mirrorModeState = mirrorMode;
         }
 
         protected static bool IsMouseDown(MouseButtonEventArgs e) => e.LeftButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed;
@@ -133,5 +142,44 @@ namespace Pixellation.Tools
         public static int Min(int a, int b) => a <= b ? a : b;
 
         public static int Max(int a, int b) => a >= b ? a : b;
+
+        protected IntPoint MirrH(IntPoint p)
+        {
+            p.Y = _surfaceHeight - p.Y;
+            return p;
+        }
+
+        protected IntPoint MirrV(IntPoint p)
+        {
+            p.X = _surfaceWidth - p.X;
+            return p;
+        }
+
+        /// <summary>
+        /// Mirrors the given point according to the current <see cref="MirrorModeStates"/>.
+        /// In case MirrorMode is not turned on, it returns the point without any change.
+        /// </summary>
+        /// <param name="p">Point to mirror.</param>
+        /// <returns>Mirrored point.</returns>
+        protected IntPoint Mirr(IntPoint p)
+        {
+            switch (_mirrorModeState)
+            {
+                case MirrorModeStates.OFF:
+                    break;
+
+                case MirrorModeStates.VERTICAL:
+                    p = MirrV(p);
+                    break;
+
+                case MirrorModeStates.HORIZONTAL:
+                    p = MirrH(p);
+                    break;
+
+                default:
+                    break;
+            }
+            return p;
+        }
     }
 }

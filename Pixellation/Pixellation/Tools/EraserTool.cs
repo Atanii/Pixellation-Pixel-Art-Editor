@@ -1,31 +1,19 @@
 ﻿using Pixellation.Utils;
-using System.Drawing;
 using System.Windows.Input;
 
 namespace Pixellation.Tools
 {
-    public class EraserTool : BaseTool
+    public class EraserTool : BaseMultitonTool<EraserTool>
     {
-        private static EraserTool _instance;
-
         private EraserTool() : base()
         {
         }
 
-        public static EraserTool GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new EraserTool();
-            }
-            return _instance;
-        }
-
-        private void Draw()
+        private void Draw(MouseEventArgs e)
         {
             SaveLayerMemento(true);
 
-            var p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+            var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
             if (OutOfBounds(p))
             {
@@ -34,10 +22,16 @@ namespace Pixellation.Tools
 
             _layer.SetPixel(
                 p.X, p.Y,
-                System.Windows.Media.Color.FromArgb(0,0,0,0)
+                System.Windows.Media.Color.FromArgb(0, 0, 0, 0)
             );
-
-            _layer.InvalidateVisual();
+            if (_mirrorModeState != MirrorModeStates.OFF)
+            {
+                p = Mirr(p);
+                _layer.SetPixel(
+                    p.X, p.Y,
+                    System.Windows.Media.Color.FromArgb(0, 0, 0, 0)
+                );
+            }
         }
 
         public override void OnMouseUp(MouseButtonEventArgs e)
@@ -47,14 +41,14 @@ namespace Pixellation.Tools
 
         public override void OnMouseDown(MouseButtonEventArgs e)
         {
-            Draw();
+            Draw(e);
         }
 
         public override void OnMouseMove(MouseEventArgs e)
         {
             if (IsMouseDown(e))
             {
-                Draw();
+                Draw(e);
             }
         }
     }
