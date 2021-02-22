@@ -9,7 +9,7 @@
           xmlns:resource="clr-namespace:Pixellation.Properties"
           Title="{Binding ElementName=mainWindow, Path=Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
           Closing="MainWindow_Closing"
-          mc:Ignorable="d" Name="mainWindow" Height="768" Width="1024">
+          mc:Ignorable="d" Name="mainWindow" Height="1080" Width="1920">
 
     <!-- MAINPANEL -->
     <DockPanel LastChildFill="True">
@@ -70,7 +70,10 @@
             <ScrollViewer>
                 <StackPanel>
                     <Label Content="Preview"></Label>
-                    <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}"></l:DrawingPreview>
+                    <StackPanel Orientation="Vertical">
+                        <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}"></l:DrawingPreview>
+                        <CheckBox>Onion (PLACEHOLDER)</CheckBox>
+                    </StackPanel>
 
                     <Label Content="Tiled"></Label>
                     <Panels:EditorSettingsPanel x:Name="editorSettings"/>
@@ -80,22 +83,40 @@
                                       PrimaryColor="{Binding ElementName=canvasImage, Path=PrimaryColor, Mode=TwoWay}"
                                       SecondaryColor="{Binding ElementName=canvasImage, Path=SecondaryColor, Mode=TwoWay}">
                     </l2:ColourChooser>
+
+                    <Label Content="Animation Tester (PLACEHOLDER)"></Label>
+                    <StackPanel Orientation="Vertical">
+                        <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}"></l:DrawingPreview>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Margin="5">Play</Button>
+                            <Button Margin="5">Loop</Button>
+                            <Button Margin="5">Stop</Button>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </Border>
 
         <!-- DRAWING AREA -->
-        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" 
-                                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="canvasScroll">
-            <ScrollViewer.Background>
-                <DrawingBrush TileMode="Tile" Viewport="0,0,32,32" ViewportUnits="Absolute">
-                    <DrawingBrush.Drawing>
-                        <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="LightGray"/>
-                    </DrawingBrush.Drawing>
-                </DrawingBrush>
-            </ScrollViewer.Background>
+        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="200px"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
             
-            <l:PixelEditor ChosenTool="{Binding ElementName=toolPalette, Path=ChosenTool, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" x:Name="canvasScroll">
+                <ScrollViewer.Background>
+                    <DrawingBrush TileMode="Tile" Viewport="0,0,32,32" ViewportUnits="Absolute">
+                        <DrawingBrush.Drawing>
+                            <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="LightGray"/>
+                        </DrawingBrush.Drawing>
+                    </DrawingBrush>
+                </ScrollViewer.Background>
+
+                <l:PixelEditor ChosenTool="{Binding ElementName=toolPalette, Path=ChosenTool, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            EraserModeOn="{Binding ElementName=toolPalette, Path=EraserModeOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            TiledModeOn="{Binding ElementName=editorSettings, Path=TiledModeOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            TiledOpacity="{Binding ElementName=editorSettings, Path=TiledOpacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
@@ -103,7 +124,95 @@
                            ShowGrid="{Binding ElementName=editorSettings, Path=ShowGridOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            MirrorModeState="{Binding ElementName=toolPalette, Path=MirrorModeState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
-        </ScrollViewer>
+            </ScrollViewer>
+            
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Stretch">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <Label Margin="5">Frames (PLACEHOLDER)</Label>
+                        <Button Margin="5">Add Frame</Button>
+                        <Button Margin="5">DuplicateFrame</Button>
+                        <Button Margin="5">Merge Frame</Button>
+                        <Button Margin="5">Delete Frame</Button>
+                        <Button Margin="5">Move Left Frame</Button>
+                        <Button Margin="5">Move Right Frame</Button>
+                    </StackPanel>
+                    <UniformGrid Rows="1" HorizontalAlignment="Left">
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                        <Canvas Width="100" Height="100" Margin="12">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                    </UniformGrid>
+                </StackPanel>
+            </ScrollViewer>
+            
+        </Grid>
     </DockPanel>
     
 </Window>
