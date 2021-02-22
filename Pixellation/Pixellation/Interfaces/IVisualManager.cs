@@ -8,8 +8,6 @@ namespace Pixellation.Interfaces
 {
     public interface IVisualManager
     {
-        public event EventHandler RaiseImageUpdatedEvent;
-
         public event PixelEditorEventHandler LayerListChanged;
 
         public void SetActiveLayer(int layerIndex = 0);

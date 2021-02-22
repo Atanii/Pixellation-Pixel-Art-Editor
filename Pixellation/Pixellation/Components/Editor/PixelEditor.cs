@@ -235,7 +235,7 @@ namespace Pixellation.Components.Editor
         /// <summary>
         /// Event for signaling change in the edited image.
         /// </summary>
-        public event EventHandler RaiseImageUpdatedEvent;
+        public static event EventHandler RaiseImageUpdatedEvent;
 
         /// <summary>
         /// Event used for one- and twoway databinding.
@@ -403,7 +403,7 @@ namespace Pixellation.Components.Editor
         public void RefreshVisualsThenSignalUpdate()
         {
             SetOrRefreshMeasureVisualsMagnification();
-            RaiseImageUpdatedEvent?.Invoke(default, EventArgs.Empty);
+            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -637,6 +637,7 @@ namespace Pixellation.Components.Editor
                 ChosenTool.SetDrawColor(PrimaryColor);
             }
             ChosenTool.OnMouseDown(e);
+            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -652,6 +653,7 @@ namespace Pixellation.Components.Editor
 
             ChosenTool.SetDrawColor(SecondaryColor);
             ChosenTool.OnMouseDown(e);
+            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

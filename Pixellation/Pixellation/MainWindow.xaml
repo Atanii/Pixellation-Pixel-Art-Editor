@@ -71,7 +71,7 @@
                 <StackPanel>
                     <Label Content="Preview"></Label>
                     <StackPanel Orientation="Vertical">
-                        <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}"></l:DrawingPreview>
+                        <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}"></l:DrawingPreview>
                         <CheckBox>Onion (PLACEHOLDER)</CheckBox>
                     </StackPanel>
 
@@ -86,7 +86,7 @@
 
                     <Label Content="Animation Tester (PLACEHOLDER)"></Label>
                     <StackPanel Orientation="Vertical">
-                        <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}" VisualToPreview="{Binding ElementName=canvasImage, Mode=OneTime}"></l:DrawingPreview>
+                        <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}"></l:DrawingPreview>
                         <StackPanel Orientation="Horizontal">
                             <Button Margin="5">Play</Button>
                             <Button Margin="5">Loop</Button>

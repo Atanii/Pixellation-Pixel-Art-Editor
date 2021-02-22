@@ -19,29 +19,12 @@ namespace Pixellation.Components.Editor
              new List<DrawingLayer>()
         ));
 
-        public IPreviewable VisualToPreview
-        {
-            get { return (IPreviewable)GetValue(VisualToPreviewProperty); }
-            set { SetValue(VisualToPreviewProperty, value); }
-        }
-
-        public static readonly DependencyProperty VisualToPreviewProperty =
-         DependencyProperty.Register("VisualToPreview", typeof(IPreviewable), typeof(DrawingPreview), new FrameworkPropertyMetadata(
-             default,
-             (d, e) => { RaiseVisualToPreviewChangeEvent?.Invoke(d, e); }
-        ));
-
-        private static event PropertyChangedCallback RaiseVisualToPreviewChangeEvent;
-
         public DrawingPreview()
         {
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
-            RaiseVisualToPreviewChangeEvent += (o, e) =>
+            PixelEditor.RaiseImageUpdatedEvent += (s, a) =>
             {
-                VisualToPreview.RaiseImageUpdatedEvent += (s, a) =>
-                {
-                    InvalidateVisual();
-                };
+                InvalidateVisual();
             };
         }
 
