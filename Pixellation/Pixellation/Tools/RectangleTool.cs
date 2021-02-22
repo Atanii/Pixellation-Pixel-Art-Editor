@@ -40,13 +40,13 @@ namespace Pixellation.Tools
             );
         }
 
-        public override void OnMouseDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(ToolMouseEventArgs e)
         {
             p0 = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
             _creating = true;
         }
 
-        public override void OnMouseUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(ToolMouseEventArgs e)
         {
             if (_creating && _dragging)
             {
@@ -56,7 +56,7 @@ namespace Pixellation.Tools
             _creating = false;
         }
 
-        public override void OnMouseMove(MouseEventArgs e)
+        public override void OnMouseMove(ToolMouseEventArgs e)
         {
             if (IsMouseDown(e))
             {

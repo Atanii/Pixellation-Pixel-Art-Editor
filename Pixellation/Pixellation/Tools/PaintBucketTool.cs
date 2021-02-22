@@ -23,11 +23,11 @@ namespace Pixellation.Tools
             return _instance;
         }
 
-        private void Draw()
+        private void Draw(ToolMouseEventArgs e)
         {
             SaveLayerMemento();
 
-            var p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+            var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
             var targetColor = _layer.GetPixel(p.X, p.Y);
             var replacementColor = ToolColor;
@@ -89,9 +89,9 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(ToolMouseEventArgs e)
         {
-            Draw();
+            Draw(e);
         }
     }
 }

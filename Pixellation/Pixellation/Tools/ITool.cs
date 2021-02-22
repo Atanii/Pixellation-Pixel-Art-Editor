@@ -12,11 +12,11 @@ namespace Pixellation.Tools
 
         public Color GetDrawColor();
 
-        public void OnMouseMove(MouseEventArgs e);
+        public void OnMouseMove(ToolMouseEventArgs e);
 
-        public void OnMouseDown(MouseButtonEventArgs e);
+        public void OnMouseDown(ToolMouseEventArgs e);
 
-        public void OnMouseUp(MouseButtonEventArgs e);
+        public void OnMouseUp(ToolMouseEventArgs e);
 
         public void OnKeyDown(KeyEventArgs e);
 

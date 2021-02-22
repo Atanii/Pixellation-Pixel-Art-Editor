@@ -25,6 +25,7 @@ namespace Pixellation.Components.Editor
         private Visual _borderLine;
         private DrawingLayer _drawPreview;
         private readonly Caretaker<IPixelEditorEventType> _mementoCaretaker = Caretaker<IPixelEditorEventType>.GetInstance();
+        private readonly ToolMouseEventArgs toolMouseArgs = new ToolMouseEventArgs();
         #endregion PrivateFields
 
         #region Properties
@@ -182,6 +183,19 @@ namespace Pixellation.Components.Editor
         public readonly DependencyProperty ChosenToolProperty =
          DependencyProperty.Register("ChosenTool", typeof(ITool), typeof(PixelEditor), new PropertyMetadata(
              null, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
+        ));
+
+        /// <summary>
+        /// Current state of MirrorMode.
+        /// </summary>
+        public MirrorModeStates MirrorModeState
+        {
+            get { return (MirrorModeStates)GetValue(MirrorModeStateProperty); }
+            set { SetValue(MirrorModeStateProperty, value); }
+        }
+        public readonly DependencyProperty MirrorModeStateProperty =
+         DependencyProperty.Register("MirrorModeState", typeof(MirrorModeStates), typeof(PixelEditor), new PropertyMetadata(
+             MirrorModeStates.OFF, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
         ));
         #endregion DependencyProperties
 
@@ -567,7 +581,15 @@ namespace Pixellation.Components.Editor
             base.OnMouseMove(e);
 
             if (IsMouseCaptured)
-                ChosenTool.OnMouseMove(e);
+            {
+                toolMouseArgs.Set(e, PixelWidth * Magnification, PixelHeight * Magnification);
+                ChosenTool.OnMouseMove(toolMouseArgs);
+                if (MirrorModeState != MirrorModeStates.OFF)
+                {
+                    toolMouseArgs.MirrorModeState = MirrorModeState;
+                    ChosenTool.OnMouseMove(toolMouseArgs);
+                }
+            }   
         }
 
         /// <summary>
@@ -581,6 +603,8 @@ namespace Pixellation.Components.Editor
 
             CaptureMouse();
 
+            toolMouseArgs.Set(e, PixelWidth * Magnification, PixelHeight * Magnification);
+
             if (EraserModeOn)
             {
                 ChosenTool.SetDrawColor(System.Drawing.Color.Transparent);
@@ -589,7 +613,13 @@ namespace Pixellation.Components.Editor
             {
                 ChosenTool.SetDrawColor(PrimaryColor);
             }
-            ChosenTool.OnMouseDown(e);
+
+            ChosenTool.OnMouseDown(toolMouseArgs);
+            if (MirrorModeState != MirrorModeStates.OFF)
+            {
+                toolMouseArgs.MirrorModeState = MirrorModeState;
+                ChosenTool.OnMouseDown(toolMouseArgs);
+            }
         }
 
         /// <summary>
@@ -603,8 +633,16 @@ namespace Pixellation.Components.Editor
 
             CaptureMouse();
 
+            toolMouseArgs.Set(e, PixelWidth * Magnification, PixelHeight * Magnification);
+
             ChosenTool.SetDrawColor(SecondaryColor);
-            ChosenTool.OnMouseDown(e);
+
+            ChosenTool.OnMouseDown(toolMouseArgs);
+            if (MirrorModeState != MirrorModeStates.OFF)
+            {
+                toolMouseArgs.MirrorModeState = MirrorModeState;
+                ChosenTool.OnMouseDown(toolMouseArgs);
+            }
         }
 
         /// <summary>
@@ -615,9 +653,17 @@ namespace Pixellation.Components.Editor
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
+
             ReleaseMouseCapture();
-            ChosenTool.OnMouseUp(e);
-            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+
+            toolMouseArgs.Set(e, PixelWidth * Magnification, PixelHeight * Magnification);
+
+            ChosenTool.OnMouseUp(toolMouseArgs);
+            if (MirrorModeState != MirrorModeStates.OFF)
+            {
+                toolMouseArgs.MirrorModeState = MirrorModeState;
+                ChosenTool.OnMouseUp(toolMouseArgs);
+            }
         }
 
         /// <summary>
@@ -628,9 +674,17 @@ namespace Pixellation.Components.Editor
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
+
             ReleaseMouseCapture();
-            ChosenTool.OnMouseUp(e);
-            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+
+            toolMouseArgs.Set(e, PixelWidth * Magnification, PixelHeight * Magnification);
+
+            ChosenTool.OnMouseUp(toolMouseArgs);
+            if (MirrorModeState != MirrorModeStates.OFF)
+            {
+                toolMouseArgs.MirrorModeState = MirrorModeState;
+                ChosenTool.OnMouseUp(toolMouseArgs);
+            }
         }
 
         /// <summary>
@@ -645,7 +699,6 @@ namespace Pixellation.Components.Editor
             {
                 base.OnKeyDown(e);
                 ChosenTool.OnKeyDown(e);
-                RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
 

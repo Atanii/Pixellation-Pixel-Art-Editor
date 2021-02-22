@@ -29,7 +29,7 @@ namespace Pixellation.Tools
         {
         }
 
-        public override void OnMouseDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(ToolMouseEventArgs e)
         {
             p0 = e.GetPosition(_previewLayer).DivideByIntAsIntPoint(_magnification);
             p1prev = p0;
@@ -57,7 +57,7 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(ToolMouseEventArgs e)
         {
             _creating = false;
             if (_click)
@@ -67,7 +67,7 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseMove(MouseEventArgs e)
+        public override void OnMouseMove(ToolMouseEventArgs e)
         {
 
             if (e.LeftButton == MouseButtonState.Pressed)

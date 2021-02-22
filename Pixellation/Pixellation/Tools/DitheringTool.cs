@@ -21,21 +21,21 @@ namespace Pixellation.Tools
             return _instance;
         }
 
-        private void Draw(bool leftButtonPressed = true)
+        private void Draw(ToolMouseEventArgs e)
         {
             SaveLayerMemento(true);
 
-            var p = Mouse.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+            var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
             // odd X or even Y -> return
-            if ( leftButtonPressed && 
+            if (e.LeftButton == MouseButtonState.Pressed && 
                 (((p.X & 1) == 1 || (p.Y & 1) != 1) ^
                 ((p.X & 1) != 1 || (p.Y & 1) == 1)) )
             {
                 return;
             }
             // odd + odd ^ even + even
-            if ( !leftButtonPressed &&
+            if (e.LeftButton != MouseButtonState.Pressed &&
                 (((p.X & 1) == 1 && (p.Y & 1) == 1) ^
                 ((p.X & 1) != 1 && (p.Y & 1) != 1)) )
             {
@@ -54,25 +54,21 @@ namespace Pixellation.Tools
             );
         }
 
-        public override void OnMouseUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(ToolMouseEventArgs e)
         {
             UnlockMemento();
         }
 
-        public override void OnMouseDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(ToolMouseEventArgs e)
         {
-            Draw(e.LeftButton == MouseButtonState.Pressed);
+            Draw(e);
         }
 
-        public override void OnMouseMove(MouseEventArgs e)
+        public override void OnMouseMove(ToolMouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (IsMouseDown(e))
             {
-                Draw(true);
-            }
-            if (e.RightButton == MouseButtonState.Pressed)
-            {
-                Draw(false);
+                Draw(e);
             }
         }
     }

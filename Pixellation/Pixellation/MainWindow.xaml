@@ -101,6 +101,7 @@
                            TiledOpacity="{Binding ElementName=editorSettings, Path=TiledOpacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            ShowBorder="{Binding ElementName=editorSettings, Path=ShowBorderOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            ShowGrid="{Binding ElementName=editorSettings, Path=ShowGridOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                           MirrorModeState="{Binding ElementName=toolPalette, Path=MirrorModeState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
         </ScrollViewer>
     </DockPanel>
