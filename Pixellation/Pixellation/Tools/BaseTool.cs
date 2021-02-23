@@ -1,7 +1,7 @@
 ﻿using Pixellation.Components.Editor;
 using Pixellation.Models;
 using Pixellation.Utils;
-using Pixellation.Utils.MementoPattern;
+using Pixellation.MementoPattern;
 using System.Drawing;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -27,7 +27,6 @@ namespace Pixellation.Tools
 
         public static event ToolEventHandler RaiseToolEvent;
 
-        private static readonly Caretaker<IPixelEditorEventType> _mementoCaretaker = Caretaker<IPixelEditorEventType>.GetInstance();
         private static bool _isMementoLocked = false;
 
         protected MirrorModeStates _mirrorModeState;
@@ -124,7 +123,7 @@ namespace Pixellation.Tools
         {
             if (!_isMementoLocked)
             {
-                _mementoCaretaker.Save(_layer.GetMemento(IPixelEditorEventType.LAYER_PIXELS_CHANGED));
+                _layer.SaveState(IPixelEditorEventType.LAYER_PIXELS_CHANGED);
             }
             if (lockMemento)
             {

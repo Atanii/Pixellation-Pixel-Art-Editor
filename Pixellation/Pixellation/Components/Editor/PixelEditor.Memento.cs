@@ -1,5 +1,5 @@
 ﻿using Pixellation.Components.Editor.Memento;
-using Pixellation.Utils.MementoPattern;
+using Pixellation.MementoPattern;
 
 namespace Pixellation.Components.Editor
 {
@@ -72,22 +72,22 @@ namespace Pixellation.Components.Editor
                 case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE:
                 case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL:
                 case IPixelEditorEventType.RESIZE:
-                    _mementoCaretaker.Save(GetMemento(eTypeValue));
+                    _caretaker.Save(GetMemento(eTypeValue));
                     break;
 
                 // LayerMemento
                 case IPixelEditorEventType.MERGELAYER:
                     var mergeMemento = Layers[selectedLayerIndex].GetMemento(eTypeValue);
                     mergeMemento.SetChainedMemento(Layers[selectedLayerIndex + 1].GetMemento(IPixelEditorEventType.REMOVELAYER));
-                    _mementoCaretaker.Save(mergeMemento);
+                    _caretaker.Save(mergeMemento);
                     break;
 
                 case IPixelEditorEventType.ADDLAYER:
-                    _mementoCaretaker.Save(Layers[selectedLayerIndex].GetMemento(eTypeValue));
+                    _caretaker.Save(Layers[selectedLayerIndex].GetMemento(eTypeValue));
                     break;
 
                 default:
-                    _mementoCaretaker.Save(Layers[selectedLayerIndex].GetMemento(eTypeValue));
+                    _caretaker.Save(Layers[selectedLayerIndex].GetMemento(eTypeValue));
                     break;
             }
         }

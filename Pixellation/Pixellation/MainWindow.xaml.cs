@@ -2,10 +2,8 @@
 using Pixellation.Components.Dialogs;
 using Pixellation.Components.Dialogs.AboutDialog;
 using Pixellation.Components.Dialogs.NewImageDialog;
-using Pixellation.Components.Editor;
 using Pixellation.Properties;
 using Pixellation.Utils;
-using Pixellation.Utils.MementoPattern;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -19,7 +17,7 @@ namespace Pixellation
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly PersistenceManager _pm = PersistenceManager.GetInstance();
-        private readonly Caretaker<IPixelEditorEventType> _mementoCaretaker = Caretaker<IPixelEditorEventType>.GetInstance();
+        private readonly PixellationCaretakerManager _caretaker = PixellationCaretakerManager.GetInstance();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -90,8 +88,8 @@ namespace Pixellation
             ProgramTitle = Properties.Resources.Title;
             ProjectTitle = Properties.Resources.DefaultProjectTitle;
 
-            _mementoCaretaker.OnNewUndoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
-            _mementoCaretaker.OnNewRedoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
+            PixellationCaretakerManager.OnNewUndoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
+            PixellationCaretakerManager.OnNewRedoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
 
             WindowState = WindowState.Maximized;
         }
@@ -152,7 +150,7 @@ namespace Pixellation
 
                 ProjectTitle = Properties.Resources.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
                 ThereAreUnsavedChanges = false;
-                _mementoCaretaker.Clear();
+                _caretaker.ClearAll();
                 _pm.Reset();
             }
         }
@@ -228,7 +226,7 @@ namespace Pixellation
                 canvasImage.NewImage(w, h);
 
                 _pm.Reset();
-                _mementoCaretaker.Clear();
+                _caretaker.ClearAll();
                 ThereAreUnsavedChanges = false;
                 ProjectTitle = Properties.Resources.DefaultProjectTitle;
             }
@@ -248,14 +246,13 @@ namespace Pixellation
             {
                 SaveProject(this, new RoutedEventArgs());
             }
-
             else if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.Z)
             {
-                _mementoCaretaker.Undo();
+                _caretaker.Undo();
             }
             else if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.Y)
             {
-                _mementoCaretaker.Redo();
+                _caretaker.Redo();
             }
         }
 

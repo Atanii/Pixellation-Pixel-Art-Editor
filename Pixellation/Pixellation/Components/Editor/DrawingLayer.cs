@@ -1,7 +1,7 @@
 ﻿using Pixellation.Components.Editor.Memento;
 using Pixellation.Models;
 using Pixellation.Utils;
-using Pixellation.Utils.MementoPattern;
+using Pixellation.MementoPattern;
 using System;
 using System.Windows;
 using System.Windows.Media;
@@ -166,7 +166,7 @@ namespace Pixellation.Components.Editor
         public DrawingLayer Clone()
         {
             var bmp2 = _bitmap.Clone();
-            return new DrawingLayer(_owner, bmp2, LayerName, Visible);
+            return new DrawingLayer(_owner, bmp2, LayerName + "_copy", Visible);
         }
         #endregion Conversions, Cloning
 
@@ -195,6 +195,11 @@ namespace Pixellation.Components.Editor
                 _owner.GetIndex(this),
                 this
             );
+        }
+
+        public void SaveState(int mTypeValue)
+        {
+            _owner.SaveState(mTypeValue, _owner.GetActiveLayerIndex());
         }
         #endregion Memento
 

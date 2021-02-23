@@ -353,7 +353,7 @@ namespace Pixellation.Components.Editor
 
         public void RemoveLayer(int layerIndex)
         {
-            if (layerIndex == 0)
+            if ((Layers.Count - 1) <= 0)
             {
                 return;
             }

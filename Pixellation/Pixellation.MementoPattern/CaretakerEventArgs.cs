@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pixellation.Utils.MementoPattern
+namespace Pixellation.MementoPattern
 {
     /// <summary>
     /// Information describing the state of the <see cref="Caretaker{_MementoType}"/> when the event happened.
@@ -56,6 +56,11 @@ namespace Pixellation.Utils.MementoPattern
         public static new CaretakerEventArgs Empty;
 
         /// <summary>
+        /// Instance key.
+        /// </summary>
+        public readonly string Key;
+
+        /// <summary>
         /// Creates an empty <see cref="CaretakerEventArgs"/>.
         /// </summary>
         public CaretakerEventArgs() : base() {}
@@ -67,10 +72,11 @@ namespace Pixellation.Utils.MementoPattern
         /// <param name="remRedos"><see cref="RemainingRedos"/>.</param>
         /// <param name="msg">Optional <see cref="Message"/>.</param>
         /// <param name="errorType">State describing the error that happened.</param>
-        public CaretakerEventArgs(int remUndos, int remRedos, string msg = "", ErrorType errorType = ErrorType.NO_ERROR)
+        public CaretakerEventArgs(int remUndos, int remRedos, string key, string msg = "", ErrorType errorType = ErrorType.NO_ERROR)
         {
             RemainingUndos = remUndos;
             RemainingRedos = remRedos;
+            Key = key;
             Message = msg;
             ErrorState = errorType;
         }

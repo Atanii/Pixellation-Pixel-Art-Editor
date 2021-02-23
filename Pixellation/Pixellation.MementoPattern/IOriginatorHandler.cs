@@ -1,4 +1,4 @@
-﻿namespace Pixellation.Utils.MementoPattern
+﻿namespace Pixellation.MementoPattern
 {
     /// <summary>
     /// Interface for a class representing a container or helper class for the <see cref="IOriginator{_Memento, _MementoType}"/> classes

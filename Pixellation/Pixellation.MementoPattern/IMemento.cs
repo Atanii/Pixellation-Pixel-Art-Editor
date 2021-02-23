@@ -1,4 +1,4 @@
-﻿namespace Pixellation.Utils.MementoPattern
+﻿namespace Pixellation.MementoPattern
 {
     /// <summary>
     /// Represents a saved state for an object.

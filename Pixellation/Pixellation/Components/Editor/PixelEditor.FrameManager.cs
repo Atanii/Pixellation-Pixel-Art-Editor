@@ -1,6 +1,7 @@
 ﻿using Pixellation.Interfaces;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Pixellation.Components.Editor
 {
@@ -8,9 +9,23 @@ namespace Pixellation.Components.Editor
     {
         public void AddDrawingFrame(int frameIndex, string name)
         {
-            if (Frames.Count >= (frameIndex + 1))
+            if (Frames.Count == 0 && frameIndex == 0)
             {
-                Frames.Insert(frameIndex + 1, new DrawingFrame(name, this));
+                var tmp = new DrawingFrame("Default", this);
+                _caretaker.InitCaretaker(tmp.Id);
+                Frames.Insert(frameIndex, tmp);
+
+                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
+                (
+                    IPixelEditorEventType.FRAME_ADD,
+                    frameIndex, frameIndex, new int[] { frameIndex }
+                ));
+            }
+            else if (Frames.Count >= (frameIndex + 1))
+            {
+                var tmp = new DrawingFrame(name, this, true, true);
+                _caretaker.InitCaretaker(tmp.Id);
+                Frames.Insert(frameIndex + 1, tmp);
 
                 FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
                 (
@@ -24,7 +39,9 @@ namespace Pixellation.Components.Editor
         {
             if (Frames.Count >= (frameIndex + 1))
             {
-                Frames.Insert(frameIndex + 1, Frames[frameIndex].Clone());
+                var tmp = Frames[frameIndex].Clone();
+                _caretaker.InitCaretaker(tmp.Id);
+                Frames.Insert(frameIndex + 1, tmp);
 
                 FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
                 (
@@ -94,17 +111,31 @@ namespace Pixellation.Components.Editor
 
         public void RemoveDrawingFrame(int frameIndex)
         {
-            if (frameIndex > 0 && Frames.Count >= (frameIndex + 1))
+            if ((Frames.Count - 1) > 0 && Frames.ElementAtOrDefault(frameIndex) != null)
             {
-                Frames.RemoveAt(frameIndex);
+                var index = frameIndex;
 
-                ActiveFrameIndex = frameIndex - 1;
+                _caretaker.RemoveCaretaker(Frames[index].Id);
+                Frames.RemoveAt(index);
+
+                if (Frames.Count == 1)
+                {
+                    ActiveFrameIndex = 0;
+                }
+                else
+                {
+                    ActiveFrameIndex = index - 1;
+                }
+
+                _caretaker.ActiveKey = Frames[ActiveFrameIndex].Id;
 
                 FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
                 (
                     IPixelEditorEventType.FRAME_REMOVE,
-                    frameIndex, frameIndex - 1, new int[] { frameIndex }
+                    index, ActiveFrameIndex, new int[] { index }
                 ));
+
+                SetActiveLayer();
             }
         }
 
@@ -114,14 +145,21 @@ namespace Pixellation.Components.Editor
         {
             Debug.WriteLine($"Setting frame ({frame.FrameName}) as active frame.");
 
-            var tmp = ActiveFrameIndex;
-            ActiveFrameIndex = Frames.FindIndex(f => f.FrameName == frame.FrameName);
+            var index = Frames.FindIndex(f => f.FrameName == frame.FrameName);
+            if (index != -1)
+            {
+                var tmp = ActiveFrameIndex;
+                ActiveFrameIndex = index;
+                _caretaker.ActiveKey = Frames[ActiveFrameIndex].Id;
 
-            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-            (
-                IPixelEditorEventType.FRAME_NEW_ACTIVE_INDEX,
-                tmp, ActiveFrameIndex, new int[] {}
-            ));
+                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
+                (
+                    IPixelEditorEventType.FRAME_NEW_ACTIVE_INDEX,
+                    tmp, ActiveFrameIndex, new int[] { }
+                ));
+
+                SetActiveLayer();
+            }
         }
     }
 }

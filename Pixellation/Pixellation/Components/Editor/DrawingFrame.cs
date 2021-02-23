@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -9,11 +10,14 @@ namespace Pixellation.Components.Editor
 {
     public class DrawingFrame : FrameworkElement
     {
+        private readonly Guid _id = Guid.NewGuid();
+        public string Id => _id.ToString();
+
         public static readonly SolidColorBrush BackgroundBrush = new SolidColorBrush(Color.FromArgb(25, 50, 50, 50));
         public static readonly Pen BackgroundPen = new Pen(BackgroundBrush, 1d);
         public static readonly Color NameDrawColor = Color.FromArgb(255, 0, 0, 0);
 
-        public List<DrawingLayer> Layers { get; private set; }
+        public List<DrawingLayer> Layers { get; private set; } = new List<DrawingLayer>() { };
         public string FrameName { get; private set; }
 
         private readonly PixelEditor _owner;
@@ -39,7 +43,6 @@ namespace Pixellation.Components.Editor
         public int MagnifiedWidth => _owner.PixelWidth * _owner.Magnification;
         public int MagnifiedHeight => _owner.PixelHeight * _owner.Magnification;
 
-
         public DrawingFrame(List<DrawingLayer> layers, string name, PixelEditor owner, bool visible = true) : base()
         {
             _owner = owner;
@@ -54,10 +57,9 @@ namespace Pixellation.Components.Editor
             Visible = visible;
         }
 
-        public DrawingFrame(string name, PixelEditor owner, bool visible = true)
+        public DrawingFrame(string name, PixelEditor owner, bool visible = true, bool generateDefaultLayer = false)
         {
             _owner = owner;
-            Layers = new List<DrawingLayer>() { new DrawingLayer(_owner, "Default") };
             FrameName = name;
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
             PixelEditor.RaiseImageUpdatedEvent += (s, a) =>
@@ -65,6 +67,10 @@ namespace Pixellation.Components.Editor
                 InvalidateVisual();
             };
             Visible = visible;
+            if (generateDefaultLayer)
+            {
+                Layers.Add(new DrawingLayer(_owner, "Default"));
+            }
         }
 
         private static void DrawBackground(DrawingContext dc, double x, double y, double width, double height)
@@ -170,7 +176,7 @@ namespace Pixellation.Components.Editor
             {
                 layers.Add(l.Clone());
             }
-            return new DrawingFrame(layers, FrameName, _owner);
+            return new DrawingFrame(layers, FrameName + "_copy", _owner);
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)

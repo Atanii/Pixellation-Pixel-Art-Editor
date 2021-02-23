@@ -1,4 +1,4 @@
-﻿namespace Pixellation.Utils.MementoPattern
+﻿namespace Pixellation.MementoPattern
 {
     /// <summary>
     /// Base interface for an "enum-like" type listing different possible events that the memento-creation preceeds.

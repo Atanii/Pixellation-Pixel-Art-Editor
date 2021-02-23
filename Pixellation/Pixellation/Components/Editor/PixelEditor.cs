@@ -2,7 +2,7 @@
 using Pixellation.Models;
 using Pixellation.Properties;
 using Pixellation.Tools;
-using Pixellation.Utils.MementoPattern;
+using Pixellation.MementoPattern;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Pixellation.Utils;
 
 namespace Pixellation.Components.Editor
 {
@@ -19,6 +20,7 @@ namespace Pixellation.Components.Editor
     /// </summary>
     public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged
     {
+
         #region PrivateFields
 
         private DrawingFrame _activeFrame;
@@ -26,8 +28,7 @@ namespace Pixellation.Components.Editor
         private Visual _gridLines;
         private Visual _borderLine;
         private DrawingLayer _drawPreview;
-        private readonly Caretaker<IPixelEditorEventType> _mementoCaretaker = Caretaker<IPixelEditorEventType>.GetInstance();
-        private readonly ToolMouseEventArgs toolMouseArgs = new ToolMouseEventArgs();
+        private readonly PixellationCaretakerManager _caretaker = PixellationCaretakerManager.GetInstance();
 
         #endregion PrivateFields
 
@@ -36,7 +37,7 @@ namespace Pixellation.Components.Editor
         /// <summary>
         /// List of Frames or layergroups.
         /// </summary>
-        public List<DrawingFrame> Frames { get; private set; }
+        public List<DrawingFrame> Frames { get; private set; } = new List<DrawingFrame> {};
 
         /// <summary>
         /// List of <see cref="DrawingLayer"/>s the currently edited image consists of.
@@ -277,7 +278,7 @@ namespace Pixellation.Components.Editor
         {
             Cursor = Cursors.Pen;
 
-            Frames = new List<DrawingFrame> { new DrawingFrame(new List<DrawingLayer>(), "default", this) };
+            AddDrawingFrame(0, "Default");
 
             PixelWidth = Settings.Default.DefaultImageSize;
             PixelHeight = Settings.Default.DefaultImageSize;
@@ -308,7 +309,7 @@ namespace Pixellation.Components.Editor
             PixelHeight = pixelHeight;
             Magnification = Settings.Default.DefaultMagnification;
 
-            Layers.Add(new DrawingLayer(this, "default"));
+            AddLayer(new DrawingLayer(this, "default"));
 
             Init();
         }
