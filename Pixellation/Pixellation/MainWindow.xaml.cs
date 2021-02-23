@@ -87,8 +87,8 @@ namespace Pixellation
             ProgramTitle = Properties.Resources.Title;
             ProjectTitle = Properties.Resources.DefaultProjectTitle;
 
-            PixellationCaretakerManager.OnNewUndoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
-            PixellationCaretakerManager.OnNewRedoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
+            _caretaker.OnNewUndoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
+            _caretaker.OnNewRedoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
 
             WindowState = WindowState.Maximized;
         }

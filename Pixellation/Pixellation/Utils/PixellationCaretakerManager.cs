@@ -40,32 +40,32 @@ namespace Pixellation.Utils
         /// <summary>
         /// Marks that a new saved state has just been added for undo.
         /// </summary>
-        public static event CaretakerEventHandler OnNewUndoAdded;
+        public event CaretakerEventHandler OnNewUndoAdded;
 
         /// <summary>
         /// Marks that a new saved state has just been added for redo.
         /// </summary>
-        public static event CaretakerEventHandler OnNewRedoAdded;
+        public event CaretakerEventHandler OnNewRedoAdded;
 
         /// <summary>
         /// Marks that all undos and redos have just been cleared.
         /// </summary>
-        public static event CaretakerEventHandler OnCleared;
+        public event CaretakerEventHandler OnCleared;
 
         /// <summary>
         /// Marks that an operation has just been undone.
         /// </summary>
-        public static event CaretakerEventHandler OnUndone;
+        public event CaretakerEventHandler OnUndone;
 
         /// <summary>
         /// Marks that an operation has just been redone.
         /// </summary>
-        public static event CaretakerEventHandler OnRedone;
+        public event CaretakerEventHandler OnRedone;
 
         /// <summary>
         /// Marks that an error may have happened.
         /// </summary>
-        public static event CaretakerEventHandler OnPossibleError;
+        public event CaretakerEventHandler OnPossibleError;
 
         internal class CaretakerManagerException : Exception
         {
@@ -76,12 +76,12 @@ namespace Pixellation.Utils
 
         private PixellationCaretakerManager()
         {
-            Ctaker.OnNewUndoAdded += OnNewUndoAdded;
-            Ctaker.OnNewRedoAdded += OnNewRedoAdded;
-            Ctaker.OnCleared += OnCleared;
-            Ctaker.OnUndone += OnUndone;
-            Ctaker.OnRedone += OnRedone;
-            Ctaker.OnPossibleError += OnPossibleError;
+            Ctaker.OnNewUndoAdded += (sender, args) => OnNewUndoAdded?.Invoke(sender, args);
+            Ctaker.OnNewRedoAdded += (sender, args) => OnNewRedoAdded?.Invoke(sender, args);
+            Ctaker.OnCleared += (sender, args) => OnCleared?.Invoke(sender, args);
+            Ctaker.OnUndone += (sender, args) => OnUndone?.Invoke(sender, args);
+            Ctaker.OnRedone += (sender, args) => OnRedone?.Invoke(sender, args);
+            Ctaker.OnPossibleError += (sender, args) => OnPossibleError?.Invoke(sender, args);
         }
 
         public static PixellationCaretakerManager GetInstance()
