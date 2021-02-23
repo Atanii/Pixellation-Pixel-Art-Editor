@@ -1,18 +1,18 @@
 ﻿using System.Windows;
 
-namespace Pixellation.Components.Dialogs.NewImageDialog
+namespace Pixellation.Components.Dialogs
 {
     /// <summary>
-    /// Interaction logic for NewImageDialog.xaml
+    /// Interaction logic for NewProjectDialog.xaml
     /// </summary>
-    public partial class NewImageDialog : Window
+    public partial class NewProjectDialog : Window
     {
         public string Answer
         {
             get { return txtWidth.Text + ";" + txtHeight.Text; }
         }
 
-        public NewImageDialog()
+        public NewProjectDialog()
         {
             InitializeComponent();
             txtWidth.Focus();

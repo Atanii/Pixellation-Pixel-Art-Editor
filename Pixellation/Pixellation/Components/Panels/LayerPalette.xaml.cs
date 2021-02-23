@@ -82,13 +82,13 @@ namespace Pixellation.Components.Panels
             {
                 if (layerList.Items.Count == 0)
                 {
-                    LayerManager.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
+                    LayerManager.AddLayer(newLayerDialog.Answer);
                     LayerManager.SaveState(IPixelEditorEventType.ADDLAYER, layerList.Items.Count > 0 ? layerList.SelectedIndex : -1);
                 }
                 else
                 {
                     LayerManager.SaveState(IPixelEditorEventType.ADDLAYER, layerList.Items.Count > 0 ? layerList.SelectedIndex : -1);
-                    LayerManager.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
+                    LayerManager.AddLayer(newLayerDialog.Answer);
                 }
             }
         }

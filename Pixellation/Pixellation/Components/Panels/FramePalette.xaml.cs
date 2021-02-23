@@ -1,4 +1,5 @@
-﻿using Pixellation.Components.Editor;
+﻿using Pixellation.Components.Dialogs.StringInputDialog;
+using Pixellation.Components.Editor;
 using Pixellation.Interfaces;
 using System;
 using System.Diagnostics;
@@ -13,6 +14,9 @@ namespace Pixellation.Components.Panels
     public partial class FramePalette : UserControl
     {
         private static event EventHandler<DependencyPropertyChangedEventArgs> RaiseFrameManagerPropertyPropertyInitialized;
+
+        private readonly Thickness FrameElementMargin = new Thickness(12);
+        private readonly double FrameElementSize = 100d;
 
         public IFrameManager FrameManager
         {
@@ -32,14 +36,10 @@ namespace Pixellation.Components.Panels
             RaiseFrameManagerPropertyPropertyInitialized += (s, e) =>
             {
                 Refresh();
-                //PixelEditor.RaiseImageUpdatedEvent += (s, e) =>
-                //{
-                //    Refresh();
-                //};
-                PixelEditor.FrameListChanged += (s, e) =>
-                {
-                    Refresh();
-                };
+            };
+            PixelEditor.FrameListChanged += (s, e) =>
+            {
+                Refresh();
             };
         }
 
@@ -48,11 +48,9 @@ namespace Pixellation.Components.Panels
             frameList.Children.Clear();
             foreach (var frame in FrameManager.GetFrames())
             {
-                frame.Width = 100;
-                frame.Height = 100;
-                frame.Margin = new Thickness(12);
-                frame.IsEnabled = true;
-                //frame.MouseDown += frame.OnMouseDown;
+                frame.Width = FrameElementSize;
+                frame.Height = FrameElementSize;
+                frame.Margin = FrameElementMargin;
                 frameList.Children.Add(frame);
             }
             InvalidateVisual();
@@ -61,9 +59,12 @@ namespace Pixellation.Components.Panels
         }
 
         private void BtnAddFrame(object sender, RoutedEventArgs e)
-        {
-            var rng = new Random((int)DateTime.Now.Ticks);
-            FrameManager.AddDrawingFrame(FrameManager.GetActiveFrameIndex(), rng.Next(-1000, 1000).ToString());
+        {   
+            var newLayerDialog = new StringInputDialog("New Image", "Image Name");
+            if (newLayerDialog.ShowDialog() == true)
+            {
+                FrameManager.AddDrawingFrame(FrameManager.GetActiveFrameIndex(), newLayerDialog.Answer);
+            }
         }
 
         private void BtnDuplicateFrame(object sender, RoutedEventArgs e)

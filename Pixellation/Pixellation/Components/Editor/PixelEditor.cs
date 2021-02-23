@@ -44,6 +44,8 @@ namespace Pixellation.Components.Editor
         /// </summary>
         public List<DrawingLayer> Layers => Frames[ActiveFrameIndex].Layers;
 
+        public string ActiveFrameId => _activeFrame != null ? _activeFrame.Id : "";
+
         private int _activeFrameIndex;
 
         public int ActiveFrameIndex
@@ -296,12 +298,12 @@ namespace Pixellation.Components.Editor
         #region Init And New Image
 
         /// <summary>
-        /// Starts new image (dropping the previous one if there was).
+        /// Starts new project (dropping the previous one if there was).
         /// <see cref="Magnification"/> will be reset to the default value.
         /// </summary>
         /// <param name="pixelWidth">New <see cref="PixelWidth"/>.</param>
         /// <param name="pixelHeight">New <see cref="PixelHeight"/>.</param>
-        public void NewImage(int pixelWidth = 32, int pixelHeight = 32)
+        public void NewProject(int pixelWidth = 32, int pixelHeight = 32)
         {
             DeleteAllVisualChildren();
 
@@ -315,11 +317,11 @@ namespace Pixellation.Components.Editor
         }
 
         /// <summary>
-        /// Starts new image (dropping the previous one if there was).
+        /// Starts new project (dropping the previous one if there was).
         /// <see cref="Magnification"/> will be reset to the default value.
         /// </summary>
         /// <param name="imageToEdit">Image to edit.</param>
-        public void NewImage(WriteableBitmap imageToEdit)
+        public void NewProject(WriteableBitmap imageToEdit)
         {
             DeleteAllVisualChildren();
 
@@ -346,7 +348,7 @@ namespace Pixellation.Components.Editor
         /// <param name="models"><see cref="List<LayerModel>"/> containing the layers for edit.</param>
         /// <param name="pixelWidth">New <see cref="PixelWidth"/>.</param>
         /// <param name="pixelHeight">New <see cref="PixelHeight"/>.</param>
-        public void NewImage(List<LayerModel> models, int pixelWidth = 32, int pixelHeight = 32)
+        public void NewProject(List<LayerModel> models, int pixelWidth = 32, int pixelHeight = 32)
         {
             DeleteAllVisualChildren();
 

@@ -15,11 +15,15 @@ namespace Pixellation.Components.Editor
                 _caretaker.InitCaretaker(tmp.Id);
                 Frames.Insert(frameIndex, tmp);
 
+                ActiveFrameIndex = 0;
+
                 FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
                 (
                     IPixelEditorEventType.FRAME_ADD,
                     frameIndex, frameIndex, new int[] { frameIndex }
                 ));
+
+                SetActiveLayer();
             }
             else if (Frames.Count >= (frameIndex + 1))
             {
@@ -27,11 +31,15 @@ namespace Pixellation.Components.Editor
                 _caretaker.InitCaretaker(tmp.Id);
                 Frames.Insert(frameIndex + 1, tmp);
 
+                ActiveFrameIndex = frameIndex + 1;
+
                 FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
                 (
                     IPixelEditorEventType.FRAME_ADD,
-                    frameIndex, frameIndex, new int[] { frameIndex }
+                    frameIndex, frameIndex + 1, new int[] { frameIndex }
                 ));
+
+                SetActiveLayer();
             }
         }
 
@@ -70,6 +78,8 @@ namespace Pixellation.Components.Editor
                     IPixelEditorEventType.FRAME_MERGE_TO_LEFT,
                     frameIndex, frameIndex - 1, new int[] { frameIndex, frameIndex - 1 }
                 ));
+
+                SetActiveLayer();
             }
         }
 
@@ -88,6 +98,8 @@ namespace Pixellation.Components.Editor
                     IPixelEditorEventType.FRAME_MOVE_LEFT,
                     frameIndex, frameIndex - 1, new int[] { frameIndex, frameIndex - 1 }
                 ));
+
+                SetActiveLayer();
             }
         }
 
@@ -106,6 +118,8 @@ namespace Pixellation.Components.Editor
                     IPixelEditorEventType.FRAME_MOVE_RIGHT,
                     frameIndex, frameIndex + 1, new int[] { frameIndex, frameIndex + 1 }
                 ));
+
+                SetActiveLayer();
             }
         }
 

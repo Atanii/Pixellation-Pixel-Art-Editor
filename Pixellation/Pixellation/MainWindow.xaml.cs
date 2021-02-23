@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using Pixellation.Components.Dialogs;
 using Pixellation.Components.Dialogs.AboutDialog;
-using Pixellation.Components.Dialogs.NewImageDialog;
 using Pixellation.Properties;
 using Pixellation.Utils;
 using System.ComponentModel;
@@ -137,7 +136,7 @@ namespace Pixellation
                         height = data.Layers[0].Height;
                     }
 
-                    canvasImage.NewImage(data.Layers, width, height);
+                    canvasImage.NewProject(data.Layers, width, height);
                     ProjectTitle = data.ProjectData.ProjectName;
                 }
                 else
@@ -145,7 +144,7 @@ namespace Pixellation
                     // Getting Bitmap
 
                     var wrbmp = _pm.LoadImage(fileName);
-                    canvasImage.NewImage(wrbmp);
+                    canvasImage.NewProject(wrbmp);
                 }
 
                 ProjectTitle = Properties.Resources.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
@@ -214,7 +213,7 @@ namespace Pixellation
                 }
             }
 
-            var newImgDialog = new NewImageDialog();
+            var newImgDialog = new NewProjectDialog();
             if (newImgDialog.ShowDialog() == true)
             {
                 // Get Data
@@ -222,8 +221,8 @@ namespace Pixellation
                 var w = int.Parse(widthHeight.Split(';')[0]);
                 var h = int.Parse(widthHeight.Split(';')[1]);
 
-                // New Image
-                canvasImage.NewImage(w, h);
+                // New Project
+                canvasImage.NewProject(w, h);
 
                 _pm.Reset();
                 _caretaker.ClearAll();

@@ -15,6 +15,10 @@ namespace Pixellation.Components.Editor
 
         public static readonly SolidColorBrush BackgroundBrush = new SolidColorBrush(Color.FromArgb(25, 50, 50, 50));
         public static readonly Pen BackgroundPen = new Pen(BackgroundBrush, 1d);
+
+        public static readonly SolidColorBrush BorderBrush = new SolidColorBrush(Color.FromArgb(255, 10, 10, 10));
+        public static readonly Pen BorderPen = new Pen(BorderBrush, 1d);
+
         public static readonly Color NameDrawColor = Color.FromArgb(255, 0, 0, 0);
 
         public List<DrawingLayer> Layers { get; private set; } = new List<DrawingLayer>() { };
@@ -77,6 +81,16 @@ namespace Pixellation.Components.Editor
         {
             dc.DrawRectangle(
                 BackgroundBrush, BackgroundPen,
+                new Rect(
+                    x, y, width, height
+                )
+            );
+        }
+
+        private static void DrawBorder(DrawingContext dc, double x, double y, double width, double height)
+        {
+            dc.DrawRectangle(
+                null, BorderPen,
                 new Rect(
                     x, y, width, height
                 )
@@ -149,6 +163,11 @@ namespace Pixellation.Components.Editor
             }
 
             DrawName(dc, 0, Height + 10, NameDrawColor);
+
+            if (_owner.ActiveFrameId == Id)
+            {
+                DrawBorder(dc, -5, -5, Width + 5, Height + 5);
+            }
         }
 
         public void Render(DrawingContext dc, double x, double y, double w, double h, bool drawName = false)
