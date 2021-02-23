@@ -6,10 +6,8 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Interfaces
 {
-    public interface IVisualManager
+    public interface ILayerManager
     {
-        public event PixelEditorEventHandler LayerListChanged;
-
         public void SetActiveLayer(int layerIndex = 0);
 
         public List<DrawingLayer> GetLayers();

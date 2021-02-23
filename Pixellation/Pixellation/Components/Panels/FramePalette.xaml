@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="Pixellation.Components.Panels.FramePalette"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Pixellation.Components.Panels"
+             xmlns:resource="clr-namespace:Pixellation.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="800">
+    <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalAlignment="Stretch" Background="AliceBlue">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Label Margin="5">Frames (PLACEHOLDER)</Label>
+                <Button Click="BtnAddFrame" ToolTip="Add New Frame"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-blank.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnDuplicateFrame" ToolTip="Duplicate Frame"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-duplicate.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnMergeFrame" ToolTip="Merge Into Left Neighbour"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-merge.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnRemoveFrame" ToolTip="Delete Frame"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-remove.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnMoveFrameLeft" ToolTip="Move Frame Left"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-up.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnMoveFrameRight" ToolTip="Move Frame Right"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-down.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+            </StackPanel>
+            <UniformGrid x:Name="frameList" Rows="1" HorizontalAlignment="Left" Background="AliceBlue"></UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

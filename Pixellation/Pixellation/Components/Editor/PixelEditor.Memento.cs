@@ -122,7 +122,7 @@ namespace Pixellation.Components.Editor
                         Layers[origIndex].Restore(mem);
 
                         // Set original pre-merge selected layerindex
-                        LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+                        LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
                         (
                             IPixelEditorEventType.REVERSE_MERGELAYER,
                             origIndex, origIndex,

@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public partial class PixelEditor : IVisualManager
+    public partial class PixelEditor : ILayerManager
     {
         public void MeasureAllLayer(System.Windows.Size s)
         {
@@ -59,7 +59,7 @@ namespace Pixellation.Components.Editor
                 _gridLines = null;
             }
 
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.CLEAR, -1, -1, new int[] { }
             ));
@@ -243,7 +243,7 @@ namespace Pixellation.Components.Editor
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.ADDLAYER,
                 layerIndex,
@@ -266,7 +266,7 @@ namespace Pixellation.Components.Editor
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.ADDLAYER,
                 0, 0, new int[] {0}
@@ -280,7 +280,7 @@ namespace Pixellation.Components.Editor
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.ADDLAYER,
                 layerIndex,
@@ -296,7 +296,7 @@ namespace Pixellation.Components.Editor
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.DUPLICATELAYER,
                 layerIndex,
@@ -316,7 +316,7 @@ namespace Pixellation.Components.Editor
                 Layers.Insert(newLayerIndex, tmp);
                 RefreshVisualsThenSignalUpdate();
             }
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.MOVELAYERUP,
                 layerIndex,
@@ -336,7 +336,7 @@ namespace Pixellation.Components.Editor
                 Layers.Insert(newLayerIndex, tmp);
                 RefreshVisualsThenSignalUpdate();
             }
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.MOVELAYERDOWN,
                 layerIndex,
@@ -353,6 +353,10 @@ namespace Pixellation.Components.Editor
 
         public void RemoveLayer(int layerIndex)
         {
+            if (layerIndex == 0)
+            {
+                return;
+            }
             var newLayerIndex = layerIndex;
             if (Layers.ElementAtOrDefault(layerIndex) != null)
             {
@@ -368,7 +372,7 @@ namespace Pixellation.Components.Editor
             {
                 newLayerIndex = layerIndex - 1;
             }
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.REMOVELAYER,
                 layerIndex,
@@ -388,7 +392,7 @@ namespace Pixellation.Components.Editor
 
                 RefreshVisualsThenSignalUpdate();
 
-                LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+                LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
                 (
                     IPixelEditorEventType.MERGELAYER,
                     layerIndex,

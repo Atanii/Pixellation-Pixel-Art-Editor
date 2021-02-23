@@ -1,13 +1,22 @@
-﻿using Pixellation.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
     internal class DrawingPreview : FrameworkElement
     {
+        public List<DrawingFrame> Frames
+        {
+            get { return (List<DrawingFrame>)GetValue(FramesProperty); }
+            set { SetValue(FramesProperty, value); }
+        }
+
+        public static readonly DependencyProperty FramesProperty =
+         DependencyProperty.Register("Frames", typeof(List<DrawingFrame>), typeof(DrawingPreview), new FrameworkPropertyMetadata(
+             new List<DrawingFrame>()
+        ));
+
         public List<DrawingLayer> Layers
         {
             get { return (List<DrawingLayer>)GetValue(LayersProperty); }
@@ -32,33 +41,29 @@ namespace Pixellation.Components.Editor
         {
             base.OnRender(dc);
 
-            if (Layers.Count > 0)
+            if (Frames.Count > 0)
             {
-                var tmp = Layers[0];
-                double w, h;
-                if (tmp.MagnifiedWidth >= tmp.MagnifiedHeight && tmp.MagnifiedWidth > Width)
-                {
-                    w = Width;
-                    h = (w / tmp.MagnifiedWidth) * tmp.MagnifiedHeight;
-                }
-                else if (tmp.MagnifiedHeight >= tmp.MagnifiedWidth && tmp.MagnifiedHeight > Height)
-                {
-                    h = Height;
-                    w = (h / tmp.MagnifiedHeight) * tmp.MagnifiedWidth;
-                }
-                else
-                {
-                    w = tmp.MagnifiedWidth;
-                    h = tmp.MagnifiedHeight;
-                }
-                double x = (Width - w) / 2;
-                double y = (Height - h) / 2;
-                foreach (var l in Layers)
-                {
-                    var a = l.Bitmap.Clone();
-                    a.BlitRender(l.Bitmap, false, (float)l.Opacity);
-                    dc.DrawImage(a, new Rect(x, y, w, h));
-                }
+                RenderFrames(dc);
+            }
+            else
+            {
+                RenderLayers(dc);
+            }
+        }
+
+        private void RenderLayers(DrawingContext dc)
+        {
+            foreach (var layer in Layers)
+            {
+                layer.Render(dc, 0, 0, Width, Height);
+            }
+        }
+
+        private void RenderFrames(DrawingContext dc)
+        {
+            foreach (var frame in Frames)
+            {
+                frame.Render(dc, 0, 0, Width, Height);
             }
         }
     }

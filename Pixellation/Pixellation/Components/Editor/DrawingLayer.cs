@@ -51,8 +51,8 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public int MagnifiedWidth => _bitmap.PixelWidth * _owner.Magnification;
-        public int MagnifiedHeight => _bitmap.PixelHeight * _owner.Magnification;
+        public int MagnifiedWidth => _owner.PixelWidth * _owner.Magnification;
+        public int MagnifiedHeight => _owner.PixelHeight * _owner.Magnification;
 
         public bool Visible { get; set; }
         #endregion Fields And Properties
@@ -203,6 +203,11 @@ namespace Pixellation.Components.Editor
         {
             base.OnRender(dc);
 
+            if (!Visible)
+            {
+                return;
+            }
+
             var magnification = _owner.Magnification;
             var width = _bitmap.PixelWidth * magnification;
             var height = _bitmap.PixelHeight * magnification;
@@ -223,6 +228,16 @@ namespace Pixellation.Components.Editor
                     }
                 }
             }
+        }
+
+        public void Render(DrawingContext dc, double x, double y, double w, double h)
+        {
+            if (!Visible)
+            {
+                return;
+            }
+
+            dc.DrawImage(_bitmap, new Rect(x, y, w, h));
         }
 
         public void SetPixel(int x, int y, Color color) => _bitmap.SetPixel(x, y, color);

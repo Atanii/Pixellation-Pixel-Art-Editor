@@ -50,7 +50,7 @@ namespace Pixellation.Utils
             return writeableBitmap;
         }
 
-        public bool SaveProject(string filePath, IVisualManager vm)
+        public bool SaveProject(string filePath, ILayerManager vm)
         {
             var filePaths = new List<string>();
 
@@ -100,7 +100,7 @@ namespace Pixellation.Utils
             return true;
         }
 
-        public bool SaveProject(IVisualManager vm)
+        public bool SaveProject(ILayerManager vm)
         {
             if (!AlreadySaved && PreviousFullPath != "")
             {
@@ -161,7 +161,7 @@ namespace Pixellation.Utils
             PreviousFullPath = "";
         }
 
-        public void ExportAsImage(string filePath, IVisualManager vm)
+        public void ExportAsImage(string filePath, ILayerManager vm)
         {
             var wrBitmap = vm.GetAllMergedWriteableBitmap();
             SaveBitmapSourceToFile(filePath, wrBitmap);

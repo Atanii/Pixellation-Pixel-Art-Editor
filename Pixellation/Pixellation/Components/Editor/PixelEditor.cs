@@ -21,6 +21,7 @@ namespace Pixellation.Components.Editor
     {
         #region PrivateFields
 
+        private DrawingFrame _activeFrame;
         private DrawingLayer _activeLayer;
         private Visual _gridLines;
         private Visual _borderLine;
@@ -33,9 +34,30 @@ namespace Pixellation.Components.Editor
         #region Properties
 
         /// <summary>
-        /// List of <see cref="DrawingLayer"/>s the edited image consists of.
+        /// List of Frames or layergroups.
         /// </summary>
-        public List<DrawingLayer> Layers { get; private set; } = new List<DrawingLayer>();
+        public List<DrawingFrame> Frames { get; private set; }
+
+        /// <summary>
+        /// List of <see cref="DrawingLayer"/>s the currently edited image consists of.
+        /// </summary>
+        public List<DrawingLayer> Layers => Frames[ActiveFrameIndex].Layers;
+
+        private int _activeFrameIndex;
+
+        public int ActiveFrameIndex
+        {
+            get { return _activeFrameIndex; }
+            private set
+            {
+                _activeFrameIndex = value;
+                if (Frames.Count >= value + 1)
+                {
+                    _activeFrame = Frames[value];
+                }
+                OnPropertyChanged();
+            }
+        }
 
         private int _pixelWidth;
 
@@ -243,7 +265,8 @@ namespace Pixellation.Components.Editor
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public event PixelEditorEventHandler LayerListChanged;
+        public static event PixelEditorLayerEventHandler LayerListChanged;
+        public static event PixelEditorFrameEventHandler FrameListChanged;
 
         #endregion Event
 
@@ -253,6 +276,8 @@ namespace Pixellation.Components.Editor
         public PixelEditor()
         {
             Cursor = Cursors.Pen;
+
+            Frames = new List<DrawingFrame> { new DrawingFrame(new List<DrawingLayer>(), "default", this) };
 
             PixelWidth = Settings.Default.DefaultImageSize;
             PixelHeight = Settings.Default.DefaultImageSize;
@@ -341,7 +366,7 @@ namespace Pixellation.Components.Editor
             if (Layers.Count > 0)
             {
                 _activeLayer = Layers[0];
-                LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+                LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
                 (
                     IPixelEditorEventType.NONE,
                     0, 0, new int[] { 0 }

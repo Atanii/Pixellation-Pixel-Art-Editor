@@ -61,6 +61,9 @@
                         LayerHeight="{Binding ElementName=canvasImage, Path=PixelHeight, Mode=OneWay}"
                         LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}">
                     </Panels:Transforms>
+
+                    <Label Content="Editor Settings"></Label>
+                    <Panels:EditorSettingsPanel x:Name="editorSettings"/>
                 </StackPanel>
             </ScrollViewer>
         </Border>
@@ -71,12 +74,8 @@
                 <StackPanel>
                     <Label Content="Preview"></Label>
                     <StackPanel Orientation="Vertical">
-                        <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}"></l:DrawingPreview>
-                        <CheckBox>Onion (PLACEHOLDER)</CheckBox>
+                        <l:DrawingPreview Width="180" Height="180" Frames="{Binding ElementName=canvasImage, Path=Frames, Mode=OneWay}"></l:DrawingPreview>
                     </StackPanel>
-
-                    <Label Content="Tiled"></Label>
-                    <Panels:EditorSettingsPanel x:Name="editorSettings"/>
 
                     <Label Content="Colour"></Label>
                     <l2:ColourChooser Width="200" Height="400" x:Name="colorChooser"
@@ -84,9 +83,10 @@
                                       SecondaryColor="{Binding ElementName=canvasImage, Path=SecondaryColor, Mode=TwoWay}">
                     </l2:ColourChooser>
 
-                    <Label Content="Animation Tester (PLACEHOLDER)"></Label>
+                    <Label Content="Framepreview (PLACEHOLDER)"></Label>
                     <StackPanel Orientation="Vertical">
                         <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}"></l:DrawingPreview>
+                        <CheckBox>Onion</CheckBox>
                         <StackPanel Orientation="Horizontal">
                             <Button Margin="5">Play</Button>
                             <Button Margin="5">Loop</Button>
@@ -125,92 +125,8 @@
                            MirrorModeState="{Binding ElementName=toolPalette, Path=MirrorModeState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
             </ScrollViewer>
-            
-            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Stretch">
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <Label Margin="5">Frames (PLACEHOLDER)</Label>
-                        <Button Margin="5">Add Frame</Button>
-                        <Button Margin="5">DuplicateFrame</Button>
-                        <Button Margin="5">Merge Frame</Button>
-                        <Button Margin="5">Delete Frame</Button>
-                        <Button Margin="5">Move Left Frame</Button>
-                        <Button Margin="5">Move Right Frame</Button>
-                    </StackPanel>
-                    <UniformGrid Rows="1" HorizontalAlignment="Left">
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                        <Canvas Width="100" Height="100" Margin="12">
-                            <Canvas.Background>
-                                <SolidColorBrush Color="DarkSlateGray"></SolidColorBrush>
-                            </Canvas.Background>
-                        </Canvas>
-                    </UniformGrid>
-                </StackPanel>
-            </ScrollViewer>
+
+            <Panels:FramePalette Grid.Row="1" VerticalAlignment="Stretch" FrameManager="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:FramePalette>
             
         </Grid>
     </DockPanel>
