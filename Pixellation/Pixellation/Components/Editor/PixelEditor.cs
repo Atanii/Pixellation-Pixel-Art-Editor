@@ -1,8 +1,6 @@
 ﻿using Pixellation.Interfaces;
-using Pixellation.Models;
 using Pixellation.Properties;
 using Pixellation.Tools;
-using Pixellation.MementoPattern;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,49 +16,20 @@ namespace Pixellation.Components.Editor
     /// <summary>
     /// Class representing the edited image and the corresponding framework element.
     /// </summary>
-    public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged
+    public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged, IDrawingHelper, IFrameProvider
     {
 
         #region PrivateFields
 
-        private DrawingFrame _activeFrame;
-        private DrawingLayer _activeLayer;
         private Visual _gridLines;
         private Visual _borderLine;
         private DrawingLayer _drawPreview;
         private readonly PixellationCaretakerManager _caretaker = PixellationCaretakerManager.GetInstance();
+        public const string DefaultLayerName = "default";
 
         #endregion PrivateFields
 
         #region Properties
-
-        /// <summary>
-        /// List of Frames or layergroups.
-        /// </summary>
-        public List<DrawingFrame> Frames { get; private set; } = new List<DrawingFrame> {};
-
-        /// <summary>
-        /// List of <see cref="DrawingLayer"/>s the currently edited image consists of.
-        /// </summary>
-        public List<DrawingLayer> Layers => Frames[ActiveFrameIndex].Layers;
-
-        public string ActiveFrameId => _activeFrame != null ? _activeFrame.Id : "";
-
-        private int _activeFrameIndex;
-
-        public int ActiveFrameIndex
-        {
-            get { return _activeFrameIndex; }
-            private set
-            {
-                _activeFrameIndex = value;
-                if (Frames.Count >= value + 1)
-                {
-                    _activeFrame = Frames[value];
-                }
-                OnPropertyChanged();
-            }
-        }
 
         private int _pixelWidth;
 
@@ -268,9 +237,6 @@ namespace Pixellation.Components.Editor
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public static event PixelEditorLayerEventHandler LayerListChanged;
-        public static event PixelEditorFrameEventHandler FrameListChanged;
-
         #endregion Event
 
         /// <summary>
@@ -280,7 +246,7 @@ namespace Pixellation.Components.Editor
         {
             Cursor = Cursors.Pen;
 
-            AddDrawingFrame(0, "Default");
+            AddDrawingFrame(0, DefaultLayerName);
 
             PixelWidth = Settings.Default.DefaultImageSize;
             PixelHeight = Settings.Default.DefaultImageSize;
@@ -290,9 +256,9 @@ namespace Pixellation.Components.Editor
             RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
             EditorSettingsChangeEvent += (d, e) => { SetOrRefreshMeasureVisualsMagnification(); };
 
-            AddLayer(new DrawingLayer(this, "default"));
+            AddLayer(new DrawingLayer(this, DefaultLayerName));
 
-            Init();
+            SetActiveLayer();
         }
 
         #region Init And New Image
@@ -307,13 +273,15 @@ namespace Pixellation.Components.Editor
         {
             DeleteAllVisualChildren();
 
+            AddDrawingFrame(0, "Default");
+
             PixelWidth = pixelWidth;
             PixelHeight = pixelHeight;
             Magnification = Settings.Default.DefaultMagnification;
 
-            AddLayer(new DrawingLayer(this, "default"));
+            AddLayer(new DrawingLayer(this, DefaultLayerName));
 
-            Init();
+            SetActiveLayer();
         }
 
         /// <summary>
@@ -325,20 +293,22 @@ namespace Pixellation.Components.Editor
         {
             DeleteAllVisualChildren();
 
+            AddDrawingFrame(0, "Default");
+
             PixelWidth = imageToEdit.PixelWidth;
             PixelHeight = imageToEdit.PixelHeight;
             Magnification = Settings.Default.DefaultMagnification;
 
             if (imageToEdit == null)
             {
-                AddLayer(new DrawingLayer(this, "default"));
+                AddLayer(new DrawingLayer(this, DefaultLayerName));
             }
             else
             {
-                AddLayer(new DrawingLayer(this, imageToEdit, "default"));
+                AddLayer(new DrawingLayer(this, imageToEdit, DefaultLayerName));
             }
 
-            Init();
+            SetActiveLayer();
         }
 
         /// <summary>
@@ -348,35 +318,18 @@ namespace Pixellation.Components.Editor
         /// <param name="models"><see cref="List<LayerModel>"/> containing the layers for edit.</param>
         /// <param name="pixelWidth">New <see cref="PixelWidth"/>.</param>
         /// <param name="pixelHeight">New <see cref="PixelHeight"/>.</param>
-        public void NewProject(List<LayerModel> models, int pixelWidth = 32, int pixelHeight = 32)
+        public void NewProject(List<DrawingFrame> frames)
         {
             DeleteAllVisualChildren();
 
-            PixelWidth = pixelWidth;
-            PixelHeight = pixelHeight;
+            PixelWidth = frames[0].Layers[0].Bitmap.PixelWidth;
+            PixelHeight = frames[0].Layers[0].Bitmap.PixelHeight;
+
+            AddDrawingFrames(frames);
+            
             Magnification = Settings.Default.DefaultMagnification;
 
-            AddLayer(models);
-
-            Init();
-        }
-
-        /// <summary>
-        /// Sets default actively edited layer then refresh.
-        /// </summary>
-        private void Init()
-        {
-            if (Layers.Count > 0)
-            {
-                _activeLayer = Layers[0];
-                LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
-                (
-                    IPixelEditorEventType.NONE,
-                    0, 0, new int[] { 0 }
-                ));
-            }
-
-            RefreshVisualsThenSignalUpdate();
+            SetActiveLayer();
         }
 
         #endregion Init And New Image
@@ -642,7 +595,10 @@ namespace Pixellation.Components.Editor
             base.OnMouseMove(e);
 
             if (IsMouseCaptured)
+            {
                 ChosenTool.OnMouseMove(e);
+                RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>

@@ -124,12 +124,7 @@
     <value>Image Files (*.png, *.bmp, *.jpg, *.tiff, *.gif)|*.png;*.bmp;*.jpg;*.tiff;*.gif</value>
   </data>
   <data name="ExtensionForDataFile" xml:space="preserve">
-    <value>pod</value>
-    <comment>json</comment>
-  </data>
-  <data name="ExtensionForLayersFile" xml:space="preserve">
-    <value>plb</value>
-    <comment>binary</comment>
+    <value>json</value>
   </data>
   <data name="ExtensionForProjectFilePackage" xml:space="preserve">
     <value>pix</value>
@@ -138,14 +133,11 @@
   <data name="OpenFileFilter" xml:space="preserve">
     <value>Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pix)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pix</value>
   </data>
-  <data name="PackageContentFileNameForLayers" xml:space="preserve">
-    <value>layers</value>
-  </data>
   <data name="PackageContentFileNameForMetaData" xml:space="preserve">
     <value>metadata</value>
   </data>
   <data name="PackageContentFileNameForProjectData" xml:space="preserve">
-    <value>projectinfo</value>
+    <value>project</value>
   </data>
   <data name="PrimaryToolInstanceKey" xml:space="preserve">
     <value>ToolInstancePrimary</value>

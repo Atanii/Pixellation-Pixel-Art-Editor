@@ -5,9 +5,9 @@ namespace Pixellation.Components.Editor
     public class PixelEditorLayerEventArgs : EventArgs
     {
         public int EditorEventTypeValue { get; private set; }
-        public int[] IndexesOfModifiedLayers { get; private set; }
-        public int OldIndexOfActiveLayer { get; private set; }
-        public int NewIndexOfActiveLayer { get; private set; }
+        public int[] IndexesOfModifiedLayers { get; private set; } = new int[] { };
+        public int OldIndexOfActiveLayer { get; private set; } = -1;
+        public int NewIndexOfActiveLayer { get; private set; } = -1;
 
         public static new PixelEditorLayerEventArgs Empty;
 
@@ -19,6 +19,11 @@ namespace Pixellation.Components.Editor
             OldIndexOfActiveLayer = oldIndexOfActiveLayer;
             NewIndexOfActiveLayer = newIndexOfActiveLayer;
             IndexesOfModifiedLayers = indexesOfModifiedLayers;
+        }
+
+        public PixelEditorLayerEventArgs(int editorEventTypeValue)
+        {
+            EditorEventTypeValue = editorEventTypeValue;
         }
     }
 }

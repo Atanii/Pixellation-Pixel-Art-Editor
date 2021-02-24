@@ -74,7 +74,7 @@
                 <StackPanel>
                     <Label Content="Preview"></Label>
                     <StackPanel Orientation="Vertical">
-                        <l:DrawingPreview Width="180" Height="180" Frames="{Binding ElementName=canvasImage, Path=Frames, Mode=OneWay}"></l:DrawingPreview>
+                        <l:DrawingPreview Width="180" Height="180" FrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}" PMode="FRAMES"></l:DrawingPreview>
                     </StackPanel>
 
                     <Label Content="Colour"></Label>
@@ -85,7 +85,7 @@
 
                     <Label Content="Framepreview (PLACEHOLDER)"></Label>
                     <StackPanel Orientation="Vertical">
-                        <l:DrawingPreview Width="180" Height="180" Layers="{Binding ElementName=canvasImage, Path=Layers, Mode=OneWay}"></l:DrawingPreview>
+                        <l:DrawingPreview Width="180" Height="180" FrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}" PMode="LAYERS"></l:DrawingPreview>
                         <CheckBox>Onion</CheckBox>
                         <StackPanel Orientation="Horizontal">
                             <Button Margin="5">Play</Button>

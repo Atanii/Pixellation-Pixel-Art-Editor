@@ -79,20 +79,11 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to pod.
+        ///   Looks up a localized string similar to json.
         /// </summary>
         public static string ExtensionForDataFile {
             get {
                 return ResourceManager.GetString("ExtensionForDataFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to plb.
-        /// </summary>
-        public static string ExtensionForLayersFile {
-            get {
-                return ResourceManager.GetString("ExtensionForLayersFile", resourceCulture);
             }
         }
         
@@ -115,15 +106,6 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to layers.
-        /// </summary>
-        public static string PackageContentFileNameForLayers {
-            get {
-                return ResourceManager.GetString("PackageContentFileNameForLayers", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to metadata.
         /// </summary>
         public static string PackageContentFileNameForMetaData {
@@ -133,7 +115,7 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to projectinfo.
+        ///   Looks up a localized string similar to project.
         /// </summary>
         public static string PackageContentFileNameForProjectData {
             get {

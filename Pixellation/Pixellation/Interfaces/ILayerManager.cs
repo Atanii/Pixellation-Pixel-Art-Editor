@@ -8,9 +8,9 @@ namespace Pixellation.Interfaces
 {
     public interface ILayerManager
     {
-        public void SetActiveLayer(int layerIndex = 0);
+        public void SetActiveLayer(int layerIndex = 0, bool signalEvent = false);
 
-        public List<DrawingLayer> GetLayers();
+        public List<DrawingLayer> Layers { get; }
 
         public DrawingLayer GetLayer(int layerIndex = 0);
 
@@ -31,8 +31,6 @@ namespace Pixellation.Interfaces
         public void MoveLayerDown(int layerIndex);
 
         public void MergeLayerDownward(int layerIndex);
-
-        public List<LayerModel> GetLayerModels();
 
         public void Mirror(bool horizontally, bool allLayers = false);
 

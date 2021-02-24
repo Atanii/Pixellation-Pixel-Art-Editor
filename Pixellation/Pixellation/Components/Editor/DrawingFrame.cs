@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Pixellation.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -24,7 +24,7 @@ namespace Pixellation.Components.Editor
         public List<DrawingLayer> Layers { get; private set; } = new List<DrawingLayer>() { };
         public string FrameName { get; private set; }
 
-        private readonly PixelEditor _owner;
+        private readonly IDrawingHelper _owner;
 
         public bool Visible { get; set; }
 
@@ -47,7 +47,7 @@ namespace Pixellation.Components.Editor
         public int MagnifiedWidth => _owner.PixelWidth * _owner.Magnification;
         public int MagnifiedHeight => _owner.PixelHeight * _owner.Magnification;
 
-        public DrawingFrame(List<DrawingLayer> layers, string name, PixelEditor owner, bool visible = true) : base()
+        public DrawingFrame(List<DrawingLayer> layers, string name, IDrawingHelper owner, bool visible = true, double opacity = 100) : base()
         {
             _owner = owner;
             Layers = layers;
@@ -59,9 +59,10 @@ namespace Pixellation.Components.Editor
                 InvalidateVisual();
             };
             Visible = visible;
+            Opacity = opacity;
         }
 
-        public DrawingFrame(string name, PixelEditor owner, bool visible = true, bool generateDefaultLayer = false)
+        public DrawingFrame(string name, IDrawingHelper owner, bool visible = true, bool generateDefaultLayer = false)
         {
             _owner = owner;
             FrameName = name;
@@ -201,7 +202,6 @@ namespace Pixellation.Components.Editor
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
-            Debug.WriteLine("CLICK2");
             _owner.SetActiveFrame(this);
         }
     }

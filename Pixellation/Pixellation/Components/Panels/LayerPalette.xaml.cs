@@ -13,7 +13,7 @@ namespace Pixellation.Components.Panels
     /// </summary>
     public partial class LayerPalette : UserControl
     {
-        private static event EventHandler<DependencyPropertyChangedEventArgs> RaiseLayerListPropertyInitialized;
+        private static event EventHandler<DependencyPropertyChangedEventArgs> RaiseLayerListPropertyChanged;
 
         public ILayerManager LayerManager
         {
@@ -24,17 +24,16 @@ namespace Pixellation.Components.Panels
         public static readonly DependencyProperty LayerListProperty =
          DependencyProperty.Register("LayerManager", typeof(ILayerManager), typeof(LayerPalette), new FrameworkPropertyMetadata(
              default,
-             (s, e) => { RaiseLayerListPropertyInitialized?.Invoke(s, e); }
+             (s, e) => { RaiseLayerListPropertyChanged?.Invoke(s, e); }
         ));
 
         public LayerPalette()
         {
-            RaiseLayerListPropertyInitialized += (a, b) =>
+            RaiseLayerListPropertyChanged += (a, b) =>
             {
                 PixelEditor.LayerListChanged += UpdateLayerList;
                 PixelEditor.FrameListChanged += UpdateLayerList;
                 UpdateLayerList(a, PixelEditorLayerEventArgs.Empty);
-                // Initial layer selection
                 SelectLayer();
             };
             InitializeComponent();
@@ -42,7 +41,7 @@ namespace Pixellation.Components.Panels
 
         private void SelectLayer(int index = 0)
         {
-            if (LayerManager != null && LayerManager.GetLayers().Count > 0 && layerList.Items.Count > 0)
+            if (LayerManager != null && LayerManager.Layers.Count > 0 && layerList.Items.Count > 0)
             {
                 LayerManager?.SetActiveLayer(index);
                 layerList.SelectedIndex = index;
@@ -52,8 +51,9 @@ namespace Pixellation.Components.Panels
 
         private void UpdateLayerList(object sender, PixelEditorLayerEventArgs e)
         {
-            layerList.ItemsSource = LayerManager.GetLayers();
+            layerList.ItemsSource = LayerManager.Layers;
             layerList.Items.Refresh();
+
             if (e != PixelEditorLayerEventArgs.Empty && e.NewIndexOfActiveLayer != -1)
             {
                 SelectLayer(e.NewIndexOfActiveLayer);
@@ -64,7 +64,7 @@ namespace Pixellation.Components.Panels
         {   
             if (IPixelEditorEventType.FRAME_NEW_ACTIVE_INDEX == e.EditorEventTypeValue)
             {
-                layerList.ItemsSource = LayerManager.GetLayers();
+                layerList.ItemsSource = LayerManager.Layers;
                 layerList.Items.Refresh();
                 SelectLayer();
             }

@@ -1,9 +1,10 @@
 ﻿using Pixellation.Components.Editor.Memento;
+using Pixellation.Interfaces;
 using Pixellation.MementoPattern;
 
 namespace Pixellation.Components.Editor
 {
-    public partial class PixelEditor : IOriginatorHandler<LayerMemento, IPixelEditorEventType>, IOriginatorHandler<LayerListMemento, IPixelEditorEventType>, IOriginator<LayerListMemento, IPixelEditorEventType>
+    public partial class PixelEditor : IDrawingHelper, IOriginator<LayerListMemento, IPixelEditorEventType>
     {
         public LayerListMemento GetMemento(int type)
         {

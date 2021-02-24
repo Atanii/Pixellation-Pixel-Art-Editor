@@ -4,8 +4,7 @@ namespace Pixellation.Models
 {
     public class ProjectModel
     {
-        public List<LayerModel> Layers { get; set; }
-        public ProjectDataModel ProjectData { get; set; }
-        public string ModelVersion { get; set; }
+        public string ProjectName { get; set; }
+        public List<FrameModel> Frames { get; set; }
     }
 }

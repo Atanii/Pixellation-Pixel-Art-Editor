@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Pixellation.Interfaces;
+using System;
 using System.Windows;
 using System.Windows.Media;
 
@@ -6,54 +7,71 @@ namespace Pixellation.Components.Editor
 {
     internal class DrawingPreview : FrameworkElement
     {
-        public List<DrawingFrame> Frames
+        private static event EventHandler<DependencyPropertyChangedEventArgs> IFrameProviderUpdated;
+        private static event EventHandler<DependencyPropertyChangedEventArgs> ModeUpdated;
+
+        public IFrameProvider FrameProvider
         {
-            get { return (List<DrawingFrame>)GetValue(FramesProperty); }
-            set { SetValue(FramesProperty, value); }
+            get { return (IFrameProvider)GetValue(FrameProviderProperty); }
+            set { SetValue(FrameProviderProperty, value); }
         }
 
-        public static readonly DependencyProperty FramesProperty =
-         DependencyProperty.Register("Frames", typeof(List<DrawingFrame>), typeof(DrawingPreview), new FrameworkPropertyMetadata(
-             new List<DrawingFrame>()
+        public static readonly DependencyProperty FrameProviderProperty =
+         DependencyProperty.Register("FrameProvider", typeof(IFrameProvider), typeof(DrawingPreview), new FrameworkPropertyMetadata(
+             default,
+             (s, e) => { IFrameProviderUpdated?.Invoke(s, e); }
         ));
 
-        public List<DrawingLayer> Layers
-        {
-            get { return (List<DrawingLayer>)GetValue(LayersProperty); }
-            set { SetValue(LayersProperty, value); }
+        public enum PreviewMode {
+            LAYERS, FRAMES, ANIMATION
         }
 
-        public static readonly DependencyProperty LayersProperty =
-         DependencyProperty.Register("Layers", typeof(List<DrawingLayer>), typeof(DrawingPreview), new FrameworkPropertyMetadata(
-             new List<DrawingLayer>()
+        public PreviewMode PMode
+        {
+            get { return (PreviewMode)GetValue(PModeProperty); }
+            set { SetValue(PModeProperty, value); }
+        }
+
+        public static readonly DependencyProperty PModeProperty =
+         DependencyProperty.Register("PMode", typeof(PreviewMode), typeof(DrawingPreview), new FrameworkPropertyMetadata(
+             PreviewMode.FRAMES,
+             (s, e) => { ModeUpdated?.Invoke(s, e); }
         ));
 
         public DrawingPreview()
         {
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
-            PixelEditor.RaiseImageUpdatedEvent += (s, a) =>
-            {
-                InvalidateVisual();
-            };
+
+            PixelEditor.FrameListChanged += (s, a) => { InvalidateVisual(); };
+            PixelEditor.LayerListChanged += (s, a) => { InvalidateVisual(); };
+            PixelEditor.RaiseImageUpdatedEvent += (s, a) => { InvalidateVisual(); };
         }
 
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
 
-            if (Frames.Count > 0)
+            if (FrameProvider != null)
             {
-                RenderFrames(dc);
-            }
-            else
-            {
-                RenderLayers(dc);
+                switch (PMode)
+                {
+                    case PreviewMode.LAYERS:
+                        RenderLayers(dc);
+                        break;
+
+                    case PreviewMode.FRAMES:
+                        RenderFrames(dc);
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
 
         private void RenderLayers(DrawingContext dc)
         {
-            foreach (var layer in Layers)
+            foreach (var layer in FrameProvider.Layers)
             {
                 layer.Render(dc, 0, 0, Width, Height);
             }
@@ -61,7 +79,7 @@ namespace Pixellation.Components.Editor
 
         private void RenderFrames(DrawingContext dc)
         {
-            foreach (var frame in Frames)
+            foreach (var frame in FrameProvider.Frames)
             {
                 frame.Render(dc, 0, 0, Width, Height);
             }

@@ -126,31 +126,27 @@ namespace Pixellation
                 {
                     // Getting Project
 
-                    var data = await _pm.LoadProject(fileName);
+                    var data = await _pm.LoadProject(fileName, canvasImage);
 
-                    var width = Settings.Default.DefaultImageSize;
-                    var height = Settings.Default.DefaultImageSize;
-                    if (data.Layers.Count > 0)
-                    {
-                        width = data.Layers[0].Width;
-                        height = data.Layers[0].Height;
-                    }
+                    ProjectTitle = Properties.Resources.Title + " - " + data.Key;
+                    ThereAreUnsavedChanges = false;
+                    _caretaker.ClearAll();
+                    _pm.Reset();
 
-                    canvasImage.NewProject(data.Layers, width, height);
-                    ProjectTitle = data.ProjectData.ProjectName;
+                    canvasImage.NewProject(data.Value);
                 }
                 else
                 {
                     // Getting Bitmap
 
+                    ProjectTitle = Properties.Resources.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
+                    ThereAreUnsavedChanges = false;
+                    _caretaker.ClearAll();
+                    _pm.Reset();
+
                     var wrbmp = _pm.LoadImage(fileName);
                     canvasImage.NewProject(wrbmp);
                 }
-
-                ProjectTitle = Properties.Resources.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
-                ThereAreUnsavedChanges = false;
-                _caretaker.ClearAll();
-                _pm.Reset();
             }
         }
 
@@ -158,7 +154,7 @@ namespace Pixellation
         {
             if (_pm.AlreadySaved)
             {
-                _pm.SaveProject(canvasImage);
+                _pm.SaveProject(canvasImage.Frames);
 
                 ProjectTitle = Properties.Resources.Title + " - " + _pm.PreviousFullPath.Split('.')[0].Split('\\')[^1];
                 ThereAreUnsavedChanges = false;
@@ -172,7 +168,7 @@ namespace Pixellation
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     string fileName = saveFileDialog.FileName;
-                    _pm.SaveProject(fileName, canvasImage);
+                    _pm.SaveProject(canvasImage.Frames, fileName);
 
                     ProjectTitle = Properties.Resources.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
                     ThereAreUnsavedChanges = false;
@@ -221,13 +217,13 @@ namespace Pixellation
                 var w = int.Parse(widthHeight.Split(';')[0]);
                 var h = int.Parse(widthHeight.Split(';')[1]);
 
-                // New Project
-                canvasImage.NewProject(w, h);
-
                 _pm.Reset();
                 _caretaker.ClearAll();
                 ThereAreUnsavedChanges = false;
                 ProjectTitle = Properties.Resources.DefaultProjectTitle;
+
+                // New Project
+                canvasImage.NewProject(w, h);
             }
         }
 

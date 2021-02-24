@@ -2,7 +2,6 @@
 using Pixellation.Components.Editor;
 using Pixellation.Interfaces;
 using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -46,7 +45,7 @@ namespace Pixellation.Components.Panels
         private void Refresh()
         {
             frameList.Children.Clear();
-            foreach (var frame in FrameManager.GetFrames())
+            foreach (var frame in FrameManager.Frames)
             {
                 frame.Width = FrameElementSize;
                 frame.Height = FrameElementSize;
@@ -63,33 +62,33 @@ namespace Pixellation.Components.Panels
             var newLayerDialog = new StringInputDialog("New Image", "Image Name");
             if (newLayerDialog.ShowDialog() == true)
             {
-                FrameManager.AddDrawingFrame(FrameManager.GetActiveFrameIndex(), newLayerDialog.Answer);
+                FrameManager.AddDrawingFrame(FrameManager.ActiveFrameIndex, newLayerDialog.Answer);
             }
         }
 
         private void BtnDuplicateFrame(object sender, RoutedEventArgs e)
         {
-            FrameManager.DuplicateDrawingFrame(FrameManager.GetActiveFrameIndex());
+            FrameManager.DuplicateDrawingFrame(FrameManager.ActiveFrameIndex);
         }
 
         private void BtnMergeFrame(object sender, RoutedEventArgs e)
         {
-            FrameManager.MergeDrawingFrameIntoLeftNeighbour(FrameManager.GetActiveFrameIndex());
+            FrameManager.MergeDrawingFrameIntoLeftNeighbour(FrameManager.ActiveFrameIndex);
         }
 
         private void BtnRemoveFrame(object sender, RoutedEventArgs e)
         {
-            FrameManager.RemoveDrawingFrame(FrameManager.GetActiveFrameIndex());
+            FrameManager.RemoveDrawingFrame(FrameManager.ActiveFrameIndex);
         }
 
         private void BtnMoveFrameLeft(object sender, RoutedEventArgs e)
         {
-            FrameManager.MoveDrawingFrameLeft(FrameManager.GetActiveFrameIndex());
+            FrameManager.MoveDrawingFrameLeft(FrameManager.ActiveFrameIndex);
         }
 
         private void BtnMoveFrameRight(object sender, RoutedEventArgs e)
         {
-            FrameManager.MoveDrawingFrameRight(FrameManager.GetActiveFrameIndex());
+            FrameManager.MoveDrawingFrameRight(FrameManager.ActiveFrameIndex);
         }
     }
 }

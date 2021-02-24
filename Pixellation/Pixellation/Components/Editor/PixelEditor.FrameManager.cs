@@ -7,6 +7,54 @@ namespace Pixellation.Components.Editor
 {
     public partial class PixelEditor : IFrameManager
     {
+        public static event PixelEditorFrameEventHandler FrameListChanged;
+
+        /// <summary>
+        /// List of Frames or layergroups.
+        /// </summary>
+        public List<DrawingFrame> Frames { get; private set; } = new List<DrawingFrame> { };
+
+        public string ActiveFrameId => ActiveFrame != null ? ActiveFrame.Id : "";
+
+        private int _activeFrameIndex;
+
+        public int ActiveFrameIndex
+        {
+            get { return _activeFrameIndex; }
+            private set
+            {
+                RemoveLayersFromVisualChildren();
+
+                _activeFrameIndex = value;
+                _activeFrame = Frames[value];
+
+                RefreshVisualsThenSignalUpdate();
+
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ActiveFrame));
+                OnPropertyChanged(nameof(Frames));
+            }
+        }
+
+        private DrawingFrame _activeFrame;
+        private DrawingFrame ActiveFrame
+        {
+            get { return _activeFrame; }
+            set
+            {
+                RemoveLayersFromVisualChildren();
+
+                _activeFrame = value;
+                _activeFrameIndex = Frames.FindIndex(x => x.Id == value.Id);
+
+                RefreshVisualsThenSignalUpdate();
+
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ActiveFrameIndex));
+                OnPropertyChanged(nameof(Frames));
+            }
+        }
+
         public void AddDrawingFrame(int frameIndex, string name)
         {
             if (Frames.Count == 0 && frameIndex == 0)
@@ -43,6 +91,25 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        private void AddDrawingFrames(List<DrawingFrame> frames)
+        {
+            foreach(var frame in frames)
+            {
+                _caretaker.InitCaretaker(frame.Id);
+                Frames.Add(frame);
+            }
+
+            ActiveFrameIndex = 0;
+
+            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
+            (
+                IPixelEditorEventType.FRAME_ADD,
+                0, 0, new int[] { }
+            ));
+
+            SetActiveLayer();
+        }
+
         public void DuplicateDrawingFrame(int frameIndex)
         {
             if (Frames.Count >= (frameIndex + 1))
@@ -59,7 +126,7 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public DrawingFrame GetActiveDrawingFrame() => _activeFrame;
+        public DrawingFrame GetActiveDrawingFrame() => ActiveFrame;
 
         public int GetActiveFrameIndex() => ActiveFrameIndex;
 
@@ -152,8 +219,6 @@ namespace Pixellation.Components.Editor
                 SetActiveLayer();
             }
         }
-
-        public List<DrawingFrame> GetFrames() => Frames;
 
         public void SetActiveFrame(DrawingFrame frame)
         {

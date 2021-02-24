@@ -7,7 +7,7 @@ namespace Pixellation.Interfaces
     {
         public int GetActiveLayerIndex();
 
-        public int GetActiveFrameIndex();
+        public int ActiveFrameIndex { get; }
 
         public DrawingFrame GetActiveDrawingFrame();
 
@@ -23,6 +23,6 @@ namespace Pixellation.Interfaces
 
         public void MergeDrawingFrameIntoLeftNeighbour(int frameIndex);
 
-        public List<DrawingFrame> GetFrames();
+        public List<DrawingFrame> Frames { get; }
     }
 }
