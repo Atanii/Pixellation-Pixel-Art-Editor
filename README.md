@@ -50,22 +50,17 @@ Pixellation is a pixel art editor program developed in .NET Core. It provides fe
 
 ### Milestone 7 - Beta
 
-- [ ] Frames (simple layergroups)
-- [ ] Simple sprite animation
-- [ ] Exporting frames as one merged image
-- [ ] Exporting frames to spritesheet
-- [ ] Updated project structure for saves
+- [x] Frames (simple layergroups)
+- [ ] Simple animation preview
+- [x] Exporting frames as one merged image
+- [x] Exporting frames to spritesheet
+- [x] Updated project structure for saves
 
 ### Milestone 8 - Release
 
 - [ ] Bugfixes, optimalization, refactor...
 
-### Possible Before / After Release, But Not Guaranted
-- [ ] Layergroups (Possible, if wasn't made in beta.)
-- [ ] Sprite animation (Possible, if wasn't made in beta.)
-- [ ] Blending mode for layers (Not yet decided.)
-- [ ] Blending mode for brushes (Not yet decided.)
-- [ ] Transparency for brushes (Not yet decided.)
+### Possible Before / After Release
 - [ ] Exporting frames to gif (Not yet decided.)
 - [ ] Dark mode (Depends on the look and feel toward final version.)
 
