@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using Pixellation.Components.Dialogs;
 using Pixellation.Components.Dialogs.AboutDialog;
-using Pixellation.Properties;
 using Pixellation.Utils;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -10,6 +9,8 @@ using System.Windows.Input;
 
 namespace Pixellation
 {
+    using Res = Properties.Resources;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -24,14 +25,17 @@ namespace Pixellation
         private string _programTitle;
         private string _projectTitle;
 
+        /// <summary>
+        /// Template for the title including a conditionally shown asterisk indicating unsaved changes.
+        /// </summary>
         private string TitleStringTemplate => $"{ProgramTitle} - {ProjectTitle} {(ThereAreUnsavedChanges ? " (*)" : "")}";
 
+        /// <summary>
+        /// Marks if there are changes in the project that can be saved.
+        /// </summary>
         public bool ThereAreUnsavedChanges
         {
-            get
-            {
-                return _thereAreUnsavedChanges;
-            }
+            get => _thereAreUnsavedChanges;
             set
             {
                 _thereAreUnsavedChanges = value;
@@ -39,12 +43,12 @@ namespace Pixellation
             }
         }
 
+        /// <summary>
+        /// Title of the program.
+        /// </summary>
         private string ProgramTitle
         {
-            get
-            {
-                return _programTitle;
-            }
+            get => _programTitle;
             set
             {
                 _programTitle = value;
@@ -52,12 +56,12 @@ namespace Pixellation
             }
         }
 
+        /// <summary>
+        /// Title of the currently opened project.
+        /// </summary>
         private string ProjectTitle
         {
-            get
-            {
-                return _projectTitle;
-            }
+            get => _projectTitle;
             set
             {
                 _projectTitle = value;
@@ -65,12 +69,12 @@ namespace Pixellation
             }
         }
 
+        /// <summary>
+        /// Title shown on the window of the program.
+        /// </summary>
         public new string Title
         {
-            get
-            {
-                return base.Title;
-            }
+            get => base.Title;
             private set
             {
                 base.Title = value;
@@ -78,21 +82,33 @@ namespace Pixellation
             }
         }
 
+        /// <summary>
+        /// Constructor for <see cref="MainWindow"/>.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
 
+            // Proxying event to PixelEditor instance
             GetWindow(this).KeyDown += canvasImage.OnKeyDown;
 
-            ProgramTitle = Properties.Resources.Title;
-            ProjectTitle = Properties.Resources.DefaultProjectTitle;
+            // Setting titles
+            ProgramTitle = Res.Title;
+            ProjectTitle = Res.DefaultProjectTitle;
 
+            // To know when there is a new change that can be saved
             _caretaker.OnNewUndoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
             _caretaker.OnNewRedoAdded += (d, e) => { ThereAreUnsavedChanges = true; };
 
+            // Automaximize at start
             WindowState = WindowState.Maximized;
         }
 
+        /// <summary>
+        /// Opens a project or an image after asking for location (and for saving unsaved changes if there is any).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Open(object sender, RoutedEventArgs e)
         {
             if (ThereAreUnsavedChanges)
@@ -104,7 +120,10 @@ namespace Pixellation
 
                     if (ans == UnsavedChangesDialog.CloseDialogAnswer.SAVE)
                     {
-                        SaveProject(this, new RoutedEventArgs());
+                        if (!SaveProject(this, new RoutedEventArgs()))
+                        {
+                            return;
+                        }
                     }
                 }
                 else
@@ -115,72 +134,95 @@ namespace Pixellation
 
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = Properties.Resources.OpenFileFilter
+                Filter = Res.OpenFileFilter
             };
             if (openFileDialog.ShowDialog() == true)
             {
                 string fileName = openFileDialog.FileName;
 
                 string extension = fileName.Split('.')[^1];
-                if (extension == Properties.Resources.ExtensionForProjectFilePackage)
+                if (extension == Res.ExtensionForProjectFilePackage)
                 {
                     // Getting Project
-
                     var data = await _pm.LoadProject(fileName, canvasImage);
+                    if (data.Value != null)
+                    {
+                        ProjectTitle = Res.Title + " - " + data.Key;
+                        ThereAreUnsavedChanges = false;
+                        _caretaker.ClearAll();
+                        _pm.Reset();
 
-                    ProjectTitle = Properties.Resources.Title + " - " + data.Key;
-                    ThereAreUnsavedChanges = false;
-                    _caretaker.ClearAll();
-                    _pm.Reset();
-
-                    canvasImage.NewProject(data.Value);
+                        canvasImage.NewProject(data.Value);
+                    }
                 }
                 else
                 {
                     // Getting Bitmap
-
-                    ProjectTitle = Properties.Resources.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
-                    ThereAreUnsavedChanges = false;
-                    _caretaker.ClearAll();
-                    _pm.Reset();
-
                     var wrbmp = _pm.LoadImage(fileName);
-                    canvasImage.NewProject(wrbmp);
+                    if (wrbmp != null)
+                    {
+                        ProjectTitle = Res.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
+                        ThereAreUnsavedChanges = false;
+                        _caretaker.ClearAll();
+                        _pm.Reset();
+
+                        canvasImage.NewProject(wrbmp);
+                    }
                 }
             }
         }
 
-        private void SaveProject(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Saves the project after choosing the location.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>True if project is successfully saved, otherwise false.</returns>
+        private bool SaveProject(object sender, RoutedEventArgs e)
         {
             if (_pm.AlreadySaved)
             {
-                _pm.SaveProject(canvasImage.Frames);
+                var res = _pm.SaveProject(canvasImage.Frames);
 
-                ProjectTitle = Properties.Resources.Title + " - " + _pm.PreviousFullPath.Split('.')[0].Split('\\')[^1];
-                ThereAreUnsavedChanges = false;
+                if (res)
+                {
+                    ProjectTitle = Res.Title + " - " + _pm.PreviousFullPath.Split('.')[0].Split('\\')[^1];
+                    ThereAreUnsavedChanges = false;
+                }
             }
             else
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    Filter = Properties.Resources.SaveFileFilter
+                    Filter = Res.SaveFileFilter
                 };
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     string fileName = saveFileDialog.FileName;
-                    _pm.SaveProject(canvasImage.Frames, fileName);
+                    var res = _pm.SaveProject(canvasImage.Frames, fileName);
 
-                    ProjectTitle = Properties.Resources.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
-                    ThereAreUnsavedChanges = false;
+                    if (res)
+                    {
+                        ProjectTitle = Res.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
+                        ThereAreUnsavedChanges = false;
+                        return true;
+                    }
                 }
             }
+
+            return false;
         }
 
+        /// <summary>
+        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports the project.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ExportAsImage(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = Properties.Resources.ExportFilter
+                Filter = Res.ExportFilter
             };
             if (saveFileDialog.ShowDialog() == true)
             {
@@ -189,6 +231,11 @@ namespace Pixellation
             }
         }
 
+        /// <summary>
+        /// Opens a <see cref="NewProjectDialog"/>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OpenNewImageDialog(object sender, RoutedEventArgs e)
         {
             if (ThereAreUnsavedChanges)
@@ -200,7 +247,10 @@ namespace Pixellation
 
                     if (ans == UnsavedChangesDialog.CloseDialogAnswer.SAVE)
                     {
-                        SaveProject(this, new RoutedEventArgs());
+                        if (!SaveProject(this, new RoutedEventArgs()))
+                        {
+                            return;
+                        }
                     }
                 }
                 else
@@ -220,19 +270,28 @@ namespace Pixellation
                 _pm.Reset();
                 _caretaker.ClearAll();
                 ThereAreUnsavedChanges = false;
-                ProjectTitle = Properties.Resources.DefaultProjectTitle;
+                ProjectTitle = Res.DefaultProjectTitle;
 
                 // New Project
                 canvasImage.NewProject(w, h);
             }
         }
 
+        /// <summary>
+        /// Opens <see cref="AboutDialog"/>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OpenAboutDialog(object sender, RoutedEventArgs e)
         {
             var aboutDialog = new AboutDialog();
             aboutDialog.ShowDialog();
         }
 
+        /// <summary>
+        /// Overrides <see cref="OnKeyDown(KeyEventArgs)"/> for handling hotkeys for save, undo, ...
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -251,6 +310,12 @@ namespace Pixellation
             }
         }
 
+        /// <summary>
+        /// Called when the user wants to exit the program.
+        /// Shows a warning and asks if the user'd like to save unsaved changes (if there is any).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             if (ThereAreUnsavedChanges)

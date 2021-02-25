@@ -52,7 +52,6 @@ namespace Pixellation.Components.Editor
             _owner = owner;
             Layers = layers;
             FrameName = name;
-            Name = name;
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
             PixelEditor.RaiseImageUpdatedEvent += (s, a) =>
             {

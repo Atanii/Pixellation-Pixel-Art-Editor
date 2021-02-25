@@ -45,18 +45,40 @@ namespace Pixellation.Utils
 
         public async Task<KeyValuePair<string, List<DrawingFrame>>> LoadProject(string filePath, IDrawingHelper helper)
         {
-            PreviousFullPath = filePath;
-            var fpr = new FilePackageReader(filePath);
-            var data = await fpr.LoadProjectModel(MetadataFileName, ProjectDataFileName);
-            var res = ModelConverterExtensions.GetProjectData(data, helper);
+            KeyValuePair<string, List<DrawingFrame>> res = new KeyValuePair<string, List<DrawingFrame>>();
+
+            try
+            {
+                var fpr = new FilePackageReader(filePath);
+                var data = await fpr.LoadProjectModel(MetadataFileName, ProjectDataFileName);
+                res = ModelConverterExtensions.GetProjectData(data, helper);
+
+                AlreadySaved = true;
+                PreviousFullPath = filePath;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Format(Messages.ErrorWhileLoadingProject, ex.Message, "Error"));
+            }
+
             return res;
         }
 
         public WriteableBitmap LoadImage(string filePath)
         {
-            BitmapImage bitmap = new BitmapImage(new Uri(filePath, UriKind.Absolute));
-            WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap);
-            return writeableBitmap;
+            WriteableBitmap res = null;
+
+            try
+            {
+                BitmapImage bitmap = new BitmapImage(new Uri(filePath, UriKind.Absolute));
+                res = new WriteableBitmap(bitmap);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Format(Messages.ErrorWhileLoadingImage, ex.Message, "Error"));
+            }
+
+            return res;
         }
 
         public bool SaveProject(List<DrawingFrame> frames, string filePath = "")
@@ -94,12 +116,21 @@ namespace Pixellation.Utils
             };
 
             var fpwr = new FilePackageWriter(fp);
-            fpwr.SaveProjectModel();
 
-            AlreadySaved = true;
-            PreviousFullPath = filePath;
+            try
+            {
+                fpwr.SaveProjectModel();
 
-            return true;
+                AlreadySaved = true;
+                PreviousFullPath = filePath;
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Format(Messages.ErrorWhileSavingProject, ex.Message, "Error"));
+                return false;
+            }
         }
 
         public void Reset()
@@ -110,8 +141,15 @@ namespace Pixellation.Utils
 
         public void ExportAsImage(string filePath, ILayerManager vm)
         {
-            var wrBitmap = vm.GetAllMergedWriteableBitmap();
-            SaveBitmapSourceToFile(filePath, wrBitmap);
+            try
+            {
+                var wrBitmap = vm.GetAllMergedWriteableBitmap();
+                SaveBitmapSourceToFile(filePath, wrBitmap);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Format(Messages.ErrorWhileExportingImage, ex.Message, "Error"));
+            }
         }
 
         public void SaveBitmapSourceToFile(string filePath, BitmapSource image)

@@ -1,6 +1,7 @@
 ﻿using Pixellation.Interfaces;
 using Pixellation.Properties;
 using Pixellation.Tools;
+using Pixellation.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +10,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Pixellation.Utils;
 
 namespace Pixellation.Components.Editor
 {
@@ -18,7 +18,6 @@ namespace Pixellation.Components.Editor
     /// </summary>
     public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged, IDrawingHelper, IFrameProvider
     {
-
         #region PrivateFields
 
         private Visual _gridLines;
@@ -326,7 +325,7 @@ namespace Pixellation.Components.Editor
             PixelHeight = frames[0].Layers[0].Bitmap.PixelHeight;
 
             AddDrawingFrames(frames);
-            
+
             Magnification = Settings.Default.DefaultMagnification;
 
             SetActiveLayer();

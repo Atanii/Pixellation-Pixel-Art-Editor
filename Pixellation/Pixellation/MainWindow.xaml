@@ -84,15 +84,7 @@
                     </l2:ColourChooser>
 
                     <Label Content="Framepreview (PLACEHOLDER)"></Label>
-                    <StackPanel Orientation="Vertical">
-                        <l:DrawingPreview Width="180" Height="180" FrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}" PMode="LAYERS"></l:DrawingPreview>
-                        <CheckBox>Onion</CheckBox>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Margin="5">Play</Button>
-                            <Button Margin="5">Loop</Button>
-                            <Button Margin="5">Stop</Button>
-                        </StackPanel>
-                    </StackPanel>
+                    <Panels:AnimationPanel AnimationFrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:AnimationPanel>
                 </StackPanel>
             </ScrollViewer>
         </Border>

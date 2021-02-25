@@ -1,5 +1,6 @@
 ﻿using Pixellation.Interfaces;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 
@@ -9,6 +10,38 @@ namespace Pixellation.Components.Editor
     {
         private static event EventHandler<DependencyPropertyChangedEventArgs> IFrameProviderUpdated;
         private static event EventHandler<DependencyPropertyChangedEventArgs> ModeUpdated;
+
+        private int _fps = 24;
+        public int FPS
+        {
+            get => _fps;
+            set
+            {
+                _fps = Math.Clamp(value, 1, 60);
+            }
+        }
+        
+        private long TimeBetweenFrames => 1000 / FPS;
+        private long MillisecondsNow => DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        private long lastTime = 0;
+
+        private int _indexOfCurrentFrame = 0;
+        public int IndexOfCurrentFrame
+        {
+            get => _indexOfCurrentFrame;
+            set
+            {
+                if (FrameProvider != null)
+                {
+                    var tmp = value % FrameProvider.Frames.Count;
+                    if (tmp == 0 && PMode == PreviewMode.PLAY)
+                    {
+                        PMode = PreviewMode.LAYERS;
+                    }
+                    _indexOfCurrentFrame = tmp;
+                }
+            }
+        }
 
         public IFrameProvider FrameProvider
         {
@@ -21,10 +54,6 @@ namespace Pixellation.Components.Editor
              default,
              (s, e) => { IFrameProviderUpdated?.Invoke(s, e); }
         ));
-
-        public enum PreviewMode {
-            LAYERS, FRAMES, ANIMATION
-        }
 
         public PreviewMode PMode
         {
@@ -45,6 +74,33 @@ namespace Pixellation.Components.Editor
             PixelEditor.FrameListChanged += (s, a) => { InvalidateVisual(); };
             PixelEditor.LayerListChanged += (s, a) => { InvalidateVisual(); };
             PixelEditor.RaiseImageUpdatedEvent += (s, a) => { InvalidateVisual(); };
+
+            //System.Windows.Media.CompositionTarget.Rendering += UpdateColor;
+        }
+
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private double _frameCounter;
+        private Point _pt;
+
+        // Called just before frame is rendered to allow custom drawing.
+        protected void UpdateColor(object sender, EventArgs e)
+        {
+            _stopwatch.Start();
+
+            // Determine frame rate in fps (frames per second).
+            var frameRate = (long)(_frameCounter / _stopwatch.Elapsed.TotalSeconds);
+            if (frameRate > 0)
+            {
+                // Update elapsed time, number of frames, and frame rate.
+                //myStopwatchLabel.Content = _stopwatch.Elapsed.ToString();
+                //myFrameCounterLabel.Content = _frameCounter.ToString(CultureInfo.InvariantCulture);
+                //myFrameRateLabel.Content = frameRate.ToString();
+            }
+
+            // Update the background of the canvas by converting MouseMove info to RGB info.
+            //var redColor = (byte)(_pt.X / 3.0);
+            //var blueColor = (byte)(_pt.Y / 2.0);
+            //myCanvas.Background = new SolidColorBrush(Color.FromRgb(redColor, 0x0, blueColor));
         }
 
         protected override void OnRender(DrawingContext dc)
@@ -55,18 +111,44 @@ namespace Pixellation.Components.Editor
             {
                 switch (PMode)
                 {
+                    // Only layers of selected frame
                     case PreviewMode.LAYERS:
                         RenderLayers(dc);
                         break;
 
+                    // All frames in one image
                     case PreviewMode.FRAMES:
                         RenderFrames(dc);
+                        break;
+
+                    // Cycle through available frames
+                    case PreviewMode.PLAY:
+                    case PreviewMode.LOOP:
+                        AnimateFrames(dc);
                         break;
 
                     default:
                         break;
                 }
             }
+        }
+
+        private void AnimateFrames(DrawingContext dc)
+        {
+            // Calls the overwritten OnRender method of DrawingFrame (which renders the layers of drawingframe in one image)
+            FrameProvider.Frames[IndexOfCurrentFrame].Render(dc, 0, 0, Width, Height);
+
+            // 24 FPS, 1000ms / 24 time between frames
+            if ((MillisecondsNow - lastTime) >= TimeBetweenFrames)
+            {
+                // Property, set PreviewMode to LAYERS from PLAY after one full run
+                // In case of LOOP only if the PreviewMode was set to something else with a button
+                IndexOfCurrentFrame += 1;
+                lastTime = MillisecondsNow;
+            }
+
+            // Call OnRender
+            InvalidateVisual();
         }
 
         private void RenderLayers(DrawingContext dc)
