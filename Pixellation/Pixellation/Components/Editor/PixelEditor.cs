@@ -391,7 +391,7 @@ namespace Pixellation.Components.Editor
         /// </summary>
         private void UpdateToolProperties()
         {
-            ChosenTool?.SetAllDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview, MirrorModeState);
+            ChosenTool?.SetAllDrawingCircumstances(Magnification, PixelWidth, PixelHeight, ActiveLayer, _drawPreview, MirrorModeState);
         }
 
         #endregion Update, refresh...
@@ -511,7 +511,6 @@ namespace Pixellation.Components.Editor
             var d = -0.5d; // snap gridlines to device pixels
 
             var pen = new Pen(new SolidColorBrush(Color.FromArgb(63, 63, 63, 63)), 1d);
-
             pen.Freeze();
 
             for (var x = 1; x < w; x++)
@@ -593,6 +592,11 @@ namespace Pixellation.Components.Editor
         {
             base.OnMouseMove(e);
 
+            if (!ActiveLayer.Visible || !ActiveFrame.Visible)
+            {
+                return;
+            }
+
             if (IsMouseCaptured)
             {
                 ChosenTool.OnMouseMove(e);
@@ -608,6 +612,11 @@ namespace Pixellation.Components.Editor
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
+
+            if (!ActiveLayer.Visible || !ActiveFrame.Visible)
+            {
+                return;
+            }
 
             CaptureMouse();
 
@@ -632,6 +641,11 @@ namespace Pixellation.Components.Editor
         {
             base.OnMouseRightButtonDown(e);
 
+            if (!ActiveLayer.Visible || !ActiveFrame.Visible)
+            {
+                return;
+            }
+
             CaptureMouse();
 
             ChosenTool.SetDrawColor(SecondaryColor);
@@ -648,6 +662,11 @@ namespace Pixellation.Components.Editor
         {
             base.OnMouseLeftButtonUp(e);
 
+            if (!ActiveLayer.Visible || !ActiveFrame.Visible)
+            {
+                return;
+            }
+
             ReleaseMouseCapture();
 
             ChosenTool.OnMouseUp(e);
@@ -662,6 +681,11 @@ namespace Pixellation.Components.Editor
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
+
+            if (!ActiveLayer.Visible || !ActiveFrame.Visible)
+            {
+                return;
+            }
 
             ReleaseMouseCapture();
 

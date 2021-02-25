@@ -61,6 +61,15 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value {0} is not a number!.
+        /// </summary>
+        internal static string ErrorIsNotANumber {
+            get {
+                return ResourceManager.GetString("ErrorIsNotANumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exporting to image failed! Error: {0}.
         /// </summary>
         internal static string ErrorWhileExportingImage {

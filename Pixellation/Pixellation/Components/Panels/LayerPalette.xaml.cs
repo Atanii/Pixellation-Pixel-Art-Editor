@@ -17,11 +17,11 @@ namespace Pixellation.Components.Panels
 
         public ILayerManager LayerManager
         {
-            get { return (ILayerManager)GetValue(LayerListProperty); }
-            set { SetValue(LayerListProperty, value); }
+            get { return (ILayerManager)GetValue(LayerManagerProperty); }
+            set { SetValue(LayerManagerProperty, value); }
         }
 
-        public static readonly DependencyProperty LayerListProperty =
+        public static readonly DependencyProperty LayerManagerProperty =
          DependencyProperty.Register("LayerManager", typeof(ILayerManager), typeof(LayerPalette), new FrameworkPropertyMetadata(
              default,
              (s, e) => { RaiseLayerListPropertyChanged?.Invoke(s, e); }
@@ -41,8 +41,13 @@ namespace Pixellation.Components.Panels
 
         private void SelectLayer(int index = 0)
         {
-            if (LayerManager != null && LayerManager.Layers.Count > 0 && layerList.Items.Count > 0)
+            if (LayerManager != null && LayerManager.Layers.Count > 0)
             {
+                if (layerList.Items.Count == 0)
+                {
+                    layerList.ItemsSource = LayerManager.Layers;
+                    layerList.Items.Refresh();
+                }
                 LayerManager?.SetActiveLayer(index);
                 layerList.SelectedIndex = index;
                 layerList.SelectedItem = layerList.Items[index];
@@ -61,13 +66,10 @@ namespace Pixellation.Components.Panels
         }
 
         private void UpdateLayerList(object sender, PixelEditorFrameEventArgs e)
-        {   
-            if (IPixelEditorEventType.FRAME_NEW_ACTIVE_INDEX == e.EditorEventTypeValue)
-            {
-                layerList.ItemsSource = LayerManager.Layers;
-                layerList.Items.Refresh();
-                SelectLayer();
-            }
+        {
+            layerList.ItemsSource = LayerManager.Layers;
+            layerList.Items.Refresh();
+            SelectLayer();
         }
 
         private void LayerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -122,7 +124,7 @@ namespace Pixellation.Components.Panels
 
         private void MoveLayerDown(object sender, RoutedEventArgs e)
         {
-            if (layerList.SelectedIndex < (layerList.Items.Count - 1))
+            if (layerList.Items.Count > 1)
             {
                 LayerManager.SaveState(IPixelEditorEventType.MOVELAYERDOWN, layerList.SelectedIndex);
                 LayerManager.MoveLayerDown(layerList.SelectedIndex);
@@ -131,10 +133,19 @@ namespace Pixellation.Components.Panels
 
         private void MergeLayer(object sender, RoutedEventArgs e)
         {
-            if (layerList.SelectedIndex < (layerList.Items.Count - 1))
+            if (layerList.Items.Count > 1)
             {
                 LayerManager.SaveState(IPixelEditorEventType.MERGELAYER, layerList.SelectedIndex);
                 LayerManager.MergeLayerDownward(layerList.SelectedIndex);
+            }
+        }
+
+        private void ClearLayer(object sender, RoutedEventArgs e)
+        {
+            if (layerList.SelectedIndex < layerList.Items.Count)
+            {
+                LayerManager.SaveState(IPixelEditorEventType.LAYER_PIXELS_CHANGED, layerList.SelectedIndex);
+                LayerManager.ClearLayer(layerList.SelectedIndex);
             }
         }
 
@@ -142,10 +153,18 @@ namespace Pixellation.Components.Panels
         {
             if (LayerManager != null)
             {
-                var newImgDialog = new LayerSettingsDialog();
-                newImgDialog.ShowDialog(LayerManager.GetLayer(layerList.SelectedIndex));
-                // Due to lost focus (Note: "Focus();" doesn't help.)
-                SelectLayer(layerList.SelectedIndex);
+                var layer = LayerManager.ActiveLayer;
+                var newImgDialog = new LayerSettingsDialog(layer.LayerName, layer.Opacity);
+                if ((bool)newImgDialog.ShowDialog())
+                {
+                    // Due to lost focus (Note: "Focus();" doesn't help.)
+                    SelectLayer(layerList.SelectedIndex);
+                    
+                    LayerManager.SaveState(IPixelEditorEventType.LAYER_INNER_PROPERTY_UPDATE, layerList.SelectedIndex);
+
+                    layer.LayerName = newImgDialog.Answer.Key;
+                    layer.Opacity = newImgDialog.Answer.Value;
+                }
             }
         }
     }

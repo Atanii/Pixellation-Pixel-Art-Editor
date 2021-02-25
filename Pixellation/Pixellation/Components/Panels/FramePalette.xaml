@@ -6,11 +6,11 @@
              xmlns:local="clr-namespace:Pixellation.Components.Panels"
              xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="800">
+             d:DesignHeight="220" d:DesignWidth="800">
     <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalAlignment="Stretch" Background="AliceBlue">
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <Label Margin="5">Frames (PLACEHOLDER)</Label>
+                <Label Margin="5">Frames</Label>
                 <Button Click="BtnAddFrame" ToolTip="Add New Frame"
                     Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                     Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">

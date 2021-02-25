@@ -15,23 +15,25 @@ namespace Pixellation.Components.Editor
 
         private WriteableBitmap _bitmap;
         public WriteableBitmap Bitmap {
-            get
-            {
-                return _bitmap;
-            }
+            get => _bitmap;
             set
             {
                 if (value != null)
                 {
                     _bitmap = value;
+                    InvalidateVisual();
+                    OnUpdated?.Invoke();
                 }
             }
         }
 
         private string _name;
         public string LayerName {
-            get { return _name; }
-            set { _name = value; _owner.RefreshVisualsThenSignalUpdate(); }
+            get => _name;
+            set {
+                _name = value;
+                OnUpdated?.Invoke();
+            }
         }
 
         public new double Opacity
@@ -42,19 +44,37 @@ namespace Pixellation.Components.Editor
                 {
                     return base.Opacity;
                 }
-                return base.Opacity;
+                return 0d;
             }
             set
             {
                 base.Opacity = value;
+                InvalidateVisual();
+                OnUpdated?.Invoke();
+            }
+        }
+
+        private bool _visible = true;
+        public bool Visible
+        {
+            get => _visible;
+            set
+            {
+                _visible = value;
+                InvalidateVisual();
             }
         }
 
         public int MagnifiedWidth => _bitmap.PixelWidth * _owner.Magnification;
         public int MagnifiedHeight => _bitmap.PixelHeight * _owner.Magnification;
 
-        public bool Visible { get; set; }
         #endregion Fields And Properties
+
+        #region Events
+
+        public static event LayerEventHandler OnUpdated;
+
+        #endregion Events
 
         #region Constructors, Init
         public DrawingLayer(IDrawingHelper owner, string layerName = "", bool visible = true, double opacity = 1.0)
@@ -253,6 +273,11 @@ namespace Pixellation.Components.Editor
         public void Resize(int newWidth, int newHeight)
         {
             _bitmap = _bitmap.Resize(newWidth, newHeight, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
+        }
+
+        public void Clear()
+        {
+            _bitmap.Clear(Colors.Transparent);
         }
         #endregion Bitmap, Rendering
     }

@@ -8,7 +8,7 @@ namespace Pixellation.Components.Editor
     {
         public LayerListMemento GetMemento(int type)
         {
-            return new LayerListMemento(this, type, GetIndex(_activeLayer), PixelWidth, PixelHeight);
+            return new LayerListMemento(this, type, GetIndex(ActiveLayer), PixelWidth, PixelHeight);
         }
 
         public void Restore(LayerListMemento mem)
@@ -152,7 +152,7 @@ namespace Pixellation.Components.Editor
                     }
                     return null;
 
-                case IPixelEditorEventType.RENAMELAYER:
+                case IPixelEditorEventType.LAYER_INNER_PROPERTY_UPDATE:
                     originator = Layers[mem.LayerIndex];
                     if (originator != null)
                     {

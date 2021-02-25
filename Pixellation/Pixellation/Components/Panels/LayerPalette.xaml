@@ -7,7 +7,7 @@
              mc:Ignorable="d" x:Name="layerManager"
              d:DesignHeight="250" d:DesignWidth="200">
     <StackPanel>
-        <UniformGrid Rows="1" Columns="6" HorizontalAlignment="Stretch" Margin="10,10,10,0">
+        <UniformGrid Rows="1" Columns="7" HorizontalAlignment="Stretch" Margin="10,10,10,0">
             <Button Click="AddLayer" ToolTip="Add New Layer"
                 Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                 Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
@@ -50,6 +50,13 @@
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-down.png"></ImageBrush>
                 </Button.Background>
             </Button>
+            <Button Click="ClearLayer" ToolTip="Clear Layer"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-clear.png"></ImageBrush>
+                </Button.Background>
+            </Button>
         </UniformGrid>
         <ListView Height="200" SelectionMode="Single" Margin="10" x:Name="layerList" SelectionChanged="LayerList_SelectionChanged"
                   ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False" MouseDoubleClick="OpenLayerSettingsDialog"
@@ -58,6 +65,13 @@
                 <GridView>
                     <GridViewColumn Header="Name" Width="60" DisplayMemberBinding="{Binding LayerName}" />
                     <GridViewColumn Header="Opacity" Width="50" DisplayMemberBinding="{Binding Opacity}" />
+                    <GridViewColumn Header="Visible" Width="45">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Name="cbVisible" IsChecked="{Binding Visible}"></CheckBox>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
