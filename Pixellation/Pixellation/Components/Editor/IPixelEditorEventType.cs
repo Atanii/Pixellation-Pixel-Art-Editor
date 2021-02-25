@@ -1,4 +1,4 @@
-﻿using Pixellation.Utils.MementoPattern;
+﻿using Pixellation.MementoPattern;
 
 namespace Pixellation.Components.Editor
 {
@@ -37,5 +37,18 @@ namespace Pixellation.Components.Editor
         public const int ROTATE_COUNTERCLOCKWISE_ALL = -ROTATE_ALL;
 
         public const int CLEAR = 16;
+
+        // Frames
+        public const int FRAME_ADD = 17;
+        public const int FRAME_DUPLICATE = 18;
+        public const int FRAME_REMOVE = -FRAME_ADD;
+
+        public const int FRAME_MERGE_TO_LEFT = 19;
+        public const int FRAME_MERGE_REVERSE = -FRAME_MERGE_TO_LEFT;
+
+        public const int FRAME_MOVE_LEFT = -FRAME_MOVE_RIGHT;
+        public const int FRAME_MOVE_RIGHT = 20;
+
+        public const int FRAME_NEW_ACTIVE_INDEX = 21;
     }
 }

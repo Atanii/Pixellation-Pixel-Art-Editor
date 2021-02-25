@@ -1,22 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Pixellation.Utils.MementoPattern
+namespace Pixellation.MementoPattern
 {
     /// <summary>
-    /// Singleton class responsible for organizing and handling the list of saved states for <see cref="Undo()"/> and <see cref="Redo()"/>.
+    /// Multiton class responsible for organizing and handling the list of saved states for <see cref="Undo()"/> and <see cref="Redo()"/>.
     /// </summary>
     /// <typeparam name="_MementoType">Interface with consts representing the possible reasons that caused <see cref="IMemento{_MementoType}"/> to be saved.</typeparam>
     public class Caretaker<_MementoType> where _MementoType : IMementoType
     {
         /// <summary>
-        /// Capacity for saved states (both for undo and redo separately). Default capacity is 100.
+        /// Capacity for saved states (both for undo and redo separately).
         /// </summary>
-        public int Capacity { get; private set; } = 100;
+        public int Capacity { get; private set; }
 
         /// <summary>
-        /// Singleton instance.
+        /// Key for this instance.
         /// </summary>
-        private static Caretaker<_MementoType> instance;
+        public string InstanceKey { get; private set; }
+
+        /// <summary>
+        /// Multiton instances.
+        /// </summary>
+        private static readonly Dictionary<string,Caretaker<_MementoType>> instances = new Dictionary<string, Caretaker<_MementoType>>();
 
         /// <summary>
         /// LinkedList for saved states that can be undone.
@@ -31,44 +37,80 @@ namespace Pixellation.Utils.MementoPattern
         /// <summary>
         /// Marks that a new saved state has just been added for undo.
         /// </summary>
-        public event CaretakerEventHandler OnNewUndoAdded;
+        public static event CaretakerEventHandler OnNewUndoAdded;
 
         /// <summary>
         /// Marks that a new saved state has just been added for redo.
         /// </summary>
-        public event CaretakerEventHandler OnNewRedoAdded;
+        public static event CaretakerEventHandler OnNewRedoAdded;
 
         /// <summary>
         /// Marks that all undos and redos have just been cleared.
         /// </summary>
-        public event CaretakerEventHandler OnCleared;
+        public static event CaretakerEventHandler OnCleared;
 
         /// <summary>
         /// Marks that an operation has just been undone.
         /// </summary>
-        public event CaretakerEventHandler OnUndone;
+        public static event CaretakerEventHandler OnUndone;
 
         /// <summary>
         /// Marks that an operation has just been redone.
         /// </summary>
-        public event CaretakerEventHandler OnRedone;
+        public static event CaretakerEventHandler OnRedone;
 
         /// <summary>
         /// Marks that an error may have happened.
         /// </summary>
-        public event CaretakerEventHandler OnPossibleError;
+        public static event CaretakerEventHandler OnPossibleError;
+
+        /// <summary>
+        /// Class representing <see cref="Caretaker{_MementoType}"/> related exceptions.
+        /// </summary>
+        public class CaretakerException : Exception
+        {
+            /// <summary>
+            /// Constructor for CaretakerException.
+            /// </summary>
+            /// <param name="msg">Message describing the error causing this exception.</param>
+            public CaretakerException(string msg) : base(msg)
+            {
+            }
+        }
+
+        /// <summary>
+        /// Constructor for Caretaker.
+        /// </summary>
+        /// <param name="key"><see cref="InstanceKey"/>.</param>
+        /// <param name="capacity"><see cref="Capacity"/>.</param>
+        private Caretaker(string key, int capacity)
+        {
+            InstanceKey = key;
+            Capacity = capacity;
+        }
+
 
         /// <summary>
         /// Returns an instance for <see cref="Caretaker{_MementoType}"/>.
         /// </summary>
-        /// <returns>Singleton <see cref="Caretaker{_MementoType}"/> instance.</returns>
-        public static Caretaker<_MementoType> GetInstance()
+        /// <param name="key"><see cref="InstanceKey"/>, an id for the specific multiton instance.</param>
+        /// <param name="capacity"><see cref="Capacity"/>.</param>
+        /// <returns>Multiton <see cref="Caretaker{_MementoType}"/> instance.</returns>
+        public static Caretaker<_MementoType> GetInstance(string key, int capacity = 100)
         {
-            if (instance == null)
+            if (key == null || key == string.Empty)
             {
-                instance = new Caretaker<_MementoType>();
+                throw new CaretakerException("Instance key cannot be null or empty string!");
             }
-            return instance;
+            if (capacity <= 0)
+            {
+                throw new CaretakerException("Capacity must be a positive number!");
+            }
+            if (!instances.ContainsKey(key))
+            {
+                instances.Add(key, new Caretaker<_MementoType>(key, capacity));
+            }
+            return instances[key];
         }
 
         /// <summary>
@@ -81,7 +123,7 @@ namespace Pixellation.Utils.MementoPattern
             if (mem != null)
             {
                 Push(_undoList, mem);
-                OnNewUndoAdded?.Invoke(this, new CaretakerEventArgs(this._undoList.Count, this._redoList.Count));
+                OnNewUndoAdded?.Invoke(this, new CaretakerEventArgs(this._undoList.Count, this._redoList.Count, InstanceKey));
                 _redoList.Clear();
             }
             else
@@ -90,6 +132,7 @@ namespace Pixellation.Utils.MementoPattern
                     this,
                     new CaretakerEventArgs(
                         this._undoList.Count, this._redoList.Count,
+                        InstanceKey,
                         "Memento cannot be null!",
                         CaretakerEventArgs.ErrorType.TRIED_TO_SAVE_NULL
                     )
@@ -106,11 +149,11 @@ namespace Pixellation.Utils.MementoPattern
             {
                 var mem = Pop(_undoList);
                 var redoMem = mem.Restore();
-                OnUndone?.Invoke(this, new CaretakerEventArgs(this._undoList.Count, this._redoList.Count));
+                OnUndone?.Invoke(this, new CaretakerEventArgs(this._undoList.Count, this._redoList.Count, InstanceKey));
                 if (redoMem != null)
                 {
                     Push(_redoList, redoMem);
-                    OnNewRedoAdded?.Invoke(this, new CaretakerEventArgs(this._undoList.Count, this._redoList.Count));
+                    OnNewRedoAdded?.Invoke(this, new CaretakerEventArgs(this._undoList.Count, this._redoList.Count, InstanceKey));
                 }
                 else
                 {
@@ -119,6 +162,7 @@ namespace Pixellation.Utils.MementoPattern
                         this,
                         new CaretakerEventArgs(
                             this._undoList.Count, this._redoList.Count,
+                            InstanceKey,
                             "Memento cannot be null!",
                             CaretakerEventArgs.ErrorType.NULL_REDO_WAS_GIVEN_TO_STORE
                         )
@@ -136,11 +180,11 @@ namespace Pixellation.Utils.MementoPattern
             {
                 var mem = Pop(_redoList);
                 var undoMem = mem.Restore();
-                OnRedone?.Invoke(this, new CaretakerEventArgs(this._undoList.Count, this._redoList.Count));
+                OnRedone?.Invoke(this, new CaretakerEventArgs(this._undoList.Count, this._redoList.Count, InstanceKey));
                 if (undoMem != null)
                 {
                     Push(_undoList, undoMem);
-                    OnNewUndoAdded?.Invoke(this, new CaretakerEventArgs(this._undoList.Count, this._redoList.Count));
+                    OnNewUndoAdded?.Invoke(this, new CaretakerEventArgs(this._undoList.Count, this._redoList.Count, InstanceKey));
                 }
                 else
                 {
@@ -149,6 +193,7 @@ namespace Pixellation.Utils.MementoPattern
                         this,
                         new CaretakerEventArgs(
                             this._undoList.Count, this._redoList.Count,
+                            InstanceKey,
                             "Memento cannot be null!",
                             CaretakerEventArgs.ErrorType.NULL_UNDO_WAS_GIVEN_TO_STORE
                         )
@@ -169,13 +214,15 @@ namespace Pixellation.Utils.MementoPattern
 
         /// <summary>
         /// Sets a new capacity for this <see cref="Caretaker{_MementoType}"/>.
+        /// Setting new capacity will cause calling <see cref="Clear"/>.
         /// </summary>
-        /// <param name="cap">New capacity. Negative numbers are ignored!</param>
+        /// <param name="cap">New capacity. Non-positive numbers will be ignored!</param>
         public void SetCapacity(int cap)
         {
             if (cap > 0)
             {
                 Capacity = cap;
+                Clear();
             }
         }
 

@@ -1,10 +1,8 @@
 ﻿using Pixellation.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -19,12 +17,12 @@ namespace Pixellation.FilePackaging
             _filepath = filepath;
         }
 
-        public async Task<ProjectModel> LoadProjectModel(string metadataFileName, string projectDataFileName, string layersFileName)
+        public async Task<ProjectModel> LoadProjectModel(string metadataFileName, string projectDataFileName)
         {
             try
             {
                 // Projectmodel
-                var project = new ProjectModel();
+                ProjectModel project = null;
 
                 // Open the package file
                 using (var fs = new FileStream(_filepath, FileMode.Open))
@@ -38,7 +36,6 @@ namespace Pixellation.FilePackaging
                         {
                             var str = metadataFile.Open();
                             var metadata = await JsonSerializer.DeserializeAsync<FilePackageMetadata>(str);
-                            project.ModelVersion = metadata.Version;
                         }
 
                         // Projectdata
@@ -46,16 +43,7 @@ namespace Pixellation.FilePackaging
                         if (projectDataFile != null)
                         {
                             var str = projectDataFile.Open();
-                            project.ProjectData = await JsonSerializer.DeserializeAsync<ProjectDataModel>(str);
-                        }
-
-                        // Layers
-                        var layersFile = archive.Entries.Where(x => x.Name == layersFileName).FirstOrDefault();
-                        if (layersFile != null)
-                        {
-                            var str = layersFile.Open();
-                            var formatter = new BinaryFormatter();
-                            project.Layers = (List<LayerModel>)formatter.Deserialize(str);
+                            project = await JsonSerializer.DeserializeAsync<ProjectModel>(str);
                         }
                     }
                 }

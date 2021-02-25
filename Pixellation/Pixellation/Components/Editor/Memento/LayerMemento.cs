@@ -1,4 +1,4 @@
-﻿using Pixellation.Utils.MementoPattern;
+﻿using Pixellation.MementoPattern;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor.Memento

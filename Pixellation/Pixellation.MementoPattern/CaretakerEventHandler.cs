@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace Pixellation.Utils.MementoPattern
+namespace Pixellation.MementoPattern
 {
     /// <summary>
     /// Eventhandler for events regarding <see cref="Caretaker{_MementoType}"/>.

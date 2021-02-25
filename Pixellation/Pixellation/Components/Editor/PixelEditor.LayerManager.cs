@@ -1,5 +1,4 @@
 ﻿using Pixellation.Interfaces;
-using Pixellation.Models;
 using Pixellation.Properties;
 using Pixellation.Utils;
 using System.Collections.Generic;
@@ -9,8 +8,30 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public partial class PixelEditor : IVisualManager
+    public partial class PixelEditor : ILayerManager
     {
+        public static event PixelEditorLayerEventHandler LayerListChanged;
+
+        private DrawingLayer _activeLayer;
+
+        /// <summary>
+        /// List of <see cref="DrawingLayer"/>s the currently edited image consists of.
+        /// </summary>
+        public List<DrawingLayer> Layers
+        {
+            get
+            {
+                if (Frames.Count >= (ActiveFrameIndex + 1))
+                {
+                    return Frames[ActiveFrameIndex].Layers;
+                }
+                else
+                {
+                    return new List<DrawingLayer>();
+                }
+            }
+        }
+
         public void MeasureAllLayer(System.Windows.Size s)
         {
             foreach (var l in Layers)
@@ -42,6 +63,7 @@ namespace Pixellation.Components.Editor
                 RemoveVisualChild(l);
             }
             Layers.Clear();
+
             if (_drawPreview != null)
             {
                 RemoveVisualChild(_drawPreview);
@@ -59,7 +81,14 @@ namespace Pixellation.Components.Editor
                 _gridLines = null;
             }
 
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
+            (
+                IPixelEditorEventType.CLEAR, -1, -1, new int[] { }
+            ));
+
+            Frames.Clear();
+
+            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
             (
                 IPixelEditorEventType.CLEAR, -1, -1, new int[] { }
             ));
@@ -68,20 +97,32 @@ namespace Pixellation.Components.Editor
         public void ResetLayerAndHelperVisuals(bool includeHelperVisuals = true)
         {
             // Layers
-            foreach (var l in Layers)
-            {
-                RemoveVisualChild(l);
-            }
-            foreach (var l in Layers)
-            {
-                AddVisualChild(l);
-            }
+            RemoveLayersFromVisualChildren();
+            AddLayersFromVisualChildren();
+
             // Previewlayer
             ResetPreviewLayer();
+            
             // Helpervisuals
             if (includeHelperVisuals)
             {
                 ResetHelperVisuals();
+            }
+        }
+
+        private void RemoveLayersFromVisualChildren()
+        {
+            foreach (var l in Layers)
+            {
+                RemoveVisualChild(l);
+            }
+        }
+
+        private void AddLayersFromVisualChildren()
+        {
+            foreach (var l in Layers)
+            {
+                AddVisualChild(l);
             }
         }
 
@@ -122,12 +163,19 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public void SetActiveLayer(int layerIndex = 0)
+        public void SetActiveLayer(int layerIndex = 0, bool signalEvent = false)
         {
             if (Layers.ElementAtOrDefault(layerIndex) != null)
             {
                 _activeLayer = Layers[layerIndex];
-
+                if (signalEvent)
+                {
+                    LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
+                    (
+                        IPixelEditorEventType.NONE,
+                        0, 0, new int[] { 0 }
+                    ));
+                }
                 RefreshVisualsThenSignalUpdate();
             }
         }
@@ -135,19 +183,7 @@ namespace Pixellation.Components.Editor
         #region Getters
         public WriteableBitmap GetWriteableBitmap() => _activeLayer.GetWriteableBitmap();
 
-        public List<DrawingLayer> GetLayers() => Layers;
-
         public DrawingLayer GetLayer(int layerIndex = 0) => Layers.ElementAtOrDefault(layerIndex);
-
-        public List<LayerModel> GetLayerModels()
-        {
-            var list = new List<LayerModel>();
-            foreach (var l in Layers)
-            {
-                list.Add(l.ToLayerModel());
-            }
-            return list;
-        }
 
         public int GetIndex(DrawingLayer layer)
         {
@@ -179,6 +215,29 @@ namespace Pixellation.Components.Editor
             for (int i = from; i >= to; i--)
             {
                 merged.Blit(rect, Layers[i].GetWriteableBitmapWithAppliedOpacity(), rect, mode);
+            }
+
+            return merged;
+        }
+
+        /// <summary>
+        /// Merges the layers in the given index range into a single WriteableBitmap.
+        /// The indexing is reverse!
+        /// </summary>
+        /// <param name="from">From index relative to last layer index</param>
+        /// <param name="to">To index relative to last layer index. Default is 0, which means the layer above all others.</param>
+        /// <returns>The bitmap containing the merged layers. If no merge could have been done in the range, a blank bitmap will be returned.</returns>
+        public WriteableBitmap Merge(List<WriteableBitmap> bmps, WriteableBitmapExtensions.BlendMode mode = WriteableBitmapExtensions.BlendMode.Alpha)
+        {
+            // Blank bitmap as mergebase
+            var merged = BitmapFactory.New(PixelWidth, PixelHeight);
+            merged.Clear(Colors.Transparent);
+
+            var rect = new System.Windows.Rect(0d, 0d, merged.Width, merged.Height); ;
+
+            for (int i = 0; i < bmps.Count; i--)
+            {
+                merged.Blit(rect, bmps[i], rect, mode);
             }
 
             return merged;
@@ -243,7 +302,7 @@ namespace Pixellation.Components.Editor
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.ADDLAYER,
                 layerIndex,
@@ -252,26 +311,26 @@ namespace Pixellation.Components.Editor
             ));
         }
 
-        public void AddLayer(List<LayerModel> models, int layerIndex = 0)
-        {
-            for (int i = 0; i < models.Count; i++)
-            {
-                var tmp = new DrawingLayer(
-                    this,
-                    models[i]
-                );
-                Layers.Add(tmp);
-                AddVisualChild(tmp);
-            }
+        //public void AddLayer(List<LayerModel> models, int layerIndex = 0)
+        //{
+        //    for (int i = 0; i < models.Count; i++)
+        //    {
+        //        var tmp = new DrawingLayer(
+        //            this,
+        //            models[i]
+        //        );
+        //        Layers.Add(tmp);
+        //        AddVisualChild(tmp);
+        //    }
 
-            RefreshVisualsThenSignalUpdate();
+        //    RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
-            (
-                IPixelEditorEventType.ADDLAYER,
-                0, 0, new int[] {0}
-            ));
-        }
+        //    LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
+        //    (
+        //        IPixelEditorEventType.ADDLAYER,
+        //        0, 0, new int[] {0}
+        //    ));
+        //}
 
         public void AddLayer(string name, int layerIndex = 0)
         {
@@ -280,7 +339,7 @@ namespace Pixellation.Components.Editor
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.ADDLAYER,
                 layerIndex,
@@ -296,7 +355,7 @@ namespace Pixellation.Components.Editor
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.DUPLICATELAYER,
                 layerIndex,
@@ -316,7 +375,7 @@ namespace Pixellation.Components.Editor
                 Layers.Insert(newLayerIndex, tmp);
                 RefreshVisualsThenSignalUpdate();
             }
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.MOVELAYERUP,
                 layerIndex,
@@ -336,7 +395,7 @@ namespace Pixellation.Components.Editor
                 Layers.Insert(newLayerIndex, tmp);
                 RefreshVisualsThenSignalUpdate();
             }
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.MOVELAYERDOWN,
                 layerIndex,
@@ -353,6 +412,10 @@ namespace Pixellation.Components.Editor
 
         public void RemoveLayer(int layerIndex)
         {
+            if ((Layers.Count - 1) <= 0)
+            {
+                return;
+            }
             var newLayerIndex = layerIndex;
             if (Layers.ElementAtOrDefault(layerIndex) != null)
             {
@@ -368,7 +431,7 @@ namespace Pixellation.Components.Editor
             {
                 newLayerIndex = layerIndex - 1;
             }
-            LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
             (
                 IPixelEditorEventType.REMOVELAYER,
                 layerIndex,
@@ -388,7 +451,7 @@ namespace Pixellation.Components.Editor
 
                 RefreshVisualsThenSignalUpdate();
 
-                LayerListChanged?.Invoke(this, new PixelEditorEventArgs
+                LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
                 (
                     IPixelEditorEventType.MERGELAYER,
                     layerIndex,

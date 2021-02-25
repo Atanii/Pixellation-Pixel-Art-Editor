@@ -1,4 +1,4 @@
-﻿namespace Pixellation.Utils.MementoPattern
+﻿namespace Pixellation.MementoPattern
 {
     /// <summary>
     /// Base memento class storing the corresponding <see cref="_MementoType"/> and <see cref="IOriginator{_Memento, _MementoType}"/>.

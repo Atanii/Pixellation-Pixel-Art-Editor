@@ -2,14 +2,14 @@
 
 namespace Pixellation.Models
 {
-    [Serializable()]
     public class LayerModel
     {
-        public byte[] LayerBitmap { get; set; }
+        public string LayerBitmap { get; set; }
         public string LayerName { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public int Stride { get; set; }
         public double Opacity { get; set; }
+        public bool Visible { get; set; }
+        public int LayerWidth { get; set; }
+        public int LayerHeight { get; set; }
+        public int LayerStride { get; set; }
     }
 }

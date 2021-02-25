@@ -1,4 +1,4 @@
-﻿using Pixellation.Utils.MementoPattern;
+﻿using Pixellation.MementoPattern;
 
 namespace Pixellation.Components.Editor.Memento
 {

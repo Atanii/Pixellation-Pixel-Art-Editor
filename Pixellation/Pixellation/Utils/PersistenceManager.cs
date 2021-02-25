@@ -1,15 +1,15 @@
-﻿using Pixellation.FilePackaging;
+﻿using Pixellation.Components.Editor;
+using Pixellation.FilePackaging;
 using Pixellation.Interfaces;
-using Pixellation.Models;
 using Pixellation.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Utils
@@ -18,10 +18,11 @@ namespace Pixellation.Utils
     {
         public readonly string MetadataFileName = Resources.PackageContentFileNameForMetaData + "." + Resources.ExtensionForDataFile;
         public readonly string ProjectDataFileName = Resources.PackageContentFileNameForProjectData + "." + Resources.ExtensionForDataFile;
-        public readonly string LayersFileName = Resources.PackageContentFileNameForLayers + "." + Resources.ExtensionForLayersFile;
+
+        private string CurrentVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        private string CurrentSaveDate => DateTime.Now.ToString();
 
         public bool AlreadySaved { get; private set; }
-
         public string PreviousFullPath { get; private set; }
 
         private static PersistenceManager _instance;
@@ -35,111 +36,78 @@ namespace Pixellation.Utils
             return _instance;
         }
 
-        public async Task<ProjectModel> LoadProject(string filePath)
+        private PersistenceManager() { }
+
+        private FilePackageMetadata CurrentMetadata => new FilePackageMetadata
         {
-            PreviousFullPath = filePath;
-            var fpr = new FilePackageReader(filePath);
-            var data = await fpr.LoadProjectModel(MetadataFileName, ProjectDataFileName, LayersFileName);
-            return data;
+            Version = CurrentVersion,
+            SaveDate = CurrentSaveDate
+        };
+
+        public async Task<KeyValuePair<string, List<DrawingFrame>>> LoadProject(string filePath, IDrawingHelper helper)
+        {
+            KeyValuePair<string, List<DrawingFrame>> res = new KeyValuePair<string, List<DrawingFrame>>();
+
+            try
+            {
+                var fpr = new FilePackageReader(filePath);
+                var data = await fpr.LoadProjectModel(MetadataFileName, ProjectDataFileName);
+                res = ModelConverterExtensions.GetProjectData(data, helper);
+
+                AlreadySaved = true;
+                PreviousFullPath = filePath;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Format(Messages.ErrorWhileLoadingProject, ex.Message, "Error"));
+            }
+
+            return res;
         }
 
         public WriteableBitmap LoadImage(string filePath)
         {
-            BitmapImage bitmap = new BitmapImage(new Uri(filePath, UriKind.Absolute));
-            WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap);
-            return writeableBitmap;
+            WriteableBitmap res = null;
+
+            try
+            {
+                BitmapImage bitmap = new BitmapImage(new Uri(filePath, UriKind.Absolute));
+                res = new WriteableBitmap(bitmap);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Format(Messages.ErrorWhileLoadingImage, ex.Message, "Error"));
+            }
+
+            return res;
         }
 
-        public bool SaveProject(string filePath, IVisualManager vm)
+        public bool SaveProject(List<DrawingFrame> frames, string filePath = "")
         {
-            var filePaths = new List<string>();
-
-            // Saving LayerModels
-            var layersPath = Resources.PackageContentFileNameForLayers + "." + Resources.ExtensionForLayersFile;
-            var formatter = new BinaryFormatter();
-            var stream = new FileStream(layersPath, FileMode.Create, FileAccess.Write);
-            formatter.Serialize(stream, vm.GetLayerModels());
-            stream.Close();
-            filePaths.Add(layersPath);
-
-            // Saving Metadata
-            var fpmd = new FilePackageMetadata
-            {
-                Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                SaveDate = DateTime.Now.ToString()
-            };
-
-            var metaDataPath = Resources.PackageContentFileNameForMetaData + "." + Resources.ExtensionForDataFile;
-            string jsonString = JsonSerializer.Serialize(fpmd);
-            File.WriteAllText(metaDataPath, jsonString);
-            filePaths.Add(metaDataPath);
-
-            // Saving Project Data
-            var fppd = new ProjectDataModel
-            {
-                ProjectName = filePath.Split('.')[0].Split('\\')[^1]
-            };
-
-            var projectInfoPath = Resources.PackageContentFileNameForProjectData + "." + Resources.ExtensionForDataFile;
-            jsonString = JsonSerializer.Serialize(fppd);
-            File.WriteAllText(projectInfoPath, jsonString);
-            filePaths.Add(projectInfoPath);
-
-            // Packaging
-            var fp = new FilePackage
-            {
-                FilePath = filePath,
-                ContentFilePathList = filePaths
-            };
-
-            var fpwr = new FilePackageWriter(fp);
-            fpwr.SaveProjectModel();
-
-            AlreadySaved = true;
-            PreviousFullPath = filePath;
-            return true;
-        }
-
-        public bool SaveProject(IVisualManager vm)
-        {
-            if (!AlreadySaved && PreviousFullPath != "")
+            if (filePath == "" && (!AlreadySaved || PreviousFullPath == ""))
             {
                 return false;
             }
+            else if (AlreadySaved && PreviousFullPath != "")
+            {
+                filePath = PreviousFullPath;
+            }
 
             var filePaths = new List<string>();
-            var filePath = PreviousFullPath;
 
-            // Saving LayerModels
-            var layersPath = Resources.PackageContentFileNameForLayers + "." + Resources.ExtensionForLayersFile;
-            var formatter = new BinaryFormatter();
-            var stream = new FileStream(layersPath, FileMode.Create, FileAccess.Write);
-            formatter.Serialize(stream, vm.GetLayerModels());
-            stream.Close();
-            filePaths.Add(layersPath);
-
-            // Saving Metadata
-            var fpmd = new FilePackageMetadata
-            {
-                Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                SaveDate = DateTime.Now.ToString()
-            };
-
-            var metaDataPath = Resources.PackageContentFileNameForMetaData + "." + Resources.ExtensionForDataFile;
-            string jsonString = JsonSerializer.Serialize(fpmd);
-            File.WriteAllText(metaDataPath, jsonString);
-            filePaths.Add(metaDataPath);
-
-            // Saving Project Data
-            var fppd = new ProjectDataModel
-            {
-                ProjectName = filePath.Split('.')[0].Split('\\')[^1]
-            };
-
+            // Saving ProjectModel
+            var pm = ModelConverterExtensions.MakeProjectModel(filePath.Split('.')[0].Split('\\')[^1], frames);
             var projectInfoPath = Resources.PackageContentFileNameForProjectData + "." + Resources.ExtensionForDataFile;
-            jsonString = JsonSerializer.Serialize(fppd);
+            var jsonString = JsonSerializer.Serialize(pm);
             File.WriteAllText(projectInfoPath, jsonString);
             filePaths.Add(projectInfoPath);
+
+            // Saving Metadata
+            var fpmd = CurrentMetadata;
+            var metaDataPath = Resources.PackageContentFileNameForMetaData + "." + Resources.ExtensionForDataFile;
+            jsonString = JsonSerializer.Serialize(fpmd);
+            File.WriteAllText(metaDataPath, jsonString);
+            filePaths.Add(metaDataPath);
 
             // Packaging
             var fp = new FilePackage
@@ -149,10 +117,21 @@ namespace Pixellation.Utils
             };
 
             var fpwr = new FilePackageWriter(fp);
-            fpwr.SaveProjectModel();
 
-            AlreadySaved = true;
-            return true;
+            try
+            {
+                fpwr.SaveProjectModel();
+
+                AlreadySaved = true;
+                PreviousFullPath = filePath;
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Format(Messages.ErrorWhileSavingProject, ex.Message, "Error"));
+                return false;
+            }
         }
 
         public void Reset()
@@ -161,10 +140,54 @@ namespace Pixellation.Utils
             PreviousFullPath = "";
         }
 
-        public void ExportAsImage(string filePath, IVisualManager vm)
+        public void ExportAsImage(string filePath, IFrameProvider vm, ExportModes exportMode = ExportModes.FRAME, int rows = 0, int cols = 0)
         {
-            var wrBitmap = vm.GetAllMergedWriteableBitmap();
-            SaveBitmapSourceToFile(filePath, wrBitmap);
+            try
+            {
+                WriteableBitmap bmp = null;
+
+                switch (exportMode)
+                {
+                    case ExportModes.LAYER:
+                        var index = vm.GetActiveLayerIndex();
+                        if (index != -1)
+                        {
+                            bmp = vm.Layers[index].GetWriteableBitmapWithAppliedOpacity();
+                        }
+                        break;
+
+                    case ExportModes.FRAME:
+                        bmp = MergeAndExportUtils.MergeAll(vm.Frames[vm.ActiveFrameIndex].Layers);
+                        break;
+
+                    case ExportModes.FRAME_ALL:
+                        bmp = MergeAndExportUtils.MergeAll(vm.Frames);
+                        break;
+
+                    case ExportModes.SPRITESHEET_FRAME:
+                        bmp = MergeAndExportUtils.GenerateSpriteSheetFromLayers(
+                            vm.Frames[vm.ActiveFrameIndex].Layers, WriteableBitmapExtensions.BlendMode.Alpha,
+                            rows, cols,
+                            Colors.Transparent);
+                        break;
+
+                    case ExportModes.SPRITESHEET_ALL_FRAME:
+                        bmp = MergeAndExportUtils.GenerateSpriteSheetFromFrames(
+                            vm.Frames, WriteableBitmapExtensions.BlendMode.Alpha,
+                            rows, cols,
+                            Colors.Transparent);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                SaveBitmapSourceToFile(filePath, bmp);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Format(Messages.ErrorWhileExportingImage, ex.Message, "Error"));
+            }
         }
 
         public void SaveBitmapSourceToFile(string filePath, BitmapSource image)
@@ -177,10 +200,6 @@ namespace Pixellation.Utils
                 BitmapEncoder encoder;
                 switch (extension.ToLower())
                 {
-                    case "png":
-                        encoder = new PngBitmapEncoder();
-                        break;
-
                     case "jpg":
                     case "jpeg":
                         encoder = new JpegBitmapEncoder();
@@ -198,9 +217,10 @@ namespace Pixellation.Utils
                         encoder = new GifBitmapEncoder();
                         break;
 
+                    case "png":
                     default:
-                        MessageBox.Show($"Saving into (.{extension}) image format is not supported!", "Error");
-                        return;
+                        encoder = new PngBitmapEncoder();
+                        break;
                 }
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 encoder.Save(fs);

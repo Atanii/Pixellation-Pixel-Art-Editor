@@ -13,27 +13,27 @@ namespace Pixellation.Components.Panels
     /// </summary>
     public partial class LayerPalette : UserControl
     {
-        private static event EventHandler<DependencyPropertyChangedEventArgs> RaiseLayerListPropertyInitialized;
+        private static event EventHandler<DependencyPropertyChangedEventArgs> RaiseLayerListPropertyChanged;
 
-        public IVisualManager LayerManager
+        public ILayerManager LayerManager
         {
-            get { return (IVisualManager)GetValue(LayerListProperty); }
+            get { return (ILayerManager)GetValue(LayerListProperty); }
             set { SetValue(LayerListProperty, value); }
         }
 
         public static readonly DependencyProperty LayerListProperty =
-         DependencyProperty.Register("LayerManager", typeof(IVisualManager), typeof(LayerPalette), new FrameworkPropertyMetadata(
+         DependencyProperty.Register("LayerManager", typeof(ILayerManager), typeof(LayerPalette), new FrameworkPropertyMetadata(
              default,
-             (s, e) => { RaiseLayerListPropertyInitialized?.Invoke(s, e); }
+             (s, e) => { RaiseLayerListPropertyChanged?.Invoke(s, e); }
         ));
 
         public LayerPalette()
         {
-            RaiseLayerListPropertyInitialized += (a, b) =>
+            RaiseLayerListPropertyChanged += (a, b) =>
             {
-                LayerManager.LayerListChanged += UpdateLayerList;
-                UpdateLayerList(a, PixelEditorEventArgs.Empty);
-                // Initial layer selection
+                PixelEditor.LayerListChanged += UpdateLayerList;
+                PixelEditor.FrameListChanged += UpdateLayerList;
+                UpdateLayerList(a, PixelEditorLayerEventArgs.Empty);
                 SelectLayer();
             };
             InitializeComponent();
@@ -41,7 +41,7 @@ namespace Pixellation.Components.Panels
 
         private void SelectLayer(int index = 0)
         {
-            if (LayerManager != null && LayerManager.GetLayers().Count > 0 && layerList.Items.Count > 0)
+            if (LayerManager != null && LayerManager.Layers.Count > 0 && layerList.Items.Count > 0)
             {
                 LayerManager?.SetActiveLayer(index);
                 layerList.SelectedIndex = index;
@@ -49,13 +49,24 @@ namespace Pixellation.Components.Panels
             }
         }
 
-        private void UpdateLayerList(object sender, PixelEditorEventArgs e)
+        private void UpdateLayerList(object sender, PixelEditorLayerEventArgs e)
         {
-            layerList.ItemsSource = LayerManager.GetLayers();
+            layerList.ItemsSource = LayerManager.Layers;
             layerList.Items.Refresh();
-            if (e != PixelEditorEventArgs.Empty && e.NewIndexOfActiveLayer != -1)
+
+            if (e != PixelEditorLayerEventArgs.Empty && e.NewIndexOfActiveLayer != -1)
             {
                 SelectLayer(e.NewIndexOfActiveLayer);
+            }
+        }
+
+        private void UpdateLayerList(object sender, PixelEditorFrameEventArgs e)
+        {   
+            if (IPixelEditorEventType.FRAME_NEW_ACTIVE_INDEX == e.EditorEventTypeValue)
+            {
+                layerList.ItemsSource = LayerManager.Layers;
+                layerList.Items.Refresh();
+                SelectLayer();
             }
         }
 
@@ -71,13 +82,13 @@ namespace Pixellation.Components.Panels
             {
                 if (layerList.Items.Count == 0)
                 {
-                    LayerManager.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
+                    LayerManager.AddLayer(newLayerDialog.Answer);
                     LayerManager.SaveState(IPixelEditorEventType.ADDLAYER, layerList.Items.Count > 0 ? layerList.SelectedIndex : -1);
                 }
                 else
                 {
                     LayerManager.SaveState(IPixelEditorEventType.ADDLAYER, layerList.Items.Count > 0 ? layerList.SelectedIndex : -1);
-                    LayerManager.AddLayer(newLayerDialog.Answer ?? (new DateTime()).Ticks.ToString());
+                    LayerManager.AddLayer(newLayerDialog.Answer);
                 }
             }
         }

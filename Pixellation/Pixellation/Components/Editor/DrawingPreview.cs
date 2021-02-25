@@ -1,81 +1,169 @@
 ﻿using Pixellation.Interfaces;
-using System.Collections.Generic;
+using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
     internal class DrawingPreview : FrameworkElement
     {
-        public List<DrawingLayer> Layers
+        private static event EventHandler<DependencyPropertyChangedEventArgs> IFrameProviderUpdated;
+        private static event EventHandler<DependencyPropertyChangedEventArgs> ModeUpdated;
+
+        private int _fps = 24;
+        public int FPS
         {
-            get { return (List<DrawingLayer>)GetValue(LayersProperty); }
-            set { SetValue(LayersProperty, value); }
+            get => _fps;
+            set
+            {
+                _fps = Math.Clamp(value, 1, 60);
+            }
+        }
+        
+        private long TimeBetweenFrames => 1000 / FPS;
+        private long MillisecondsNow => DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        private long lastTime = 0;
+
+        private int _indexOfCurrentFrame = 0;
+        public int IndexOfCurrentFrame
+        {
+            get => _indexOfCurrentFrame;
+            set
+            {
+                if (FrameProvider != null)
+                {
+                    var tmp = value % FrameProvider.Frames.Count;
+                    if (tmp == 0 && PMode == PreviewMode.PLAY)
+                    {
+                        PMode = PreviewMode.LAYERS;
+                    }
+                    _indexOfCurrentFrame = tmp;
+                }
+            }
         }
 
-        public static readonly DependencyProperty LayersProperty =
-         DependencyProperty.Register("Layers", typeof(List<DrawingLayer>), typeof(DrawingPreview), new FrameworkPropertyMetadata(
-             new List<DrawingLayer>()
-        ));
-
-        public IPreviewable VisualToPreview
+        public IFrameProvider FrameProvider
         {
-            get { return (IPreviewable)GetValue(VisualToPreviewProperty); }
-            set { SetValue(VisualToPreviewProperty, value); }
+            get { return (IFrameProvider)GetValue(FrameProviderProperty); }
+            set { SetValue(FrameProviderProperty, value); }
         }
 
-        public static readonly DependencyProperty VisualToPreviewProperty =
-         DependencyProperty.Register("VisualToPreview", typeof(IPreviewable), typeof(DrawingPreview), new FrameworkPropertyMetadata(
+        public static readonly DependencyProperty FrameProviderProperty =
+         DependencyProperty.Register("FrameProvider", typeof(IFrameProvider), typeof(DrawingPreview), new FrameworkPropertyMetadata(
              default,
-             (d, e) => { RaiseVisualToPreviewChangeEvent?.Invoke(d, e); }
+             (s, e) => { IFrameProviderUpdated?.Invoke(s, e); }
         ));
 
-        private static event PropertyChangedCallback RaiseVisualToPreviewChangeEvent;
+        public PreviewMode PMode
+        {
+            get { return (PreviewMode)GetValue(PModeProperty); }
+            set { SetValue(PModeProperty, value); }
+        }
+
+        public static readonly DependencyProperty PModeProperty =
+         DependencyProperty.Register("PMode", typeof(PreviewMode), typeof(DrawingPreview), new FrameworkPropertyMetadata(
+             PreviewMode.FRAMES,
+             (s, e) => { ModeUpdated?.Invoke(s, e); }
+        ));
 
         public DrawingPreview()
         {
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
-            RaiseVisualToPreviewChangeEvent += (o, e) =>
+
+            PixelEditor.FrameListChanged += (s, a) => { InvalidateVisual(); };
+            PixelEditor.LayerListChanged += (s, a) => { InvalidateVisual(); };
+            PixelEditor.RaiseImageUpdatedEvent += (s, a) => { InvalidateVisual(); };
+
+            //System.Windows.Media.CompositionTarget.Rendering += UpdateColor;
+        }
+
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private double _frameCounter;
+        private Point _pt;
+
+        // Called just before frame is rendered to allow custom drawing.
+        protected void UpdateColor(object sender, EventArgs e)
+        {
+            _stopwatch.Start();
+
+            // Determine frame rate in fps (frames per second).
+            var frameRate = (long)(_frameCounter / _stopwatch.Elapsed.TotalSeconds);
+            if (frameRate > 0)
             {
-                VisualToPreview.RaiseImageUpdatedEvent += (s, a) =>
-                {
-                    InvalidateVisual();
-                };
-            };
+                // Update elapsed time, number of frames, and frame rate.
+                //myStopwatchLabel.Content = _stopwatch.Elapsed.ToString();
+                //myFrameCounterLabel.Content = _frameCounter.ToString(CultureInfo.InvariantCulture);
+                //myFrameRateLabel.Content = frameRate.ToString();
+            }
+
+            // Update the background of the canvas by converting MouseMove info to RGB info.
+            //var redColor = (byte)(_pt.X / 3.0);
+            //var blueColor = (byte)(_pt.Y / 2.0);
+            //myCanvas.Background = new SolidColorBrush(Color.FromRgb(redColor, 0x0, blueColor));
         }
 
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
 
-            if (Layers.Count > 0)
+            if (FrameProvider != null)
             {
-                var tmp = Layers[0];
-                double w, h;
-                if (tmp.MagnifiedWidth >= tmp.MagnifiedHeight && tmp.MagnifiedWidth > Width)
+                switch (PMode)
                 {
-                    w = Width;
-                    h = (w / tmp.MagnifiedWidth) * tmp.MagnifiedHeight;
+                    // Only layers of selected frame
+                    case PreviewMode.LAYERS:
+                        RenderLayers(dc);
+                        break;
+
+                    // All frames in one image
+                    case PreviewMode.FRAMES:
+                        RenderFrames(dc);
+                        break;
+
+                    // Cycle through available frames
+                    case PreviewMode.PLAY:
+                    case PreviewMode.LOOP:
+                        AnimateFrames(dc);
+                        break;
+
+                    default:
+                        break;
                 }
-                else if (tmp.MagnifiedHeight >= tmp.MagnifiedWidth && tmp.MagnifiedHeight > Height)
-                {
-                    h = Height;
-                    w = (h / tmp.MagnifiedHeight) * tmp.MagnifiedWidth;
-                }
-                else
-                {
-                    w = tmp.MagnifiedWidth;
-                    h = tmp.MagnifiedHeight;
-                }
-                double x = (Width - w) / 2;
-                double y = (Height - h) / 2;
-                foreach (var l in Layers)
-                {
-                    var a = l.Bitmap.Clone();
-                    a.BlitRender(l.Bitmap, false, (float)l.Opacity);
-                    dc.DrawImage(a, new Rect(x, y, w, h));
-                }
+            }
+        }
+
+        private void AnimateFrames(DrawingContext dc)
+        {
+            // Calls the overwritten OnRender method of DrawingFrame (which renders the layers of drawingframe in one image)
+            FrameProvider.Frames[IndexOfCurrentFrame].Render(dc, 0, 0, Width, Height);
+
+            // 24 FPS, 1000ms / 24 time between frames
+            if ((MillisecondsNow - lastTime) >= TimeBetweenFrames)
+            {
+                // Property, set PreviewMode to LAYERS from PLAY after one full run
+                // In case of LOOP only if the PreviewMode was set to something else with a button
+                IndexOfCurrentFrame += 1;
+                lastTime = MillisecondsNow;
+            }
+
+            // Call OnRender
+            InvalidateVisual();
+        }
+
+        private void RenderLayers(DrawingContext dc)
+        {
+            foreach (var layer in FrameProvider.Layers)
+            {
+                layer.Render(dc, 0, 0, Width, Height);
+            }
+        }
+
+        private void RenderFrames(DrawingContext dc)
+        {
+            foreach (var frame in FrameProvider.Frames)
+            {
+                frame.Render(dc, 0, 0, Width, Height);
             }
         }
     }

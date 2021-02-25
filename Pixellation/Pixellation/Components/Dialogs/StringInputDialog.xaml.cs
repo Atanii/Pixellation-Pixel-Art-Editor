@@ -19,7 +19,9 @@ namespace Pixellation.Components.Dialogs.StringInputDialog
         {
             DialogTitle = title;
             LabelText = labelText;
+
             InitializeComponent();
+
             txtInput.Focus();
         }
 

@@ -1,18 +1,17 @@
 ﻿using Pixellation.Components.Editor.Memento;
-using Pixellation.Models;
-using Pixellation.Utils;
-using Pixellation.Utils.MementoPattern;
+using Pixellation.MementoPattern;
 using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Pixellation.Interfaces;
 
 namespace Pixellation.Components.Editor
 {
     public class DrawingLayer : FrameworkElement, IOriginator<LayerMemento, IPixelEditorEventType>
     {
         #region Fields And Properties
-        private PixelEditor _owner;
+        private readonly IDrawingHelper _owner;
 
         private WriteableBitmap _bitmap;
         public WriteableBitmap Bitmap {
@@ -58,9 +57,10 @@ namespace Pixellation.Components.Editor
         #endregion Fields And Properties
 
         #region Constructors, Init
-        public DrawingLayer(PixelEditor owner, string layerName = "", bool visible = true, double opacity = 1.0)
+        public DrawingLayer(IDrawingHelper owner, string layerName = "", bool visible = true, double opacity = 1.0)
         {
-            InitBitmap(owner);
+            _owner = owner;
+            InitBitmap();
             if (layerName == "")
             {
                 _name = "Layer-" + (new DateTime()).Ticks;
@@ -73,9 +73,10 @@ namespace Pixellation.Components.Editor
             Opacity = opacity;
         }
 
-        public DrawingLayer(PixelEditor owner, WriteableBitmap bitmap, string layerName = "", bool visible = true, double opacity = 1.0)
+        public DrawingLayer(IDrawingHelper owner, WriteableBitmap bitmap, string layerName = "", bool visible = true, double opacity = 1.0)
         {
-            InitBitmap(owner, bitmap);
+            _owner = owner;
+            InitBitmap(bitmap);
             if (layerName == "")
             {
                 _name = "Layer-" + (new DateTime()).Ticks;
@@ -88,24 +89,10 @@ namespace Pixellation.Components.Editor
             Opacity = opacity;
         }
 
-        public DrawingLayer(PixelEditor owner, LayerModel model, bool visible = true)
+        public DrawingLayer(IDrawingHelper owner, LayerMemento mem)
         {
-            InitBitmap(owner, model.LayerBitmap.ToWriteableBitmap(model.Width, model.Height, model.Stride));
-            if (model.LayerName == "")
-            {
-                _name = "Layer-" + (new DateTime()).Ticks;
-            }
-            else
-            {
-                _name = model.LayerName;
-            }
-            Visible = visible;
-            Opacity = model.Opacity;
-        }
-
-        public DrawingLayer(PixelEditor owner, LayerMemento mem)
-        {
-            InitBitmap(owner, mem.Bitmap);
+            _owner = owner;
+            InitBitmap(mem.Bitmap);
             if (mem.LayerName == "")
             {
                 _name = "Layer-" + (new DateTime()).Ticks;
@@ -118,9 +105,8 @@ namespace Pixellation.Components.Editor
             Opacity = mem.Opacity;
         }
 
-        private void InitBitmap(PixelEditor owner, WriteableBitmap bitmap = null)
+        private void InitBitmap(WriteableBitmap bitmap = null)
         {
-            _owner = owner;
             if (bitmap != null)
             {
                 _bitmap = bitmap;
@@ -140,33 +126,10 @@ namespace Pixellation.Components.Editor
             return LayerName;
         }
 
-        public LayerModel ToLayerModel()
-        {
-            var src = _bitmap.ToImageSource();
-
-            var width = _bitmap.PixelWidth;
-            var height = _bitmap.PixelHeight;
-            var stride = _bitmap.BackBufferStride;
-
-            var bitmapData = new byte[height * stride];
-
-            src.CopyPixels(bitmapData, stride, 0);
-
-            return new LayerModel
-            {
-                LayerBitmap = bitmapData,
-                LayerName = _name,
-                Width = width,
-                Height = height,
-                Stride = stride,
-                Opacity = Opacity
-            };
-        }
-
         public DrawingLayer Clone()
         {
             var bmp2 = _bitmap.Clone();
-            return new DrawingLayer(_owner, bmp2, LayerName, Visible);
+            return new DrawingLayer(_owner, bmp2, LayerName + "_copy", Visible);
         }
         #endregion Conversions, Cloning
 
@@ -196,12 +159,22 @@ namespace Pixellation.Components.Editor
                 this
             );
         }
+
+        public void SaveState(int mTypeValue)
+        {
+            _owner.SaveState(mTypeValue, _owner.GetActiveLayerIndex());
+        }
         #endregion Memento
 
         #region Bitmap, Rendering
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
+
+            if (!Visible)
+            {
+                return;
+            }
 
             var magnification = _owner.Magnification;
             var width = _bitmap.PixelWidth * magnification;
@@ -223,6 +196,16 @@ namespace Pixellation.Components.Editor
                     }
                 }
             }
+        }
+
+        public void Render(DrawingContext dc, double x, double y, double w, double h)
+        {
+            if (!Visible)
+            {
+                return;
+            }
+
+            dc.DrawImage(_bitmap, new Rect(x, y, w, h));
         }
 
         public void SetPixel(int x, int y, Color color) => _bitmap.SetPixel(x, y, color);

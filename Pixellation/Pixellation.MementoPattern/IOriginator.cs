@@ -1,4 +1,4 @@
-﻿namespace Pixellation.Utils.MementoPattern
+﻿namespace Pixellation.MementoPattern
 {
     /// <summary>
     /// Represents an object that can return a copy of it's state preceeding an event indicated by <see cref="_MementoType"/>.

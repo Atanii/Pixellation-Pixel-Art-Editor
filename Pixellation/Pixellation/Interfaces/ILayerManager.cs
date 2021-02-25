@@ -6,15 +6,11 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Interfaces
 {
-    public interface IVisualManager
+    public interface ILayerManager
     {
-        public event EventHandler RaiseImageUpdatedEvent;
+        public void SetActiveLayer(int layerIndex = 0, bool signalEvent = false);
 
-        public event PixelEditorEventHandler LayerListChanged;
-
-        public void SetActiveLayer(int layerIndex = 0);
-
-        public List<DrawingLayer> GetLayers();
+        public List<DrawingLayer> Layers { get; }
 
         public DrawingLayer GetLayer(int layerIndex = 0);
 
@@ -35,8 +31,6 @@ namespace Pixellation.Interfaces
         public void MoveLayerDown(int layerIndex);
 
         public void MergeLayerDownward(int layerIndex);
-
-        public List<LayerModel> GetLayerModels();
 
         public void Mirror(bool horizontally, bool allLayers = false);
 

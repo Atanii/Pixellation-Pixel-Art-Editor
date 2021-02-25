@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -243,6 +244,18 @@ namespace Pixellation.Utils
                 }
             }
             return bitmap;
+        }
+
+        public static string ToBase64(this WriteableBitmap bitmap)
+        {
+            var bytes = bitmap.ToByteArray();
+            return Convert.ToBase64String(bytes);
+        }
+
+        public static WriteableBitmap ToWriteableBitmap(this string b64, int width, int height, int stride)
+        {
+            var bytes = Convert.FromBase64String(b64);
+            return bytes.ToWriteableBitmap(width, height, stride);
         }
     }
 }
