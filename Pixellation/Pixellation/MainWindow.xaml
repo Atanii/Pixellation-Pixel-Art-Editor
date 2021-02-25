@@ -14,20 +14,27 @@
     <!-- MAINPANEL -->
     <DockPanel LastChildFill="True">
         <!-- MENUBAR -->
-        <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar>
-                <Button Content="New" Click="OpenNewImageDialog" />
-                <Button Content="Open" Click="Open" />
-                <Button Content="Save Project" Click="SaveProject" />
-            </ToolBar>
-            <ToolBar>
-                <Button Content="Export" Click="ExportAsImage" />
-            </ToolBar>
-            <ToolBar>
-                <Button Content="About" Click="OpenAboutDialog" />
-            </ToolBar>
-        </ToolBarTray>
-        
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" Click="Menu_NewImage" />
+                <MenuItem Header="_Open" Click="Menu_Open" />
+                <MenuItem Header="_Save Project" Click="Menu_SaveProject" />
+                <Separator />
+                <MenuItem Header="_Exit" Click="Menu_Exit" />
+            </MenuItem>
+
+            <MenuItem Header="_Export">
+                <MenuItem Header="Selected _Layer" Click="Menu_ExportSelectedLayer" />
+                <MenuItem Header="Selected _Frame" Click="Menu_ExportSelectedFrame" />
+                <MenuItem Header="_All Frames Merged" Click="Menu_ExportAllFrames" />
+                <Separator />
+                <MenuItem Header="Spritesheet from Frame" Click="Menu_SpritesheetFromFrame" />
+                <MenuItem Header="Spritesheet from All Frames" Click="Menu_SpritesheetFromAllFrames" />
+            </MenuItem>
+
+            <MenuItem Header="_About" Click="Menu_About" />
+        </Menu>
+
         <!-- STATUSBAR -->
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>

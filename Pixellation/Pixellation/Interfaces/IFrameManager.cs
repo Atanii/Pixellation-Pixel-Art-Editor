@@ -9,8 +9,6 @@ namespace Pixellation.Interfaces
 
         public int ActiveFrameIndex { get; }
 
-        public DrawingFrame GetActiveDrawingFrame();
-
         public void MoveDrawingFrameLeft(int frameIndex);
 
         public void MoveDrawingFrameRight(int frameIndex);

@@ -220,6 +220,29 @@ namespace Pixellation.Components.Editor
             return merged;
         }
 
+        /// <summary>
+        /// Merges the layers in the given index range into a single WriteableBitmap.
+        /// The indexing is reverse!
+        /// </summary>
+        /// <param name="from">From index relative to last layer index</param>
+        /// <param name="to">To index relative to last layer index. Default is 0, which means the layer above all others.</param>
+        /// <returns>The bitmap containing the merged layers. If no merge could have been done in the range, a blank bitmap will be returned.</returns>
+        public WriteableBitmap Merge(List<WriteableBitmap> bmps, WriteableBitmapExtensions.BlendMode mode = WriteableBitmapExtensions.BlendMode.Alpha)
+        {
+            // Blank bitmap as mergebase
+            var merged = BitmapFactory.New(PixelWidth, PixelHeight);
+            merged.Clear(Colors.Transparent);
+
+            var rect = new System.Windows.Rect(0d, 0d, merged.Width, merged.Height); ;
+
+            for (int i = 0; i < bmps.Count; i--)
+            {
+                merged.Blit(rect, bmps[i], rect, mode);
+            }
+
+            return merged;
+        }
+
         public WriteableBitmap GetAllMergedWriteableBitmap() => Merge(Layers.Count() - 1, 0);
 
         public ImageSource GetImageSource() => Merge(Layers.Count() - 1, 0).ToImageSource();

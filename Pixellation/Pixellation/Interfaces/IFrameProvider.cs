@@ -7,5 +7,9 @@ namespace Pixellation.Interfaces
     {
         public List<DrawingFrame> Frames { get; }
         public List<DrawingLayer> Layers { get; }
+        
+        public int ActiveFrameIndex { get; }
+
+        public int GetActiveLayerIndex();
     }
 }

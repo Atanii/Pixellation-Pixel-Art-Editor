@@ -109,7 +109,7 @@ namespace Pixellation
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void Open(object sender, RoutedEventArgs e)
+        private async void Menu_Open(object sender, RoutedEventArgs e)
         {
             if (ThereAreUnsavedChanges)
             {
@@ -178,6 +178,11 @@ namespace Pixellation
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// <returns>True if project is successfully saved, otherwise false.</returns>
+        private void Menu_SaveProject(object sender, RoutedEventArgs e)
+        {
+            SaveProject(sender, e);
+        }
+
         private bool SaveProject(object sender, RoutedEventArgs e)
         {
             if (_pm.AlreadySaved)
@@ -214,29 +219,11 @@ namespace Pixellation
         }
 
         /// <summary>
-        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports the project.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExportAsImage(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog
-            {
-                Filter = Res.ExportFilter
-            };
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                string fileName = saveFileDialog.FileName;
-                _pm.ExportAsImage(fileName, canvasImage);
-            }
-        }
-
-        /// <summary>
         /// Opens a <see cref="NewProjectDialog"/>.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OpenNewImageDialog(object sender, RoutedEventArgs e)
+        private void Menu_NewImage(object sender, RoutedEventArgs e)
         {
             if (ThereAreUnsavedChanges)
             {
@@ -259,7 +246,7 @@ namespace Pixellation
                 }
             }
 
-            var newImgDialog = new NewProjectDialog();
+            var newImgDialog = new DualInputDialog("New Project", "Width", "Height");
             if (newImgDialog.ShowDialog() == true)
             {
                 // Get Data
@@ -282,10 +269,84 @@ namespace Pixellation
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OpenAboutDialog(object sender, RoutedEventArgs e)
+        private void Menu_About(object sender, RoutedEventArgs e)
         {
             var aboutDialog = new AboutDialog();
             aboutDialog.ShowDialog();
+        }
+
+        private void Menu_Exit(object sender, RoutedEventArgs e)
+        {
+            mainWindow.Close();
+        }
+
+        private void ExportAsImage(ExportModes mode)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = Res.ExportFilter
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string fileName = saveFileDialog.FileName;
+                _pm.ExportAsImage(fileName, canvasImage, mode);
+            }
+        }
+
+        private void ExportToSpritesheet(ExportModes mode)
+        {
+            if (mode < ExportModes.SPRITESHEET_FRAME)
+            {
+                return;
+            }
+            var newImgDialog = new DualInputDialog("Export To Spritesheet", "Rows", "Cols");
+            if (newImgDialog.ShowDialog() == true)
+            {
+                // Get Data
+                var rowsCols = newImgDialog.Answer;
+                var rows = int.Parse(rowsCols.Split(';')[0]);
+                var cols = int.Parse(rowsCols.Split(';')[1]);
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = Res.ExportFilter
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string fileName = saveFileDialog.FileName;
+                    _pm.ExportAsImage(fileName, canvasImage, mode, rows, cols);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports the project.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Menu_ExportSelectedLayer(object sender, RoutedEventArgs e)
+        {
+            ExportAsImage(ExportModes.LAYER);
+        }
+
+        private void Menu_ExportSelectedFrame(object sender, RoutedEventArgs e)
+        {
+            ExportAsImage(ExportModes.FRAME);
+        }
+
+        private void Menu_ExportAllFrames(object sender, RoutedEventArgs e)
+        {
+            ExportAsImage(ExportModes.FRAME_ALL);
+        }
+
+        private void Menu_SpritesheetFromFrame(object sender, RoutedEventArgs e)
+        {   
+            ExportToSpritesheet(ExportModes.SPRITESHEET_FRAME);
+        }
+
+        private void Menu_SpritesheetFromAllFrames(object sender, RoutedEventArgs e)
+        {
+            ExportToSpritesheet(ExportModes.SPRITESHEET_ALL_FRAME);
         }
 
         /// <summary>

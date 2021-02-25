@@ -1,0 +1,17 @@
+﻿<Window x:Class="Pixellation.Components.Dialogs.DualInputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pixellation.Components.Dialogs"
+        mc:Ignorable="d" x:Name="inputDialog"
+        Title="{Binding ElementName=inputDialog, Path=DialogTitle}" Height="150" Width="400">
+    <Grid>
+        <Label Content="{Binding ElementName=inputDialog, Path=InputLabel1Text}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="114"/>
+        <Label Content="{Binding ElementName=inputDialog, Path=InputLabel2Text}" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="114"/>
+        <TextBox x:Name="input1" HorizontalAlignment="Center" Margin="0,14,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="input2" HorizontalAlignment="Center" Margin="0,45,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button Click="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="220,84,0,0" VerticalAlignment="Top" IsCancel="True"/>
+        <Button Click="Create" Content="Create" HorizontalAlignment="Left" Margin="160,84,0,0" VerticalAlignment="Top" IsDefault="True"/>
+    </Grid>
+</Window>

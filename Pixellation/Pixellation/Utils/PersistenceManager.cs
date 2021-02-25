@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Utils
@@ -139,12 +140,49 @@ namespace Pixellation.Utils
             PreviousFullPath = "";
         }
 
-        public void ExportAsImage(string filePath, ILayerManager vm)
+        public void ExportAsImage(string filePath, IFrameProvider vm, ExportModes exportMode = ExportModes.FRAME, int rows = 0, int cols = 0)
         {
             try
             {
-                var wrBitmap = vm.GetAllMergedWriteableBitmap();
-                SaveBitmapSourceToFile(filePath, wrBitmap);
+                WriteableBitmap bmp = null;
+
+                switch (exportMode)
+                {
+                    case ExportModes.LAYER:
+                        var index = vm.GetActiveLayerIndex();
+                        if (index != -1)
+                        {
+                            bmp = vm.Layers[index].GetWriteableBitmapWithAppliedOpacity();
+                        }
+                        break;
+
+                    case ExportModes.FRAME:
+                        bmp = MergeAndExportUtils.MergeAll(vm.Frames[vm.ActiveFrameIndex].Layers);
+                        break;
+
+                    case ExportModes.FRAME_ALL:
+                        bmp = MergeAndExportUtils.MergeAll(vm.Frames);
+                        break;
+
+                    case ExportModes.SPRITESHEET_FRAME:
+                        bmp = MergeAndExportUtils.GenerateSpriteSheetFromLayers(
+                            vm.Frames[vm.ActiveFrameIndex].Layers, WriteableBitmapExtensions.BlendMode.Alpha,
+                            rows, cols,
+                            Colors.Transparent);
+                        break;
+
+                    case ExportModes.SPRITESHEET_ALL_FRAME:
+                        bmp = MergeAndExportUtils.GenerateSpriteSheetFromFrames(
+                            vm.Frames, WriteableBitmapExtensions.BlendMode.Alpha,
+                            rows, cols,
+                            Colors.Transparent);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                SaveBitmapSourceToFile(filePath, bmp);
             }
             catch(Exception ex)
             {
@@ -162,10 +200,6 @@ namespace Pixellation.Utils
                 BitmapEncoder encoder;
                 switch (extension.ToLower())
                 {
-                    case "png":
-                        encoder = new PngBitmapEncoder();
-                        break;
-
                     case "jpg":
                     case "jpeg":
                         encoder = new JpegBitmapEncoder();
@@ -183,9 +217,10 @@ namespace Pixellation.Utils
                         encoder = new GifBitmapEncoder();
                         break;
 
+                    case "png":
                     default:
-                        MessageBox.Show($"Saving into (.{extension}) image format is not supported!", "Error");
-                        return;
+                        encoder = new PngBitmapEncoder();
+                        break;
                 }
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 encoder.Save(fs);
