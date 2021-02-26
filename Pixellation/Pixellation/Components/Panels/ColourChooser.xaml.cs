@@ -1,5 +1,6 @@
 ﻿using Pixellation.Utils;
-using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,57 +9,94 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
-    using Rectangle = System.Windows.Shapes.Rectangle;
     using Color = System.Drawing.Color;
+    using Rectangle = System.Windows.Shapes.Rectangle;
 
     /// <summary>
     /// Interaction logic for ColourPicker.xaml
     /// </summary>
-    public partial class ColourChooser : UserControl
-    {   
+    public partial class ColourChooser : UserControl, INotifyPropertyChanged
+    {
+        /// <summary>
+        /// Event used for one- and twoway databinding.
+        /// Marks change regarding one of the properties.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private Color _primaryColor;
+
         public Color PrimaryColor
         {
-            get { return (Color)GetValue(PrimaryColourProperty); }
+            get => _primaryColor;
             set
             {
-                SetValue(PrimaryColourProperty, value);
-                SetCcRectanglesFill();
-                SetRGBATxtInputs();
+                _primaryColor = value;
+                Refresh();
+                SetHueFrom(value);
+                OnPropertyChanged();
             }
         }
 
-        public static readonly DependencyProperty PrimaryColourProperty =
-         DependencyProperty.Register("PrimaryColor", typeof(Color), typeof(ColourChooser), new FrameworkPropertyMetadata(
-            Properties.Settings.Default.DefaultPrimaryColor, (d, e) => { RaiseChosenColourPropertyChangeEventHandlerEvent?.Invoke(default, EventArgs.Empty); }));
+        private Color _secondaryColor;
 
         public Color SecondaryColor
         {
-            get { return (Color)GetValue(SecondaryColourProperty); }
+            get => _secondaryColor;
             set
             {
-                SetValue(SecondaryColourProperty, value);
-                SetCcRectanglesFill();
-                SetRGBATxtInputs();
+                _secondaryColor = value;
+                Refresh();
+                SetHueFrom(value);
+                OnPropertyChanged();
             }
         }
 
-        public static readonly DependencyProperty SecondaryColourProperty =
-         DependencyProperty.Register("SecondaryColor", typeof(Color), typeof(ColourChooser), new FrameworkPropertyMetadata(
-            Properties.Settings.Default.DefaultSecondaryColor, (d, e) => { RaiseChosenColourPropertyChangeEventHandlerEvent?.Invoke(default, EventArgs.Empty); }));
+        private Color PrimaryColorLocal
+        {
+            get => PrimaryColor;
+            set
+            {
+                _primaryColor = value;
+                Refresh();
+                OnPropertyChanged(nameof(PrimaryColor));
+            }
+        }
 
-        private delegate void ChosenColourPropertyChangeEventHandler(object sender, EventArgs args);
-
-        private static event ChosenColourPropertyChangeEventHandler RaiseChosenColourPropertyChangeEventHandlerEvent;
+        private Color SecondaryColorLocal
+        {
+            get => SecondaryColor;
+            set
+            {
+                _secondaryColor = value;
+                Refresh();
+                OnPropertyChanged(nameof(SecondaryColor));
+            }
+        }
 
         public ColourChooser()
         {
             InitializeComponent();
+
+            PrimaryColorLocal = Properties.Settings.Default.DefaultPrimaryColor;
+            SecondaryColorLocal = Properties.Settings.Default.DefaultSecondaryColor;
+
             Resources["HueColor"] = Properties.Settings.Default.DefaultHueColor.ToMediaColor();
+
             SetCcRectanglesFill();
-            RaiseChosenColourPropertyChangeEventHandlerEvent += (s, a) => {
-                SetCcRectanglesFill();
-                SetRGBATxtInputs();
-            };
+            SetRGBATxtInputs();
+        }
+
+        private void Refresh()
+        {
+            SetCcRectanglesFill();
+            SetRGBATxtInputs();
+        }
+
+        private void SetHueFrom(Color color)
+        {
+            var hsl = ColorUtils.ToHSL(color.R, color.G, color.B);
+            hsl.S = 1;
+            Resources["HueColor"] = ColorUtils.ToRGB(hsl);
         }
 
         private Color GetPixelColor(Rectangle cvs, Point mousePos)
@@ -117,7 +155,7 @@ namespace Pixellation.Tools
                 var colour = GetPixelColor(colourGradientCanvas, e.GetPosition(colourGradientCanvas));
                 if (colour != null)
                 {
-                    PrimaryColor = colour;
+                    PrimaryColorLocal = colour;
                 }
             }
             else if (e.RightButton == MouseButtonState.Pressed)
@@ -125,7 +163,7 @@ namespace Pixellation.Tools
                 var colour = GetPixelColor(colourGradientCanvas, e.GetPosition(colourGradientCanvas));
                 if (colour != null)
                 {
-                    SecondaryColor = colour;
+                    SecondaryColorLocal = colour;
                 }
             }
         }
@@ -173,7 +211,6 @@ namespace Pixellation.Tools
             SetHueColourFromMousePosition(e.GetPosition(colourGradientHue));
         }
 
-
         private void Sc_TextInput(object sender, RoutedEventArgs e)
         {
             if (int.TryParse(scR.Text, out int R) &&
@@ -183,7 +220,7 @@ namespace Pixellation.Tools
                 R <= 255 && G <= 255 && B <= 255 && A <= 255 &&
                 R >= 0 && G >= 0 && B >= 0 && A >= 0)
             {
-                PrimaryColor = Color.FromArgb(A, R, G, B);
+                PrimaryColorLocal = Color.FromArgb(A, R, G, B);
             }
         }
 
@@ -196,15 +233,24 @@ namespace Pixellation.Tools
                 R <= 255 && G <= 255 && B <= 255 && A <= 255 &&
                 R >= 0 && G >= 0 && B >= 0 && A >= 0)
             {
-                SecondaryColor = Color.FromArgb(A, R, G, B);
+                SecondaryColorLocal = Color.FromArgb(A, R, G, B);
             }
         }
 
         private void BtnSwapColors_Click(object sender, RoutedEventArgs e)
         {
-            var tmp = SecondaryColor;
-            SecondaryColor = PrimaryColor;
-            PrimaryColor = tmp;
+            var tmp = SecondaryColorLocal;
+            SecondaryColorLocal = PrimaryColorLocal;
+            PrimaryColorLocal = tmp;
+        }
+
+        /// <summary>
+        /// Used as change notification for one- and twoway binding with <see cref="DependencyProperty"/> objects.
+        /// </summary>
+        /// <param name="name"></param>
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

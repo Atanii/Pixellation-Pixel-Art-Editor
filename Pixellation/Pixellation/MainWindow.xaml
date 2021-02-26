@@ -85,10 +85,7 @@
                     </StackPanel>
 
                     <Label Content="Colour"></Label>
-                    <l2:ColourChooser Width="200" Height="400" x:Name="colorChooser"
-                                      PrimaryColor="{Binding ElementName=canvasImage, Path=PrimaryColor, Mode=TwoWay}"
-                                      SecondaryColor="{Binding ElementName=canvasImage, Path=SecondaryColor, Mode=TwoWay}">
-                    </l2:ColourChooser>
+                    <l2:ColourChooser Width="200" Height="400" x:Name="colorChooser"></l2:ColourChooser>
 
                     <Label Content="Framepreview (PLACEHOLDER)"></Label>
                     <Panels:AnimationPanel AnimationFrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:AnimationPanel>
@@ -122,6 +119,8 @@
                            ShowBorder="{Binding ElementName=editorSettings, Path=ShowBorderOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            ShowGrid="{Binding ElementName=editorSettings, Path=ShowGridOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            MirrorModeState="{Binding ElementName=toolPalette, Path=MirrorModeState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               PrimaryColor="{Binding ElementName=colorChooser, Path=PrimaryColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               SecondaryColor="{Binding ElementName=colorChooser, Path=SecondaryColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
             </ScrollViewer>
 
