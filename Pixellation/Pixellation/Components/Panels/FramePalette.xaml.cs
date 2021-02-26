@@ -50,11 +50,10 @@ namespace Pixellation.Components.Panels
                 frame.Width = FrameElementSize;
                 frame.Height = FrameElementSize;
                 frame.Margin = FrameElementMargin;
+
                 frameList.Children.Add(frame);
             }
             InvalidateVisual();
-            InvalidateMeasure();
-            InvalidateArrange();
         }
 
         private void BtnAddFrame(object sender, RoutedEventArgs e)

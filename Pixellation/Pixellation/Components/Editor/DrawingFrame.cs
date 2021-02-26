@@ -1,4 +1,5 @@
-﻿using Pixellation.Interfaces;
+﻿using Pixellation.Components.Dialogs;
+using Pixellation.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -253,8 +254,23 @@ namespace Pixellation.Components.Editor
                 Visible = !Visible;
                 return;
             }
-
-            _owner.SetActiveFrame(this);
+            else
+            {
+                if (e.ClickCount == 2)
+                {
+                    var strDoubleDialog = new StringDoubleDialog("Frame Settings", "Name", "Opacity", FrameName, Opacity);
+                    if ((bool)strDoubleDialog.ShowDialog())
+                    {
+                        FrameName = strDoubleDialog.Answer.Key;
+                        Opacity = strDoubleDialog.Answer.Value;
+                    }
+                }
+                else
+                {
+                    _owner.SetActiveFrame(this);
+                }
+            }
         }
+
     }
 }

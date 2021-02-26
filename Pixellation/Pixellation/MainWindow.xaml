@@ -126,8 +126,8 @@
             </ScrollViewer>
 
             <Panels:FramePalette Grid.Row="1" VerticalAlignment="Stretch" FrameManager="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:FramePalette>
-            
         </Grid>
+        
     </DockPanel>
     
 </Window>

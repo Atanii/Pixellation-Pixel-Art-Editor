@@ -8,11 +8,11 @@
              d:DesignHeight="230" d:DesignWidth="200">
     <StackPanel Orientation="Vertical" Background="AliceBlue">
         <l:DrawingPreview x:Name="dPreview" Width="180" Height="180" FrameProvider="{Binding ElementName=ap, Path=AnimationFrameProvider, Mode=OneWay}" PMode="LAYERS"></l:DrawingPreview>
-        <CheckBox x:Name="cbOnion">Onion</CheckBox>
+        <!--<CheckBox x:Name="cbOnion">Onion</CheckBox>
         <StackPanel Orientation="Horizontal">
             <Button Click="Play" Margin="5">Play</Button>
             <Button Click="Loop" Margin="5">Loop</Button>
             <Button Click="Stop" Margin="5">Stop</Button>
-        </StackPanel>
+        </StackPanel>-->
     </StackPanel>
 </UserControl>

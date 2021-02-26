@@ -154,16 +154,16 @@ namespace Pixellation.Components.Panels
             if (LayerManager != null)
             {
                 var layer = LayerManager.ActiveLayer;
-                var newImgDialog = new LayerSettingsDialog(layer.LayerName, layer.Opacity);
-                if ((bool)newImgDialog.ShowDialog())
+                var strDoubleDialog = new StringDoubleDialog("Layer Settings", "Name", "Opacity", layer.LayerName, layer.Opacity);
+                if ((bool)strDoubleDialog.ShowDialog())
                 {
                     // Due to lost focus (Note: "Focus();" doesn't help.)
                     SelectLayer(layerList.SelectedIndex);
                     
                     LayerManager.SaveState(IPixelEditorEventType.LAYER_INNER_PROPERTY_UPDATE, layerList.SelectedIndex);
 
-                    layer.LayerName = newImgDialog.Answer.Key;
-                    layer.Opacity = newImgDialog.Answer.Value;
+                    layer.LayerName = strDoubleDialog.Answer.Key;
+                    layer.Opacity = strDoubleDialog.Answer.Value;
                 }
             }
         }
