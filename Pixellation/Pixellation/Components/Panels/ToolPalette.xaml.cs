@@ -25,6 +25,7 @@ namespace Pixellation.Components.Panels
         public static readonly ITool Rectangle = RectangleTool.GetInstance(Res.PrimaryToolInstanceKey);
         public static readonly ITool SelectionRectangle = SelectCopyPasteRectangleTool.GetInstance(Res.PrimaryToolInstanceKey);
         public static readonly ITool SelectionEllipse = SelectCopyPasteEllipseTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool SameColorPaintBucket = SameColorPaintBucketTool.GetInstance(Res.PrimaryToolInstanceKey);
 
         private readonly Thickness ThicknessClicked = new Thickness() { Top = 1.0, Right = 1.0, Bottom = 1.0, Left = 1.0 };
         private readonly Thickness ThicknessDefault = new Thickness() { Top = 0.0, Right = 0.0, Bottom = 0.0, Left = 0.0 };
@@ -84,6 +85,7 @@ namespace Pixellation.Components.Panels
                 "BtnRectangle" => Rectangle,
                 "BtnSelection" => SelectionRectangle,
                 "BtnEllipseSelection" => SelectionEllipse,
+                "BtnSameColorPaintBucket" => SameColorPaintBucket,
                 _ => Pencil,
             };
         }
