@@ -59,7 +59,7 @@ namespace Pixellation.Utils
             }
             catch(Exception ex)
             {
-                MessageBox.Show(string.Format(Messages.ErrorWhileLoadingProject, ex.Message, "Error"));
+                MBox.Error(string.Format(Messages.ErrorWhileLoadingProject, ex.Message));
             }
 
             return res;
@@ -76,7 +76,7 @@ namespace Pixellation.Utils
             }
             catch(Exception ex)
             {
-                MessageBox.Show(string.Format(Messages.ErrorWhileLoadingImage, ex.Message, "Error"));
+                MBox.Error(string.Format(Messages.ErrorWhileLoadingImage, ex.Message));
             }
 
             return res;
@@ -96,7 +96,7 @@ namespace Pixellation.Utils
             var filePaths = new List<string>();
 
             // Saving ProjectModel
-            var pm = ModelConverterExtensions.MakeProjectModel(filePath.Split('.')[0].Split('\\')[^1], frames);
+            var pm = ModelConverterExtensions.MakeProjectModel(filePath.GetFileNameWithoutExtension(), frames);
             var projectInfoPath = Resources.PackageContentFileNameForProjectData + "." + Resources.ExtensionForDataFile;
             var jsonString = JsonSerializer.Serialize(pm);
             File.WriteAllText(projectInfoPath, jsonString);
@@ -129,7 +129,7 @@ namespace Pixellation.Utils
             }
             catch(Exception ex)
             {
-                MessageBox.Show(string.Format(Messages.ErrorWhileSavingProject, ex.Message, "Error"));
+                MBox.Error(string.Format(Messages.ErrorWhileSavingProject, ex.Message));
                 return false;
             }
         }
@@ -145,11 +145,12 @@ namespace Pixellation.Utils
             try
             {
                 WriteableBitmap bmp = null;
+                IEnumerable<BitmapSource> frames = new List<BitmapSource>();
 
                 switch (exportMode)
                 {
                     case ExportModes.LAYER:
-                        var index = vm.GetActiveLayerIndex();
+                        var index = vm.ActiveLayerIndex;
                         if (index != -1)
                         {
                             bmp = vm.Layers[index].GetWriteableBitmapWithAppliedOpacity();
@@ -178,52 +179,98 @@ namespace Pixellation.Utils
                             Colors.Transparent);
                         break;
 
+                    case ExportModes.GIF_ALL_FRAMES:
+                        frames = vm.GetFramesAsWriteableBitmaps();
+                        break;
+
+                    case ExportModes.GIF_FRAME:
+                        frames = vm.Frames[vm.ActiveFrameIndex].GetLayersAsBitmapSources();
+                        break;
+
                     default:
                         break;
                 }
 
-                SaveBitmapSourceToFile(filePath, bmp);
+                var extension = filePath.GetExtension();
+
+                if (extension.ToLower() == "gif")
+                {
+                    SaveBitmapSourceToGif(filePath, frames);
+                }
+                else
+                {
+                    SaveBitmapSourceToFile(filePath, extension, bmp);
+                }
+
             }
             catch(Exception ex)
             {
-                MessageBox.Show(string.Format(Messages.ErrorWhileExportingImage, ex.Message, "Error"));
+                MBox.Error(string.Format(Messages.ErrorWhileExportingImage, ex.Message));
             }
         }
 
-        public void SaveBitmapSourceToFile(string filePath, BitmapSource image)
+        public void SaveBitmapSourceToFile(string filePath, string extension, BitmapSource image)
         {
-            if (filePath != string.Empty)
+            try
             {
-                string extension = filePath.Split('.')[^1];
-                // Saving
-                using FileStream fs = new FileStream(filePath, FileMode.Create);
-                BitmapEncoder encoder;
-                switch (extension.ToLower())
+                if (filePath != string.Empty)
                 {
-                    case "jpg":
-                    case "jpeg":
-                        encoder = new JpegBitmapEncoder();
-                        break;
+                    using FileStream fs = new FileStream(filePath, FileMode.Create);
+                    BitmapEncoder encoder;
 
-                    case "bmp":
-                        encoder = new BmpBitmapEncoder();
-                        break;
+                    switch (extension.ToLower())
+                    {
+                        case "jpg":
+                        case "jpeg":
+                            encoder = new JpegBitmapEncoder();
+                            break;
 
-                    case "tiff":
-                        encoder = new TiffBitmapEncoder();
-                        break;
+                        case "bmp":
+                            encoder = new BmpBitmapEncoder();
+                            break;
 
-                    case "gif":
-                        encoder = new GifBitmapEncoder();
-                        break;
+                        case "tif":
+                        case "tiff":
+                            encoder = new TiffBitmapEncoder();
+                            break;
 
-                    case "png":
-                    default:
-                        encoder = new PngBitmapEncoder();
-                        break;
+                        case "png":
+                        default:
+                            encoder = new PngBitmapEncoder();
+                            break;
+                    }
+
+                    encoder.Frames.Add(BitmapFrame.Create(image));
+
+                    encoder.Save(fs);
                 }
-                encoder.Frames.Add(BitmapFrame.Create(image));
-                encoder.Save(fs);
+            }
+            catch (Exception ex)
+            {
+                MBox.Error(string.Format(Messages.ErrorWhileExportingImage, ex.Message));
+            }
+        }
+
+        public void SaveBitmapSourceToGif(string filePath, IEnumerable<BitmapSource> frames)
+        {
+            try
+            {
+                if (filePath != string.Empty)
+                {
+                    using FileStream fs = new FileStream(filePath, FileMode.Create);
+                    BitmapEncoder encoder = new GifBitmapEncoder();
+
+                    foreach(var frame in frames)
+                    {
+                        encoder.Frames.Add(BitmapFrame.Create(frame));
+                    }
+                
+                    encoder.Save(fs);
+                }
+            }
+            catch (Exception ex)
+            {
+                MBox.Error(string.Format(Messages.ErrorWhileExportingImage, ex.Message));
             }
         }
     }

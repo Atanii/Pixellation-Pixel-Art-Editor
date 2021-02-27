@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
@@ -28,31 +29,41 @@ namespace Pixellation.Components.Editor
                 _activeFrameIndex = value;
                 _activeFrame = Frames[value];
 
-                RefreshVisualsThenSignalUpdate();
-
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ActiveFrame));
                 OnPropertyChanged(nameof(Frames));
+
+                RefreshVisualsThenSignalUpdate();
             }
         }
 
         private DrawingFrame _activeFrame;
-        private DrawingFrame ActiveFrame
+        public DrawingFrame ActiveFrame
         {
             get { return _activeFrame; }
-            set
+            private set
             {
                 RemoveLayersFromVisualChildren();
 
                 _activeFrame = value;
                 _activeFrameIndex = Frames.FindIndex(x => x.Id == value.Id);
 
-                RefreshVisualsThenSignalUpdate();
-
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ActiveFrameIndex));
                 OnPropertyChanged(nameof(Frames));
+
+                RefreshVisualsThenSignalUpdate();
             }
+        }
+
+        public IEnumerable<BitmapSource> GetFramesAsWriteableBitmaps()
+        {
+            var bmps = new List<WriteableBitmap>();
+            foreach (var frame in Frames)
+            {
+                bmps.Add(frame.Bitmap);
+            }
+            return bmps;
         }
 
         public void AddDrawingFrame(int frameIndex, string name)

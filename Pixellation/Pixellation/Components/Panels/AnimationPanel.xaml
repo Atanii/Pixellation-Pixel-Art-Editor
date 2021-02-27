@@ -5,14 +5,38 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Pixellation.Components.Panels" xmlns:l="clr-namespace:Pixellation.Components.Editor"
              mc:Ignorable="d" x:Name="ap"
-             d:DesignHeight="230" d:DesignWidth="200">
-    <StackPanel Orientation="Vertical" Background="AliceBlue">
-        <l:DrawingPreview x:Name="dPreview" Width="180" Height="180" FrameProvider="{Binding ElementName=ap, Path=AnimationFrameProvider, Mode=OneWay}" PMode="LAYERS"></l:DrawingPreview>
-        <CheckBox x:Name="cbOnion">Onion</CheckBox>
+             d:DesignHeight="300" d:DesignWidth="200">
+    <StackPanel Orientation="Vertical">
+        <Border BorderThickness="1" BorderBrush="Black" Width="180" Height="180">
+            <local:AnimationPlayer x:Name="player" Width="180" Height="180" Margin="0,10,0,0"/>
+        </Border>
         <StackPanel Orientation="Horizontal">
-            <Button Click="Play" Margin="5">Play</Button>
-            <Button Click="Loop" Margin="5">Loop</Button>
-            <Button Click="Stop" Margin="5">Stop</Button>
+            <Button Click="Play" ToolTip="Play (once)" RenderOptions.BitmapScalingMode="Fant" BorderThickness="0"
+                Width="32" Height="32" Margin="5">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/animation/animation-play.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button Click="Loop" ToolTip="Play (loop)" RenderOptions.BitmapScalingMode="Fant" BorderThickness="0"
+                Width="32" Height="32" Margin="5">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/animation/animation-loop.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button Click="Stop" ToolTip="Stop" RenderOptions.BitmapScalingMode="Fant" BorderThickness="0"
+                Width="32" Height="32" Margin="5">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/animation/animation-stop.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Label VerticalAlignment="Center" HorizontalAlignment="Stretch" Content="{Binding ElementName=FPSslider, Path=Value}" ContentStringFormat="FPS: {0}"></Label>
         </StackPanel>
+        <Label Margin="5">Adjust FPS:</Label>
+        <Slider Width="180" x:Name="FPSslider" Margin="5"
+                VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                ValueChanged="FPSslider_ValueChanged"
+                Minimum="1" Maximum="60" Value="24"
+                IsSnapToTickEnabled="True" TickFrequency="1" TickPlacement="Both" AutoToolTipPlacement="TopLeft">
+        </Slider>
     </StackPanel>
 </UserControl>

@@ -41,7 +41,7 @@ namespace Pixellation.Tools
                 p.Y,
                 ToolColor
             );
-            if (_mirrorModeState != MirrorModeStates.OFF)
+            if (MirrorMode != MirrorModeStates.OFF)
             {
                 p = Mirr(p);
                 _drawSurface.SetPixel(

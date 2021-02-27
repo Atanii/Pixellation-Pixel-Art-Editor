@@ -6,113 +6,74 @@ using System.Windows.Controls;
 
 namespace Pixellation.Components.Panels
 {
+    using Res = Properties.Resources;
+
     /// <summary>
     /// Interaction logic for ToolPalette.xaml
     /// </summary>
     public partial class ToolPalette : UserControl, INotifyPropertyChanged
     {
-        public static readonly ITool Pencil = PencilTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
-        public static readonly ITool Eraser = EraserTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
-        public static readonly ITool PaintBucket = PaintBucketTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
-        public static readonly ITool Line = LineTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
-        public static readonly ITool Dithering = DitheringTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
-        public static readonly ITool Pipette = PipetteTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
-        public static readonly ITool Circle = EllipseTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
-        public static readonly ITool Rectangle = RectangleTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
-        public static readonly ITool SelectionRectangle = SelectCopyPasteRectangleTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
-        public static readonly ITool SelectionEllipse = SelectCopyPasteEllipseTool.GetInstance(Properties.Resources.PrimaryToolInstanceKey);
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly Thickness ThicknessClicked;
-        private readonly Thickness ThicknessDefault;
+        public static readonly ITool Pencil = PencilTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool Eraser = EraserTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool PaintBucket = PaintBucketTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool Line = LineTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool Dithering = DitheringTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool Pipette = PipetteTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool Circle = EllipseTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool Rectangle = RectangleTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool SelectionRectangle = SelectCopyPasteRectangleTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool SelectionEllipse = SelectCopyPasteEllipseTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool SameColorPaintBucket = SameColorPaintBucketTool.GetInstance(Res.PrimaryToolInstanceKey);
+
+        private readonly Thickness ThicknessClicked = new Thickness() { Top = 1.0, Right = 1.0, Bottom = 1.0, Left = 1.0 };
+        private readonly Thickness ThicknessDefault = new Thickness() { Top = 0.0, Right = 0.0, Bottom = 0.0, Left = 0.0 };
 
         private Button PreviouslyClicked;
 
+        private ITool _chosenTool;
+
         public ITool ChosenTool
         {
-            get { return (ITool)GetValue(ChosenToolProperty); }
-            set { SetValue(ChosenToolProperty, value); }
-        }
-        public static readonly DependencyProperty ChosenToolProperty =
-         DependencyProperty.Register("ChosenTool", typeof(ITool), typeof(ToolPalette), new PropertyMetadata(Pencil));
-
-        private bool _eraserModeOn;
-        public bool EraserModeOn
-        {
-            get { return _eraserModeOn; }
-            set { _eraserModeOn = value; OnPropertyChanged(); }
-        }
-
-        private MirrorModeStates _mirrorModeState;
-        public MirrorModeStates MirrorModeState
-        {
-            get { return _mirrorModeState; }
-            set {
-                _mirrorModeState = value;
-                switch (value)
-                {
-                    case MirrorModeStates.OFF:
-                        rbMMNone.IsChecked = true;
-                        break;
-                    case MirrorModeStates.HORIZONTAL:
-                        rbMMHorizontal.IsChecked = true;
-                        break;
-                    case MirrorModeStates.VERTICAL:
-                        rbMMVertical.IsChecked = true;
-                        break;
-                }
+            get => _chosenTool;
+            set
+            {
+                _chosenTool = value;
                 OnPropertyChanged();
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public ToolPalette()
         {
-            ThicknessClicked = new Thickness()
-            {
-                Top = 1.0,
-                Right = 1.0,
-                Bottom = 1.0,
-                Left = 1.0
-            };
-            ThicknessDefault = new Thickness()
-            {
-                Top = 0.0,
-                Right = 0.0,
-                Bottom = 0.0,
-                Left = 0.0
-            };
-
             InitializeComponent();
 
-            // Selected by default
+            // Select Pencil by default
             PreviouslyClicked = BtnPencil;
             BtnPencil.BorderThickness = ThicknessClicked;
-
-            MirrorModeState = MirrorModeStates.OFF;
-            rbMMNone.IsChecked = true;
+            ChosenTool = Pencil;
         }
 
         private void ToolButton_Click(object sender, RoutedEventArgs e)
         {
             PreviouslyClicked.BorderThickness = ThicknessDefault;
 
-            var a = (Button)sender;
+            var btn = (Button)sender;
+            btn.BorderThickness = ThicknessClicked;
 
-            a.BorderThickness = ThicknessClicked;
-
-            switch(PreviouslyClicked.Name)
+            switch (PreviouslyClicked.Name)
             {
                 case "BtnSelection":
                     SelectionRectangle.Reset();
                     break;
+
                 case "BtnEllipseSelection":
                     SelectionEllipse.Reset();
                     break;
             }
 
-            PreviouslyClicked = a;
-            ChosenTool = a.Name switch
+            PreviouslyClicked = btn;
+            ChosenTool = btn.Name switch
             {
                 "BtnPencil" => Pencil,
                 "BtnEraser" => Eraser,
@@ -124,33 +85,49 @@ namespace Pixellation.Components.Panels
                 "BtnRectangle" => Rectangle,
                 "BtnSelection" => SelectionRectangle,
                 "BtnEllipseSelection" => SelectionEllipse,
+                "BtnSameColorPaintBucket" => SameColorPaintBucket,
                 _ => Pencil,
             };
+        }
+
+        private void CbEraserMode_Click(object sender, RoutedEventArgs e)
+        {
+            ChosenTool.EraserModeOn = (bool)cbEraserMode.IsChecked;
+        }
+
+        private void RbMMNone_Click(object sender, RoutedEventArgs e)
+        {
+            ChosenTool.MirrorMode = MirrorModeStates.OFF;
+        }
+
+        private void RbMMHorizontal_Click(object sender, RoutedEventArgs e)
+        {
+            ChosenTool.MirrorMode = MirrorModeStates.HORIZONTAL;
+        }
+
+        private void RbMMVertical_Click(object sender, RoutedEventArgs e)
+        {
+            ChosenTool.MirrorMode = MirrorModeStates.VERTICAL;
+        }
+
+        private void RbTh1_Click(object sender, RoutedEventArgs e)
+        {
+            ChosenTool.Thickness = ToolThickness.NORMAL;
+        }
+
+        private void RbTh2_Click(object sender, RoutedEventArgs e)
+        {
+            ChosenTool.Thickness = ToolThickness.MEDIUM;
+        }
+
+        private void RbTh3_Click(object sender, RoutedEventArgs e)
+        {
+            ChosenTool.Thickness = ToolThickness.WIDE;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        private void cbEraserMode_Click(object sender, RoutedEventArgs e)
-        {
-            EraserModeOn = (bool)cbEraserMode.IsChecked;
-        }
-
-        private void rbMMNone_Click(object sender, RoutedEventArgs e)
-        {
-            MirrorModeState = MirrorModeStates.OFF;
-        }
-
-        private void rbMMHorizontal_Click(object sender, RoutedEventArgs e)
-        {
-            MirrorModeState = MirrorModeStates.HORIZONTAL;
-        }
-
-        private void rbMMVertical_Click(object sender, RoutedEventArgs e)
-        {
-            MirrorModeState = MirrorModeStates.VERTICAL;
         }
     }
 }

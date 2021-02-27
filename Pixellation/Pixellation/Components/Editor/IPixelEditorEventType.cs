@@ -13,7 +13,7 @@ namespace Pixellation.Components.Editor
         public const int MERGELAYER = 3;
         public const int REVERSE_MERGELAYER = -MERGELAYER;
 
-        public const int RENAMELAYER = 4;
+        public const int LAYER_INNER_PROPERTY_UPDATE = 4;
 
         public const int LAYER_PIXELS_CHANGED = 5;
 

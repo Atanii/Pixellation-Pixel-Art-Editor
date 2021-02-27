@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pixellation.Components.Dialogs.StringInputDialog"
         mc:Ignorable="d" x:Name="inputDialog" Title="{Binding ElementName=inputDialog, Path=DialogTitle}"
-        MaxHeight="125" MaxWidth="300">
+        MaxHeight="125" MaxWidth="300" WindowStartupLocation="CenterScreen">
     <StackPanel>
         <WrapPanel Margin="10">
             <Label Content="{Binding ElementName=inputDialog, Path=LabelText}" Width="100"/>

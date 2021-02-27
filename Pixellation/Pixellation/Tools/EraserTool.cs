@@ -1,10 +1,13 @@
 ﻿using Pixellation.Utils;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Pixellation.Tools
 {
     public class EraserTool : BaseMultitonTool<EraserTool>
     {
+        private new Color ToolColor = Color.FromArgb(0, 0, 0, 0);
+
         private EraserTool() : base()
         {
         }
@@ -15,22 +18,11 @@ namespace Pixellation.Tools
 
             var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
-            if (OutOfBounds(p))
-            {
-                return;
-            }
-
-            _layer.SetPixel(
-                p.X, p.Y,
-                System.Windows.Media.Color.FromArgb(0, 0, 0, 0)
-            );
-            if (_mirrorModeState != MirrorModeStates.OFF)
+            SetPixelWithThickness(_drawSurface, p.X, p.Y, ToolColor, Thickness);
+            if (MirrorMode != MirrorModeStates.OFF)
             {
                 p = Mirr(p);
-                _layer.SetPixel(
-                    p.X, p.Y,
-                    System.Windows.Media.Color.FromArgb(0, 0, 0, 0)
-                );
+                SetPixelWithThickness(_drawSurface, p.X, p.Y, ToolColor, Thickness);
             }
         }
 

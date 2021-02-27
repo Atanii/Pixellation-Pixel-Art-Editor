@@ -7,7 +7,7 @@ namespace Pixellation.Tools
 {
     public interface ITool
     {
-        public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF);
+        public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF, ToolThickness thickness = ToolThickness.NORMAL);
 
         public void SetPixelSize(int pixelWidth, int pixelHeight);
 
@@ -34,5 +34,13 @@ namespace Pixellation.Tools
         public void Reset();
 
         public ITool GetInstanceByKey(string key);
+
+        public System.Windows.Media.Color ToolColor { get; set; }
+
+        public MirrorModeStates MirrorMode { get; set; }
+
+        public ToolThickness Thickness { get; set; }
+
+        public bool EraserModeOn { get; set; }
     }
 }

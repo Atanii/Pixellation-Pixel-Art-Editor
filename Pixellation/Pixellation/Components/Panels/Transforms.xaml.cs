@@ -59,7 +59,7 @@ namespace Pixellation.Components.Panels
             var all = (bool)cbAllLayers.IsChecked;
             LayerManager.SaveState(
                 all ? IPixelEditorEventType.MIRROR_HORIZONTAL_ALL : IPixelEditorEventType.MIRROR_HORIZONTAL,
-                LayerManager.GetActiveLayerIndex()
+                LayerManager.ActiveLayerIndex
             );
             LayerManager.Mirror(true, all);
         }
@@ -69,7 +69,7 @@ namespace Pixellation.Components.Panels
             var all = (bool)cbAllLayers.IsChecked;
             LayerManager.SaveState(
                 all ? IPixelEditorEventType.MIRROR_VERTICAL_ALL : IPixelEditorEventType.MIRROR_VERTICAL,
-                LayerManager.GetActiveLayerIndex()
+                LayerManager.ActiveLayerIndex
             );
             LayerManager.Mirror(false, all);
         }
@@ -82,14 +82,14 @@ namespace Pixellation.Components.Panels
             {
                 LayerManager.SaveState(
                     all ? IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL : IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE,
-                    LayerManager.GetActiveLayerIndex()
+                    LayerManager.ActiveLayerIndex
                 );
             }
             else
             {
                 LayerManager.SaveState(
                     all ? IPixelEditorEventType.ROTATE_ALL : IPixelEditorEventType.ROTATE,
-                    LayerManager.GetActiveLayerIndex()
+                    LayerManager.ActiveLayerIndex
                 );
             }
             LayerManager.Rotate(all, counterClockWise);
@@ -104,7 +104,7 @@ namespace Pixellation.Components.Panels
             {
                 LayerManager.SaveState(
                     IPixelEditorEventType.RESIZE,
-                    LayerManager.GetActiveLayerIndex()
+                    LayerManager.ActiveLayerIndex
                 );
                 LayerManager.Resize(width, height);
             }

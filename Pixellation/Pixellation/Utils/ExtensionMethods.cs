@@ -257,5 +257,17 @@ namespace Pixellation.Utils
             var bytes = Convert.FromBase64String(b64);
             return bytes.ToWriteableBitmap(width, height, stride);
         }
+
+        public static string GetExtension(this string path)
+        {
+            return path.Split('.')[^1];
+        }
+
+        public static string GetFileNameWithoutExtension(this string path)
+        {
+            return path.Split('.')[0].Split('\\')[^1];
+        }
+
+        public static Rect GetDrawArea(this WriteableBitmap bmp) => new Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight);
     }
 }

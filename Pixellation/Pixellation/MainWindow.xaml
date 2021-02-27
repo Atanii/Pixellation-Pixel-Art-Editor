@@ -8,7 +8,7 @@
           xmlns:l2="clr-namespace:Pixellation.Tools"
           xmlns:resource="clr-namespace:Pixellation.Properties"
           Title="{Binding ElementName=mainWindow, Path=Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-          Closing="MainWindow_Closing"
+          Closing="MainWindow_Closing" WindowStartupLocation="CenterScreen"
           mc:Ignorable="d" Name="mainWindow" Height="1080" Width="1920">
 
     <!-- MAINPANEL -->
@@ -30,6 +30,9 @@
                 <Separator />
                 <MenuItem Header="Spritesheet from Frame" Click="Menu_SpritesheetFromFrame" />
                 <MenuItem Header="Spritesheet from All Frames" Click="Menu_SpritesheetFromAllFrames" />
+                <Separator />
+                <MenuItem Header="Gif from Frame" Click="Menu_GifFromFrame" />
+                <MenuItem Header="Gif from All Frames" Click="Menu_GifFromAllFrames" />
             </MenuItem>
 
             <MenuItem Header="_About" Click="Menu_About" />
@@ -57,7 +60,7 @@
             <ScrollViewer>
                 <StackPanel>
                     <Label Content="Tools"></Label>
-                    <Panels:ToolPalette Height="200" x:Name="toolPalette" />
+                    <Panels:ToolPalette Height="250" x:Name="toolPalette" />
 
                     <Label Content="Layers"></Label>
                     <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}"></Panels:LayerPalette>
@@ -80,17 +83,12 @@
             <ScrollViewer>
                 <StackPanel>
                     <Label Content="Preview"></Label>
-                    <StackPanel Orientation="Vertical">
-                        <l:DrawingPreview Width="180" Height="180" FrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}" PMode="FRAMES"></l:DrawingPreview>
-                    </StackPanel>
+                    <Panels:PreviewPanel FrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:PreviewPanel>
 
                     <Label Content="Colour"></Label>
-                    <l2:ColourChooser Width="200" Height="400" x:Name="colorChooser"
-                                      PrimaryColor="{Binding ElementName=canvasImage, Path=PrimaryColor, Mode=TwoWay}"
-                                      SecondaryColor="{Binding ElementName=canvasImage, Path=SecondaryColor, Mode=TwoWay}">
-                    </l2:ColourChooser>
+                    <l2:ColourChooser Width="200" Height="400" x:Name="colorChooser"></l2:ColourChooser>
 
-                    <Label Content="Framepreview (PLACEHOLDER)"></Label>
+                    <Label Content="Animation Preview"></Label>
                     <Panels:AnimationPanel AnimationFrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:AnimationPanel>
                 </StackPanel>
             </ScrollViewer>
@@ -100,7 +98,7 @@
         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="200px"></RowDefinition>
+                <RowDefinition Height="220px"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -116,18 +114,18 @@
                 </ScrollViewer.Background>
 
                 <l:PixelEditor ChosenTool="{Binding ElementName=toolPalette, Path=ChosenTool, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                           EraserModeOn="{Binding ElementName=toolPalette, Path=EraserModeOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            TiledModeOn="{Binding ElementName=editorSettings, Path=TiledModeOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            TiledOpacity="{Binding ElementName=editorSettings, Path=TiledOpacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            ShowBorder="{Binding ElementName=editorSettings, Path=ShowBorderOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                            ShowGrid="{Binding ElementName=editorSettings, Path=ShowGridOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                           MirrorModeState="{Binding ElementName=toolPalette, Path=MirrorModeState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
+                            PrimaryColor="{Binding ElementName=colorChooser, Path=PrimaryColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            SecondaryColor="{Binding ElementName=colorChooser, Path=SecondaryColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
             </ScrollViewer>
 
             <Panels:FramePalette Grid.Row="1" VerticalAlignment="Stretch" FrameManager="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:FramePalette>
-            
         </Grid>
+        
     </DockPanel>
     
 </Window>

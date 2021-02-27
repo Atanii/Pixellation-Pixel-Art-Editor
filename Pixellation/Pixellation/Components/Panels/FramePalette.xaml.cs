@@ -50,11 +50,10 @@ namespace Pixellation.Components.Panels
                 frame.Width = FrameElementSize;
                 frame.Height = FrameElementSize;
                 frame.Margin = FrameElementMargin;
+
                 frameList.Children.Add(frame);
             }
             InvalidateVisual();
-            InvalidateMeasure();
-            InvalidateArrange();
         }
 
         private void BtnAddFrame(object sender, RoutedEventArgs e)
@@ -76,11 +75,6 @@ namespace Pixellation.Components.Panels
             FrameManager.MergeDrawingFrameIntoLeftNeighbour(FrameManager.ActiveFrameIndex);
         }
 
-        private void BtnRemoveFrame(object sender, RoutedEventArgs e)
-        {
-            FrameManager.RemoveDrawingFrame(FrameManager.ActiveFrameIndex);
-        }
-
         private void BtnMoveFrameLeft(object sender, RoutedEventArgs e)
         {
             FrameManager.MoveDrawingFrameLeft(FrameManager.ActiveFrameIndex);
@@ -89,6 +83,16 @@ namespace Pixellation.Components.Panels
         private void BtnMoveFrameRight(object sender, RoutedEventArgs e)
         {
             FrameManager.MoveDrawingFrameRight(FrameManager.ActiveFrameIndex);
+        }
+
+        private void BtnRemoveFrame(object sender, RoutedEventArgs e)
+        {
+            FrameManager.RemoveDrawingFrame(FrameManager.ActiveFrameIndex);
+        }
+
+        private void BtnResetFrame(object sender, RoutedEventArgs e)
+        {
+            FrameManager.RemoveDrawingFrame(FrameManager.ActiveFrameIndex);
         }
     }
 }

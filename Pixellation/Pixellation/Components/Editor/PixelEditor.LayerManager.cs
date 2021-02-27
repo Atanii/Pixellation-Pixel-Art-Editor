@@ -12,7 +12,9 @@ namespace Pixellation.Components.Editor
     {
         public static event PixelEditorLayerEventHandler LayerListChanged;
 
-        private DrawingLayer _activeLayer;
+        public DrawingLayer ActiveLayer { get; private set; }
+
+        public int ActiveLayerIndex => Layers.FindIndex(x => x.LayerName == ActiveLayer.LayerName);
 
         /// <summary>
         /// List of <see cref="DrawingLayer"/>s the currently edited image consists of.
@@ -167,7 +169,7 @@ namespace Pixellation.Components.Editor
         {
             if (Layers.ElementAtOrDefault(layerIndex) != null)
             {
-                _activeLayer = Layers[layerIndex];
+                ActiveLayer = Layers[layerIndex];
                 if (signalEvent)
                 {
                     LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
@@ -181,7 +183,8 @@ namespace Pixellation.Components.Editor
         }
 
         #region Getters
-        public WriteableBitmap GetWriteableBitmap() => _activeLayer.GetWriteableBitmap();
+
+        public WriteableBitmap GetWriteableBitmap() => ActiveLayer.GetWriteableBitmap();
 
         public DrawingLayer GetLayer(int layerIndex = 0) => Layers.ElementAtOrDefault(layerIndex);
 
@@ -190,10 +193,6 @@ namespace Pixellation.Components.Editor
             return Layers.FindIndex(x => x.LayerName == layer.LayerName);
         }
 
-        public int GetActiveLayerIndex()
-        {
-            return Layers.FindIndex(x => x.LayerName == _activeLayer.LayerName);
-        }
         #endregion Getters
 
         #region Merge
@@ -251,9 +250,9 @@ namespace Pixellation.Components.Editor
         #region Transform
         public void Mirror(bool horizontally, bool allLayers)
         {
-            if (!allLayers && _activeLayer != null)
+            if (!allLayers && ActiveLayer != null)
             {
-                _activeLayer.Mirror(horizontally);
+                ActiveLayer.Mirror(horizontally);
             }
             else
             {
@@ -267,9 +266,9 @@ namespace Pixellation.Components.Editor
 
         public void Rotate(bool allLayers, bool counterClockWise, int angleInDegree = 90)
         {
-            if (!allLayers && _activeLayer != null)
+            if (!allLayers && ActiveLayer != null)
             {
-                _activeLayer.Rotate(counterClockWise ? 360 - angleInDegree : angleInDegree);
+                ActiveLayer.Rotate(counterClockWise ? 360 - angleInDegree : angleInDegree);
             }
             else
             {
@@ -294,7 +293,7 @@ namespace Pixellation.Components.Editor
         }
         #endregion Transform
 
-        #region Add, Delete, Duplicate, Move Up, Move Down, Merge
+        #region Add, Delete, Duplicate, Move Up, Move Down, Merge, Clear
         public void AddLayer(DrawingLayer layer, int layerIndex = 0)
         {
             Layers.Insert(layerIndex, layer);
@@ -310,27 +309,6 @@ namespace Pixellation.Components.Editor
                 new int[] { layerIndex }
             ));
         }
-
-        //public void AddLayer(List<LayerModel> models, int layerIndex = 0)
-        //{
-        //    for (int i = 0; i < models.Count; i++)
-        //    {
-        //        var tmp = new DrawingLayer(
-        //            this,
-        //            models[i]
-        //        );
-        //        Layers.Add(tmp);
-        //        AddVisualChild(tmp);
-        //    }
-
-        //    RefreshVisualsThenSignalUpdate();
-
-        //    LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
-        //    (
-        //        IPixelEditorEventType.ADDLAYER,
-        //        0, 0, new int[] {0}
-        //    ));
-        //}
 
         public void AddLayer(string name, int layerIndex = 0)
         {
@@ -460,6 +438,24 @@ namespace Pixellation.Components.Editor
                 ));
             }
         }
-        #endregion Add, Delete, Duplicate, Move Up, Move Down
+
+        public void ClearLayer(int layerIndex)
+        {
+            if (Layers.Count >= (layerIndex + 1))
+            {
+                Layers[layerIndex].Clear();
+
+                RefreshVisualsThenSignalUpdate();
+
+                LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
+                (
+                    IPixelEditorEventType.LAYER_PIXELS_CHANGED,
+                    layerIndex,
+                    layerIndex,
+                    new int[] { layerIndex, layerIndex + 1 }
+                ));
+            }
+        }
+        #endregion Add, Delete, Duplicate, Move Up, Move Down, Clear
     }
 }

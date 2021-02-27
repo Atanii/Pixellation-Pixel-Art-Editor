@@ -139,20 +139,6 @@ namespace Pixellation.Components.Editor
         ));
 
         /// <summary>
-        /// Using chosen tool as eraser (using transparent as primary color).
-        /// </summary>
-        public bool EraserModeOn
-        {
-            get { return (bool)GetValue(EraserModeOnProperty); }
-            set { SetValue(EraserModeOnProperty, value); OnPropertyChanged(); }
-        }
-
-        public static readonly DependencyProperty EraserModeOnProperty =
-         DependencyProperty.Register("EraserModeOn", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
-            false
-        ));
-
-        /// <summary>
         /// Shows border around edited image.
         /// </summary>
         public bool ShowBorder
@@ -195,20 +181,6 @@ namespace Pixellation.Components.Editor
         public readonly DependencyProperty ChosenToolProperty =
          DependencyProperty.Register("ChosenTool", typeof(ITool), typeof(PixelEditor), new PropertyMetadata(
              null, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
-        ));
-
-        /// <summary>
-        /// Current state of MirrorMode.
-        /// </summary>
-        public MirrorModeStates MirrorModeState
-        {
-            get { return (MirrorModeStates)GetValue(MirrorModeStateProperty); }
-            set { SetValue(MirrorModeStateProperty, value); ChosenTool?.SetMirrorMode(value); }
-        }
-
-        public readonly DependencyProperty MirrorModeStateProperty =
-         DependencyProperty.Register("MirrorModeState", typeof(MirrorModeStates), typeof(PixelEditor), new PropertyMetadata(
-             MirrorModeStates.OFF, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
         ));
 
         #endregion DependencyProperties
@@ -391,7 +363,7 @@ namespace Pixellation.Components.Editor
         /// </summary>
         private void UpdateToolProperties()
         {
-            ChosenTool?.SetAllDrawingCircumstances(Magnification, PixelWidth, PixelHeight, _activeLayer, _drawPreview, MirrorModeState);
+            ChosenTool?.SetAllDrawingCircumstances(Magnification, PixelWidth, PixelHeight, ActiveLayer, _drawPreview);
         }
 
         #endregion Update, refresh...
@@ -511,7 +483,6 @@ namespace Pixellation.Components.Editor
             var d = -0.5d; // snap gridlines to device pixels
 
             var pen = new Pen(new SolidColorBrush(Color.FromArgb(63, 63, 63, 63)), 1d);
-
             pen.Freeze();
 
             for (var x = 1; x < w; x++)
@@ -593,6 +564,11 @@ namespace Pixellation.Components.Editor
         {
             base.OnMouseMove(e);
 
+            if (!ActiveLayer.Visible || !ActiveFrame.Visible)
+            {
+                return;
+            }
+
             if (IsMouseCaptured)
             {
                 ChosenTool.OnMouseMove(e);
@@ -609,16 +585,14 @@ namespace Pixellation.Components.Editor
         {
             base.OnMouseLeftButtonDown(e);
 
+            if (!ActiveLayer.Visible || !ActiveFrame.Visible)
+            {
+                return;
+            }
+
             CaptureMouse();
 
-            if (EraserModeOn)
-            {
-                ChosenTool.SetDrawColor(System.Drawing.Color.Transparent);
-            }
-            else
-            {
-                ChosenTool.SetDrawColor(PrimaryColor);
-            }
+            ChosenTool.SetDrawColor(PrimaryColor);
             ChosenTool.OnMouseDown(e);
             RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
@@ -631,6 +605,11 @@ namespace Pixellation.Components.Editor
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonDown(e);
+
+            if (!ActiveLayer.Visible || !ActiveFrame.Visible)
+            {
+                return;
+            }
 
             CaptureMouse();
 
@@ -648,6 +627,11 @@ namespace Pixellation.Components.Editor
         {
             base.OnMouseLeftButtonUp(e);
 
+            if (!ActiveLayer.Visible || !ActiveFrame.Visible)
+            {
+                return;
+            }
+
             ReleaseMouseCapture();
 
             ChosenTool.OnMouseUp(e);
@@ -662,6 +646,11 @@ namespace Pixellation.Components.Editor
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
+
+            if (!ActiveLayer.Visible || !ActiveFrame.Visible)
+            {
+                return;
+            }
 
             ReleaseMouseCapture();
 

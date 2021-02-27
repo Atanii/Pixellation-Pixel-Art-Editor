@@ -1,4 +1,6 @@
-﻿using Pixellation.Interfaces;
+﻿using Pixellation.Components.Dialogs;
+using Pixellation.Interfaces;
+using Pixellation.Utils;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -8,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public class DrawingFrame : FrameworkElement
+    public class DrawingFrame : FrameworkElement, IBitmapProvider
     {
         private readonly Guid _id = Guid.NewGuid();
         public string Id => _id.ToString();
@@ -22,11 +24,19 @@ namespace Pixellation.Components.Editor
         public static readonly Color NameDrawColor = Color.FromArgb(255, 0, 0, 0);
 
         public List<DrawingLayer> Layers { get; private set; } = new List<DrawingLayer>() { };
-        public string FrameName { get; private set; }
 
         private readonly IDrawingHelper _owner;
 
-        public bool Visible { get; set; }
+        private string _name;
+        public string FrameName
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                OnUpdated?.Invoke();
+            }
+        }
 
         public new double Opacity
         {
@@ -36,16 +46,41 @@ namespace Pixellation.Components.Editor
                 {
                     return base.Opacity;
                 }
-                return base.Opacity;
+                return 0d;
             }
             set
             {
                 base.Opacity = value;
+                InvalidateVisual();
+                OnUpdated?.Invoke();
             }
+        }
+
+        private bool _visible = true;
+        public bool Visible
+        {
+            get => _visible;
+            set
+            {
+                _visible = value;
+                InvalidateVisual();
+                OnUpdated?.Invoke();
+            }
+        }
+
+        public WriteableBitmap Bitmap
+        {
+            get => MergeAndExportUtils.MergeAll(Layers);
         }
 
         public int MagnifiedWidth => _owner.PixelWidth * _owner.Magnification;
         public int MagnifiedHeight => _owner.PixelHeight * _owner.Magnification;
+
+        #region Events
+
+        public static event FrameEventHandler OnUpdated;
+
+        #endregion Events
 
         public DrawingFrame(List<DrawingLayer> layers, string name, IDrawingHelper owner, bool visible = true, double opacity = 100) : base()
         {
@@ -111,18 +146,34 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        private void DrawName(DrawingContext dc, double x, double y, Color c)
+        private static void DrawText(DrawingContext dc, double x, double y, Color c, string text, double dpi, int size)
         {
             dc.DrawText(
                 new FormattedText(
-                    FrameName,
+                    text,
                     new System.Globalization.CultureInfo("en-US"),
                     FlowDirection.LeftToRight,
-                    new Typeface("Verdana"), 18,
+                    new Typeface("Verdana"),
+                    size,
                     new SolidColorBrush(c),
-                    VisualTreeHelper.GetDpi(this).PixelsPerDip
+                    dpi
                 ),
                 new Point(x, y)
+            );
+        }
+
+        private void DrawX(DrawingContext dc)
+        {
+            dc.DrawLine(
+                BorderPen,
+                new Point(0, 0),
+                new Point(Width, Height)
+            );
+
+            dc.DrawLine(
+                BorderPen,
+                new Point(0, Height),
+                new Point(Width, 0)
             );
         }
 
@@ -132,7 +183,7 @@ namespace Pixellation.Components.Editor
 
             if (!Visible)
             {
-                return;
+                DrawX(dc);
             }
 
             DrawBackground(dc, 0, 0, Width, Height);
@@ -162,11 +213,13 @@ namespace Pixellation.Components.Editor
                 DrawLayers(dc, x, y, w, h);
             }
 
-            DrawName(dc, 0, Height + 10, NameDrawColor);
+            var dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+            DrawText(dc, 0, Height + 10, NameDrawColor, FrameName, dpi, 15);
+            DrawText(dc, 0, Height + 25, NameDrawColor, $"Opacity: {Opacity}", dpi, 15);
 
             if (_owner.ActiveFrameId == Id)
             {
-                DrawBorder(dc, -5, -5, Width + 5, Height + 5);
+                DrawBorder(dc, -5, -5, Width + 10, Height + 10);
             }
         }
 
@@ -184,7 +237,7 @@ namespace Pixellation.Components.Editor
 
             if (drawName)
             {
-                DrawName(dc, 0, h + 10, NameDrawColor);
+                DrawText(dc, 0, h + 10, NameDrawColor, FrameName, VisualTreeHelper.GetDpi(this).PixelsPerDip, 15);
             }
         }
 
@@ -198,10 +251,42 @@ namespace Pixellation.Components.Editor
             return new DrawingFrame(layers, FrameName + "_copy", _owner);
         }
 
+        public IEnumerable<BitmapSource> GetLayersAsBitmapSources()
+        {
+            var bmps = new List<WriteableBitmap>();
+            foreach(var layer in Layers)
+            {
+                bmps.Add(layer.GetWriteableBitmapWithAppliedOpacity());
+            }
+            return bmps;
+        }
+
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
-            _owner.SetActiveFrame(this);
+
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                Visible = !Visible;
+                return;
+            }
+            else
+            {
+                if (e.ClickCount == 2)
+                {
+                    var strDoubleDialog = new StringDoubleDialog("Frame Settings", "Name", "Opacity", FrameName, Opacity);
+                    if ((bool)strDoubleDialog.ShowDialog())
+                    {
+                        FrameName = strDoubleDialog.Answer.Key;
+                        Opacity = strDoubleDialog.Answer.Value;
+                    }
+                }
+                else
+                {
+                    _owner.SetActiveFrame(this);
+                }
+            }
         }
+
     }
 }

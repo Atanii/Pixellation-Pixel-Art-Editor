@@ -1,6 +1,5 @@
 ﻿using Pixellation.Utils;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
@@ -16,20 +15,11 @@ namespace Pixellation.Tools
 
             var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
-            if (OutOfBounds(p))
-                return;
-
-            _drawSurface.SetPixel(
-                p.X, p.Y,
-                ToolColor
-            );
-            if (_mirrorModeState != MirrorModeStates.OFF)
+            SetPixelWithThickness(_drawSurface, p.X, p.Y, ToolColor, Thickness);
+            if (MirrorMode != MirrorModeStates.OFF)
             {
                 p = Mirr(p);
-                _drawSurface.SetPixel(
-                    p.X, p.Y,
-                    ToolColor
-                );
+                SetPixelWithThickness(_drawSurface, p.X, p.Y, ToolColor, Thickness);
             }
         }
 

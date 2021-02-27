@@ -6,9 +6,9 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject></StartupObject>
-    <Version>0.0.8.0</Version>
-    <AssemblyVersion>0.0.8.0</AssemblyVersion>
-    <FileVersion>0.0.8.0</FileVersion>
+    <Version>0.0.9.0</Version>
+    <AssemblyVersion>0.0.9.0</AssemblyVersion>
+    <FileVersion>0.0.9.0</FileVersion>
     <Authors>Jeremi Emánuel Kádár</Authors>
     <Copyright>Jeremi Emánuel Kádár</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -24,8 +24,13 @@
   <ItemGroup>
     <None Remove="Resources\application-icon.ico" />
     <None Remove="Resources\application-icon.png" />
+    <None Remove="Resources\icons\animation\animation-loop.png" />
+    <None Remove="Resources\icons\animation\animation-play.png" />
+    <None Remove="Resources\icons\animation\animation-stop.png" />
     <None Remove="Resources\icons\circle.png" />
     <None Remove="Resources\icons\circle_selection.png" />
+    <None Remove="Resources\icons\frames\frame-left.png" />
+    <None Remove="Resources\icons\frames\frame-right.png" />
     <None Remove="Resources\icons\layers\layer-blank.png" />
     <None Remove="Resources\icons\layers\layer-clear.png" />
     <None Remove="Resources\icons\layers\layer-down.png" />
@@ -43,6 +48,7 @@
     <None Remove="Resources\icons\tools\pencil.png" />
     <None Remove="Resources\icons\tools\pipette.png" />
     <None Remove="Resources\icons\tools\rectangle_selection.png" />
+    <None Remove="Resources\icons\tools\same-color-bucket.png" />
     <None Remove="Resources\logo-splash.png" />
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
@@ -71,6 +77,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\icons\animation\animation-loop.png" />
+    <Resource Include="Resources\icons\animation\animation-play.png" />
+    <Resource Include="Resources\icons\animation\animation-stop.png" />
+    <Resource Include="Resources\icons\frames\frame-left.png" />
+    <Resource Include="Resources\icons\frames\frame-right.png" />
     <Resource Include="Resources\icons\layers\layer-clear.png" />
     <Resource Include="Resources\icons\layers\layer-merge.png" />
     <Resource Include="Resources\icons\tools\bucket.png" />
@@ -90,6 +101,7 @@
     <Resource Include="Resources\icons\tools\rectangle.png" />
     <Resource Include="Resources\icons\swap.png" />
     <Resource Include="Resources\icons\tools\rectangle_selection.png" />
+    <Resource Include="Resources\icons\tools\same-color-bucket.png" />
     <SplashScreen Include="Resources\logo-splash.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </SplashScreen>
@@ -129,6 +141,10 @@
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\FramesAndLayers\" />
   </ItemGroup>
 
 </Project>

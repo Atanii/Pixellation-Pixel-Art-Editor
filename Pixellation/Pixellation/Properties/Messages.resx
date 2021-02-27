@@ -117,6 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CaptionError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="CaptionInformation" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="CaptionWarning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="ErrorEmptyInput" xml:space="preserve">
+    <value>You must fill all input fields!</value>
+  </data>
+  <data name="ErrorIsNotANumber" xml:space="preserve">
+    <value>Value {0} is not a number!</value>
+  </data>
   <data name="ErrorWhileExportingImage" xml:space="preserve">
     <value>Exporting to image failed! Error: {0}</value>
   </data>
@@ -128,5 +143,11 @@
   </data>
   <data name="ErrorWhileSavingProject" xml:space="preserve">
     <value>Saving project failed! Error: {0}</value>
+  </data>
+  <data name="WarningUnsavedChanges" xml:space="preserve">
+    <value>You have unsaved changes!</value>
+  </data>
+  <data name="WouldYouLikeToSave" xml:space="preserve">
+    <value>Would you like to save your project before proceeding with the operation?</value>
   </data>
 </root>

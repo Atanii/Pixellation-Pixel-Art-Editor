@@ -1,6 +1,4 @@
 ﻿using Pixellation.Components.Editor;
-using Pixellation.Models;
-using System;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 
@@ -11,6 +9,8 @@ namespace Pixellation.Interfaces
         public void SetActiveLayer(int layerIndex = 0, bool signalEvent = false);
 
         public List<DrawingLayer> Layers { get; }
+
+        public DrawingLayer ActiveLayer { get; }
 
         public DrawingLayer GetLayer(int layerIndex = 0);
 
@@ -40,6 +40,8 @@ namespace Pixellation.Interfaces
 
         public void SaveState(int eTypeValue, int layerIndex);
 
-        public int GetActiveLayerIndex();
+        public void ClearLayer(int layerIndex);
+
+        public int ActiveLayerIndex { get; }
     }
 }

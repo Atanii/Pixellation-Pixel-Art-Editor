@@ -1,133 +1,150 @@
 ﻿<UserControl x:Class="Pixellation.Components.Panels.ToolPalette"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Pixellation.Components.Panels"
              xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d"
-             d:DesignHeight="200" d:DesignWidth="180">
+             d:DesignHeight="250" d:DesignWidth="180">
     <StackPanel Orientation="Vertical">
-        <UniformGrid Columns="5" Rows="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="50">
+        <UniformGrid Columns="5" Rows="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="80">
             <Button
-            Click="ToolButton_Click"
-            ToolTip="Pencil"
-            x:Name="BtnPencil"
-            BorderThickness="0"
-            BorderBrush="Black"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                Click="ToolButton_Click"
+                ToolTip="Pencil"
+                x:Name="BtnPencil"
+                BorderThickness="0"
+                BorderBrush="Black"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/pencil.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
-            Click="ToolButton_Click"
-            ToolTip="Dithering Tool"
-            x:Name="BtnDithering"
-            BorderThickness="0"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                Click="ToolButton_Click"
+                ToolTip="Dithering Tool"
+                x:Name="BtnDithering"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/dithering.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
-            Click="ToolButton_Click"
-            ToolTip="Colorpicker"
-            x:Name="BtnPipette"
-            BorderThickness="0"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                Click="ToolButton_Click"
+                ToolTip="Colorpicker"
+                x:Name="BtnPipette"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/pipette.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
-            Click="ToolButton_Click"
-            ToolTip="Line Tool"
-            x:Name="BtnLine"
-            BorderThickness="0"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                Click="ToolButton_Click"
+                ToolTip="Line Tool"
+                x:Name="BtnLine"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/line.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
-            Click="ToolButton_Click"
-            ToolTip="Paintbucket"
-            x:Name="BtnPaintBucket"
-            BorderThickness="0"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                Click="ToolButton_Click"
+                ToolTip="Paintbucket"
+                x:Name="BtnPaintBucket"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/bucket.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
-            Click="ToolButton_Click"
-            ToolTip="Eraser"
-            x:Name="BtnEraser"
-            BorderThickness="0"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                Click="ToolButton_Click"
+                ToolTip="Eraser"
+                x:Name="BtnEraser"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/eraser.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
-            Click="ToolButton_Click"
-            ToolTip="Circle Tool"
-            x:Name="BtnCircle"
-            BorderThickness="0"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                Click="ToolButton_Click"
+                ToolTip="Circle Tool"
+                x:Name="BtnCircle"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/circle.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
-            Click="ToolButton_Click"
-            ToolTip="Rectangle Tool"
-            x:Name="BtnRectangle"
-            BorderThickness="0"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                Click="ToolButton_Click"
+                ToolTip="Rectangle Tool"
+                x:Name="BtnRectangle"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/rectangle.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
-            Click="ToolButton_Click"
-            ToolTip="Rectangle Selection"
-            x:Name="BtnSelection"
-            BorderThickness="0"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                Click="ToolButton_Click"
+                ToolTip="Rectangle Selection"
+                x:Name="BtnSelection"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/rectangle_selection.png"></ImageBrush>
                 </Button.Background>
             </Button>
             <Button
-            Click="ToolButton_Click"
-            ToolTip="Ellipse Selection"
-            x:Name="BtnEllipseSelection"
-            BorderThickness="0"
-            Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
-            Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                Click="ToolButton_Click"
+                ToolTip="Ellipse Selection"
+                x:Name="BtnEllipseSelection"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/circle_selection.png"></ImageBrush>
                 </Button.Background>
             </Button>
+            <Button
+                Click="ToolButton_Click"
+                ToolTip="Paints all pixels with the same color."
+                x:Name="BtnSameColorPaintBucket"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/same-color-bucket.png"></ImageBrush>
+                </Button.Background>
+            </Button>
         </UniformGrid>
         <Label>Tool Settings</Label>
-        <CheckBox Margin="5" x:Name="cbEraserMode" Click="cbEraserMode_Click" ToolTip="Use tools with transparency as color.">Eraser Mode</CheckBox>
+        <CheckBox Margin="5" x:Name="cbEraserMode" Click="CbEraserMode_Click" ToolTip="Use tools with transparency as color." IsChecked="False">Eraser Mode</CheckBox>
         <GroupBox Margin="5" Header="Mirror Mode">
             <StackPanel Orientation="Vertical" Margin="5">
-                <RadioButton x:Name="rbMMNone" GroupName="MirrorMode" Click="rbMMNone_Click">Off</RadioButton>
-                <RadioButton x:Name="rbMMHorizontal" GroupName="MirrorMode" Click="rbMMHorizontal_Click">Horizontal</RadioButton>
-                <RadioButton x:Name="rbMMVertical" GroupName="MirrorMode" Click="rbMMVertical_Click">Vertical</RadioButton>
+                <RadioButton x:Name="rbMMNone" GroupName="MirrorMode" Click="RbMMNone_Click" IsChecked="True">Off</RadioButton>
+                <RadioButton x:Name="rbMMHorizontal" GroupName="MirrorMode" Click="RbMMHorizontal_Click">Horizontal</RadioButton>
+                <RadioButton x:Name="rbMMVertical" GroupName="MirrorMode" Click="RbMMVertical_Click">Vertical</RadioButton>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Margin="5" Header="Thickness">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <RadioButton x:Name="rbTh1" GroupName="Thickness" Click="RbTh1_Click" IsChecked="True">1x</RadioButton>
+                <RadioButton x:Name="rbTh2" GroupName="Thickness" Click="RbTh2_Click">2x</RadioButton>
+                <RadioButton x:Name="rbTh3" GroupName="Thickness" Click="RbTh3_Click">3x</RadioButton>
             </StackPanel>
         </GroupBox>
     </StackPanel>
