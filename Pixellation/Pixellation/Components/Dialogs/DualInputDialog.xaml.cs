@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Pixellation.Utils;
+using System.Windows;
 
 namespace Pixellation.Components.Dialogs
 {
@@ -27,9 +28,14 @@ namespace Pixellation.Components.Dialogs
             input1.Focus();
         }
 
-        private void Create(object sender, RoutedEventArgs e)
+        private void Ok(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            if (input1.Text != string.Empty && input2.Text != string.Empty)
+            {
+                this.DialogResult = true;
+                return;
+            }
+            MBox.Error(Properties.Messages.ErrorEmptyInput);
         }
 
         private void Cancel(object sender, RoutedEventArgs e)

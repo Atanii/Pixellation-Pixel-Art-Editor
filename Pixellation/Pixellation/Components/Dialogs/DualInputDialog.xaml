@@ -12,6 +12,6 @@
         <TextBox x:Name="input1" HorizontalAlignment="Center" Margin="0,14,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="input2" HorizontalAlignment="Center" Margin="0,45,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <Button Click="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="220,84,0,0" VerticalAlignment="Top" IsCancel="True"/>
-        <Button Click="Create" Content="Create" HorizontalAlignment="Left" Margin="160,84,0,0" VerticalAlignment="Top" IsDefault="True"/>
+        <Button Click="Ok" Content="Create" HorizontalAlignment="Left" Margin="160,84,0,0" VerticalAlignment="Top" IsDefault="True"/>
     </Grid>
 </Window>

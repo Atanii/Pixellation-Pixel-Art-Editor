@@ -59,7 +59,7 @@ namespace Pixellation.Utils
             }
             catch(Exception ex)
             {
-                MessageBox.Show(string.Format(Messages.ErrorWhileLoadingProject, ex.Message, "Error"));
+                MBox.Error(string.Format(Messages.ErrorWhileLoadingProject, ex.Message));
             }
 
             return res;
@@ -76,7 +76,7 @@ namespace Pixellation.Utils
             }
             catch(Exception ex)
             {
-                MessageBox.Show(string.Format(Messages.ErrorWhileLoadingImage, ex.Message, "Error"));
+                MBox.Error(string.Format(Messages.ErrorWhileLoadingImage, ex.Message));
             }
 
             return res;
@@ -96,7 +96,7 @@ namespace Pixellation.Utils
             var filePaths = new List<string>();
 
             // Saving ProjectModel
-            var pm = ModelConverterExtensions.MakeProjectModel(filePath.Split('.')[0].Split('\\')[^1], frames);
+            var pm = ModelConverterExtensions.MakeProjectModel(filePath.GetFileNameWithoutExtension(), frames);
             var projectInfoPath = Resources.PackageContentFileNameForProjectData + "." + Resources.ExtensionForDataFile;
             var jsonString = JsonSerializer.Serialize(pm);
             File.WriteAllText(projectInfoPath, jsonString);
@@ -129,7 +129,7 @@ namespace Pixellation.Utils
             }
             catch(Exception ex)
             {
-                MessageBox.Show(string.Format(Messages.ErrorWhileSavingProject, ex.Message, "Error"));
+                MBox.Error(string.Format(Messages.ErrorWhileSavingProject, ex.Message));
                 return false;
             }
         }
@@ -186,7 +186,7 @@ namespace Pixellation.Utils
             }
             catch(Exception ex)
             {
-                MessageBox.Show(string.Format(Messages.ErrorWhileExportingImage, ex.Message, "Error"));
+                MBox.Error(string.Format(Messages.ErrorWhileExportingImage, ex.Message));
             }
         }
 
@@ -194,10 +194,11 @@ namespace Pixellation.Utils
         {
             if (filePath != string.Empty)
             {
-                string extension = filePath.Split('.')[^1];
-                // Saving
+                string extension = filePath.GetExtension();
+
                 using FileStream fs = new FileStream(filePath, FileMode.Create);
                 BitmapEncoder encoder;
+                
                 switch (extension.ToLower())
                 {
                     case "jpg":
@@ -222,6 +223,7 @@ namespace Pixellation.Utils
                         encoder = new PngBitmapEncoder();
                         break;
                 }
+                
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 encoder.Save(fs);
             }

@@ -111,25 +111,9 @@ namespace Pixellation
         /// <param name="e"></param>
         private async void Menu_Open(object sender, RoutedEventArgs e)
         {
-            if (ThereAreUnsavedChanges)
+            if (!AskAndTrySaveUnsavedChanges())
             {
-                var closeWindowDialog = new UnsavedChangesDialog("You should save before opening another image or project!");
-                if (closeWindowDialog.ShowDialog() == true)
-                {
-                    var ans = closeWindowDialog.Answer;
-
-                    if (ans == UnsavedChangesDialog.CloseDialogAnswer.SAVE)
-                    {
-                        if (!SaveProject(this, new RoutedEventArgs()))
-                        {
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    return;
-                }
+                return;
             }
 
             OpenFileDialog openFileDialog = new OpenFileDialog
@@ -138,16 +122,16 @@ namespace Pixellation
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                string fileName = openFileDialog.FileName;
+                string filePath = openFileDialog.FileName;
 
-                string extension = fileName.Split('.')[^1];
+                string extension = filePath.GetExtension();
                 if (extension == Res.ExtensionForProjectFilePackage)
                 {
                     // Getting Project
-                    var data = await _pm.LoadProject(fileName, canvasImage);
+                    var data = await _pm.LoadProject(filePath, canvasImage);
                     if (data.Value != null)
                     {
-                        ProjectTitle = Res.Title + " - " + data.Key;
+                        ProjectTitle = data.Key;
                         ThereAreUnsavedChanges = false;
                         _caretaker.ClearAll();
                         _pm.Reset();
@@ -158,10 +142,10 @@ namespace Pixellation
                 else
                 {
                     // Getting Bitmap
-                    var wrbmp = _pm.LoadImage(fileName);
+                    var wrbmp = _pm.LoadImage(filePath);
                     if (wrbmp != null)
                     {
-                        ProjectTitle = Res.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
+                        ProjectTitle = filePath.GetFileNameWithoutExtension();
                         ThereAreUnsavedChanges = false;
                         _caretaker.ClearAll();
                         _pm.Reset();
@@ -191,7 +175,7 @@ namespace Pixellation
 
                 if (res)
                 {
-                    ProjectTitle = Res.Title + " - " + _pm.PreviousFullPath.Split('.')[0].Split('\\')[^1];
+                    ProjectTitle = _pm.PreviousFullPath.GetFileNameWithoutExtension();
                     ThereAreUnsavedChanges = false;
                 }
             }
@@ -208,7 +192,7 @@ namespace Pixellation
 
                     if (res)
                     {
-                        ProjectTitle = Res.Title + " - " + fileName.Split('.')[0].Split('\\')[^1];
+                        ProjectTitle = fileName.GetFileNameWithoutExtension();
                         ThereAreUnsavedChanges = false;
                         return true;
                     }
@@ -218,6 +202,28 @@ namespace Pixellation
             return false;
         }
 
+        private bool AskAndTrySaveUnsavedChanges()
+        {
+            if (ThereAreUnsavedChanges)
+            {
+                var res = MBox.Question(Properties.Messages.WouldYouLikeToSave, Properties.Messages.WarningUnsavedChanges);
+
+                if (res == MessageBoxResult.Cancel)
+                {
+                    return false;
+                }
+
+                if (res == MessageBoxResult.Yes)
+                {
+                    if (!SaveProject(this, new RoutedEventArgs()))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         /// <summary>
         /// Opens a <see cref="NewProjectDialog"/>.
         /// </summary>
@@ -225,25 +231,9 @@ namespace Pixellation
         /// <param name="e"></param>
         private void Menu_NewImage(object sender, RoutedEventArgs e)
         {
-            if (ThereAreUnsavedChanges)
+            if (!AskAndTrySaveUnsavedChanges())
             {
-                var closeWindowDialog = new UnsavedChangesDialog("You should save before editing a new image!");
-                if (closeWindowDialog.ShowDialog() == true)
-                {
-                    var ans = closeWindowDialog.Answer;
-
-                    if (ans == UnsavedChangesDialog.CloseDialogAnswer.SAVE)
-                    {
-                        if (!SaveProject(this, new RoutedEventArgs()))
-                        {
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    return;
-                }
+                return;
             }
 
             var newImgDialog = new DualInputDialog("New Project", "Width", "Height");
@@ -379,23 +369,7 @@ namespace Pixellation
         /// <param name="e"></param>
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
-            if (ThereAreUnsavedChanges)
-            {
-                var closeWindowDialog = new UnsavedChangesDialog("Are you sure about closing the program?");
-                if (closeWindowDialog.ShowDialog() == true)
-                {
-                    var ans = closeWindowDialog.Answer;
-
-                    if (ans == UnsavedChangesDialog.CloseDialogAnswer.SAVE)
-                    {
-                        SaveProject(this, new RoutedEventArgs());
-                    }
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
-            }
+            e.Cancel = !AskAndTrySaveUnsavedChanges();
         }
 
         /// <summary>

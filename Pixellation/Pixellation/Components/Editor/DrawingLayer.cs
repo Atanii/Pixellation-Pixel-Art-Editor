@@ -272,6 +272,7 @@ namespace Pixellation.Components.Editor
 
         public void Resize(int newWidth, int newHeight)
         {
+
             _bitmap = _bitmap.Resize(newWidth, newHeight, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
         }
 
