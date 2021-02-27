@@ -1,5 +1,6 @@
 ﻿using Pixellation.Components.Dialogs;
 using Pixellation.Interfaces;
+using Pixellation.Utils;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -9,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public class DrawingFrame : FrameworkElement
+    public class DrawingFrame : FrameworkElement, IBitmapProvider
     {
         private readonly Guid _id = Guid.NewGuid();
         public string Id => _id.ToString();
@@ -65,6 +66,11 @@ namespace Pixellation.Components.Editor
                 InvalidateVisual();
                 OnUpdated?.Invoke();
             }
+        }
+
+        public WriteableBitmap Bitmap
+        {
+            get => MergeAndExportUtils.MergeAll(Layers);
         }
 
         public int MagnifiedWidth => _owner.PixelWidth * _owner.Magnification;

@@ -87,7 +87,7 @@
                     <Label Content="Colour"></Label>
                     <l2:ColourChooser Width="200" Height="400" x:Name="colorChooser"></l2:ColourChooser>
 
-                    <Label Content="Framepreview (PLACEHOLDER)"></Label>
+                    <Label Content="Animation Preview"></Label>
                     <Panels:AnimationPanel AnimationFrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:AnimationPanel>
                 </StackPanel>
             </ScrollViewer>

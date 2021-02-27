@@ -121,5 +121,14 @@ namespace Pixellation.Properties {
                 return ((global::System.Windows.Media.Color)(this["DefaultSelectionFillColor"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("24")]
+        public int DefaultAnimationFPS {
+            get {
+                return ((int)(this["DefaultAnimationFPS"]));
+            }
+        }
     }
 }

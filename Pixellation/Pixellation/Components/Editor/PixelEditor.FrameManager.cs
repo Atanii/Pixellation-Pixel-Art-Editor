@@ -28,11 +28,11 @@ namespace Pixellation.Components.Editor
                 _activeFrameIndex = value;
                 _activeFrame = Frames[value];
 
-                RefreshVisualsThenSignalUpdate();
-
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ActiveFrame));
                 OnPropertyChanged(nameof(Frames));
+
+                RefreshVisualsThenSignalUpdate();
             }
         }
 
@@ -47,11 +47,11 @@ namespace Pixellation.Components.Editor
                 _activeFrame = value;
                 _activeFrameIndex = Frames.FindIndex(x => x.Id == value.Id);
 
-                RefreshVisualsThenSignalUpdate();
-
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ActiveFrameIndex));
                 OnPropertyChanged(nameof(Frames));
+
+                RefreshVisualsThenSignalUpdate();
             }
         }
 

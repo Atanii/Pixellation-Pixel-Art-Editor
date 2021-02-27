@@ -35,5 +35,8 @@
     <Setting Name="DefaultSelectionFillColor" Type="System.Windows.Media.Color" Scope="Application">
       <Value Profile="(Default)">#646464DD</Value>
     </Setting>
+    <Setting Name="DefaultAnimationFPS" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">24</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
