@@ -8,7 +8,7 @@
           xmlns:l2="clr-namespace:Pixellation.Tools"
           xmlns:resource="clr-namespace:Pixellation.Properties"
           Title="{Binding ElementName=mainWindow, Path=Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-          Closing="MainWindow_Closing"
+          Closing="MainWindow_Closing" WindowStartupLocation="CenterScreen"
           mc:Ignorable="d" Name="mainWindow" Height="1080" Width="1920">
 
     <!-- MAINPANEL -->

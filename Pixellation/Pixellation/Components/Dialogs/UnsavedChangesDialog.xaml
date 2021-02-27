@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pixellation.Components.Dialogs"
-        mc:Ignorable="d" Height="120" Width="450">
+        mc:Ignorable="d" Height="120" Width="450" WindowStartupLocation="CenterScreen">
     <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <TextBlock Margin="5" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" FontWeight="Medium">You have unsaved changes!</TextBlock>
         <UniformGrid Rows="1" Columns="3" HorizontalAlignment="Center" VerticalAlignment="Bottom">

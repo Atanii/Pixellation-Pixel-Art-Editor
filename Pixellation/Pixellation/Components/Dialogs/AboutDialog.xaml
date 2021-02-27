@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pixellation.Components.Dialogs.AboutDialog"
-        mc:Ignorable="d" KeyDown="Window_KeyDown"
-        Title="About" Height="135" Width="525">
+        mc:Ignorable="d" KeyDown="Window_KeyDown" WindowStartupLocation="CenterScreen"
+        Title="About" Height="150" Width="525">
     <StackPanel>
         <Label>Title: Pixellation Pixelart Editor</Label>
         <GroupBox Header="Design, Programming, Icons">Jeremi Emánuel Kádár</GroupBox>
