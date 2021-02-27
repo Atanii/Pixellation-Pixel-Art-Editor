@@ -14,6 +14,8 @@ namespace Pixellation.Components.Editor
 
         public DrawingLayer ActiveLayer { get; private set; }
 
+        public int ActiveLayerIndex => Layers.FindIndex(x => x.LayerName == ActiveLayer.LayerName);
+
         /// <summary>
         /// List of <see cref="DrawingLayer"/>s the currently edited image consists of.
         /// </summary>
@@ -181,6 +183,7 @@ namespace Pixellation.Components.Editor
         }
 
         #region Getters
+
         public WriteableBitmap GetWriteableBitmap() => ActiveLayer.GetWriteableBitmap();
 
         public DrawingLayer GetLayer(int layerIndex = 0) => Layers.ElementAtOrDefault(layerIndex);
@@ -190,10 +193,6 @@ namespace Pixellation.Components.Editor
             return Layers.FindIndex(x => x.LayerName == layer.LayerName);
         }
 
-        public int GetActiveLayerIndex()
-        {
-            return Layers.FindIndex(x => x.LayerName == ActiveLayer.LayerName);
-        }
         #endregion Getters
 
         #region Merge

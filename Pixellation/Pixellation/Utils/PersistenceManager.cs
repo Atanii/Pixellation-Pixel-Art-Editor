@@ -150,7 +150,7 @@ namespace Pixellation.Utils
                 switch (exportMode)
                 {
                     case ExportModes.LAYER:
-                        var index = vm.GetActiveLayerIndex();
+                        var index = vm.ActiveLayerIndex;
                         if (index != -1)
                         {
                             bmp = vm.Layers[index].GetWriteableBitmapWithAppliedOpacity();

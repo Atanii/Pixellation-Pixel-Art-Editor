@@ -5,7 +5,7 @@ namespace Pixellation.Interfaces
 {
     public interface IFrameManager
     {
-        public int GetActiveLayerIndex();
+        public int ActiveLayerIndex { get; }
 
         public int ActiveFrameIndex { get; }
 

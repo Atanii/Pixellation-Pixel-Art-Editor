@@ -42,6 +42,6 @@ namespace Pixellation.Interfaces
 
         public void ClearLayer(int layerIndex);
 
-        public int GetActiveLayerIndex();
+        public int ActiveLayerIndex { get; }
     }
 }

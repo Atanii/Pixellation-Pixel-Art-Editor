@@ -38,10 +38,10 @@ namespace Pixellation.Components.Editor
         }
 
         private DrawingFrame _activeFrame;
-        private DrawingFrame ActiveFrame
+        public DrawingFrame ActiveFrame
         {
             get { return _activeFrame; }
-            set
+            private set
             {
                 RemoveLayersFromVisualChildren();
 

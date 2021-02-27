@@ -11,6 +11,7 @@ namespace Pixellation.Components.Editor
     public class DrawingLayer : FrameworkElement, IOriginator<LayerMemento, IPixelEditorEventType>
     {
         #region Fields And Properties
+
         private readonly IDrawingHelper _owner;
 
         private WriteableBitmap _bitmap;
@@ -182,7 +183,7 @@ namespace Pixellation.Components.Editor
 
         public void SaveState(int mTypeValue)
         {
-            _owner.SaveState(mTypeValue, _owner.GetActiveLayerIndex());
+            _owner.SaveState(mTypeValue, _owner.ActiveLayerIndex);
         }
         #endregion Memento
 

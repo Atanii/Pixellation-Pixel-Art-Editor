@@ -83,9 +83,7 @@
             <ScrollViewer>
                 <StackPanel>
                     <Label Content="Preview"></Label>
-                    <StackPanel Orientation="Vertical">
-                        <l:DrawingPreview Width="180" Height="180" FrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}" PMode="FRAMES"></l:DrawingPreview>
-                    </StackPanel>
+                    <Panels:PreviewPanel FrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:PreviewPanel>
 
                     <Label Content="Colour"></Label>
                     <l2:ColourChooser Width="200" Height="400" x:Name="colorChooser"></l2:ColourChooser>

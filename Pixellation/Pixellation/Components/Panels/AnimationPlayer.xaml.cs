@@ -93,6 +93,8 @@ namespace Pixellation.Components.Panels
         {
             InitializeComponent();
 
+            RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
+
             _dispatcherTimer.AutoReset = true;
             _dispatcherTimer.Elapsed += DispatcherTimerTick;
 

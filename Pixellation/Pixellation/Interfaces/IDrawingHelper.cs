@@ -26,6 +26,6 @@ namespace Pixellation.Interfaces
 
         public void SaveState(int eTypeValue, int selectedLayerIndex);
 
-        public int GetActiveLayerIndex();
+        public int ActiveLayerIndex { get; }
     }
 }

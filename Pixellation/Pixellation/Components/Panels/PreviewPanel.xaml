@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="Pixellation.Components.Panels.PreviewPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:editor="clr-namespace:Pixellation.Components.Editor"
+             mc:Ignorable="d" x:Name="previewPanel"
+             d:DesignHeight="280" d:DesignWidth="200">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="AliceBlue">
+        <Border HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Black" Margin="10">
+            <editor:DrawingPreview
+                x:Name="dPreview"
+                Height="180" Width="180" Margin="10"
+                DrawingFrameProvider="{Binding ElementName=previewPanel, Path=FrameProvider, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                PMode="{Binding ElementName=previewPanel, Path=PMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+            ></editor:DrawingPreview>
+        </Border>
+        <StackPanel Orientation="Horizontal">
+            <RadioButton GroupName="PreviewMode" Content="All" IsChecked="True" Margin="5" Click="RbAllClick"></RadioButton>
+            <RadioButton GroupName="PreviewMode" Content="Frame" Margin="5" Click="RbFrameClick"></RadioButton>
+            <RadioButton GroupName="PreviewMode" Content="Layer" Margin="5" Click="RbLayerClick"></RadioButton>
+        </StackPanel>
+        <CheckBox Margin="5" Click="CheckBox_Click">Onion Mode</CheckBox>
+    </StackPanel>
+</UserControl>
