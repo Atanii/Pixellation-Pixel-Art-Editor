@@ -1,5 +1,6 @@
 ﻿using Pixellation.Components.Editor;
 using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 
 namespace Pixellation.Interfaces
 {
@@ -11,5 +12,7 @@ namespace Pixellation.Interfaces
         public int ActiveFrameIndex { get; }
 
         public int GetActiveLayerIndex();
+
+        public IEnumerable<BitmapSource> GetFramesAsWriteableBitmaps();
     }
 }

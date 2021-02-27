@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
@@ -53,6 +54,16 @@ namespace Pixellation.Components.Editor
 
                 RefreshVisualsThenSignalUpdate();
             }
+        }
+
+        public IEnumerable<BitmapSource> GetFramesAsWriteableBitmaps()
+        {
+            var bmps = new List<WriteableBitmap>();
+            foreach (var frame in Frames)
+            {
+                bmps.Add(frame.Bitmap);
+            }
+            return bmps;
         }
 
         public void AddDrawingFrame(int frameIndex, string name)

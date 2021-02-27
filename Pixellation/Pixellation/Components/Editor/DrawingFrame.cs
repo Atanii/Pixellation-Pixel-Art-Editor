@@ -251,6 +251,16 @@ namespace Pixellation.Components.Editor
             return new DrawingFrame(layers, FrameName + "_copy", _owner);
         }
 
+        public IEnumerable<BitmapSource> GetLayersAsBitmapSources()
+        {
+            var bmps = new List<WriteableBitmap>();
+            foreach(var layer in Layers)
+            {
+                bmps.Add(layer.GetWriteableBitmapWithAppliedOpacity());
+            }
+            return bmps;
+        }
+
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);

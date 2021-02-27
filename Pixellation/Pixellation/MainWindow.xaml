@@ -30,6 +30,9 @@
                 <Separator />
                 <MenuItem Header="Spritesheet from Frame" Click="Menu_SpritesheetFromFrame" />
                 <MenuItem Header="Spritesheet from All Frames" Click="Menu_SpritesheetFromAllFrames" />
+                <Separator />
+                <MenuItem Header="Gif from Frame" Click="Menu_GifFromFrame" />
+                <MenuItem Header="Gif from All Frames" Click="Menu_GifFromAllFrames" />
             </MenuItem>
 
             <MenuItem Header="_About" Click="Menu_About" />

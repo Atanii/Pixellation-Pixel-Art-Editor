@@ -339,6 +339,16 @@ namespace Pixellation
             ExportToSpritesheet(ExportModes.SPRITESHEET_ALL_FRAME);
         }
 
+        private void Menu_GifFromFrame(object sender, RoutedEventArgs e)
+        {
+            ExportAsImage(ExportModes.GIF_FRAME);
+        }
+
+        private void Menu_GifFromAllFrames(object sender, RoutedEventArgs e)
+        {
+            ExportAsImage(ExportModes.GIF_ALL_FRAMES);
+        }
+
         /// <summary>
         /// Overrides <see cref="OnKeyDown(KeyEventArgs)"/> for handling hotkeys for save, undo, ...
         /// </summary>
