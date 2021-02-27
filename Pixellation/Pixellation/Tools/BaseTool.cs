@@ -1,17 +1,16 @@
 ﻿using Pixellation.Components.Editor;
 using Pixellation.Models;
 using Pixellation.Utils;
-using Pixellation.MementoPattern;
 using System.Drawing;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    using MColor = System.Windows.Media.Color;
+
     public abstract class BaseTool
     {
-        protected static System.Windows.Media.Color ToolColor;
-
         protected static int _magnification;
 
         protected static int _surfaceWidth;
@@ -29,11 +28,23 @@ namespace Pixellation.Tools
 
         private static bool _isMementoLocked = false;
 
-        protected MirrorModeStates _mirrorModeState;
+        private MColor _toolColor;
+
+        public MColor ToolColor
+        {
+            get => EraserModeOn ? MColor.FromArgb(0, 0, 0, 0) : _toolColor;
+            set => _toolColor = value;
+        }
+
+        public bool EraserModeOn { get; set; } = false;
+
+        public MirrorModeStates MirrorMode { get; set; }
+
+        public ToolThickness Thickness { get; set; }
 
         protected BaseTool()
         {
-            ToolColor = System.Windows.Media.Color.FromRgb(0, 0, 0);
+            ToolColor = MColor.FromRgb(0, 0, 0);
         }
 
         protected void OnRaiseToolEvent(object sender, ToolEventArgs e)
@@ -41,7 +52,8 @@ namespace Pixellation.Tools
             RaiseToolEvent?.Invoke(sender, e);
         }
 
-        public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF)
+        public void SetAllDrawingCircumstances(
+            int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF, ToolThickness thickness = ToolThickness.NORMAL)
         {
             _magnification = magnification;
             _surfaceWidth = pixelWidth;
@@ -50,7 +62,8 @@ namespace Pixellation.Tools
             _drawSurface = ds.Bitmap;
             _previewLayer = previewLayer;
             _previewDrawSurface = _previewLayer.Bitmap;
-            _mirrorModeState = mirrorModeState;
+            MirrorMode = mirrorModeState;
+            Thickness = thickness;
         }
 
         public void SetPixelSize(int pixelWidth, int pixelHeight)
@@ -88,10 +101,11 @@ namespace Pixellation.Tools
 
         public void SetMirrorMode(MirrorModeStates mirrorMode)
         {
-            _mirrorModeState = mirrorMode;
+            MirrorMode = mirrorMode;
         }
 
         protected static bool IsMouseDown(MouseButtonEventArgs e) => e.LeftButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed;
+
         protected static bool IsMouseDown(MouseEventArgs e) => e.LeftButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed;
 
         public virtual void OnMouseDown(MouseButtonEventArgs e)
@@ -162,7 +176,7 @@ namespace Pixellation.Tools
         /// <returns>Mirrored point.</returns>
         protected IntPoint Mirr(IntPoint p)
         {
-            switch (_mirrorModeState)
+            switch (MirrorMode)
             {
                 case MirrorModeStates.OFF:
                     break;
@@ -179,6 +193,36 @@ namespace Pixellation.Tools
                     break;
             }
             return p;
+        }
+
+        public static void SetPixelWithThickness(WriteableBitmap bmp, int x0, int y0, MColor c, ToolThickness thickness)
+        {
+            if (x0 >= 0 && y0 >= 0 && x0 < bmp.PixelWidth && y0 < bmp.PixelHeight)
+                bmp.SetPixel(x0, y0, c);
+
+            if (thickness > ToolThickness.NORMAL)
+            {
+                if ((x0 - 1) >= 0 && y0 >= 0 && (x0 - 1) < bmp.PixelWidth && y0 < bmp.PixelHeight)
+                    bmp.SetPixel(x0 - 1, y0, c);
+                if ((x0 - 1) >= 0 && (y0 - 1) >= 0 && (x0 - 1) < bmp.PixelWidth && (y0 - 1) < bmp.PixelHeight)
+                    bmp.SetPixel(x0 - 1, y0 - 1, c);
+                if (x0 >= 0 && (y0 - 1) >= 0 && x0 < bmp.PixelWidth && (y0 - 1) < bmp.PixelHeight)
+                    bmp.SetPixel(x0, y0 - 1, c);
+
+                if (thickness > ToolThickness.MEDIUM)
+                {
+                    if ((x0 + 1) >= 0 && (y0 + 1) >= 0 && (x0 + 1) < bmp.PixelWidth && (y0 + 1) < bmp.PixelHeight)
+                        bmp.SetPixel(x0 + 1, y0 + 1, c);
+                    if ((x0 + 1) >= 0 && (y0 - 1) >= 0 && (x0 + 1) < bmp.PixelWidth && (y0 - 1) < bmp.PixelHeight)
+                        bmp.SetPixel(x0 + 1, y0 - 1, c);
+                    if ((x0 - 1) >= 0 && (y0 + 1) >= 0 && (x0 - 1) < bmp.PixelWidth && (y0 + 1) < bmp.PixelHeight)
+                        bmp.SetPixel(x0 - 1, y0 + 1, c);
+                    if ((x0 + 1) >= 0 && y0 >= 0 && (x0 + 1) < bmp.PixelWidth && y0 < bmp.PixelHeight)
+                        bmp.SetPixel(x0 + 1, y0, c);
+                    if (x0 >= 0 && (y0 + 1) >= 0 && x0 < bmp.PixelWidth && (y0 + 1) < bmp.PixelHeight)
+                        bmp.SetPixel(x0, y0 + 1, c);
+                }
+            }
         }
     }
 }

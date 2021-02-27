@@ -267,5 +267,7 @@ namespace Pixellation.Utils
         {
             return path.Split('.')[0].Split('\\')[^1];
         }
+
+        public static Rect GetDrawArea(this WriteableBitmap bmp) => new Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight);
     }
 }

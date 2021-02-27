@@ -24,7 +24,7 @@ namespace Pixellation.Tools
             if (!OutOfBounds(p) && e.LeftButton == MouseButtonState.Pressed)
             {
                 TakeColor(ToolEventType.PRIMARYCOLOR);
-                if (_mirrorModeState != MirrorModeStates.OFF)
+                if (MirrorMode != MirrorModeStates.OFF)
                 {
                     p = Mirr(p);
                     TakeColor(ToolEventType.SECONDARY);
@@ -33,7 +33,7 @@ namespace Pixellation.Tools
             else if (!OutOfBounds(p) && e.RightButton == MouseButtonState.Pressed)
             {
                 TakeColor(ToolEventType.SECONDARY);
-                if (_mirrorModeState != MirrorModeStates.OFF)
+                if (MirrorMode != MirrorModeStates.OFF)
                 {
                     p = Mirr(p);
                     TakeColor(ToolEventType.PRIMARYCOLOR);

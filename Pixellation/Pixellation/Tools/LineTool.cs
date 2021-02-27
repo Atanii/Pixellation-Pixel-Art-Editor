@@ -1,6 +1,8 @@
 ﻿using Pixellation.Models;
 using Pixellation.Utils;
+using System;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
@@ -19,15 +21,14 @@ namespace Pixellation.Tools
         private void Draw()
         {
             SaveLayerMemento();
-            _drawSurface.DrawLine(p0.X, p0.Y, p1.X, p1.Y, ToolColor);
-            if (_mirrorModeState != MirrorModeStates.OFF)
-            {
-                var p2 = Mirr(p0);
-                var p3 = Mirr(p1);
-                _drawSurface.DrawLine(
-                    p2.X, p2.Y, p3.X, p3.Y, ToolColor
-                );
-            }
+
+            var drawArea = _drawSurface.GetDrawArea();
+            _drawSurface.Blit(
+                drawArea,
+                _previewDrawSurface,
+                drawArea,
+                WriteableBitmapExtensions.BlendMode.Alpha
+            );
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)
@@ -47,15 +48,54 @@ namespace Pixellation.Tools
             if (IsMouseDown(e) && _creating)
             {
                 p1 = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+
                 _previewDrawSurface.Clear();
-                _previewDrawSurface.DrawLine(p0.X, p0.Y, p1.X, p1.Y, ToolColor);
-                if (_mirrorModeState != MirrorModeStates.OFF)
+
+                DrawLineWithThickness(_previewDrawSurface, p0, p1, Thickness, ToolColor);
+
+                if (MirrorMode != MirrorModeStates.OFF)
                 {
                     var p2 = Mirr(p0);
                     var p3 = Mirr(p1);
-                    _previewDrawSurface.DrawLine(
-                        p2.X, p2.Y, p3.X, p3.Y, ToolColor
-                    );
+
+                    DrawLineWithThickness(_previewDrawSurface, p2, p3, Thickness, ToolColor);
+                }
+            }
+        }
+
+        public static void DrawLineWithThickness(WriteableBitmap bitmap, IntPoint p0, IntPoint p1, ToolThickness thickness, Color color)
+        {
+            int x0 = p0.X, x1 = p1.X, y0 = p0.Y, y1 = p1.Y;
+
+            int dx = Math.Abs(x1 - x0);
+            int sx = x0 < x1 ? 1 : -1;
+
+            int dy = -Math.Abs(y1 - y0);
+            int sy = y0 < y1 ? 1 : -1;
+
+            int err = dx + dy;
+            int e2 = 0;
+
+            while (true)
+            {
+                SetPixelWithThickness(bitmap, x0, y0, color, thickness);
+
+                if (x0 == x1 && y0 == y1)
+                {
+                    break;
+                }
+
+                e2 = 2 * err;
+
+                if (e2 >= dy)
+                {
+                    err += dy;
+                    x0 += sx;
+                }
+                if (e2 <= dx)
+                {
+                    err += dx;
+                    y0 += sy;
                 }
             }
         }
