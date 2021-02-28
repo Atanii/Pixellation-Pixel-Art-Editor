@@ -17,14 +17,22 @@ namespace Pixellation.Tools
     /// </summary>
     public partial class ColourChooser : UserControl, INotifyPropertyChanged
     {
+        #region Fields and properties.
+
         /// <summary>
         /// Event used for one- and twoway databinding.
         /// Marks change regarding one of the properties.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Primary color.
+        /// </summary>
         private Color _primaryColor;
 
+        /// <summary>
+        /// PrimaryColor used with left-click.
+        /// </summary>
         public Color PrimaryColor
         {
             get => _primaryColor;
@@ -33,12 +41,19 @@ namespace Pixellation.Tools
                 _primaryColor = value;
                 Refresh();
                 SetHueFrom(value);
+                SetSliderValues();
                 OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Secondary color.
+        /// </summary>
         private Color _secondaryColor;
 
+        /// <summary>
+        /// SecondaryColor used with right-click.
+        /// </summary>
         public Color SecondaryColor
         {
             get => _secondaryColor;
@@ -51,6 +66,9 @@ namespace Pixellation.Tools
             }
         }
 
+        /// <summary>
+        /// PrimaryColor proxy-property for locally made changes (picking color, setting sliders, ...).
+        /// </summary>
         private Color PrimaryColorLocal
         {
             get => PrimaryColor;
@@ -58,10 +76,14 @@ namespace Pixellation.Tools
             {
                 _primaryColor = value;
                 Refresh();
+                // Proxying notification for property PrimaryColor.
                 OnPropertyChanged(nameof(PrimaryColor));
             }
         }
 
+        /// <summary>
+        /// SecondaryColor proxy-property for locally made changes (picking color, setting sliders, ...).
+        /// </summary>
         private Color SecondaryColorLocal
         {
             get => SecondaryColor;
@@ -69,10 +91,16 @@ namespace Pixellation.Tools
             {
                 _secondaryColor = value;
                 Refresh();
+                // Proxying notification for property SecondaryColor.
                 OnPropertyChanged(nameof(SecondaryColor));
             }
         }
 
+        #endregion Fields and properties.
+
+        /// <summary>
+        /// Inits the default colors and sets the ui elements according to the default colors.
+        /// </summary>
         public ColourChooser()
         {
             InitializeComponent();
@@ -84,21 +112,24 @@ namespace Pixellation.Tools
 
             SetCcRectanglesFill();
             SetRGBATxtInputs();
+            SetSliderValues();
         }
 
+        /// <summary>
+        /// Updates the two color indicating rectangle and the RGBA inputs.
+        /// </summary>
         private void Refresh()
         {
             SetCcRectanglesFill();
             SetRGBATxtInputs();
         }
 
-        private void SetHueFrom(Color color)
-        {
-            var hsl = ColorUtils.ToHSL(color.R, color.G, color.B);
-            hsl.S = 1;
-            Resources["HueColor"] = ColorUtils.ToRGB(hsl);
-        }
-
+        /// <summary>
+        /// Gets the color from the given colored rectangle based on the given mouse position.
+        /// </summary>
+        /// <param name="cvs">Rectangle, preferably the colorpicker rectangle.</param>
+        /// <param name="mousePos">Mouseposition.</param>
+        /// <returns></returns>
         private Color GetPixelColor(Rectangle cvs, Point mousePos)
         {
             var source = PresentationSource.FromVisual(cvs);
@@ -148,6 +179,23 @@ namespace Pixellation.Tools
             return Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
         }
 
+        #region Setters
+
+        /// <summary>
+        /// Sets the hue from a given <see cref="Color"/>.
+        /// </summary>
+        /// <param name="color"></param>
+        private void SetHueFrom(Color color)
+        {
+            var hsl = ColorUtils.ToHSL(color.R, color.G, color.B);
+            hsl.S = 1;
+            Resources["HueColor"] = ColorUtils.ToRGB(hsl);
+        }
+
+        /// <summary>
+        /// Sets the color from the colorpicker based on the given mouse position.
+        /// </summary>
+        /// <param name="e"></param>
         private void SetChosenColourFromMousePosition(MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -156,6 +204,7 @@ namespace Pixellation.Tools
                 if (colour != null)
                 {
                     PrimaryColorLocal = colour;
+                    SetSliderValues();
                 }
             }
             else if (e.RightButton == MouseButtonState.Pressed)
@@ -168,6 +217,10 @@ namespace Pixellation.Tools
             }
         }
 
+        /// <summary>
+        /// Sets the hue from the hue-ribbon based on the given mouse position.
+        /// </summary>
+        /// <param name="mousePos"></param>
         private void SetHueColourFromMousePosition(Point mousePos)
         {
             var colour = GetPixelColor(colourGradientHue, mousePos);
@@ -177,40 +230,83 @@ namespace Pixellation.Tools
             }
         }
 
+        /// <summary>
+        /// Sets the fill colours of the two chosen color indicating rectangles.
+        /// </summary>
         private void SetCcRectanglesFill()
         {
             Resources["PrimaryColor"] = PrimaryColor.ToMediaColor();
             Resources["SecondaryColor"] = SecondaryColor.ToMediaColor();
         }
 
+        /// <summary>
+        /// Updates the RGBA input fields from both <see cref="PrimaryColor"/> and <see cref="SecondaryColor"/>.
+        /// </summary>
         private void SetRGBATxtInputs()
         {
+            // PrimaryColor
             scR.Text = PrimaryColor.R.ToString();
             scG.Text = PrimaryColor.G.ToString();
             scB.Text = PrimaryColor.B.ToString();
             scA.Text = PrimaryColor.A.ToString();
 
+            // SecondaryColor
             scR2.Text = SecondaryColor.R.ToString();
             scG2.Text = SecondaryColor.G.ToString();
             scB2.Text = SecondaryColor.B.ToString();
             scA2.Text = SecondaryColor.A.ToString();
         }
 
+        /// <summary>
+        /// Updates the HSL sliders from the <see cref="PrimaryColor"/>.
+        /// </summary>
+        private void SetSliderValues()
+        {
+            var tmp = ColorUtils.ToHSL(PrimaryColor.R, PrimaryColor.G, PrimaryColor.B);
+            HueSlider.Value = tmp.H;
+            SaturationSlider.Value = tmp.S;
+            LuminanceSlider.Value = tmp.L;
+        }
+
+        #endregion Setters
+
+        #region Handling events
+
+        /// <summary>
+        /// Picks a color from the colorpicker after pressing the left mouse-button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ColourWheelVisual_MouseDown(object sender, MouseButtonEventArgs e)
         {
             SetChosenColourFromMousePosition(e);
         }
 
+        /// <summary>
+        /// Updates color from colorpicker while moving the mouse if left mouse-button is pressed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ColourGradientCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             SetChosenColourFromMousePosition(e);
         }
 
+        /// <summary>
+        /// Sets the hue from the clicked mouse position on the hue-ribbon.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ColourWheelVisualHue_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             SetHueColourFromMousePosition(e.GetPosition(colourGradientHue));
         }
 
+        /// <summary>
+        /// Updates <see cref="PrimaryColor"/> from the RGBA input fields.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Sc_TextInput(object sender, RoutedEventArgs e)
         {
             if (int.TryParse(scR.Text, out int R) &&
@@ -221,9 +317,15 @@ namespace Pixellation.Tools
                 R >= 0 && G >= 0 && B >= 0 && A >= 0)
             {
                 PrimaryColorLocal = Color.FromArgb(A, R, G, B);
+                SetSliderValues();
             }
         }
 
+        /// <summary>
+        /// Updates <see cref="SecondaryColor"/> from the RGBA input fields.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Sc2_TextInput(object sender, RoutedEventArgs e)
         {
             if (int.TryParse(scR2.Text, out int R) &&
@@ -237,11 +339,52 @@ namespace Pixellation.Tools
             }
         }
 
+        /// <summary>
+        /// Swaps the values of <see cref="PrimaryColor"/> and <see cref="SecondaryColor"/>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnSwapColors_Click(object sender, RoutedEventArgs e)
         {
             var tmp = SecondaryColorLocal;
             SecondaryColorLocal = PrimaryColorLocal;
             PrimaryColorLocal = tmp;
+        }
+
+        /// <summary>
+        /// Sets the hue of the <see cref="PrimaryColor"/> with the new value from the slider.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HueSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var tmp = ColorUtils.ToHSL(PrimaryColorLocal.R, PrimaryColorLocal.G, PrimaryColorLocal.B);
+            tmp.H = (float)e.NewValue;
+            PrimaryColorLocal = ColorUtils.ToRGB(tmp).ToDrawingColor();
+        }
+
+        /// <summary>
+        /// Sets the saturation of the <see cref="PrimaryColor"/> with the new value from the slider.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaturationSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var tmp = ColorUtils.ToHSL(PrimaryColorLocal.R, PrimaryColorLocal.G, PrimaryColorLocal.B);
+            tmp.S = (float)e.NewValue;
+            PrimaryColorLocal = ColorUtils.ToRGB(tmp).ToDrawingColor();
+        }
+
+        /// <summary>
+        /// Sets the luminance of the <see cref="PrimaryColor"/> with the new value from the slider.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LuminanceSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var tmp = ColorUtils.ToHSL(PrimaryColorLocal.R, PrimaryColorLocal.G, PrimaryColorLocal.B);
+            tmp.L = (float)e.NewValue;
+            PrimaryColorLocal = ColorUtils.ToRGB(tmp).ToDrawingColor();
         }
 
         /// <summary>
@@ -252,5 +395,7 @@ namespace Pixellation.Tools
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        #endregion Handling events
     }
 }

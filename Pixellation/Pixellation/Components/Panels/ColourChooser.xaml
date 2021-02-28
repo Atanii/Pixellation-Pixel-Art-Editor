@@ -1,16 +1,16 @@
 ﻿<UserControl x:Class="Pixellation.Tools.ColourChooser"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d" x:Name="cc"
-             d:DesignHeight="400" d:DesignWidth="200">
+             d:DesignHeight="490" d:DesignWidth="200">
 
     <UserControl.Resources>
 
         <Color x:Key="HueColor">#FFFFFF</Color>
-        
+
         <Color x:Key="PrimaryColor">#000000</Color>
         <Color x:Key="SecondaryColor">#FFFFFF</Color>
 
@@ -54,8 +54,8 @@
                         <Rectangle.OpacityMask>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                 <LinearGradientBrush.GradientStops>
-                                    <GradientStop Color="#FFFFFFFF" Offset="0"/>
-                                    <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                    <GradientStop Color="#FFFFFFFF" Offset="0" />
+                                    <GradientStop Color="#00FFFFFF" Offset="1" />
                                 </LinearGradientBrush.GradientStops>
                             </LinearGradientBrush>
                         </Rectangle.OpacityMask>
@@ -63,23 +63,27 @@
                 </Canvas>
             </VisualBrush.Visual>
         </VisualBrush>
-
     </UserControl.Resources>
 
     <StackPanel>
         <StackPanel Orientation="Horizontal">
-            <Rectangle  x:Name="colourGradientCanvas" Fill="{StaticResource LevelSaturationBrush}" Width="170" Height="170" Margin="5"
-                    StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True" MouseMove="ColourGradientCanvas_MouseMove" MouseDown="ColourWheelVisual_MouseDown" />
-            <Rectangle  x:Name="colourGradientHue" Fill="{StaticResource HueGradientBrush}" Width="10" Height="170" Margin="5"
-                    StrokeThickness="1" Stroke="Black" SnapsToDevicePixels="True" MouseLeftButtonDown="ColourWheelVisualHue_MouseLeftButtonDown" />
+            <Border Width="170" Height="170" BorderThickness="1" BorderBrush="Black" Margin="5">
+                <Rectangle  x:Name="colourGradientCanvas" Fill="{StaticResource LevelSaturationBrush}" Width="170" Height="170"
+                    StrokeThickness="0" SnapsToDevicePixels="True" MouseMove="ColourGradientCanvas_MouseMove" MouseDown="ColourWheelVisual_MouseDown" />
+            </Border>
+            <Border Width="10" Height="170" BorderThickness="1" BorderBrush="Black" Margin="5">
+                <Rectangle  x:Name="colourGradientHue" Fill="{StaticResource HueGradientBrush}" Width="10" Height="170"
+                    StrokeThickness="0" SnapsToDevicePixels="True" MouseLeftButtonDown="ColourWheelVisualHue_MouseLeftButtonDown" />
+            </Border>
         </StackPanel>
         <GroupBox Header="Primary/Secondary Colour (RGBA)" Height="100">
             <UniformGrid Columns="4" Rows="2">
+                <!-- PrimaryColor -->
                 <TextBox x:Name="scR" Margin="5" LostFocus="Sc_TextInput" Text="{Binding ElementName=cc, Path=PrimaryColor.R, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
                 <TextBox x:Name="scG" Margin="5" LostFocus="Sc_TextInput" Text="{Binding ElementName=cc, Path=PrimaryColor.G, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
                 <TextBox x:Name="scB" Margin="5" LostFocus="Sc_TextInput" Text="{Binding ElementName=cc, Path=PrimaryColor.B, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
                 <TextBox x:Name="scA" Margin="5" LostFocus="Sc_TextInput" Text="{Binding ElementName=cc, Path=PrimaryColor.A, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
-
+                <!-- SecondaryColor -->
                 <TextBox x:Name="scR2" Margin="5" LostFocus="Sc2_TextInput" Text="{Binding ElementName=cc, Path=SecondaryColor.R, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
                 <TextBox x:Name="scG2" Margin="5" LostFocus="Sc2_TextInput" Text="{Binding ElementName=cc, Path=SecondaryColor.G, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
                 <TextBox x:Name="scB2" Margin="5" LostFocus="Sc2_TextInput" Text="{Binding ElementName=cc, Path=SecondaryColor.B, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="20"></TextBox>
@@ -99,5 +103,33 @@
                 <ImageBrush ImageSource="pack://application:,,,/Resources/icons/swap.png"></ImageBrush>
             </Button.Background>
         </Button>
+        <!-- HSL Settings -->
+        <DockPanel HorizontalAlignment="Stretch">
+            <Label Margin="5">Hue</Label>
+            <Slider Width="120" x:Name="HueSlider"
+                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Minimum="0" Maximum="360" TickFrequency="0.05" IsSnapToTickEnabled="False"
+                    AutoToolTipPlacement="TopLeft"
+                    ValueChanged="HueSlider_ValueChanged">
+            </Slider>
+        </DockPanel>
+        <DockPanel HorizontalAlignment="Stretch">
+            <Label Margin="5">Saturation</Label>
+            <Slider Width="120" x:Name="SaturationSlider"
+                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Minimum="0" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="False"
+                    AutoToolTipPlacement="TopLeft"
+                    ValueChanged="SaturationSlider_ValueChanged">
+            </Slider>
+        </DockPanel>
+        <DockPanel HorizontalAlignment="Stretch">
+            <Label Margin="5">Luminance</Label>
+            <Slider Width="120" x:Name="LuminanceSlider"
+                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Minimum="0" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="False"
+                    AutoToolTipPlacement="TopLeft"
+                    ValueChanged="LuminanceSlider_ValueChanged">
+            </Slider>
+        </DockPanel>
     </StackPanel>
 </UserControl>
