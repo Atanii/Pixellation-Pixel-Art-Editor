@@ -5,18 +5,28 @@ using System.IO.Compression;
 
 namespace Pixellation.FilePackaging
 {
+    /// <summary>
+    /// Class for writing and saving the file package determined by the given <see cref="FilePackage"/>.
+    /// </summary>
     public class FilePackageWriter
     {
         private readonly string _filepath;
         private readonly IEnumerable<string> _contentFilePathList;
         private string _tempDirectoryPath;
 
+        /// <summary>
+        /// Inits data for creating the filepackage.
+        /// </summary>
+        /// <param name="filePackage"></param>
         public FilePackageWriter(FilePackage filePackage)
         {
             _filepath = filePackage.FilePath;
             _contentFilePathList = filePackage.ContentFilePathList;
         }
 
+        /// <summary>
+        /// Saves the pixellation-project based on the prepared <see cref="FilePackage"/>.
+        /// </summary>
         public void SaveProjectModel()
         {
             try

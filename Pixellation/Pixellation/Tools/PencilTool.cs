@@ -3,12 +3,19 @@ using System.Windows.Input;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Simple pencil.
+    /// </summary>
     public class PencilTool : BaseMultitonTool<PencilTool>
     {
         private PencilTool() : base()
         {
         }
 
+        /// <summary>
+        /// Drawing the clicked pixels.
+        /// </summary>
+        /// <param name="e"></param>
         private void Draw(MouseEventArgs e)
         {
             SaveLayerMemento(true);

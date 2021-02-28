@@ -8,15 +8,28 @@ using System.Threading.Tasks;
 
 namespace Pixellation.FilePackaging
 {
+    /// <summary>
+    /// Class reading the saving the project and for creating a <see cref="ProjectModel"/> from it.
+    /// </summary>
     public class FilePackageReader
     {
         private readonly string _filepath;
 
+        /// <summary>
+        /// Inits filepath.
+        /// </summary>
+        /// <param name="filepath"></param>
         public FilePackageReader(string filepath)
         {
             _filepath = filepath;
         }
 
+        /// <summary>
+        /// Loads the Pixellation project and generates a <see cref="ProjectModel"/> from the content in it.
+        /// </summary>
+        /// <param name="metadataFileName">Path for the metadata file in the package.</param>
+        /// <param name="projectDataFileName">Path for the projectdatafile in the package.</param>
+        /// <returns></returns>
         public async Task<ProjectModel> LoadProjectModel(string metadataFileName, string projectDataFileName)
         {
             try

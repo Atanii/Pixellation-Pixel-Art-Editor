@@ -5,13 +5,25 @@ using Pixellation.MementoPattern;
 
 namespace Pixellation.Components.Editor
 {
+    /// <summary>
+    /// Gives undo-redo support for frames, layers and for the list layers.
+    /// </summary>
     public partial class PixelEditor : IDrawingHelper, IOriginator<LayerListMemento, IPixelEditorEventType>
     {
+        /// <summary>
+        /// Gets a memento representing the current state of the layerlist.
+        /// </summary>
+        /// <param name="type">Value of <see cref="IPixelEditorEventType"/>.</param>
+        /// <returns>Resulting memento.</returns>
         public LayerListMemento GetMemento(int type)
         {
             return new LayerListMemento(this, type, GetIndex(ActiveLayer), PixelWidth, PixelHeight);
         }
 
+        /// <summary>
+        /// Restore layer-list state from a memento.
+        /// </summary>
+        /// <returns>Memento for redoing the undone operation.</returns>
         public void Restore(LayerListMemento mem)
         {
             switch (mem.GetMementoType())
@@ -52,6 +64,11 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Saves a layerstate for undo.
+        /// </summary>
+        /// <param name="eTypeValue">Value of the given <see cref="IPixelEditorEventType"/>.</param>
+        /// <param name="selectedLayerIndex">Index of layer to save state for.</param>
         public void SaveState(int eTypeValue, int elementIndex)
         {
             switch (eTypeValue)
@@ -97,6 +114,11 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Gives restore support for layer undo-redos.
+        /// </summary>
+        /// <param name="mem">State to restore.</param>
+        /// <returns>Memento for redoing the undone operation.</returns>
         public IMemento<IPixelEditorEventType> HandleRestore(LayerMemento mem)
         {
             LayerMemento redoMem;
@@ -182,6 +204,11 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Gives restore support for layer-list undo-redos.
+        /// </summary>
+        /// <param name="mem">State to restore.</param>
+        /// <returns>Memento for redoing the undone operation.</returns>
         public IMemento<IPixelEditorEventType> HandleRestore(LayerListMemento mem)
         {
             LayerListMemento redoMem;
@@ -212,6 +239,11 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Gives restore support for frame undo-redos.
+        /// </summary>
+        /// <param name="mem">State to restore.</param>
+        /// <returns>Memento for redoing the undone operation.</returns>
         public IMemento<IPixelEditorEventType> HandleRestore(FrameMemento mem)
         {
             FrameMemento redoMem;

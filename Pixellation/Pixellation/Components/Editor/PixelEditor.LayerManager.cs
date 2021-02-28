@@ -9,14 +9,23 @@ namespace Pixellation.Components.Editor
 {
     public partial class PixelEditor : ILayerManager
     {
+        /// <summary>
+        /// Event indicating change in <see cref="Layers"/>.
+        /// </summary>
         public static event PixelEditorLayerEventHandler LayerListChanged;
 
+        /// <summary>
+        /// Currently selected layer.
+        /// </summary>
         public DrawingLayer ActiveLayer { get; private set; }
 
+        /// <summary>
+        /// Index of the selected layer.
+        /// </summary>
         public int ActiveLayerIndex => Layers.FindIndex(x => x.Id == ActiveLayer.Id);
 
         /// <summary>
-        /// List of <see cref="DrawingLayer"/>s the currently edited image consists of.
+        /// Currently edited layers.
         /// </summary>
         public List<DrawingLayer> Layers
         {
@@ -33,6 +42,10 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Calls Measure for layers.
+        /// </summary>
+        /// <param name="s"></param>
         public void MeasureAllLayer(System.Windows.Size s)
         {
             foreach (var l in Layers)
@@ -45,6 +58,10 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Calls arrange for layers.
+        /// </summary>
+        /// <param name="s"></param>
         public void ArrangeAllLayer(System.Windows.Rect s)
         {
             foreach (var l in Layers)
@@ -57,6 +74,9 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Removes all child <see cref="Visual"/> from <see cref="PixelEditor"/>.
+        /// </summary>
         public void DeleteAllVisualChildren()
         {
             foreach (var l in Layers)
@@ -89,6 +109,10 @@ namespace Pixellation.Components.Editor
             FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.CLEAR, -1));
         }
 
+        /// <summary>
+        /// Reset layers and helpervisuals on the visualtree by readding them.
+        /// </summary>
+        /// <param name="includeHelperVisuals">Include and recreate helpervisuals in the process.</param>
         public void ResetLayerAndHelperVisuals(bool includeHelperVisuals = true)
         {
             // Layers
@@ -105,6 +129,9 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Remove all layers of the current frame from the visualtree.
+        /// </summary>
         private void RemoveLayersFromVisualChildren()
         {
             foreach (var l in Layers)
@@ -113,6 +140,9 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Add all layers of the current frame to the visualtree.
+        /// </summary>
         private void AddLayersToVisualChildren()
         {
             foreach (var l in Layers)
@@ -121,6 +151,9 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Recreates layer used for drawpreview.
+        /// </summary>
         public void ResetPreviewLayer()
         {
             if (_drawPreview != null)
@@ -131,6 +164,9 @@ namespace Pixellation.Components.Editor
             AddVisualChild(_drawPreview);
         }
 
+        /// <summary>
+        /// Reset helpervisuals.
+        /// </summary>
         public void ResetHelperVisuals()
         {
             if (_borderLine != null)
@@ -158,30 +194,36 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public void SetActiveLayer(int layerIndex = 0, bool signalEvent = false)
+        /// <summary>
+        /// Sets selected layer.
+        /// </summary>
+        /// <param name="layerIndex">Index of layers to be selected.</param>
+        public void SetActiveLayer(int layerIndex = 0)
         {
             if (Layers.ElementAtOrDefault(layerIndex) != null)
             {
                 ActiveLayer = Layers[layerIndex];
-                if (signalEvent)
-                {
-                    LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.NONE, 0));
-                }
                 RefreshVisualsThenSignalUpdate();
             }
         }
 
-        #region Getters
-
+        /// <summary>
+        /// Gets index for a layer.
+        /// </summary>
+        /// <param name="layer">Layer the index is asked for.</param>
+        /// <returns>Index of the layer.</returns>
         public int GetIndex(DrawingLayer layer)
         {
             return Layers.FindIndex(x => x.Id == layer.Id);
         }
 
-        #endregion Getters
-
         #region Transform
 
+        /// <summary>
+        /// Mirrors drawn image.
+        /// </summary>
+        /// <param name="horizontally">Mirror horizontally or vertically.</param>
+        /// <param name="allLayers">Only selected or all layers in the frame.</param>
         public void Mirror(bool horizontally, bool allLayers)
         {
             if (!allLayers && ActiveLayer != null)
@@ -198,6 +240,10 @@ namespace Pixellation.Components.Editor
             RefreshVisualsThenSignalUpdate();
         }
 
+        /// <summary>
+        /// Rotates the image, applies to all image.
+        /// </summary>
+        /// <param name="counterClockWise">Counter- or clovkwise rotation.</param>
         public void Rotate(bool counterClockWise)
         {
             foreach (var l in Layers)
@@ -212,6 +258,11 @@ namespace Pixellation.Components.Editor
             UpdateMagnification();
         }
 
+        /// <summary>
+        /// Resizes edited image.
+        /// </summary>
+        /// <param name="newWidth">New width in pixels.</param>
+        /// <param name="newHeight">New height in pixels.</param>
         public void Resize(int newWidth, int newHeight)
         {
             foreach (var l in Layers)
@@ -228,6 +279,11 @@ namespace Pixellation.Components.Editor
 
         #region Add, Delete, Duplicate, Move Up, Move Down, Merge, Clear
 
+        /// <summary>
+        /// Adds a new layer.
+        /// </summary>
+        /// <param name="layer">Layer to be added.</param>
+        /// <param name="layerIndex">Index of the new layer.</param>
         public void AddLayer(DrawingLayer layer, int layerIndex = 0)
         {
             Layers.Insert(layerIndex, layer);
@@ -238,6 +294,11 @@ namespace Pixellation.Components.Editor
             LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.ADDLAYER, layerIndex));
         }
 
+        /// <summary>
+        /// Adds a new layer.
+        /// </summary>
+        /// <param name="name">Name of the new layer.</param>
+        /// <param name="layerIndex">Index of the new layer.</param>
         public void AddLayer(string name, int layerIndex = 0)
         {
             Layers.Insert(layerIndex, new DrawingLayer(this, name));
@@ -248,6 +309,10 @@ namespace Pixellation.Components.Editor
             LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.ADDLAYER, layerIndex));
         }
 
+        /// <summary>
+        /// Duplicates a layer.
+        /// </summary>
+        /// <param name="layerIndex">Index of the layer to duplicate.</param>
         public void DuplicateLayer(int layerIndex = 0)
         {
             Layers.Insert(layerIndex, Layers[layerIndex].Clone());
@@ -258,6 +323,10 @@ namespace Pixellation.Components.Editor
             LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.DUPLICATELAYER, layerIndex));
         }
 
+        /// <summary>
+        /// Moves a layer up (closer).
+        /// </summary>
+        /// <param name="layerIndex">Index of layer to move.</param>
         public void MoveLayerUp(int layerIndex)
         {
             var newLayerIndex = layerIndex;
@@ -272,6 +341,10 @@ namespace Pixellation.Components.Editor
             LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.MOVELAYERUP, newLayerIndex));
         }
 
+        /// <summary>
+        /// Moves a layer down (behind).
+        /// </summary>
+        /// <param name="layerIndex">Index of layer to move.</param>
         public void MoveLayerDown(int layerIndex)
         {
             var newLayerIndex = layerIndex;
@@ -286,12 +359,20 @@ namespace Pixellation.Components.Editor
             LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.MOVELAYERDOWN, newLayerIndex));
         }
 
+        /// <summary>
+        /// Removes layer.
+        /// </summary>
+        /// <param name="layer">Layer to remove.</param>
         private void RemoveLayer(DrawingLayer layer)
         {
             RemoveVisualChild(layer);
             Layers.Remove(layer);
         }
 
+        /// <summary>
+        /// Removes a layer.
+        /// </summary>
+        /// <param name="layerIndex">Index of the layer to remove.</param>
         public void RemoveLayer(int layerIndex)
         {
             if ((Layers.Count - 1) <= 0)
@@ -316,6 +397,10 @@ namespace Pixellation.Components.Editor
             LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.REMOVELAYER, newLayerIndex));
         }
 
+        /// <summary>
+        /// Merges the layer behind the selected one into the selected.
+        /// </summary>
+        /// <param name="layerIndex">Index of layer selected for merge.</param>
         public void MergeLayerDownward(int layerIndex)
         {
             var newLayerIndex = layerIndex;
@@ -331,6 +416,10 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Clears the layer leaving only transparent pixels.
+        /// </summary>
+        /// <param name="layerIndex">Index of layer to clear.</param>
         public void ClearLayer(int layerIndex)
         {
             if (Layers.Count >= (layerIndex + 1))

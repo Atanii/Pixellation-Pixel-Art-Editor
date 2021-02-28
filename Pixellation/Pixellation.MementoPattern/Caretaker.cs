@@ -22,7 +22,7 @@ namespace Pixellation.MementoPattern
         /// <summary>
         /// Multiton instances.
         /// </summary>
-        private static readonly Dictionary<string,Caretaker<_MementoType>> instances = new Dictionary<string, Caretaker<_MementoType>>();
+        private static readonly Dictionary<string, Caretaker<_MementoType>> instances = new Dictionary<string, Caretaker<_MementoType>>();
 
         /// <summary>
         /// LinkedList for saved states that can be undone.
@@ -88,7 +88,6 @@ namespace Pixellation.MementoPattern
             InstanceKey = key;
             Capacity = capacity;
         }
-
 
         /// <summary>
         /// Returns an instance for <see cref="Caretaker{_MementoType}"/>.

@@ -27,7 +27,7 @@ namespace Pixellation.Components.Editor.Memento
         public void Dispose()
         {
             Debug.WriteLine("Disposing of FrameMemento...");
-            PixellationCaretakerManager.GetInstance().RemoveCaretaker(Frame.Id, true);
+            PixellationCaretakerManager.GetInstance().RemoveCaretaker(Frame.Id);
         }
     }
 }

@@ -11,14 +11,20 @@ namespace Pixellation.Components.Editor
         public static event PixelEditorFrameEventHandler FrameListChanged;
 
         /// <summary>
-        /// List of Frames or layergroups.
+        /// Frames of the current project.
         /// </summary>
         public List<DrawingFrame> Frames { get; private set; } = new List<DrawingFrame> { };
 
+        /// <summary>
+        /// Unique id of the selected frame.
+        /// </summary>
         public string ActiveFrameId => ActiveFrame != null ? ActiveFrame.Id : "";
 
         private int _activeFrameIndex;
 
+        /// <summary>
+        /// Index of selected frame.
+        /// </summary>
         public int ActiveFrameIndex
         {
             get { return _activeFrameIndex; }
@@ -40,6 +46,9 @@ namespace Pixellation.Components.Editor
 
         private DrawingFrame _activeFrame;
 
+        /// <summary>
+        /// Selected frame.
+        /// </summary>
         public DrawingFrame ActiveFrame
         {
             get { return _activeFrame; }
@@ -58,6 +67,10 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Get the selected frame as a merged bitmap.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<BitmapSource> GetFramesAsWriteableBitmaps()
         {
             var bmps = new List<WriteableBitmap>();
@@ -68,6 +81,11 @@ namespace Pixellation.Components.Editor
             return bmps;
         }
 
+        /// <summary>
+        /// Adds a new frame.
+        /// </summary>
+        /// <param name="frameIndex">Index of new frame.</param>
+        /// <param name="name">Name of the new frame.</param>
         public void AddDrawingFrame(int frameIndex, string name)
         {
             if (Frames.Count == 0 && frameIndex == 0)
@@ -96,6 +114,11 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Readds a drawing frame from a memento.
+        /// </summary>
+        /// <param name="frameFromMemento">Memento to restore frame from.</param>
+        /// <param name="index">Original index of the frame.</param>
         private void ReAddDrawingFrames(DrawingFrame frameFromMemento, int index)
         {
             Frames.Insert(index, frameFromMemento);
@@ -108,6 +131,10 @@ namespace Pixellation.Components.Editor
             SetActiveLayer();
         }
 
+        /// <summary>
+        /// Adds a drawing frame.
+        /// </summary>
+        /// <param name="frames">Frame to add.</param>
         private void AddDrawingFrames(List<DrawingFrame> frames)
         {
             foreach (var frame in frames)
@@ -123,6 +150,10 @@ namespace Pixellation.Components.Editor
             SetActiveLayer();
         }
 
+        /// <summary>
+        /// Duplicates a frame.
+        /// </summary>
+        /// <param name="frameIndex">Index of frame to duplicate.</param>
         public void DuplicateDrawingFrame(int frameIndex)
         {
             if (Frames.Count >= (frameIndex + 1))
@@ -139,6 +170,10 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Merges a frame into the left neighbour. Irreversible operation!
+        /// </summary>
+        /// <param name="frameIndex">Index of frame to merge.</param>
         public void MergeDrawingFrameIntoLeftNeighbour(int frameIndex)
         {
             if (frameIndex > 0 && Frames.Count >= (frameIndex + 1))
@@ -152,7 +187,7 @@ namespace Pixellation.Components.Editor
                 Frames[frameIndex - 1].Layers.AddRange(tmp.Layers);
 
                 // Remove undo-redo for frame to be deleted.
-                _caretaker.RemoveCaretaker(Frames[frameIndex].Id, true);
+                _caretaker.RemoveCaretaker(Frames[frameIndex].Id);
                 // Remove merged frame.
                 Frames.RemoveAt(frameIndex);
 
@@ -168,6 +203,10 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Move frame to the left (behind).
+        /// </summary>
+        /// <param name="frameIndex">Index of frame to move.</param>
         public void MoveDrawingFrameLeft(int frameIndex)
         {
             if (frameIndex > 0 && Frames.Count >= (frameIndex + 1))
@@ -184,6 +223,10 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Moves frame to the right (closer).
+        /// </summary>
+        /// <param name="frameIndex">Index of frame to move.</param>
         public void MoveDrawingFrameRight(int frameIndex)
         {
             if (Frames.Count > (frameIndex + 1))
@@ -200,6 +243,11 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Removes a frame.
+        /// </summary>
+        /// <param name="frameIndex">Index of frame to duplicate.</param>
+        /// <param name="removeCaretakerAsWell">Remove the undo-redo handler for the layers of this frame?</param>
         public void RemoveDrawingFrame(int frameIndex, bool removeCaretakerAsWell = false)
         {
             if ((Frames.Count - 1) > 0 && Frames.ElementAtOrDefault(frameIndex) != null)
@@ -227,6 +275,10 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Sets a frame active (selected).
+        /// </summary>
+        /// <param name="frame"></param>
         public void SetActiveFrame(DrawingFrame frame)
         {
             var index = Frames.FindIndex(f => f.FrameName == frame.FrameName);
@@ -242,6 +294,10 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Resets a frame, leaving only one blank layer. Irreversible operation.
+        /// </summary>
+        /// <param name="frameIndex">Index of frame to reset.</param>
         public void ResetDrawingFrame(int frameIndex)
         {
             // Getting frame to clear.
@@ -265,8 +321,14 @@ namespace Pixellation.Components.Editor
             SetActiveLayer();
         }
 
+        /// <summary>
+        /// Undo previous operation applied on frames.
+        /// </summary>
         public void UndoFrameOperation() => _caretaker.Undo(FramesCaretakerKey);
 
+        /// <summary>
+        /// Redo previous operation that was undone.
+        /// </summary>
         public void RedoFrameOperation() => _caretaker.Redo(FramesCaretakerKey);
     }
 }

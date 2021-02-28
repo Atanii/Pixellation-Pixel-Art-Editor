@@ -7,6 +7,9 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Draws a line.
+    /// </summary>
     public class LineTool : BaseMultitonTool<LineTool>
     {
         private IntPoint p0;
@@ -18,6 +21,9 @@ namespace Pixellation.Tools
         {
         }
 
+        /// <summary>
+        /// Draws the line.
+        /// </summary>
         private void Draw()
         {
             SaveLayerMemento();
@@ -63,6 +69,14 @@ namespace Pixellation.Tools
             }
         }
 
+        /// <summary>
+        /// Implementation of Bresenham's line algorithm.
+        /// </summary>
+        /// <param name="bitmap">Bitmap to draw on.</param>
+        /// <param name="p0">First point.</param>
+        /// <param name="p1">Second point.</param>
+        /// <param name="thickness">Line thickness to draw with.</param>
+        /// <param name="color">Color to draw with.</param>
         public static void DrawLineWithThickness(WriteableBitmap bitmap, IntPoint p0, IntPoint p1, ToolThickness thickness, Color color)
         {
             int x0 = p0.X, x1 = p1.X, y0 = p0.Y, y1 = p1.Y;

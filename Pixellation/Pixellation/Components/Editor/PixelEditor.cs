@@ -80,10 +80,19 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// <see cref="PixelWidth"/> with applied <see cref="Magnification"/>.
+        /// </summary>
         public int MagnifiedWidth => PixelWidth * Magnification;
 
+        /// <summary>
+        /// <see cref="PixelHeight"/> with applied <see cref="Magnification"/>.
+        /// </summary>
         public int MagnifiedHeight => PixelHeight * Magnification;
 
+        /// <summary>
+        /// Count of visualchildren.
+        /// </summary>
         public int VisualCount { get; set; } = 0;
 
         #endregion Properties
@@ -345,6 +354,9 @@ namespace Pixellation.Components.Editor
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// Reset the settings of visualhelpers to default.
+        /// </summary>
         private void ResetVisualHelperSettings()
         {
             TiledModeOn = Settings.Default.DefaultTiledModeOn;
@@ -353,6 +365,9 @@ namespace Pixellation.Components.Editor
             ShowGrid = Settings.Default.DefaultShowGrid;
         }
 
+        /// <summary>
+        /// Refresh visualhelpers.
+        /// </summary>
         private void VisualHelperRefresh()
         {
             ResetHelperVisuals();
@@ -576,11 +591,11 @@ namespace Pixellation.Components.Editor
             switch (e.Type)
             {
                 case ToolEventType.PRIMARYCOLOR:
-                    PrimaryColor = (System.Drawing.Color)e.Value;
+                    PrimaryColor = e.Value;
                     break;
 
                 case ToolEventType.SECONDARY:
-                    SecondaryColor = (System.Drawing.Color)e.Value;
+                    SecondaryColor = e.Value;
                     break;
 
                 case ToolEventType.NOTHING:

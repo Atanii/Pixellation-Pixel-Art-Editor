@@ -4,6 +4,10 @@ using System.Reflection;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Base multiton pattern class for all drawing tools used in Pixellation.
+    /// </summary>
+    /// <typeparam name="T">Type of inheriting class.</typeparam>
     public abstract class BaseMultitonTool<T> : BaseTool, ITool where T : class, ITool
     {
         public class MultitonException : Exception
@@ -13,6 +17,9 @@ namespace Pixellation.Tools
             }
         }
 
+        /// <summary>
+        /// Class for creating instance of the inheriting class. Inheriting class must have a private, parameterless constructor!
+        /// </summary>
         private class MultitonToolCreator
         {
             static MultitonToolCreator()
@@ -57,8 +64,18 @@ namespace Pixellation.Tools
         {
         }
 
+        /// <summary>
+        /// Gets an instance of the inheriting class.
+        /// </summary>
+        /// <param name="key">Instancekey.</param>
+        /// <returns>Created or already created instance.</returns>
         public static T GetInstance(string key) => MultitonToolCreator.Get(key);
 
+        /// <summary>
+        /// Gets an instance as <see cref="ITool"/>.
+        /// </summary>
+        /// <param name="key">Instancekey.</param>
+        /// <returns>Created or already created instance.</returns>
         public ITool GetInstanceByKey(string key) => MultitonToolCreator.Get(key);
     }
 }

@@ -5,6 +5,9 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Copy-paste-cut tool using an ellipse as area.
+    /// </summary>
     internal class SelectCopyPasteEllipseTool : BaseSelectionTool<SelectCopyPasteEllipseTool>
     {
         private SelectCopyPasteEllipseTool() : base()

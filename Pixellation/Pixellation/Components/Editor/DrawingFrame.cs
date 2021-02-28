@@ -42,24 +42,6 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public new double Opacity
-        {
-            get
-            {
-                if (Visible)
-                {
-                    return base.Opacity;
-                }
-                return 0d;
-            }
-            set
-            {
-                base.Opacity = value;
-                InvalidateVisual();
-                OnUpdated?.Invoke();
-            }
-        }
-
         private bool _visible = true;
 
         public bool Visible
@@ -84,7 +66,7 @@ namespace Pixellation.Components.Editor
 
         #endregion Events
 
-        public DrawingFrame(List<DrawingLayer> layers, string name, IDrawingHelper owner, bool visible = true, double opacity = 100, Guid? id = null) : base()
+        public DrawingFrame(List<DrawingLayer> layers, string name, IDrawingHelper owner, bool visible = true, Guid? id = null) : base()
         {
             if (id != null)
             {
@@ -99,7 +81,6 @@ namespace Pixellation.Components.Editor
                 InvalidateVisual();
             };
             Visible = visible;
-            Opacity = opacity;
         }
 
         public DrawingFrame(string name, IDrawingHelper owner, bool visible = true, bool generateDefaultLayer = false)

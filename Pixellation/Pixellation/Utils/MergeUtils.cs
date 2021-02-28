@@ -166,6 +166,15 @@ namespace Pixellation.Utils
             return merged;
         }
 
+        /// <summary>
+        /// Generates a spritesheet image from the given frames with the specified numbers or rows and coloumns, using the given color as background and blendmode for merging.
+        /// </summary>
+        /// <param name="frames">List of frames, each one will be one image on the sheet.</param>
+        /// <param name="mode">Blendmode for merging.</param>
+        /// <param name="rows">Number of rows in the sheet.</param>
+        /// <param name="cols">Number of cols in the sheet.</param>
+        /// <param name="backgroundColor">Background color of the image.</param>
+        /// <returns>Resulting spritesheet.</returns>
         public static WriteableBitmap GenerateSpriteSheetFromFrames(
             List<DrawingFrame> frames, WriteableBitmapExtensions.BlendMode mode, int rows, int cols, Color backgroundColor)
         {
@@ -208,6 +217,15 @@ namespace Pixellation.Utils
             return merged;
         }
 
+        /// <summary>
+        /// Generates a spritesheet image from the given layers with the specified numbers or rows and coloumns, using the given color as background and blendmode for merging.
+        /// </summary>
+        /// <param name="layers">List of layers, each one will be one image on the sheet.</param>
+        /// <param name="mode">Blendmode for merging.</param>
+        /// <param name="rows">Number of rows in the sheet.</param>
+        /// <param name="cols">Number of cols in the sheet.</param>
+        /// <param name="backgroundColor">Background color of the image.</param>
+        /// <returns>Resulting spritesheet.</returns>
         public static WriteableBitmap GenerateSpriteSheetFromLayers(
             List<DrawingLayer> layers, WriteableBitmapExtensions.BlendMode mode, int rows, int cols, Color backgroundColor)
         {

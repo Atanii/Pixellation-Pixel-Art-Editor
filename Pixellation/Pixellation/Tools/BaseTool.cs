@@ -10,17 +10,38 @@ namespace Pixellation.Tools
 {
     using MColor = System.Windows.Media.Color;
 
+    /// <summary>
+    /// Base class for all drawing tools used in Pixellation.
+    /// </summary>
     public abstract class BaseTool
     {
+        /// <summary>
+        /// Editor magnification.
+        /// </summary>
         protected static int _magnification;
 
+        /// <summary>
+        /// Draw area width.
+        /// </summary>
         protected static int _surfaceWidth;
+
+        /// <summary>
+        /// Draw area height.
+        /// </summary>
         protected static int _surfaceHeight;
 
+        /// <summary>
+        /// Layer to draw on.
+        /// </summary>
         protected static DrawingLayer _layer;
+
         protected static WriteableBitmap _drawSurface;
 
+        /// <summary>
+        /// Layer for drawing preview.
+        /// </summary>
         protected static DrawingLayer _previewLayer;
+
         protected static WriteableBitmap _previewDrawSurface;
 
         public delegate void ToolEventHandler(object sender, ToolEventArgs args);
@@ -31,6 +52,9 @@ namespace Pixellation.Tools
 
         private MColor _toolColor;
 
+        /// <summary>
+        /// Drawing color for tool.
+        /// </summary>
         public MColor ToolColor
         {
             get => EraserModeOn ? MColor.FromArgb(0, 0, 0, 0) : _toolColor;
@@ -53,6 +77,16 @@ namespace Pixellation.Tools
             RaiseToolEvent?.Invoke(sender, e);
         }
 
+        /// <summary>
+        /// Sets the parameters for drawing.
+        /// </summary>
+        /// <param name="magnification">Editor magnification.</param>
+        /// <param name="pixelWidth">Editable area width in pixels.</param>
+        /// <param name="pixelHeight">Editable area height in pixels.</param>
+        /// <param name="ds">Layer to draw on.</param>
+        /// <param name="previewLayer">Layer to preview drawing on.</param>
+        /// <param name="mirrorModeState">Mirror mode state for drawing.</param>
+        /// <param name="thickness">Line thickness for drawing.</param>
         public void SetAllDrawingCircumstances(
             int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF, ToolThickness thickness = ToolThickness.NORMAL)
         {
@@ -67,42 +101,14 @@ namespace Pixellation.Tools
             Thickness = thickness;
         }
 
-        public void SetPixelSize(int pixelWidth, int pixelHeight)
-        {
-            _surfaceWidth = pixelWidth;
-            _surfaceHeight = pixelHeight;
-        }
-
         public void SetMagnification(int magnification)
         {
             _magnification = magnification;
         }
 
-        public void SetActiveLayer(DrawingLayer layer)
-        {
-            _layer = layer;
-            _drawSurface = _layer.Bitmap;
-        }
-
-        public void SetPreviewLayer(DrawingLayer layer)
-        {
-            _previewLayer = layer;
-            _previewDrawSurface = _previewLayer.Bitmap;
-        }
-
-        public virtual Color GetDrawColor()
-        {
-            return ToolColor.ToDrawingColor();
-        }
-
         public void SetDrawColor(Color c)
         {
             ToolColor = c.ToMediaColor();
-        }
-
-        public void SetMirrorMode(MirrorModeStates mirrorMode)
-        {
-            MirrorMode = mirrorMode;
         }
 
         protected static bool IsMouseDown(MouseButtonEventArgs e) => e.LeftButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed;
@@ -134,6 +140,10 @@ namespace Pixellation.Tools
             return;
         }
 
+        /// <summary>
+        /// Saves the state of the drawing area for possible undo.
+        /// </summary>
+        /// <param name="lockMemento">Indicates is save should be locked.</param>
         protected static void SaveLayerMemento(bool lockMemento = false)
         {
             if (!_isMementoLocked)
@@ -146,6 +156,9 @@ namespace Pixellation.Tools
             }
         }
 
+        /// <summary>
+        /// Unlocks saving.
+        /// </summary>
         protected static void UnlockMemento()
         {
             _isMementoLocked = false;
@@ -196,6 +209,15 @@ namespace Pixellation.Tools
             return p;
         }
 
+        /// <summary>
+        /// Draws one unit of draw area (default is 1px).
+        /// Based on the given thickness it can affect the surrounding pixels making a bigger draw "unit".
+        /// </summary>
+        /// <param name="bmp">Bitmap to draw on.</param>
+        /// <param name="x0">X component of coordinate.</param>
+        /// <param name="y0">Y component of coordinate.</param>
+        /// <param name="c">Color to draw with.</param>
+        /// <param name="thickness">Thickness to use.</param>
         public static void SetPixelWithThickness(WriteableBitmap bmp, int x0, int y0, MColor c, ToolThickness thickness)
         {
             if (x0 >= 0 && y0 >= 0 && x0 < bmp.PixelWidth && y0 < bmp.PixelHeight)

@@ -4,12 +4,19 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Tool for "chess-table" pattern drawing.
+    /// </summary>
     public class DitheringTool : BaseMultitonTool<DitheringTool>
     {
         private DitheringTool() : base()
         {
         }
 
+        /// <summary>
+        /// Draws the pattern on the clicked pixels.
+        /// </summary>
+        /// <param name="e"></param>
         private void Draw(MouseEventArgs e)
         {
             SaveLayerMemento(true);

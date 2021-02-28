@@ -16,14 +16,17 @@ namespace Pixellation.MementoPattern
             /// There was no error.
             /// </summary>
             NO_ERROR,
+
             /// <summary>
             /// The program tried to save a given <see cref="IMemento{_MementoType}"/> instance that was null!
             /// </summary>
             TRIED_TO_SAVE_NULL,
+
             /// <summary>
             /// The program tried to store a given <see cref="IMemento{_MementoType}"/> instance for undo that was null!
             /// </summary>
             NULL_UNDO_WAS_GIVEN_TO_STORE,
+
             /// <summary>
             /// The program tried to store a given <see cref="IMemento{_MementoType}"/> instance for redo that was null!
             /// </summary>
@@ -63,7 +66,7 @@ namespace Pixellation.MementoPattern
         /// <summary>
         /// Creates an empty <see cref="CaretakerEventArgs"/>.
         /// </summary>
-        public CaretakerEventArgs() : base() {}
+        public CaretakerEventArgs() : base() { }
 
         /// <summary>
         /// Creates an <see cref="CaretakerEventArgs"/> with information about the current amount of saved operations and maybe about the event or a possible error.

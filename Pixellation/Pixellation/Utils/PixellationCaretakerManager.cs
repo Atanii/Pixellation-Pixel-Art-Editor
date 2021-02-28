@@ -8,6 +8,9 @@ namespace Pixellation.Utils
     using Ctaker = Caretaker<IPixelEditorEventType>;
     using Imemento = IMemento<IPixelEditorEventType>;
 
+    /// <summary>
+    /// Class for managing multiple <see cref="Caretaker{_MementoType}"/> for Pixellation.
+    /// </summary>
     internal class PixellationCaretakerManager
     {
         private readonly Dictionary<string, Ctaker> _caretakers = new Dictionary<string, Ctaker>();
@@ -18,6 +21,9 @@ namespace Pixellation.Utils
 
         private string _activeKey;
 
+        /// <summary>
+        /// Key for active <see cref="Caretaker{_MementoType}"/> instance.
+        /// </summary>
         public string ActiveKey
         {
             get
@@ -67,6 +73,9 @@ namespace Pixellation.Utils
         /// </summary>
         public event CaretakerEventHandler OnPossibleError;
 
+        /// <summary>
+        /// Exception class for <see cref="PixellationCaretakerManager"/>.
+        /// </summary>
         internal class CaretakerManagerException : Exception
         {
             public CaretakerManagerException(string msg) : base(msg)
@@ -74,6 +83,9 @@ namespace Pixellation.Utils
             }
         }
 
+        /// <summary>
+        /// Inits <see cref="PixellationCaretakerManager"/> by routing events to <see cref="Caretaker{_MementoType}"/>.
+        /// </summary>
         private PixellationCaretakerManager()
         {
             Ctaker.OnNewUndoAdded += (sender, args) => OnNewUndoAdded?.Invoke(sender, args);
@@ -84,6 +96,10 @@ namespace Pixellation.Utils
             Ctaker.OnPossibleError += (sender, args) => OnPossibleError?.Invoke(sender, args);
         }
 
+        /// <summary>
+        /// Gives the singleton instance for <see cref="PixellationCaretakerManager"/>.
+        /// </summary>
+        /// <returns>Singleton instance.</returns>
         public static PixellationCaretakerManager GetInstance()
         {
             if (_instance == null)
@@ -93,6 +109,12 @@ namespace Pixellation.Utils
             return _instance;
         }
 
+        /// <summary>
+        /// Saves the given memento by default into the active <see cref="Caretaker{_MementoType}"/>.
+        /// </summary>
+        /// <param name="mem"><see cref="Imemento"/> to save.</param>
+        /// <param name="key">Key for <see cref="Caretaker{_MementoType}"/> instance.</param>
+        /// <returns>True if successful, false otherwise.</returns>
         public bool Save(Imemento mem, string key = "")
         {
             var res = false;
@@ -114,6 +136,11 @@ namespace Pixellation.Utils
             return res;
         }
 
+        /// <summary>
+        /// Undos the last operation saved into the active <see cref="Caretaker{_MementoType}"/> instance if no key is provided.
+        /// </summary>
+        /// <param name="key">Key for <see cref="Caretaker{_MementoType}"/> instance.</param>
+        /// <returns>True if successful, false otherwise.</returns>
         public bool Undo(string key = "")
         {
             var res = false;
@@ -135,6 +162,11 @@ namespace Pixellation.Utils
             return res;
         }
 
+        /// <summary>
+        /// Redos the last operation saved into the active <see cref="Caretaker{_MementoType}"/> instance if no key is provided.
+        /// </summary>
+        /// <param name="key">Key for <see cref="Caretaker{_MementoType}"/> instance.</param>
+        /// <returns>True if successful, false otherwise.</returns>
         public bool Redo(string key = "")
         {
             var res = false;
@@ -156,11 +188,19 @@ namespace Pixellation.Utils
             return res;
         }
 
+        /// <summary>
+        /// Clear the undo-redo storage for all available <see cref="Caretaker{_MementoType}"/> instances.
+        /// </summary>
         public void ClearAll()
         {
             _caretakers.Clear();
         }
 
+        /// <summary>
+        /// Clears the undo-redo storage for the active <see cref="Caretaker{_MementoType}"/> instance if no key is provided.
+        /// </summary>
+        /// <param name="key">Key for <see cref="Caretaker{_MementoType}"/> instance.</param>
+        /// <returns>True if successful, false otherwise.</returns>
         public bool Clear(string key = "")
         {
             var res = false;
@@ -182,20 +222,28 @@ namespace Pixellation.Utils
             return res;
         }
 
-        public bool RemoveCaretaker(string key, bool clearBeforeRemove = false)
+        /// <summary>
+        /// Removes the <see cref="Caretaker{_MementoType}"/> instance determined by the key.
+        /// </summary>
+        /// <param name="key">Key for <see cref="Caretaker{_MementoType}"/> instance.</param>
+        /// <returns>True if successful, false otherwise.</returns>
+        public bool RemoveCaretaker(string key)
         {
             var res = _caretakers.ContainsKey(key);
             if (res)
             {
-                if (clearBeforeRemove)
-                {
-                    _caretakers[key].Clear();
-                }
                 _caretakers.Remove(key);
             }
             return res;
         }
 
+        /// <summary>
+        /// Inits a new <see cref="Caretaker{_MementoType}"/> instance.
+        /// </summary>
+        /// <param name="key">Key for new <see cref="Caretaker{_MementoType}"/> instance.</param>
+        /// <param name="capacity">Undo-redo capacity.</param>
+        /// <param name="autoActivateIfInitial">Sets the new <see cref="Caretaker{_MementoType}"/> instance as active if true.</param>
+        /// <returns>True if successful, false otherwise.</returns>
         public bool InitCaretaker(string key, int capacity = 100, bool autoActivateIfInitial = true)
         {
             var res = !_caretakers.ContainsKey(key) && capacity > 0;

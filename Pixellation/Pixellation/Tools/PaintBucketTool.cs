@@ -6,12 +6,19 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Fills the clicked area consisting of the clicked color with the currently set color.
+    /// </summary>
     public class PaintBucketTool : BaseMultitonTool<PaintBucketTool>
     {
         private PaintBucketTool() : base()
         {
         }
 
+        /// <summary>
+        /// Getting the cliked point of the area.
+        /// </summary>
+        /// <param name="e"></param>
         private void Draw(MouseButtonEventArgs e)
         {
             SaveLayerMemento();
@@ -24,6 +31,12 @@ namespace Pixellation.Tools
             FloodFill(p, targetColor, replacementColor);
         }
 
+        /// <summary>
+        /// Implementation of the FloodFill algorithm for coloring the area.
+        /// </summary>
+        /// <param name="point">Starting point of the area to color.</param>
+        /// <param name="targetColor">Color to replace.</param>
+        /// <param name="replacementColor">Color with replace.</param>
         private void FloodFill(IntPoint point, System.Windows.Media.Color targetColor, System.Windows.Media.Color replacementColor)
         {
             if (targetColor == replacementColor)

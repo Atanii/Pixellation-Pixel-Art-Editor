@@ -3,6 +3,9 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Copy-paste-cut tool using a rectangle as area.
+    /// </summary>
     internal class SelectCopyPasteRectangleTool : BaseSelectionTool<SelectCopyPasteRectangleTool>
     {
         private SelectCopyPasteRectangleTool() : base()

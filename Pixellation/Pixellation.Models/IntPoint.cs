@@ -26,11 +26,23 @@
             Y = y;
         }
 
+        /// <summary>
+        /// Minus operator for <see cref="IntPoint"/>.
+        /// </summary>
+        /// <param name="p1">First <see cref="IntPoint"/>.</param>
+        /// <param name="p2">Second <see cref="IntPoint"/>.</param>
+        /// <returns>Resulting <see cref="IntPoint"/>.</returns>
         public static IntPoint operator -(IntPoint p1, IntPoint p2)
         {
             return new IntPoint(p1.X - p2.X, p1.Y - p2.Y);
         }
 
+        /// <summary>
+        /// Plus operator for <see cref="IntPoint"/>.
+        /// </summary>
+        /// <param name="p1">First <see cref="IntPoint"/>.</param>
+        /// <param name="p2">Second <see cref="IntPoint"/>.</param>
+        /// <returns>Resulting <see cref="IntPoint"/>.</returns>
         public static IntPoint operator +(IntPoint p1, IntPoint p2)
         {
             return new IntPoint(p1.X + p2.X, p1.Y + p2.Y);

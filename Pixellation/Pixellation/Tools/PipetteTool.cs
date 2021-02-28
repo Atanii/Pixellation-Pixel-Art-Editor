@@ -5,6 +5,9 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Picks the color of the clicked pixel.
+    /// </summary>
     public class PipetteTool : BaseMultitonTool<PipetteTool>
     {
         private IntPoint p;
@@ -13,6 +16,10 @@ namespace Pixellation.Tools
         {
         }
 
+        /// <summary>
+        /// Picking color.
+        /// </summary>
+        /// <param name="e"></param>
         private void TakeColor(ToolEventType e)
         {
             OnRaiseToolEvent(this, new ToolEventArgs { Type = e, Value = _drawSurface.GetPixel(p.X, p.Y).ToDrawingColor() });

@@ -6,6 +6,10 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Base class for all four-point geometry drawing tools in Pixellation.
+    /// </summary>
+    /// <typeparam name="T">Type of inheriting class. Needed for multiton pattern.</typeparam>
     public abstract class BaseFourCornerGeometryTool<T> : BaseMultitonTool<T> where T : class, ITool
     {
         private IntPoint p0;
@@ -58,6 +62,13 @@ namespace Pixellation.Tools
             }
         }
 
+        /// <summary>
+        /// Draws the four-point geometry.
+        /// </summary>
+        /// <param name="p0">First point.</param>
+        /// <param name="p1">Second point.</param>
+        /// <param name="c">Color to draw geometry with.</param>
+        /// <param name="surface">Bitmap to draw geometry on.</param>
         protected abstract void DrawGeometry(IntPoint p0, IntPoint p1, Color c, WriteableBitmap surface);
     }
 }

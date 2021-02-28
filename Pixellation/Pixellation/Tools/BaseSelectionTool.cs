@@ -8,6 +8,10 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Base class for all select-copy-paste-cut tools used in Pixellation.
+    /// </summary>
+    /// <typeparam name="T">Type of inheriting class. Needed for the multiton pattern.</typeparam>
     internal abstract class BaseSelectionTool<T> : BaseMultitonTool<T> where T : class, ITool
     {
         protected IntPoint p0;
@@ -181,6 +185,9 @@ namespace Pixellation.Tools
             }
         }
 
+        /// <summary>
+        /// Resets the selection and copy area.
+        /// </summary>
         public override void Reset()
         {
             _selectionArea = new IntRect();
@@ -195,8 +202,26 @@ namespace Pixellation.Tools
             _previewDrawSurface.Clear();
         }
 
+        /// <summary>
+        /// Cuts the selected area.
+        /// </summary>
+        /// <param name="x1">X component of first point.</param>
+        /// <param name="y1">Y component of first point.</param>
+        /// <param name="x2">X component of second point.</param>
+        /// <param name="y2">Y component of second point.</param>
+        /// <param name="c">Color for indicating selection area.</param>
+        /// <param name="surface">Surface to represent the sleection area on.</param>
         protected abstract void CutClear(int x1, int y1, int x2, int y2, Color c, WriteableBitmap surface);
 
+        /// <summary>
+        /// Draws the selection area.
+        /// </summary>
+        /// <param name="x1">X component of first point.</param>
+        /// <param name="y1">Y component of first point.</param>
+        /// <param name="x2">X component of second point.</param>
+        /// <param name="y2">Y component of second point.</param>
+        /// <param name="c">Color for indicating selection area.</param>
+        /// <param name="surface">Surface to represent the sleection area on.</param>
         protected abstract void DrawSelection(int x1, int y1, int x2, int y2, Color c, WriteableBitmap surface);
     }
 }

@@ -4,14 +4,24 @@ using System.Windows.Media;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Simple eraser.
+    /// </summary>
     public class EraserTool : BaseMultitonTool<EraserTool>
     {
+        /// <summary>
+        /// Used color is always transparent for <see cref="EraserTool"/>.
+        /// </summary>
         private new Color ToolColor = Color.FromArgb(0, 0, 0, 0);
 
         private EraserTool() : base()
         {
         }
 
+        /// <summary>
+        /// Erase clicked pixels.
+        /// </summary>
+        /// <param name="e"></param>
         private void Draw(MouseEventArgs e)
         {
             SaveLayerMemento(true);

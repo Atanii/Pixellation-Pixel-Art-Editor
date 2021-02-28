@@ -3,8 +3,14 @@ using System.Windows.Media;
 
 namespace Pixellation.Utils
 {
+    /// <summary>
+    /// Helper class for converting between RGB and HSL color models.
+    /// </summary>
     public static class ColorUtils
     {
+        /// <summary>
+        /// Simple struct representing a HSL color.
+        /// </summary>
         public struct HSLColor
         {
             public float H { get; set; }
@@ -12,6 +18,13 @@ namespace Pixellation.Utils
             public float L { get; set; }
         }
 
+        /// <summary>
+        /// Converts the given R, G, B values into a HSL color.
+        /// </summary>
+        /// <param name="red">Red component.</param>
+        /// <param name="green">Green component.</param>
+        /// <param name="blue">Blue component.</param>
+        /// <returns>Resulting instance of <see cref="HSLColor"/>.</returns>
         public static HSLColor ToHSL(int red, int green, int blue)
         {
             float R = red / 255f;
@@ -77,6 +90,11 @@ namespace Pixellation.Utils
             };
         }
 
+        /// <summary>
+        /// Converts the given hsl color into a RGB model.
+        /// </summary>
+        /// <param name="color">Color to convert.</param>
+        /// <returns>Resulting RGB color.</returns>
         public static Color ToRGB(HSLColor color)
         {
             float H = color.H;

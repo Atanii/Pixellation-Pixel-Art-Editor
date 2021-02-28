@@ -4,6 +4,9 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Draws a rectangle.
+    /// </summary>
     public class RectangleTool : BaseFourCornerGeometryTool<RectangleTool>
     {
         private RectangleTool() : base()
@@ -19,7 +22,7 @@ namespace Pixellation.Tools
                 if (Thickness > ToolThickness.MEDIUM)
                     surface.DrawRectangle(p0.X + 2, p0.Y + 2, p1.X - 2, p1.Y - 2, c);
             }
-            
+
             if (MirrorMode != MirrorModeStates.OFF)
             {
                 var p2 = Mirr(p0);

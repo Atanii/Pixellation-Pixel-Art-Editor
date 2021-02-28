@@ -10,6 +10,9 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Utils
 {
+    /// <summary>
+    /// Class for providing different extension methods for operations on <see cref="WriteableBitmap"/>, conversions between color class implementation and similar.
+    /// </summary>
     public static class ExtensionMethods
     {
         /// <summary>
@@ -246,28 +249,56 @@ namespace Pixellation.Utils
             return bitmap;
         }
 
+        /// <summary>
+        /// Converts a bitmap into base64 stringformat.
+        /// </summary>
+        /// <param name="bitmap">Bitmap to convert.</param>
+        /// <returns>Resulting base64 string.</returns>
         public static string ToBase64(this WriteableBitmap bitmap)
         {
             var bytes = bitmap.ToByteArray();
             return Convert.ToBase64String(bytes);
         }
 
+        /// <summary>
+        /// Converts a base64 string into a bitmap.
+        /// </summary>
+        /// <param name="b64">String to convert.</param>
+        /// <param name="width">Width of the bitmap in pixels.</param>
+        /// <param name="height">Height of the bitmap in pixels.</param>
+        /// <param name="stride">Backbuffer size of the bitmap.</param>
+        /// <returns></returns>
         public static WriteableBitmap ToWriteableBitmap(this string b64, int width, int height, int stride)
         {
             var bytes = Convert.FromBase64String(b64);
             return bytes.ToWriteableBitmap(width, height, stride);
         }
 
+        /// <summary>
+        /// Gets the file extension.
+        /// </summary>
+        /// <param name="path">Path to process.</param>
+        /// <returns>Extension of the file.</returns>
         public static string GetExtension(this string path)
         {
             return path.Split('.')[^1];
         }
 
+        /// <summary>
+        /// Gets the filename without the extension.
+        /// </summary>
+        /// <param name="path">Path to process.</param>
+        /// <returns>Filename without extension.</returns>
         public static string GetFileNameWithoutExtension(this string path)
         {
             return path.Split('.')[0].Split('\\')[^1];
         }
 
+        /// <summary>
+        /// Gets the contained area of a bitmap.
+        /// </summary>
+        /// <param name="bmp">Bitmap for the area.</param>
+        /// <returns>Bounds of the bitmap.</returns>
         public static Rect GetDrawArea(this WriteableBitmap bmp) => new Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight);
     }
 }

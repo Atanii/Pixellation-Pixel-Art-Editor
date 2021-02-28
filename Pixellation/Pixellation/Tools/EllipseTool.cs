@@ -4,6 +4,9 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
 {
+    /// <summary>
+    /// Draws an ellipse.
+    /// </summary>
     public class EllipseTool : BaseFourCornerGeometryTool<EllipseTool>
     {
         private EllipseTool() : base()
@@ -24,6 +27,16 @@ namespace Pixellation.Tools
             }
         }
 
+        /// <summary>
+        /// Midpoint algorithm for drawing the ellipse.
+        /// </summary>
+        /// <param name="x0">X component of first point.</param>
+        /// <param name="y0">Y component of first point.</param>
+        /// <param name="x1">X component of second point.</param>
+        /// <param name="y1">Y component of second point.</param>
+        /// <param name="bmp">Bitmap to draw on.</param>
+        /// <param name="c">Colors to draw with.</param>
+        /// <param name="thickness">Thickness to draw with.</param>
         public static void DrawEllipseWithThickness(int x0, int y0, int x1, int y1, WriteableBitmap bmp, Color c, ToolThickness thickness)
         {
             double rx = (x1 - x0) / 2d;
@@ -44,10 +57,10 @@ namespace Pixellation.Tools
             // Region 1
             while (dx < dy)
             {
-                int _x = (int) x;
-                int _xc = (int) xc;
-                int _y = (int) y;
-                int _yc = (int) yc;
+                int _x = (int)x;
+                int _xc = (int)xc;
+                int _y = (int)y;
+                int _yc = (int)yc;
 
                 // 4-way symmetry for 4 quadrants
                 SetPixelWithThickness(bmp, _x + _xc, _y + _yc, c, thickness);
@@ -80,10 +93,10 @@ namespace Pixellation.Tools
             // Region 2
             while (y >= 0)
             {
-                int _x = (int) x;
-                int _xc = (int) xc;
-                int _y = (int) y;
-                int _yc = (int) yc;
+                int _x = (int)x;
+                int _xc = (int)xc;
+                int _y = (int)y;
+                int _yc = (int)yc;
 
                 // 4-way symmetry for 4 quadrants
                 SetPixelWithThickness(bmp, _x + _xc, _y + _yc, c, thickness);

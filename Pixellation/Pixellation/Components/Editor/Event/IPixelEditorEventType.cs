@@ -2,6 +2,9 @@
 
 namespace Pixellation.Components.Event
 {
+    /// <summary>
+    /// Consts representing different types of events that can happen during drawing and editing the image.
+    /// </summary>
     public interface IPixelEditorEventType : IMementoType
     {
         // LayerMemento

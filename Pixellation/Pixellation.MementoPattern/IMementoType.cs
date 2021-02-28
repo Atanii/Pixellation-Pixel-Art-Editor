@@ -3,7 +3,8 @@
     /// <summary>
     /// Base interface for an "enum-like" type listing different possible events that the memento-creation preceeds.
     /// </summary>
-    public interface IMementoType {
+    public interface IMementoType
+    {
         /// <summary>
         /// Default, "empty" value.
         /// </summary>
