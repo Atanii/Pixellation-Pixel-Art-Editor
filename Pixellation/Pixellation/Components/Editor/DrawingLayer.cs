@@ -67,8 +67,27 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public int MagnifiedWidth => _bitmap.PixelWidth * _owner.Magnification;
-        public int MagnifiedHeight => _bitmap.PixelHeight * _owner.Magnification;
+        private bool _tiledModeOn = Properties.Settings.Default.DefaultTiledModeOn;
+        public bool TiledModeOn
+        {
+            get => _tiledModeOn;
+            set
+            {
+                _tiledModeOn = value;
+                InvalidateVisual();
+            }
+        }
+
+        private float _tiledModeOpacity = Properties.Settings.Default.DefaultTiledOpacity;
+        public float TiledModeOpacity
+        {
+            get => _tiledModeOpacity;
+            set
+            {
+                _tiledModeOpacity = value;
+                InvalidateVisual();
+            }
+        }
 
         #endregion Fields And Properties
 
@@ -207,9 +226,8 @@ namespace Pixellation.Components.Editor
                 return;
             }
 
-            var magnification = _owner.Magnification;
-            var width = _bitmap.PixelWidth * magnification;
-            var height = _bitmap.PixelHeight * magnification;
+            var width = _owner.MagnifiedWidth;
+            var height = _owner.MagnifiedHeight;
 
             dc.DrawImage(_bitmap, new Rect(0, 0, width, height));
 
@@ -229,14 +247,16 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public void Render(DrawingContext dc, double x, double y, double w, double h)
+        public void Render(DrawingContext dc, double x, double y, double w, double h, float opacity = 1f)
         {
             if (!Visible)
             {
                 return;
             }
 
-            dc.DrawImage(_bitmap, new Rect(x, y, w, h));
+            var temp = _bitmap.Clone();
+            temp.BlitRender(temp, false, opacity);
+            dc.DrawImage(temp, new Rect(x, y, w, h));
         }
 
         public void SetPixel(int x, int y, Color color) => _bitmap.SetPixel(x, y, color);

@@ -266,6 +266,7 @@ namespace Pixellation.Tools
             HueSlider.Value = tmp.H;
             SaturationSlider.Value = tmp.S;
             LuminanceSlider.Value = tmp.L;
+            AlphaSlider.Value = PrimaryColor.A;
         }
 
         #endregion Setters
@@ -349,6 +350,7 @@ namespace Pixellation.Tools
             var tmp = SecondaryColorLocal;
             SecondaryColorLocal = PrimaryColorLocal;
             PrimaryColorLocal = tmp;
+            SetSliderValues();
         }
 
         /// <summary>
@@ -385,6 +387,22 @@ namespace Pixellation.Tools
             var tmp = ColorUtils.ToHSL(PrimaryColorLocal.R, PrimaryColorLocal.G, PrimaryColorLocal.B);
             tmp.L = (float)e.NewValue;
             PrimaryColorLocal = ColorUtils.ToRGB(tmp).ToDrawingColor();
+        }
+
+        /// <summary>
+        /// Sets the alpha of the <see cref="PrimaryColor"/> with the new value from the slider.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AlphaSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var tmp = Color.FromArgb(
+                (int)e.NewValue,
+                PrimaryColorLocal.R,
+                PrimaryColorLocal.G,
+                PrimaryColorLocal.B
+            );
+            PrimaryColorLocal = tmp;
         }
 
         /// <summary>

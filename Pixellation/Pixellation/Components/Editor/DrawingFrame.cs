@@ -6,6 +6,7 @@ using Pixellation.MementoPattern;
 using Pixellation.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -139,17 +140,73 @@ namespace Pixellation.Components.Editor
             );
         }
 
-        private void DrawLayers(DrawingContext dc, double x, double y, double width, double height)
+        private void DrawLayers(DrawingContext dc, float? opacity = null, int layerIndex = -1, double? baseWidth = null, double? baseHeight = null)
         {
-            foreach (var l in Layers)
+            var elementWidth = baseWidth ?? Width;
+            var elementHeight = baseHeight ?? Height;
+
+            // Calculate size and position according to the current magnification.
+            var magnifiedWidth = _owner.MagnifiedWidth;
+            var magnifiedHeight = _owner.MagnifiedHeight;
+
+            double w, h;
+            if (magnifiedWidth >= magnifiedHeight && magnifiedWidth > elementWidth)
             {
+                w = elementWidth;
+                h = (w / magnifiedWidth) * magnifiedHeight;
+            }
+            else if (magnifiedHeight >= magnifiedWidth && magnifiedHeight > elementHeight)
+            {
+                h = elementHeight;
+                w = (h / magnifiedHeight) * magnifiedWidth;
+            }
+            else
+            {
+                w = magnifiedWidth;
+                h = magnifiedHeight;
+            }
+            double x = (elementWidth - w) / 2;
+            double y = (elementHeight - h) / 2;
+            Debug.WriteLine(y);
+
+            // Render layers.
+            if (layerIndex != -1)
+            {
+                var l = Layers[layerIndex];
                 if (!l.Visible)
                 {
-                    continue;
+                    return;
                 }
                 var bmp = l.Bitmap.Clone();
-                bmp.BlitRender(l.Bitmap, false, (float)l.Opacity);
-                dc.DrawImage(bmp, new Rect(x, y, width, height));
+                if (opacity != null)
+                {
+                    bmp.BlitRender(l.Bitmap, false, (float)opacity);
+                }
+                else
+                {
+                    bmp.BlitRender(l.Bitmap, false, (float)l.Opacity);
+                }
+                dc.DrawImage(bmp, new Rect(x, y, w, h));
+            }
+            else
+            {
+                foreach (var l in Layers)
+                {
+                    if (!l.Visible)
+                    {
+                        continue;
+                    }
+                    var bmp = l.Bitmap.Clone();
+                    if (opacity != null)
+                    {
+                        bmp.BlitRender(l.Bitmap, false, (float)opacity);
+                    }
+                    else
+                    {
+                        bmp.BlitRender(l.Bitmap, false, (float)l.Opacity);
+                    }
+                    dc.DrawImage(bmp, new Rect(x, y, w, h));
+                }
             }
         }
 
@@ -197,27 +254,7 @@ namespace Pixellation.Components.Editor
 
             if (Layers != null && Layers.Count > 0)
             {
-                var tmp = Layers[0];
-                double w, h;
-                if (tmp.MagnifiedWidth >= tmp.MagnifiedHeight && tmp.MagnifiedWidth > Width)
-                {
-                    w = Width;
-                    h = (w / tmp.MagnifiedWidth) * tmp.MagnifiedHeight;
-                }
-                else if (tmp.MagnifiedHeight >= tmp.MagnifiedWidth && tmp.MagnifiedHeight > Height)
-                {
-                    h = Height;
-                    w = (h / tmp.MagnifiedHeight) * tmp.MagnifiedWidth;
-                }
-                else
-                {
-                    w = tmp.MagnifiedWidth;
-                    h = tmp.MagnifiedHeight;
-                }
-                double x = (Width - w) / 2;
-                double y = (Height - h) / 2;
-
-                DrawLayers(dc, x, y, w, h);
+                DrawLayers(dc);
             }
 
             var dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
@@ -231,7 +268,18 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public void Render(DrawingContext dc, double x, double y, double w, double h, bool drawName = false)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="w"></param>
+        /// <param name="h"></param>
+        /// <param name="drawName"></param>
+        /// <param name="opacity"></param>
+        /// <param name="layerIndex"></param>
+        public void Render(DrawingContext dc, double x, double y, double w, double h, bool drawName = false, float? opacity = null, int layerIndex = -1)
         {
             if (!Visible)
             {
@@ -240,7 +288,7 @@ namespace Pixellation.Components.Editor
 
             if (Layers != null && Layers.Count > 0)
             {
-                DrawLayers(dc, x, y, w, h);
+                DrawLayers(dc, opacity, layerIndex, baseWidth: w, baseHeight: h);
             }
 
             if (drawName)
@@ -314,6 +362,22 @@ namespace Pixellation.Components.Editor
         public FrameMemento GetMemento(int mTypeValue)
         {
             return new FrameMemento(_owner, mTypeValue, _owner.ActiveFrameIndex, Clone(true));
+        }
+
+        public void SetTiledMode(bool mode)
+        {
+            foreach(var l in Layers)
+            {
+                l.TiledModeOn = mode;
+            }
+        }
+
+        public void SetTiledModeOpacity(float opacity)
+        {
+            foreach (var l in Layers)
+            {
+                l.TiledModeOpacity = opacity;
+            }
         }
     }
 }

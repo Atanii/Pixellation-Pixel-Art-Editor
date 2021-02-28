@@ -32,7 +32,8 @@ namespace Pixellation.Utils
 
             for (int i = from; i >= to; i--)
             {
-                merged.Blit(rect, layers[i].GetWriteableBitmapWithAppliedOpacity(), rect, mode);
+                if (layers[i].Visible)
+                    merged.Blit(rect, layers[i].GetWriteableBitmapWithAppliedOpacity(), rect, mode);
             }
 
             return merged;
@@ -62,7 +63,8 @@ namespace Pixellation.Utils
 
             for (int i = layers.Count - 1; i >= 0; i--)
             {
-                merged.Blit(rect, layers[i].GetWriteableBitmapWithAppliedOpacity(), rect, mode);
+                if (layers[i].Visible)
+                    merged.Blit(rect, layers[i].GetWriteableBitmapWithAppliedOpacity(), rect, mode);
             }
 
             return merged;
@@ -92,6 +94,8 @@ namespace Pixellation.Utils
 
             for (int i = from; i >= to; i--)
             {
+                if (!frames[i].Visible)
+                    continue;
                 var tmp = MergeAll(frames[i].Layers, mode);
                 merged.Blit(rect, tmp, rect, mode);
             }
@@ -123,6 +127,8 @@ namespace Pixellation.Utils
 
             for (int i = frames.Count - 1; i >= 0; i--)
             {
+                if (!frames[i].Visible)
+                    continue;
                 var tmp = MergeAll(frames[i].Layers, mode);
                 merged.Blit(rect, tmp, rect, mode);
             }

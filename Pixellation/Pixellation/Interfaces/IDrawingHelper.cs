@@ -32,5 +32,8 @@ namespace Pixellation.Interfaces
         public void SaveState(int eTypeValue, int selectedLayerIndex);
 
         public int ActiveLayerIndex { get; }
+
+        public int MagnifiedWidth { get; }
+        public int MagnifiedHeight { get; }
     }
 }

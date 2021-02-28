@@ -65,13 +65,7 @@ namespace Pixellation.Components.Panels
                 OnPropertyChanged(nameof(FrameProvider));
             };
 
-            //PixelEditor.FrameListChanged += (s, a) => { InvalidateVisual(); };
-            //PixelEditor.LayerListChanged += (s, a) => { InvalidateVisual(); };
-
-            //PixelEditor.RaiseImageUpdatedEvent += (s, a) => { InvalidateVisual(); };
-
-            //DrawingLayer.OnUpdated += () => { InvalidateVisual(); };
-            //DrawingFrame.OnUpdated += () => { InvalidateVisual(); };
+            PMode = PreviewMode.ALL;
         }
 
         /// <summary>
@@ -85,7 +79,7 @@ namespace Pixellation.Components.Panels
 
         private void RbAllClick(object sender, RoutedEventArgs e)
         {
-            PMode = PreviewMode.FRAMES;
+            PMode = PreviewMode.ALL;
         }
 
         private void RbFrameClick(object sender, RoutedEventArgs e)

@@ -4,7 +4,16 @@
 
 Pixellation is a pixel art editor program developed in .NET Core with WPF UI. It provides features like tiling and layer management.
 
-## Development, planned features (this can change in the future / during development):
+## Features
+
+- Eleven tool. (From pencil to dithering...)
+- Eraser mode, vertical and horizontal mirror mode for most drawing tools.
+- Three types of thickness.
+- Multiple form of image, spritesheet and GIF export.
+- Animation preview for frames.
+- Simple layergroups in the form of animation frames.
+
+## Development:
 
 ### Milestone 1 - Alpha
 - [x] Basic, in-dev UI
@@ -60,9 +69,11 @@ Pixellation is a pixel art editor program developed in .NET Core with WPF UI. It
 
 ### Milestone 8 - Release
 
-- [ ] Bugfixes, optimalization, refactor...
+- [ ] Refactor, documentation, refactor...
 
 ### Possible Before / After Release
 - [x] Exporting frames to gif (Not yet decided.)
-- [ ] Dark mode (Depends on the look and feel toward final version.)
 
+## Credits
+
+Design, programming and icons *(exluding icons in early alpha versions)* are done by Kádár Jeremi Emánuel (Atanii).

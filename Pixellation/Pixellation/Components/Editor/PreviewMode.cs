@@ -2,6 +2,6 @@
 {
     public enum PreviewMode
     {
-        LAYER, FRAME, FRAMES
+        LAYER, FRAME, ALL
     }
 }

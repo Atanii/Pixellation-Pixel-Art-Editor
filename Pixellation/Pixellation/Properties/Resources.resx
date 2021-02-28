@@ -127,11 +127,11 @@
     <value>json</value>
   </data>
   <data name="ExtensionForProjectFilePackage" xml:space="preserve">
-    <value>pix</value>
+    <value>pxel</value>
     <comment>zip</comment>
   </data>
   <data name="OpenFileFilter" xml:space="preserve">
-    <value>Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pix)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pix</value>
+    <value>Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pxel)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pxel</value>
   </data>
   <data name="PackageContentFileNameForMetaData" xml:space="preserve">
     <value>metadata</value>
@@ -143,7 +143,7 @@
     <value>ToolInstancePrimary</value>
   </data>
   <data name="SaveFileFilter" xml:space="preserve">
-    <value>Pixellation Project Files (*.pix)|*.pix</value>
+    <value>Pixellation Project Files (*.pxel)|*.pxel</value>
   </data>
   <data name="SecondaryToolInstanceKey" xml:space="preserve">
     <value>ToolInstanceSecondary</value>

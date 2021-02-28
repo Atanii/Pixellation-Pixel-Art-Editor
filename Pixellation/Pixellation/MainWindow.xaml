@@ -72,8 +72,8 @@
                         LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}">
                     </Panels:Transforms>
 
-                    <Label Content="Editor Settings"></Label>
-                    <Panels:EditorSettingsPanel x:Name="editorSettings"/>
+                    <Label Content="Visual Helper Settings"></Label>
+                    <Panels:VisualHelperSettingsPanel x:Name="editorSettings"/>
                 </StackPanel>
             </ScrollViewer>
         </Border>
@@ -86,7 +86,7 @@
                     <Panels:PreviewPanel FrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:PreviewPanel>
 
                     <Label Content="Colour"></Label>
-                    <l2:ColourChooser Width="200" Height="490" x:Name="colorChooser"></l2:ColourChooser>
+                    <l2:ColourChooser Width="200" Height="520" x:Name="colorChooser"></l2:ColourChooser>
 
                     <Label Content="Animation Preview"></Label>
                     <Panels:AnimationPanel AnimationFrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:AnimationPanel>
@@ -114,10 +114,10 @@
                 </ScrollViewer.Background>
 
                 <l:PixelEditor ChosenTool="{Binding ElementName=toolPalette, Path=ChosenTool, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                           TiledModeOn="{Binding ElementName=editorSettings, Path=TiledModeOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                           TiledOpacity="{Binding ElementName=editorSettings, Path=TiledOpacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                           ShowBorder="{Binding ElementName=editorSettings, Path=ShowBorderOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                           ShowGrid="{Binding ElementName=editorSettings, Path=ShowGridOn, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                           TiledModeOn="{Binding ElementName=editorSettings, Path=TiledModeOn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           TiledOpacity="{Binding ElementName=editorSettings, Path=TiledOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ShowBorder="{Binding ElementName=editorSettings, Path=ShowBorderOn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ShowGrid="{Binding ElementName=editorSettings, Path=ShowGridOn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             PrimaryColor="{Binding ElementName=colorChooser, Path=PrimaryColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             SecondaryColor="{Binding ElementName=colorChooser, Path=SecondaryColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />

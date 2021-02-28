@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d" x:Name="cc"
-             d:DesignHeight="490" d:DesignWidth="200">
+             d:DesignHeight="520" d:DesignWidth="200">
 
     <UserControl.Resources>
 
@@ -129,6 +129,15 @@
                     Minimum="0" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="False"
                     AutoToolTipPlacement="TopLeft"
                     ValueChanged="LuminanceSlider_ValueChanged">
+            </Slider>
+        </DockPanel>
+        <DockPanel HorizontalAlignment="Stretch">
+            <Label Margin="5">Alpha</Label>
+            <Slider Width="120" x:Name="AlphaSlider"
+                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Minimum="0" Maximum="255" TickFrequency="1" IsSnapToTickEnabled="True"
+                    AutoToolTipPlacement="TopLeft"
+                    ValueChanged="AlphaSlider_ValueChanged">
             </Slider>
         </DockPanel>
     </StackPanel>

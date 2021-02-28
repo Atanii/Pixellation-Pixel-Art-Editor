@@ -109,49 +109,54 @@ namespace Pixellation
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void Menu_Open(object sender, RoutedEventArgs e)
+        private void Menu_Open(object sender, RoutedEventArgs e) => OpenProjectOrImage();
+
+        public async void OpenProjectOrImage(string filePath = "")
         {
             if (!AskAndTrySaveUnsavedChanges())
             {
                 return;
             }
 
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            if (filePath == string.Empty)
             {
-                Filter = Res.OpenFileFilter
-            };
-            if (openFileDialog.ShowDialog() == true)
-            {
-                string filePath = openFileDialog.FileName;
-
-                string extension = filePath.GetExtension();
-                if (extension == Res.ExtensionForProjectFilePackage)
+                OpenFileDialog openFileDialog = new OpenFileDialog
                 {
-                    // Getting Project
-                    var data = await _pm.LoadProject(filePath, canvasImage);
-                    if (data.Value != null)
-                    {
-                        ProjectTitle = data.Key;
-                        ThereAreUnsavedChanges = false;
-                        _caretaker.ClearAll();
-                        _pm.Reset();
-
-                        canvasImage.NewProject(data.Value);
-                    }
+                    Filter = Res.OpenFileFilter
+                };
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    filePath = openFileDialog.FileName;
                 }
-                else
-                {
-                    // Getting Bitmap
-                    var wrbmp = _pm.LoadImage(filePath);
-                    if (wrbmp != null)
-                    {
-                        ProjectTitle = filePath.GetFileNameWithoutExtension();
-                        ThereAreUnsavedChanges = false;
-                        _caretaker.ClearAll();
-                        _pm.Reset();
+            }
 
-                        canvasImage.NewProject(wrbmp);
-                    }
+            string extension = filePath.GetExtension();
+            if (extension == Res.ExtensionForProjectFilePackage)
+            {
+                // Getting Project
+                var data = await _pm.LoadProject(filePath, canvasImage);
+                if (data.Value != null)
+                {
+                    ProjectTitle = data.Key;
+                    ThereAreUnsavedChanges = false;
+                    _caretaker.ClearAll();
+                    _pm.Reset();
+
+                    canvasImage.NewProject(data.Value);
+                }
+            }
+            else
+            {
+                // Getting Bitmap
+                var wrbmp = _pm.LoadImage(filePath);
+                if (wrbmp != null)
+                {
+                    ProjectTitle = filePath.GetFileNameWithoutExtension();
+                    ThereAreUnsavedChanges = false;
+                    _caretaker.ClearAll();
+                    _pm.Reset();
+
+                    canvasImage.NewProject(wrbmp);
                 }
             }
         }

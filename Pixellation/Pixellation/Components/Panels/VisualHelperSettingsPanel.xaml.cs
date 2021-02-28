@@ -6,9 +6,9 @@ using System.Windows.Controls;
 namespace Pixellation.Components.Panels
 {
     /// <summary>
-    /// Interaction logic for EditorSettingsPanel.xaml
+    /// Interaction logic for VisualHelperSettingsPanel.xaml
     /// </summary>
-    public partial class EditorSettingsPanel : UserControl, INotifyPropertyChanged
+    public partial class VisualHelperSettingsPanel : UserControl, INotifyPropertyChanged
     {
         private float _tiledOpacity;
         public float TiledOpacity {
@@ -54,7 +54,7 @@ namespace Pixellation.Components.Panels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public EditorSettingsPanel()
+        public VisualHelperSettingsPanel()
         {
             InitializeComponent();
 

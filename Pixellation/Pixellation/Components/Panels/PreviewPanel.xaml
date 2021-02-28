@@ -12,8 +12,8 @@
                 x:Name="dPreview"
                 Height="180" Width="180" Margin="10"
                 DrawingFrameProvider="{Binding ElementName=previewPanel, Path=FrameProvider, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                PMode="{Binding ElementName=previewPanel, Path=PMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-            ></editor:DrawingPreview>
+                PMode="{Binding ElementName=previewPanel, Path=PMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+            </editor:DrawingPreview>
         </Border>
         <StackPanel Orientation="Horizontal">
             <RadioButton GroupName="PreviewMode" Content="All" IsChecked="True" Margin="5" Click="RbAllClick"></RadioButton>

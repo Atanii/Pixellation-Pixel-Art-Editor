@@ -28,7 +28,7 @@ namespace Pixellation.Components.Editor
         }
         public static readonly DependencyProperty PModeProperty =
          DependencyProperty.Register("PMode", typeof(PreviewMode), typeof(DrawingPreview), new FrameworkPropertyMetadata(
-             PreviewMode.FRAMES,
+             PreviewMode.ALL,
              (s, e) => { ModeUpdated?.Invoke(s, e); }
         ));
 
@@ -79,7 +79,7 @@ namespace Pixellation.Components.Editor
                         break;
 
                     // All frames in one image
-                    case PreviewMode.FRAMES:
+                    case PreviewMode.ALL:
                         RenderFrames(dc);
                         break;
 
@@ -91,18 +91,17 @@ namespace Pixellation.Components.Editor
 
         private void RenderLayer(DrawingContext dc)
         {
+            var index = DrawingFrameProvider.ActiveLayerIndex;
+
             if (OnionModeEnabled)
             {
-                var index = DrawingFrameProvider.ActiveLayerIndex;
-                if (index > 0)
+                if (DrawingFrameProvider.Layers.Count > (index + 1))
                 {
-                    DrawingFrameProvider.Layers[index - 1].Render(dc, 0, 0, Width, Height);
-                    dc.PushOpacity(0.5f);
-                    dc.PushOpacity(1f);
+                    DrawingFrameProvider.ActiveFrame.Render(dc, 0, 0, Width, Height, opacity: 0.5f, layerIndex: index + 1);
                 }
             }
 
-            DrawingFrameProvider.ActiveLayer.Render(dc, 0, 0, Width, Height);
+            DrawingFrameProvider.ActiveFrame.Render(dc, 0, 0, Width, Height, layerIndex: index);
         }
 
         private void RenderFrame(DrawingContext dc)
@@ -112,16 +111,11 @@ namespace Pixellation.Components.Editor
                 var index = DrawingFrameProvider.ActiveFrameIndex;
                 if (index > 0)
                 {
-                    DrawingFrameProvider.Frames[index - 1].Render(dc, 0, 0, Width, Height);
-                    dc.PushOpacity(0.5f);
-                    dc.PushOpacity(1f);
+                    DrawingFrameProvider.Frames[index - 1].Render(dc, 0, 0, Width, Height, opacity: 0.5f);
                 }
             }
 
-            foreach (var layer in DrawingFrameProvider.ActiveFrame.Layers)
-            {
-                layer.Render(dc, 0, 0, Width, Height);
-            }
+            DrawingFrameProvider.ActiveFrame.Render(dc, 0, 0, Width, Height);
         }
 
         private void RenderFrames(DrawingContext dc)

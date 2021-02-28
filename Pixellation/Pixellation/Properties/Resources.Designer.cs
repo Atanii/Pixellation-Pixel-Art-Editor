@@ -88,7 +88,7 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to pix.
+        ///   Looks up a localized string similar to pxel.
         /// </summary>
         public static string ExtensionForProjectFilePackage {
             get {
@@ -97,7 +97,7 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pix)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pix.
+        ///   Looks up a localized string similar to Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pxel)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pxel.
         /// </summary>
         public static string OpenFileFilter {
             get {
@@ -133,7 +133,7 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pixellation Project Files (*.pix)|*.pix.
+        ///   Looks up a localized string similar to Pixellation Project Files (*.pxel)|*.pxel.
         /// </summary>
         public static string SaveFileFilter {
             get {
