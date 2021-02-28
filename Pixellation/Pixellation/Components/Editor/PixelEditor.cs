@@ -20,11 +20,15 @@ namespace Pixellation.Components.Editor
     {
         #region PrivateFields
 
+        private const string FramesCaretakerKey = "FramesCaretaker";
+        public const string DefaultLayerName = "default";
+
+        private readonly PixellationCaretakerManager _caretaker = PixellationCaretakerManager.GetInstance();
+
         private Visual _gridLines;
         private Visual _borderLine;
+
         private DrawingLayer _drawPreview;
-        private readonly PixellationCaretakerManager _caretaker = PixellationCaretakerManager.GetInstance();
-        public const string DefaultLayerName = "default";
 
         #endregion PrivateFields
 
@@ -217,6 +221,8 @@ namespace Pixellation.Components.Editor
         {
             Cursor = Cursors.Pen;
 
+            _caretaker.InitCaretaker(FramesCaretakerKey, autoActivateIfInitial: false);
+
             AddDrawingFrame(0, DefaultLayerName);
 
             PixelWidth = Settings.Default.DefaultImageSize;
@@ -244,6 +250,8 @@ namespace Pixellation.Components.Editor
         {
             DeleteAllVisualChildren();
 
+            _caretaker.InitCaretaker(FramesCaretakerKey, autoActivateIfInitial: false);
+
             AddDrawingFrame(0, "Default");
 
             PixelWidth = pixelWidth;
@@ -263,6 +271,8 @@ namespace Pixellation.Components.Editor
         public void NewProject(WriteableBitmap imageToEdit)
         {
             DeleteAllVisualChildren();
+
+            _caretaker.InitCaretaker(FramesCaretakerKey, autoActivateIfInitial: false);
 
             AddDrawingFrame(0, "Default");
 
@@ -292,6 +302,8 @@ namespace Pixellation.Components.Editor
         public void NewProject(List<DrawingFrame> frames)
         {
             DeleteAllVisualChildren();
+
+            _caretaker.InitCaretaker(FramesCaretakerKey, autoActivateIfInitial: false);
 
             PixelWidth = frames[0].Layers[0].Bitmap.PixelWidth;
             PixelHeight = frames[0].Layers[0].Bitmap.PixelHeight;

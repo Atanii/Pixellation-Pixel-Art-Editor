@@ -5,13 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Pixellation.Components.Panels"
              mc:Ignorable="d" x:Name="transformsWindow"
-             d:DesignHeight="350" d:DesignWidth="200">
+             d:DesignHeight="300" d:DesignWidth="200">
     <StackPanel Orientation="Vertical">
-        <GroupBox Header="Settings">
-            <CheckBox x:Name="cbAllLayers" ToolTip="Apply Transformation To All Layers" Content="All Layers" Margin="5"></CheckBox>
-        </GroupBox>
         <GroupBox Header="Mirror">
             <StackPanel Orientation="Vertical">
+                <CheckBox x:Name="cbAllLayers" ToolTip="Apply To All Layers" Content="All Layers" Margin="5"></CheckBox>
                 <Button x:Name="mVertical" Margin="5" Click="MVertical_Click">Horizontally</Button>
                 <Button x:Name="mHorizontal" Margin="5" Click="MHorizontal_Click">Vertically</Button>
             </StackPanel>

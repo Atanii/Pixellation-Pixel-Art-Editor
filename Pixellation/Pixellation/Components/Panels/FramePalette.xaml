@@ -25,13 +25,14 @@
                         <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-duplicate.png"></ImageBrush>
                     </Button.Background>
                 </Button>
-                <Button Click="BtnMergeFrame" ToolTip="Merge Into Left Neighbour" Margin="10,5,5,5"
+                <Button Click="BtnMergeFrame" ToolTip="Merge Into Left Neighbour  (Irreversible! Clears stored undo-redo possibilites for layers in both frames!)" Margin="15,5,5,5"
                     Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                     Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                     <Button.Background>
                         <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-merge.png"></ImageBrush>
                     </Button.Background>
                 </Button>
+                
                 <Button Click="BtnMoveFrameLeft" ToolTip="Move Frame Left" Margin="15,5,5,5"
                     Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                     Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
@@ -46,6 +47,7 @@
                         <ImageBrush ImageSource="pack://application:,,,/Resources/icons/frames/frame-right.png"></ImageBrush>
                     </Button.Background>
                 </Button>
+                
                 <Button Click="BtnRemoveFrame" ToolTip="Delete Frame" Margin="25,5,5,5"
                     Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                     Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
@@ -53,11 +55,26 @@
                         <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-remove.png"></ImageBrush>
                     </Button.Background>
                 </Button>
-                <Button Click="BtnResetFrame" ToolTip="Clears the frame and leaves only one blank layer." Margin="5"
+                <Button Click="BtnResetFrame" ToolTip="Clears the frame and leaves only one blank layer. (Irreversible!)" Margin="25,5,5,5"
                     Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
                     Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
                     <Button.Background>
                         <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-clear.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+
+                <Button Click="BtnUndoFrameOperation" ToolTip="Undo Frame Operation (Not applicable to merge!)" Margin="25,5,5,5" BorderThickness="0"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/swap-reverse.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnRedoFrameOperation" ToolTip="Redo Frame Operation (Not applicable to merge!)" Margin="10,5,5,5" BorderThickness="0"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/swap.png"></ImageBrush>
                     </Button.Background>
                 </Button>
             </StackPanel>

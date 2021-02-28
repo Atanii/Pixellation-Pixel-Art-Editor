@@ -36,16 +36,10 @@ namespace Pixellation.Components.Editor
                     break;
 
                 case IPixelEditorEventType.ROTATE:
-                    Rotate(false, true);
-                    break;
-                case IPixelEditorEventType.ROTATE_ALL:
-                    Rotate(true, true);
+                    Rotate(true);
                     break;
                 case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE:
-                    Rotate(false, false);
-                    break;
-                case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL:
-                    Rotate(true, false);
+                    Rotate(false);
                     break;
 
                 case IPixelEditorEventType.RESIZE:
@@ -57,10 +51,19 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public void SaveState(int eTypeValue, int selectedLayerIndex)
+        public void SaveState(int eTypeValue, int elementIndex)
         {
             switch (eTypeValue)
             {
+                // FrameMemento
+                case IPixelEditorEventType.FRAME_MOVE_RIGHT:
+                case IPixelEditorEventType.FRAME_MOVE_LEFT:
+                case IPixelEditorEventType.FRAME_DUPLICATE:
+                case IPixelEditorEventType.FRAME_ADD:
+                case IPixelEditorEventType.FRAME_REMOVE:
+                    _caretaker.Save(Frames[elementIndex].GetMemento(eTypeValue), FramesCaretakerKey);
+                    break;
+
                 // LayerListMemento
                 case IPixelEditorEventType.MOVELAYERUP:
                 case IPixelEditorEventType.MOVELAYERDOWN:
@@ -78,17 +81,17 @@ namespace Pixellation.Components.Editor
 
                 // LayerMemento
                 case IPixelEditorEventType.MERGELAYER:
-                    var mergeMemento = Layers[selectedLayerIndex].GetMemento(eTypeValue);
-                    mergeMemento.SetChainedMemento(Layers[selectedLayerIndex + 1].GetMemento(IPixelEditorEventType.REMOVELAYER));
+                    var mergeMemento = Layers[elementIndex].GetMemento(eTypeValue);
+                    mergeMemento.SetChainedMemento(Layers[elementIndex + 1].GetMemento(IPixelEditorEventType.REMOVELAYER));
                     _caretaker.Save(mergeMemento);
                     break;
 
                 case IPixelEditorEventType.ADDLAYER:
-                    _caretaker.Save(Layers[selectedLayerIndex].GetMemento(eTypeValue));
+                    _caretaker.Save(Layers[elementIndex].GetMemento(eTypeValue));
                     break;
 
                 default:
-                    _caretaker.Save(Layers[selectedLayerIndex].GetMemento(eTypeValue));
+                    _caretaker.Save(Layers[elementIndex].GetMemento(eTypeValue));
                     break;
             }
         }
@@ -203,6 +206,38 @@ namespace Pixellation.Components.Editor
                 case IPixelEditorEventType.RESIZE:
                     redoMem = GetMemento(typeValue);
                     Restore(mem);
+                    return redoMem;
+
+                default:
+                    return null;
+            }
+        }
+
+        public IMemento<IPixelEditorEventType> HandleRestore(FrameMemento mem)
+        {
+            FrameMemento redoMem;
+            var typeValue = mem.GetMementoType();
+            switch (typeValue)
+            {
+                case IPixelEditorEventType.FRAME_MOVE_LEFT:
+                    redoMem = Frames[mem.FrameIndex - 1].GetMemento(-typeValue);
+                    MoveDrawingFrameRight(mem.FrameIndex - 1);
+                    return redoMem;
+
+                case IPixelEditorEventType.FRAME_MOVE_RIGHT:
+                    redoMem = Frames[mem.FrameIndex + 1].GetMemento(-typeValue);
+                    MoveDrawingFrameLeft(mem.FrameIndex + 1);
+                    return redoMem;
+
+                case IPixelEditorEventType.FRAME_DUPLICATE:
+                case IPixelEditorEventType.FRAME_ADD:
+                    redoMem = Frames[mem.FrameIndex].GetMemento(IPixelEditorEventType.FRAME_REMOVE);
+                    RemoveDrawingFrame(mem.FrameIndex);
+                    return redoMem;
+
+                case IPixelEditorEventType.FRAME_REMOVE:
+                    ReAddDrawingFrames(mem.Frame, mem.FrameIndex);
+                    redoMem = Frames[mem.FrameIndex].GetMemento(-typeValue);
                     return redoMem;
 
                 default:

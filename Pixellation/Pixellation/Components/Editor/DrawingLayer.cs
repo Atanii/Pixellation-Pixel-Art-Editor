@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Pixellation.Interfaces;
+using Pixellation.Utils;
 
 namespace Pixellation.Components.Editor
 {
@@ -147,10 +148,19 @@ namespace Pixellation.Components.Editor
             return LayerName;
         }
 
-        public DrawingLayer Clone()
+        /// <summary>
+        /// Creates a copy of this <see cref="DrawingLayer"/>.
+        /// </summary>
+        /// <param name="deep">Copy exact same LayerName if set to true.</param>
+        /// <returns>Created copy.</returns>
+        public DrawingLayer Clone(bool deep = false)
         {
             var bmp2 = _bitmap.Clone();
-            return new DrawingLayer(_owner, bmp2, LayerName + "_copy", Visible);
+            if (deep)
+            {
+                return new DrawingLayer(_owner, bmp2, LayerName, Visible, Opacity);
+            }
+            return new DrawingLayer(_owner, bmp2, LayerName + "_copy", Visible, Opacity);
         }
         #endregion Conversions, Cloning
 
@@ -269,11 +279,13 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public void Rotate(int angleInDegree) => _bitmap = _bitmap.Rotate(angleInDegree);
+        public void Rotate(int angleInDegree)
+        {
+            _bitmap = _bitmap.Rotate(angleInDegree);
+        }
 
         public void Resize(int newWidth, int newHeight)
-        {
-
+        {   
             _bitmap = _bitmap.Resize(newWidth, newHeight, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
         }
 

@@ -62,12 +62,14 @@ namespace Pixellation.Components.Panels
             if (newLayerDialog.ShowDialog() == true)
             {
                 FrameManager.AddDrawingFrame(FrameManager.ActiveFrameIndex, newLayerDialog.Answer);
+                FrameManager.SaveState(IPixelEditorEventType.FRAME_ADD, FrameManager.ActiveFrameIndex);
             }
         }
 
         private void BtnDuplicateFrame(object sender, RoutedEventArgs e)
         {
             FrameManager.DuplicateDrawingFrame(FrameManager.ActiveFrameIndex);
+            FrameManager.SaveState(IPixelEditorEventType.FRAME_DUPLICATE, FrameManager.ActiveFrameIndex);
         }
 
         private void BtnMergeFrame(object sender, RoutedEventArgs e)
@@ -77,22 +79,35 @@ namespace Pixellation.Components.Panels
 
         private void BtnMoveFrameLeft(object sender, RoutedEventArgs e)
         {
+            FrameManager.SaveState(IPixelEditorEventType.FRAME_MOVE_LEFT, FrameManager.ActiveFrameIndex);
             FrameManager.MoveDrawingFrameLeft(FrameManager.ActiveFrameIndex);
         }
 
         private void BtnMoveFrameRight(object sender, RoutedEventArgs e)
         {
+            FrameManager.SaveState(IPixelEditorEventType.FRAME_MOVE_RIGHT, FrameManager.ActiveFrameIndex);
             FrameManager.MoveDrawingFrameRight(FrameManager.ActiveFrameIndex);
         }
 
         private void BtnRemoveFrame(object sender, RoutedEventArgs e)
         {
+            FrameManager.SaveState(IPixelEditorEventType.FRAME_REMOVE, FrameManager.ActiveFrameIndex);
             FrameManager.RemoveDrawingFrame(FrameManager.ActiveFrameIndex);
         }
 
         private void BtnResetFrame(object sender, RoutedEventArgs e)
         {
-            FrameManager.RemoveDrawingFrame(FrameManager.ActiveFrameIndex);
+            FrameManager.ResetDrawingFrame(FrameManager.ActiveFrameIndex);
+        }
+
+        private void BtnUndoFrameOperation(object sender, RoutedEventArgs e)
+        {
+            FrameManager.UndoFrameOperation();
+        }
+
+        private void BtnRedoFrameOperation(object sender, RoutedEventArgs e)
+        {
+            FrameManager.RedoFrameOperation();
         }
     }
 }

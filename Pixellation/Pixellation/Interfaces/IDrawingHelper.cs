@@ -4,7 +4,10 @@ using Pixellation.MementoPattern;
 
 namespace Pixellation.Interfaces
 {
-    public interface IDrawingHelper : IOriginatorHandler<LayerMemento, IPixelEditorEventType>, IOriginatorHandler<LayerListMemento, IPixelEditorEventType>
+    public interface IDrawingHelper : 
+        IOriginatorHandler<LayerMemento, IPixelEditorEventType>,
+        IOriginatorHandler<LayerListMemento, IPixelEditorEventType>,
+        IOriginatorHandler<FrameMemento, IPixelEditorEventType>
     {
         int Magnification { get; }
 
@@ -17,6 +20,8 @@ namespace Pixellation.Interfaces
         float TiledOpacity { get; }
 
         string ActiveFrameId { get; }
+
+        public int ActiveFrameIndex { get; }
 
         public void SetActiveFrame(DrawingFrame frame);
 

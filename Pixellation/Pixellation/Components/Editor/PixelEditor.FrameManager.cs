@@ -28,6 +28,7 @@ namespace Pixellation.Components.Editor
 
                 _activeFrameIndex = value;
                 _activeFrame = Frames[value];
+                _caretaker.ActiveKey = Frames[value].Id;
 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ActiveFrame));
@@ -102,6 +103,22 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        private void ReAddDrawingFrames(DrawingFrame frameFromMemento, int index)
+        {
+            Frames.Insert(index, frameFromMemento);
+
+            var tmp = ActiveFrameIndex;
+            ActiveFrameIndex = index;
+
+            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
+            (
+                IPixelEditorEventType.FRAME_ADD,
+                tmp, index, new int[] { }
+            ));
+
+            SetActiveLayer();
+        }
+
         private void AddDrawingFrames(List<DrawingFrame> frames)
         {
             foreach(var frame in frames)
@@ -129,24 +146,28 @@ namespace Pixellation.Components.Editor
                 _caretaker.InitCaretaker(tmp.Id);
                 Frames.Insert(frameIndex + 1, tmp);
 
+                ActiveFrameIndex = frameIndex + 1;
+
                 FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
                 (
                     IPixelEditorEventType.FRAME_DUPLICATE,
-                    frameIndex, frameIndex, new int[] { frameIndex }
+                    frameIndex, frameIndex + 1, new int[] { frameIndex }
                 ));
+
+                SetActiveLayer();
             }
         }
-
-        public DrawingFrame GetActiveDrawingFrame() => ActiveFrame;
-
-        public int GetActiveFrameIndex() => ActiveFrameIndex;
 
         public void MergeDrawingFrameIntoLeftNeighbour(int frameIndex)
         {
             if (frameIndex > 0 && Frames.Count >= (frameIndex + 1))
             {
                 var tmp = Frames[frameIndex];
+
+                _caretaker.Clear(Frames[frameIndex - 1].Id);
                 Frames[frameIndex - 1].Layers.AddRange(tmp.Layers);
+
+                _caretaker.RemoveCaretaker(Frames[frameIndex].Id, true);
                 Frames.RemoveAt(frameIndex);
 
                 ActiveFrameIndex = frameIndex - 1;
@@ -201,13 +222,14 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public void RemoveDrawingFrame(int frameIndex)
+        public void RemoveDrawingFrame(int frameIndex, bool removeCaretakerAsWell = false)
         {
             if ((Frames.Count - 1) > 0 && Frames.ElementAtOrDefault(frameIndex) != null)
             {
                 var index = frameIndex;
 
-                _caretaker.RemoveCaretaker(Frames[index].Id);
+                if (removeCaretakerAsWell)
+                    _caretaker.RemoveCaretaker(Frames[index].Id);
                 Frames.RemoveAt(index);
 
                 if (Frames.Count == 1)
@@ -233,8 +255,6 @@ namespace Pixellation.Components.Editor
 
         public void SetActiveFrame(DrawingFrame frame)
         {
-            Debug.WriteLine($"Setting frame ({frame.FrameName}) as active frame.");
-
             var index = Frames.FindIndex(f => f.FrameName == frame.FrameName);
             if (index != -1)
             {
@@ -251,5 +271,33 @@ namespace Pixellation.Components.Editor
                 SetActiveLayer();
             }
         }
+
+        public void ResetDrawingFrame(int frameIndex)
+        {
+            var tmp = Frames[frameIndex];
+
+            RemoveLayersFromVisualChildren();
+            Frames[frameIndex].Layers.Clear();
+            Frames[frameIndex].Layers.Add(new DrawingLayer(this, DefaultLayerName));
+            AddLayersToVisualChildren();
+
+            _caretaker.Clear(Frames[frameIndex].Id);
+
+            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
+            (
+                IPixelEditorEventType.CLEAR,
+                frameIndex, frameIndex, new int[] { frameIndex, frameIndex - 1 }
+            ));
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
+            (
+                IPixelEditorEventType.CLEAR, -1, 0, new int[] { }
+            ));
+
+            SetActiveLayer();
+        }
+
+        public void UndoFrameOperation() => _caretaker.Undo(FramesCaretakerKey);
+
+        public void RedoFrameOperation() => _caretaker.Redo(FramesCaretakerKey);
     }
 }

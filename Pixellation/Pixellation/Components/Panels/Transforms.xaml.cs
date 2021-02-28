@@ -76,23 +76,22 @@ namespace Pixellation.Components.Panels
 
         private void R90_Click(object sender, RoutedEventArgs e)
         {
-            var all = (bool)cbAllLayers.IsChecked;
             var counterClockWise = (bool)cbCounterClockWise.IsChecked;
             if (counterClockWise)
             {
                 LayerManager.SaveState(
-                    all ? IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL : IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE,
+                    IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE,
                     LayerManager.ActiveLayerIndex
                 );
             }
             else
             {
                 LayerManager.SaveState(
-                    all ? IPixelEditorEventType.ROTATE_ALL : IPixelEditorEventType.ROTATE,
+                    IPixelEditorEventType.ROTATE,
                     LayerManager.ActiveLayerIndex
                 );
             }
-            LayerManager.Rotate(all, counterClockWise);
+            LayerManager.Rotate(counterClockWise);
         }
 
         private void BtnResize_Click(object sender, RoutedEventArgs e)

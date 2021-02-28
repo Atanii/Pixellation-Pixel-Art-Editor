@@ -100,7 +100,7 @@ namespace Pixellation.Components.Editor
         {
             // Layers
             RemoveLayersFromVisualChildren();
-            AddLayersFromVisualChildren();
+            AddLayersToVisualChildren();
 
             // Previewlayer
             ResetPreviewLayer();
@@ -120,7 +120,7 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        private void AddLayersFromVisualChildren()
+        private void AddLayersToVisualChildren()
         {
             foreach (var l in Layers)
             {
@@ -264,20 +264,18 @@ namespace Pixellation.Components.Editor
             RefreshVisualsThenSignalUpdate();
         }
 
-        public void Rotate(bool allLayers, bool counterClockWise, int angleInDegree = 90)
+        public void Rotate(bool counterClockWise)
         {
-            if (!allLayers && ActiveLayer != null)
+            foreach (var l in Layers)
             {
-                ActiveLayer.Rotate(counterClockWise ? 360 - angleInDegree : angleInDegree);
+                l.Rotate(counterClockWise ? 270 : 90);
             }
-            else
-            {
-                foreach (var l in Layers)
-                {
-                    l.Rotate(counterClockWise ? 360 - angleInDegree : angleInDegree);
-                }
-            }
-            RefreshVisualsThenSignalUpdate();
+
+            var tmp = PixelHeight;
+            PixelHeight = PixelWidth;
+            PixelWidth = tmp;
+
+            UpdateMagnification(); // TODO REFRESH BETTER
         }
 
         public void Resize(int newWidth, int newHeight)

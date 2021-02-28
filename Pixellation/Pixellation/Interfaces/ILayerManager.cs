@@ -34,7 +34,7 @@ namespace Pixellation.Interfaces
 
         public void Mirror(bool horizontally, bool allLayers = false);
 
-        public void Rotate(bool allLayers = false, bool counterClockWise = false, int angleInDegree = 90);
+        public void Rotate(bool counterClockWise = false);
 
         public void Resize(int newWidth, int newHeight);
 

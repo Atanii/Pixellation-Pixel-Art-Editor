@@ -15,12 +15,20 @@ namespace Pixellation.Interfaces
 
         public void DuplicateDrawingFrame(int frameIndex);
 
-        public void RemoveDrawingFrame(int frameIndex);
+        public void RemoveDrawingFrame(int frameIndex, bool removeCaretakerAsWell = false);
+
+        public void ResetDrawingFrame(int frameIndex);
 
         public void AddDrawingFrame(int frameIndex, string name);
 
         public void MergeDrawingFrameIntoLeftNeighbour(int frameIndex);
 
         public List<DrawingFrame> Frames { get; }
+
+        public void UndoFrameOperation();
+
+        public void RedoFrameOperation();
+
+        public void SaveState(int eTypeValue, int frameIndex);
     }
 }

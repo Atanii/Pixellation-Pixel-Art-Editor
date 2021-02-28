@@ -93,9 +93,20 @@ namespace Pixellation.Utils
             return _instance;
         }
 
-        public bool Save(Imemento mem)
+        public bool Save(Imemento mem, string key = "")
         {
-            var res = _activeInstance != null;
+            var res = false;
+
+            if (key != string.Empty)
+            {
+                if (_caretakers.ContainsKey(key))
+                {
+                    _caretakers[key].Save(mem);
+                    res = true;
+                }
+                return res;
+            }
+            res = _activeInstance != null;
             if (res)
             {
                 _activeInstance.Save(mem);
@@ -103,9 +114,20 @@ namespace Pixellation.Utils
             return res;
         }
 
-        public bool Undo()
+        public bool Undo(string key = "")
         {
-            var res = _activeInstance != null;
+            var res = false;
+
+            if (key != string.Empty)
+            {
+                if (_caretakers.ContainsKey(key))
+                {
+                    _caretakers[key].Undo();
+                    res = true;
+                }
+                return res;
+            }
+            res = _activeInstance != null;
             if (res)
             {
                 _activeInstance.Undo();
@@ -113,9 +135,20 @@ namespace Pixellation.Utils
             return res;
         }
 
-        public bool Redo()
+        public bool Redo(string key = "")
         {
-            var res = _activeInstance != null;
+            var res = false;
+
+            if (key != string.Empty)
+            {
+                if (_caretakers.ContainsKey(key))
+                {
+                    _caretakers[key].Redo();
+                    res = true;
+                }
+                return res;
+            }
+            res = _activeInstance != null;
             if (res)
             {
                 _activeInstance.Redo();
@@ -128,9 +161,20 @@ namespace Pixellation.Utils
             _caretakers.Clear();
         }
 
-        public bool Clear()
+        public bool Clear(string key = "")
         {
-            var res = _activeInstance != null;
+            var res = false;
+
+            if (key != string.Empty)
+            {
+                if (_caretakers.ContainsKey(key))
+                {
+                    _caretakers[key].Clear();
+                    res = true;
+                }
+                return res;
+            }
+            res = _activeInstance != null;
             if (res)
             {
                 _activeInstance.Clear();

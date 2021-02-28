@@ -1,5 +1,8 @@
 ﻿using Pixellation.Components.Dialogs;
+using Pixellation.Components.Dialogs.StringInputDialog;
+using Pixellation.Components.Editor.Memento;
 using Pixellation.Interfaces;
+using Pixellation.MementoPattern;
 using Pixellation.Utils;
 using System;
 using System.Collections.Generic;
@@ -10,9 +13,9 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public class DrawingFrame : FrameworkElement, IBitmapProvider
+    public class DrawingFrame : FrameworkElement, IBitmapProvider, IOriginator<FrameMemento, IPixelEditorEventType>
     {
-        private readonly Guid _id = Guid.NewGuid();
+        private Guid _id = Guid.NewGuid();
         public string Id => _id.ToString();
 
         public static readonly SolidColorBrush BackgroundBrush = new SolidColorBrush(Color.FromArgb(25, 50, 50, 50));
@@ -21,7 +24,7 @@ namespace Pixellation.Components.Editor
         public static readonly SolidColorBrush BorderBrush = new SolidColorBrush(Color.FromArgb(255, 10, 10, 10));
         public static readonly Pen BorderPen = new Pen(BorderBrush, 1d);
 
-        public static readonly Color NameDrawColor = Color.FromArgb(255, 0, 0, 0);
+        public static readonly Color TextDrawColor = Color.FromArgb(255, 0, 0, 0);
 
         public List<DrawingLayer> Layers { get; private set; } = new List<DrawingLayer>() { };
 
@@ -82,8 +85,12 @@ namespace Pixellation.Components.Editor
 
         #endregion Events
 
-        public DrawingFrame(List<DrawingLayer> layers, string name, IDrawingHelper owner, bool visible = true, double opacity = 100) : base()
+        public DrawingFrame(List<DrawingLayer> layers, string name, IDrawingHelper owner, bool visible = true, double opacity = 100, Guid? id = null) : base()
         {
+            if (id != null)
+            {
+                _id = (Guid)id;
+            }
             _owner = owner;
             Layers = layers;
             FrameName = name;
@@ -214,8 +221,9 @@ namespace Pixellation.Components.Editor
             }
 
             var dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
-            DrawText(dc, 0, Height + 10, NameDrawColor, FrameName, dpi, 15);
-            DrawText(dc, 0, Height + 25, NameDrawColor, $"Opacity: {Opacity}", dpi, 15);
+
+            DrawText(dc, 0, Height + 10, TextDrawColor, FrameName, dpi, 15);
+            DrawText(dc, 0, Height + 25, TextDrawColor, Visible ? "Visible" : "Hidden", dpi, 15);
 
             if (_owner.ActiveFrameId == Id)
             {
@@ -237,16 +245,27 @@ namespace Pixellation.Components.Editor
 
             if (drawName)
             {
-                DrawText(dc, 0, h + 10, NameDrawColor, FrameName, VisualTreeHelper.GetDpi(this).PixelsPerDip, 15);
+                DrawText(dc, 0, h + 10, TextDrawColor, FrameName, VisualTreeHelper.GetDpi(this).PixelsPerDip, 15);
             }
         }
 
-        public DrawingFrame Clone()
+        /// <summary>
+        /// Creates a copy of this <see cref="DrawingFrame"/>.
+        /// </summary>
+        /// <param name="deep">
+        /// Copy exact same name and <see cref="Guid"/> if set to true. Value of this parameter applies to the layers of this frame too.
+        /// </param>
+        /// <returns>Created copy.</returns>
+        public DrawingFrame Clone(bool deep = false)
         {
             var layers = new List<DrawingLayer>();
             foreach (var l in Layers)
             {
-                layers.Add(l.Clone());
+                layers.Add(l.Clone(deep));
+            }
+            if (deep)
+            {
+                return new DrawingFrame(layers, FrameName, _owner, id: _id);
             }
             return new DrawingFrame(layers, FrameName + "_copy", _owner);
         }
@@ -274,11 +293,10 @@ namespace Pixellation.Components.Editor
             {
                 if (e.ClickCount == 2)
                 {
-                    var strDoubleDialog = new StringDoubleDialog("Frame Settings", "Name", "Opacity", FrameName, Opacity);
+                    var strDoubleDialog = new StringInputDialog("Update Name Of The Frame", "Name");
                     if ((bool)strDoubleDialog.ShowDialog())
                     {
-                        FrameName = strDoubleDialog.Answer.Key;
-                        Opacity = strDoubleDialog.Answer.Value;
+                        FrameName = strDoubleDialog.Answer;
                     }
                 }
                 else
@@ -288,5 +306,14 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        public void Restore(FrameMemento mem)
+        {
+            _owner.HandleRestore(mem);
+        }
+
+        public FrameMemento GetMemento(int mTypeValue)
+        {
+            return new FrameMemento(_owner, mTypeValue, _owner.ActiveFrameIndex, Clone(true));
+        }
     }
 }
