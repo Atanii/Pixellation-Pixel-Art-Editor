@@ -1,4 +1,5 @@
 ﻿using Pixellation.MementoPattern;
+using System;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor.Memento
@@ -11,6 +12,7 @@ namespace Pixellation.Components.Editor.Memento
         public bool Visible { get; private set; }
         public WriteableBitmap Bitmap { get; private set; }
         public LayerMemento ChainedOperationMemento { get; private set; }
+        public Guid LayerGuid { get; private set; }
 
         public LayerMemento(IOriginatorHandler<LayerMemento, IPixelEditorEventType> originator, int mTypevalue, int layerIndex, DrawingLayer original)
             : base(mTypevalue, originator)
@@ -21,6 +23,7 @@ namespace Pixellation.Components.Editor.Memento
             Opacity = original.Opacity;
             Visible = original.Visible;
             Bitmap = original.GetWriteableBitmap();
+            LayerGuid = original.LayerGuid;
         }
 
         public void SetChainedMemento(LayerMemento chained)

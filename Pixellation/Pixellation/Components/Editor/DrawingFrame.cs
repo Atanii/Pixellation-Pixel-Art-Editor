@@ -16,8 +16,8 @@ namespace Pixellation.Components.Editor
 {
     public class DrawingFrame : FrameworkElement, IBitmapProvider, IOriginator<FrameMemento, IPixelEditorEventType>
     {
-        private Guid _id = Guid.NewGuid();
-        public string Id => _id.ToString();
+        public Guid FrameGuid { get; private set; } = Guid.NewGuid();
+        public string Id => FrameGuid.ToString();
 
         public static readonly SolidColorBrush BackgroundBrush = new SolidColorBrush(Color.FromArgb(25, 50, 50, 50));
         public static readonly Pen BackgroundPen = new Pen(BackgroundBrush, 1d);
@@ -90,7 +90,7 @@ namespace Pixellation.Components.Editor
         {
             if (id != null)
             {
-                _id = (Guid)id;
+                FrameGuid = (Guid)id;
             }
             _owner = owner;
             Layers = layers;
@@ -313,7 +313,7 @@ namespace Pixellation.Components.Editor
             }
             if (deep)
             {
-                return new DrawingFrame(layers, FrameName, _owner, id: _id);
+                return new DrawingFrame(layers, FrameName, _owner, id: FrameGuid);
             }
             return new DrawingFrame(layers, FrameName + "_copy", _owner);
         }

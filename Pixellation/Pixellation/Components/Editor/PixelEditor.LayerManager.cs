@@ -14,7 +14,7 @@ namespace Pixellation.Components.Editor
 
         public DrawingLayer ActiveLayer { get; private set; }
 
-        public int ActiveLayerIndex => Layers.FindIndex(x => x.LayerName == ActiveLayer.LayerName);
+        public int ActiveLayerIndex => Layers.FindIndex(x => x.Id == ActiveLayer.Id);
 
         /// <summary>
         /// List of <see cref="DrawingLayer"/>s the currently edited image consists of.
@@ -190,7 +190,7 @@ namespace Pixellation.Components.Editor
 
         public int GetIndex(DrawingLayer layer)
         {
-            return Layers.FindIndex(x => x.LayerName == layer.LayerName);
+            return Layers.FindIndex(x => x.Id == layer.Id);
         }
 
         #endregion Getters

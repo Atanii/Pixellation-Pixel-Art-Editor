@@ -108,7 +108,7 @@ namespace Pixellation.Components.Editor
                 case IPixelEditorEventType.LAYER_PIXELS_CHANGED:
                 case IPixelEditorEventType.LAYER_OPACITYCHANGED:
                 case IPixelEditorEventType.LAYER_VISIBILITYCHANGED:
-                    origIndex = Layers.FindIndex(x => x.LayerName == mem.LayerName);
+                    origIndex = Layers.FindIndex(x => x.LayerGuid == mem.LayerGuid);
                     if (origIndex != -1)
                     {
                         redoMem = Layers[origIndex].GetMemento(typeValue);
@@ -119,7 +119,7 @@ namespace Pixellation.Components.Editor
                     return null;
 
                 case IPixelEditorEventType.MERGELAYER:
-                    origIndex = Layers.FindIndex(x => x.LayerName == mem.LayerName);
+                    origIndex = Layers.FindIndex(x => x.LayerGuid == mem.LayerGuid);
                     if (origIndex != -1)
                     {
                         redoMem = Layers[origIndex].GetMemento(-typeValue);
@@ -146,7 +146,7 @@ namespace Pixellation.Components.Editor
 
                 case IPixelEditorEventType.ADDLAYER:
                 case IPixelEditorEventType.DUPLICATELAYER:
-                    origIndex = Layers.FindIndex(x => x.LayerName == mem.LayerName);
+                    origIndex = Layers.FindIndex(x => x.LayerGuid == mem.LayerGuid);
                     if (origIndex != -1)
                     {
                         redoMem = Layers[origIndex].GetMemento(IPixelEditorEventType.REMOVELAYER);
@@ -168,7 +168,7 @@ namespace Pixellation.Components.Editor
 
 
                 case IPixelEditorEventType.REVERSE_MERGELAYER:
-                    origIndex = Layers.FindIndex(x => x.LayerName == mem.LayerName);
+                    origIndex = Layers.FindIndex(x => x.LayerGuid == mem.LayerGuid);
                     if (origIndex != -1 && Layers.Count >= (origIndex + 2))
                     {
                         redoMem = Layers[origIndex].GetMemento(-typeValue);

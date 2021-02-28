@@ -13,6 +13,9 @@ namespace Pixellation.Components.Editor
     {
         #region Fields And Properties
 
+        public Guid LayerGuid { get; private set; } = Guid.NewGuid();
+        public string Id => LayerGuid.ToString();
+
         private readonly IDrawingHelper _owner;
 
         private WriteableBitmap _bitmap;
@@ -197,6 +200,7 @@ namespace Pixellation.Components.Editor
             Visible = mem.Visible;
             Opacity = mem.Opacity;
             _bitmap = mem.Bitmap;
+            LayerGuid = mem.LayerGuid;
         }
 
         public LayerMemento GetMemento(int mTypeValue)

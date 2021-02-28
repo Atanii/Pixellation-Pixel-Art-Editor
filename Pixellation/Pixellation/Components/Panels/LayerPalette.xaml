@@ -63,6 +63,15 @@
                   IsSynchronizedWithCurrentItem="True">
             <ListView.View>
                 <GridView>
+                    <!--<GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border BorderThickness="1" BorderBrush="Black">
+                                    <Image Height="25" Width="25"></Image>
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>-->
                     <GridViewColumn Header="Name" Width="60" DisplayMemberBinding="{Binding LayerName}" />
                     <GridViewColumn Header="Opacity" Width="50" DisplayMemberBinding="{Binding Opacity}" />
                     <GridViewColumn Header="Visible" Width="45">

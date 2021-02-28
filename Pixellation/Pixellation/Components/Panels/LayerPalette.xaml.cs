@@ -133,7 +133,7 @@ namespace Pixellation.Components.Panels
 
         private void MergeLayer(object sender, RoutedEventArgs e)
         {
-            if (layerList.Items.Count > 1)
+            if (layerList.Items.Count > 1 && layerList.Items.Count > (layerList.SelectedIndex + 1))
             {
                 LayerManager.SaveState(IPixelEditorEventType.MERGELAYER, layerList.SelectedIndex);
                 LayerManager.MergeLayerDownward(layerList.SelectedIndex);
@@ -164,6 +164,8 @@ namespace Pixellation.Components.Panels
 
                     layer.LayerName = strDoubleDialog.Answer.Key;
                     layer.Opacity = strDoubleDialog.Answer.Value;
+
+                    layerList.Items.Refresh();
                 }
             }
         }
