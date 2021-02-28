@@ -1,6 +1,5 @@
 ﻿using Pixellation.Components.Editor;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
 
 namespace Pixellation.Interfaces
 {
@@ -12,8 +11,6 @@ namespace Pixellation.Interfaces
 
         public DrawingLayer ActiveLayer { get; }
 
-        public DrawingLayer GetLayer(int layerIndex = 0);
-
         public void AddLayer(DrawingLayer layer, int layerIndex = 0);
 
         public void AddLayer(string name, int layerIndex = 0);
@@ -21,10 +18,6 @@ namespace Pixellation.Interfaces
         public void DuplicateLayer(int layerIndex = 0);
 
         public void RemoveLayer(int layerIndex);
-
-        public WriteableBitmap Merge(int from, int to = 0, WriteableBitmapExtensions.BlendMode mode = WriteableBitmapExtensions.BlendMode.Alpha);
-
-        public WriteableBitmap GetAllMergedWriteableBitmap();
 
         public void MoveLayerUp(int layerIndex);
 

@@ -130,9 +130,7 @@ namespace Pixellation.Components.Editor
                         LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
                         (
                             IPixelEditorEventType.REVERSE_MERGELAYER,
-                            origIndex, origIndex,
-                            new int[] { origIndex, origIndex + 1 }
-                        ));
+                            origIndex));
 
                         RefreshVisualsThenSignalUpdate();
                         return redoMem;

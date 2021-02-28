@@ -78,11 +78,7 @@ namespace Pixellation.Components.Editor
 
                 ActiveFrameIndex = 0;
 
-                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-                (
-                    IPixelEditorEventType.FRAME_ADD,
-                    frameIndex, frameIndex, new int[] { frameIndex }
-                ));
+                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_ADD, frameIndex));
 
                 SetActiveLayer();
             }
@@ -94,11 +90,7 @@ namespace Pixellation.Components.Editor
 
                 ActiveFrameIndex = frameIndex + 1;
 
-                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-                (
-                    IPixelEditorEventType.FRAME_ADD,
-                    frameIndex, frameIndex + 1, new int[] { frameIndex }
-                ));
+                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_ADD, frameIndex + 1));
 
                 SetActiveLayer();
             }
@@ -111,11 +103,7 @@ namespace Pixellation.Components.Editor
             var tmp = ActiveFrameIndex;
             ActiveFrameIndex = index;
 
-            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-            (
-                IPixelEditorEventType.FRAME_ADD,
-                tmp, index, new int[] { }
-            ));
+            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_ADD, index));
 
             SetActiveLayer();
         }
@@ -130,11 +118,7 @@ namespace Pixellation.Components.Editor
 
             ActiveFrameIndex = 0;
 
-            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-            (
-                IPixelEditorEventType.FRAME_ADD,
-                0, 0, new int[] { }
-            ));
+            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_ADD, 0));
 
             SetActiveLayer();
         }
@@ -149,11 +133,7 @@ namespace Pixellation.Components.Editor
 
                 ActiveFrameIndex = frameIndex + 1;
 
-                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-                (
-                    IPixelEditorEventType.FRAME_DUPLICATE,
-                    frameIndex, frameIndex + 1, new int[] { frameIndex }
-                ));
+                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_DUPLICATE, frameIndex + 1));
 
                 SetActiveLayer();
             }
@@ -182,11 +162,7 @@ namespace Pixellation.Components.Editor
                 // New active frame is the one the other was merged in.
                 ActiveFrameIndex = frameIndex - 1;
 
-                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-                (
-                    IPixelEditorEventType.FRAME_MERGE_TO_LEFT,
-                    frameIndex, frameIndex - 1, new int[] { frameIndex, frameIndex - 1 }
-                ));
+                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_MERGE_TO_LEFT, frameIndex - 1));
 
                 SetActiveLayer();
             }
@@ -202,11 +178,7 @@ namespace Pixellation.Components.Editor
 
                 ActiveFrameIndex = frameIndex - 1;
 
-                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-                (
-                    IPixelEditorEventType.FRAME_MOVE_LEFT,
-                    frameIndex, frameIndex - 1, new int[] { frameIndex, frameIndex - 1 }
-                ));
+                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_MOVE_LEFT, frameIndex - 1));
 
                 SetActiveLayer();
             }
@@ -222,11 +194,7 @@ namespace Pixellation.Components.Editor
 
                 ActiveFrameIndex = frameIndex + 1;
 
-                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-                (
-                    IPixelEditorEventType.FRAME_MOVE_RIGHT,
-                    frameIndex, frameIndex + 1, new int[] { frameIndex, frameIndex + 1 }
-                ));
+                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_MOVE_RIGHT, frameIndex + 1));
 
                 SetActiveLayer();
             }
@@ -253,11 +221,7 @@ namespace Pixellation.Components.Editor
 
                 _caretaker.ActiveKey = Frames[ActiveFrameIndex].Id;
 
-                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-                (
-                    IPixelEditorEventType.FRAME_REMOVE,
-                    index, ActiveFrameIndex, new int[] { index }
-                ));
+                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_REMOVE, ActiveFrameIndex));
 
                 SetActiveLayer();
             }
@@ -272,11 +236,7 @@ namespace Pixellation.Components.Editor
                 ActiveFrameIndex = index;
                 _caretaker.ActiveKey = Frames[ActiveFrameIndex].Id;
 
-                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-                (
-                    IPixelEditorEventType.FRAME_NEW_ACTIVE_INDEX,
-                    tmp, ActiveFrameIndex, new int[] { }
-                ));
+                FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_NEW_ACTIVE_INDEX, ActiveFrameIndex));
 
                 SetActiveLayer();
             }
@@ -299,15 +259,8 @@ namespace Pixellation.Components.Editor
             // Clear undo-redo for frames.
             _caretaker.Clear(FramesCaretakerKey);
 
-            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
-            (
-                IPixelEditorEventType.CLEAR,
-                frameIndex, frameIndex, new int[] { frameIndex, frameIndex - 1 }
-            ));
-            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
-            (
-                IPixelEditorEventType.CLEAR, -1, 0, new int[] { }
-            ));
+            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.CLEAR, frameIndex));
+            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.CLEAR, 0));
 
             SetActiveLayer();
         }
