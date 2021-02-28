@@ -1,12 +1,10 @@
-﻿using Pixellation.Components.Dialogs;
-using Pixellation.Components.Dialogs.StringInputDialog;
+﻿using Pixellation.Components.Dialogs.StringInputDialog;
 using Pixellation.Components.Editor.Memento;
 using Pixellation.Interfaces;
 using Pixellation.MementoPattern;
 using Pixellation.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -32,6 +30,7 @@ namespace Pixellation.Components.Editor
         private readonly IDrawingHelper _owner;
 
         private string _name;
+
         public string FrameName
         {
             get => _name;
@@ -61,6 +60,7 @@ namespace Pixellation.Components.Editor
         }
 
         private bool _visible = true;
+
         public bool Visible
         {
             get => _visible;
@@ -268,7 +268,7 @@ namespace Pixellation.Components.Editor
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="dc"></param>
         /// <param name="x"></param>
@@ -320,7 +320,7 @@ namespace Pixellation.Components.Editor
         public IEnumerable<BitmapSource> GetLayersAsBitmapSources()
         {
             var bmps = new List<WriteableBitmap>();
-            foreach(var layer in Layers)
+            foreach (var layer in Layers)
             {
                 bmps.Add(layer.GetWriteableBitmapWithAppliedOpacity());
             }
@@ -365,7 +365,7 @@ namespace Pixellation.Components.Editor
 
         public void SetTiledMode(bool mode)
         {
-            foreach(var l in Layers)
+            foreach (var l in Layers)
             {
                 l.TiledModeOn = mode;
             }

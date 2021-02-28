@@ -1,11 +1,10 @@
 ﻿using Pixellation.Components.Editor.Memento;
+using Pixellation.Interfaces;
 using Pixellation.MementoPattern;
 using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Pixellation.Interfaces;
-using Pixellation.Utils;
 
 namespace Pixellation.Components.Editor
 {
@@ -19,7 +18,9 @@ namespace Pixellation.Components.Editor
         private readonly IDrawingHelper _owner;
 
         private WriteableBitmap _bitmap;
-        public WriteableBitmap Bitmap {
+
+        public WriteableBitmap Bitmap
+        {
             get => _bitmap;
             set
             {
@@ -33,9 +34,12 @@ namespace Pixellation.Components.Editor
         }
 
         private string _name;
-        public string LayerName {
+
+        public string LayerName
+        {
             get => _name;
-            set {
+            set
+            {
                 _name = value;
                 OnUpdated?.Invoke();
             }
@@ -60,6 +64,7 @@ namespace Pixellation.Components.Editor
         }
 
         private bool _visible = true;
+
         public bool Visible
         {
             get => _visible;
@@ -71,6 +76,7 @@ namespace Pixellation.Components.Editor
         }
 
         private bool _tiledModeOn = Properties.Settings.Default.DefaultTiledModeOn;
+
         public bool TiledModeOn
         {
             get => _tiledModeOn;
@@ -82,6 +88,7 @@ namespace Pixellation.Components.Editor
         }
 
         private float _tiledModeOpacity = Properties.Settings.Default.DefaultTiledOpacity;
+
         public float TiledModeOpacity
         {
             get => _tiledModeOpacity;
@@ -101,18 +108,12 @@ namespace Pixellation.Components.Editor
         #endregion Events
 
         #region Constructors, Init
+
         public DrawingLayer(IDrawingHelper owner, string layerName = "", bool visible = true, double opacity = 1.0)
         {
             _owner = owner;
             InitBitmap();
-            if (layerName == "")
-            {
-                _name = "Layer-" + (new DateTime()).Ticks;
-            }
-            else
-            {
-                _name = layerName;
-            }
+            LayerName = layerName == "" ? "Layer-" + (new DateTime()).Ticks : layerName;
             Visible = visible;
             Opacity = opacity;
         }
@@ -121,14 +122,7 @@ namespace Pixellation.Components.Editor
         {
             _owner = owner;
             InitBitmap(bitmap);
-            if (layerName == "")
-            {
-                _name = "Layer-" + (new DateTime()).Ticks;
-            }
-            else
-            {
-                _name = layerName;
-            }
+            LayerName = layerName == "" ? "Layer-" + (new DateTime()).Ticks : layerName;
             Visible = visible;
             Opacity = opacity;
         }
@@ -137,38 +131,22 @@ namespace Pixellation.Components.Editor
         {
             _owner = owner;
             InitBitmap(mem.Bitmap);
-            if (mem.LayerName == "")
-            {
-                _name = "Layer-" + (new DateTime()).Ticks;
-            }
-            else
-            {
-                _name = mem.LayerName;
-            }
+            LayerName = mem.LayerName;
             Visible = mem.Visible;
             Opacity = mem.Opacity;
         }
 
         private void InitBitmap(WriteableBitmap bitmap = null)
         {
-            if (bitmap != null)
-            {
-                _bitmap = bitmap;
-            }
-            else
-            {
-                _bitmap = BitmapFactory.New(_owner.PixelWidth, _owner.PixelHeight);
-                _bitmap.Clear(Colors.Transparent);
-            }
+            _bitmap = bitmap ?? BitmapFactory.New(_owner.PixelWidth, _owner.PixelHeight);
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
         }
+
         #endregion Constructors, Init
 
         #region Conversions, Cloning
-        public override string ToString()
-        {
-            return LayerName;
-        }
+
+        public override string ToString() => LayerName;
 
         /// <summary>
         /// Creates a copy of this <see cref="DrawingLayer"/>.
@@ -184,19 +162,14 @@ namespace Pixellation.Components.Editor
             }
             return new DrawingLayer(_owner, bmp2, LayerName + "_copy", Visible, Opacity);
         }
+
         #endregion Conversions, Cloning
 
         #region Memento
+
         public void Restore(LayerMemento mem)
-        {   
-            if (mem.LayerName == "")
-            {
-                _name = "Layer-" + (new DateTime()).Ticks;
-            }
-            else
-            {
-                _name = mem.LayerName;
-            }
+        {
+            LayerName = mem.LayerName == "" ? "Layer-" + (new DateTime()).Ticks : mem.LayerName;
             Visible = mem.Visible;
             Opacity = mem.Opacity;
             _bitmap = mem.Bitmap;
@@ -218,9 +191,11 @@ namespace Pixellation.Components.Editor
         {
             _owner.SaveState(mTypeValue, _owner.ActiveLayerIndex);
         }
+
         #endregion Memento
 
         #region Bitmap, Rendering
+
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
@@ -251,20 +226,6 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public void Render(DrawingContext dc, double x, double y, double w, double h, float opacity = 1f)
-        {
-            if (!Visible)
-            {
-                return;
-            }
-
-            var temp = _bitmap.Clone();
-            temp.BlitRender(temp, false, opacity);
-            dc.DrawImage(temp, new Rect(x, y, w, h));
-        }
-
-        public void SetPixel(int x, int y, Color color) => _bitmap.SetPixel(x, y, color);
-
         public Color GetPixel(int x, int y) => _bitmap.GetPixel(x, y);
 
         public WriteableBitmap GetWriteableBitmap() => _bitmap.Clone();
@@ -293,14 +254,11 @@ namespace Pixellation.Components.Editor
 
         public void Mirror(bool horizontal = true)
         {
-            if (horizontal)
-            {
-                _bitmap = _bitmap.Flip(WriteableBitmapExtensions.FlipMode.Horizontal);
-            }
-            else
-            {
-                _bitmap = _bitmap.Flip(WriteableBitmapExtensions.FlipMode.Vertical);
-            }
+            _bitmap = _bitmap.Flip(
+                horizontal ?
+                WriteableBitmapExtensions.FlipMode.Horizontal :
+                WriteableBitmapExtensions.FlipMode.Vertical
+            );
         }
 
         public void Rotate(int angleInDegree)
@@ -309,14 +267,18 @@ namespace Pixellation.Components.Editor
         }
 
         public void Resize(int newWidth, int newHeight)
-        {   
-            _bitmap = _bitmap.Resize(newWidth, newHeight, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
+        {
+            _bitmap = _bitmap.Resize(
+                newWidth, newHeight,
+                WriteableBitmapExtensions.Interpolation.NearestNeighbor
+            );
         }
 
         public void Clear()
         {
             _bitmap.Clear(Colors.Transparent);
         }
+
         #endregion Bitmap, Rendering
     }
 }

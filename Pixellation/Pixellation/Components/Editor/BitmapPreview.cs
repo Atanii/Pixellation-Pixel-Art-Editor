@@ -1,14 +1,11 @@
-﻿using Pixellation.Components.Editor;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Pixellation.Components
+namespace Pixellation.Components.Editor
 {
-    class BitmapPreview : FrameworkElement
+    internal class BitmapPreview : FrameworkElement
     {
         private static event EventHandler<DependencyPropertyChangedEventArgs> BmpPropertyChanged;
 

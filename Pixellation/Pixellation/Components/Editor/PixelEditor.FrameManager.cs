@@ -1,6 +1,5 @@
 ﻿using Pixellation.Interfaces;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media.Imaging;
 
@@ -39,6 +38,7 @@ namespace Pixellation.Components.Editor
         }
 
         private DrawingFrame _activeFrame;
+
         public DrawingFrame ActiveFrame
         {
             get { return _activeFrame; }
@@ -121,7 +121,7 @@ namespace Pixellation.Components.Editor
 
         private void AddDrawingFrames(List<DrawingFrame> frames)
         {
-            foreach(var frame in frames)
+            foreach (var frame in frames)
             {
                 _caretaker.InitCaretaker(frame.Id);
                 Frames.Add(frame);
@@ -162,14 +162,23 @@ namespace Pixellation.Components.Editor
         {
             if (frameIndex > 0 && Frames.Count >= (frameIndex + 1))
             {
+                // Get frame to merge.
                 var tmp = Frames[frameIndex];
 
+                // Clear undo-redo for layers in the frame the other one will be merged into.
                 _caretaker.Clear(Frames[frameIndex - 1].Id);
+                // Add new layers to frame to the left.
                 Frames[frameIndex - 1].Layers.AddRange(tmp.Layers);
 
+                // Remove undo-redo for frame to be deleted.
                 _caretaker.RemoveCaretaker(Frames[frameIndex].Id, true);
+                // Remove merged frame.
                 Frames.RemoveAt(frameIndex);
 
+                // Clear undo-redo for frames.
+                _caretaker.Clear(FramesCaretakerKey);
+
+                // New active frame is the one the other was merged in.
                 ActiveFrameIndex = frameIndex - 1;
 
                 FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
@@ -274,14 +283,20 @@ namespace Pixellation.Components.Editor
 
         public void ResetDrawingFrame(int frameIndex)
         {
+            // Getting frame to clear.
             var tmp = Frames[frameIndex];
 
+            // Update layer list on the visual tree and clear previous layers.
             RemoveLayersFromVisualChildren();
             Frames[frameIndex].Layers.Clear();
             Frames[frameIndex].Layers.Add(new DrawingLayer(this, DefaultLayerName));
             AddLayersToVisualChildren();
 
+            // Clear undo-redo for layers in the frame.
             _caretaker.Clear(Frames[frameIndex].Id);
+
+            // Clear undo-redo for frames.
+            _caretaker.Clear(FramesCaretakerKey);
 
             FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs
             (

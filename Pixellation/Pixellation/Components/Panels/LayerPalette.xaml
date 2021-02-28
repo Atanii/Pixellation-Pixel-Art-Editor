@@ -1,9 +1,10 @@
 ﻿<UserControl x:Class="Pixellation.Components.Panels.LayerPalette"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:resource="clr-namespace:Pixellation.Properties" xmlns:components="clr-namespace:Pixellation.Components"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:editor="clr-namespace:Pixellation.Components.Editor"
+             xmlns:resource="clr-namespace:Pixellation.Properties"
              mc:Ignorable="d" x:Name="layerManager"
              d:DesignHeight="250" d:DesignWidth="200">
     <StackPanel>
@@ -67,7 +68,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Border BorderThickness="1" BorderBrush="Black">
-                                    <components:BitmapPreview Width="25" Height="25" Bmp="{Binding Bitmap}"></components:BitmapPreview>
+                                    <editor:BitmapPreview Width="25" Height="25" Bmp="{Binding Bitmap}"></editor:BitmapPreview>
                                 </Border>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
