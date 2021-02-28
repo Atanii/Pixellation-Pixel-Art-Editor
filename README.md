@@ -1,10 +1,8 @@
 <p align="center"><img align="center" src="logo-big.png" alt="pixellation logo"></p>
 
-# Disclaimer: This program is highly in development!
-
 ## About
 
-Pixellation is a pixel art editor program developed in .NET Core. It provides features like tiling and layer management with grouping.
+Pixellation is a pixel art editor program developed in .NET Core with WPF UI. It provides features like tiling and layer management.
 
 ## Development, planned features (this can change in the future / during development):
 
@@ -41,7 +39,7 @@ Pixellation is a pixel art editor program developed in .NET Core. It provides fe
 
 ### Milestone 6 - Pre-Beta
 
-- [x] Undo-Redo
+- [x] Undo-Redo for layers
 - [x] Editor and tool settings
 - [x] Eraser-mode
 - [x] Duplicate layer
@@ -56,6 +54,9 @@ Pixellation is a pixel art editor program developed in .NET Core. It provides fe
 - [x] Exporting frames to spritesheet
 - [x] Updated project structure for saves
 - [x] Same color paint bucket tool.
+- [x] HSL settings for colorpicker.
+- [x] Different thickness settings for tools.
+- [x] Undo-Redo for frames (not all operations are supported).
 
 ### Milestone 8 - Release
 
