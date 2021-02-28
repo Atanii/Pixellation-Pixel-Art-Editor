@@ -1,4 +1,5 @@
 ﻿using Pixellation.Components.Editor;
+using Pixellation.Components.Event;
 using Pixellation.Interfaces;
 using System.Windows;
 using System.Windows.Controls;
@@ -77,20 +78,10 @@ namespace Pixellation.Components.Panels
         private void R90_Click(object sender, RoutedEventArgs e)
         {
             var counterClockWise = (bool)cbCounterClockWise.IsChecked;
-            if (counterClockWise)
-            {
-                LayerManager.SaveState(
-                    IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE,
-                    LayerManager.ActiveLayerIndex
-                );
-            }
-            else
-            {
-                LayerManager.SaveState(
-                    IPixelEditorEventType.ROTATE,
-                    LayerManager.ActiveLayerIndex
-                );
-            }
+            LayerManager.SaveState(
+                counterClockWise ? IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE : IPixelEditorEventType.ROTATE,
+                LayerManager.ActiveLayerIndex
+            );
             LayerManager.Rotate(counterClockWise);
         }
 

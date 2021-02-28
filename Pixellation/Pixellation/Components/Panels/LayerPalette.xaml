@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:editor="clr-namespace:Pixellation.Components.Editor"
-             xmlns:resource="clr-namespace:Pixellation.Properties"
+             xmlns:resource="clr-namespace:Pixellation.Properties" xmlns:preview="clr-namespace:Pixellation.Components.Preview"
              mc:Ignorable="d" x:Name="layerManager"
              d:DesignHeight="250" d:DesignWidth="200">
     <StackPanel>
@@ -68,7 +68,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Border BorderThickness="1" BorderBrush="Black">
-                                    <editor:BitmapPreview Width="25" Height="25" Bmp="{Binding Bitmap}"></editor:BitmapPreview>
+                                    <preview:BitmapPreview Width="25" Height="25" Bmp="{Binding Bitmap}"></preview:BitmapPreview>
                                 </Border>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

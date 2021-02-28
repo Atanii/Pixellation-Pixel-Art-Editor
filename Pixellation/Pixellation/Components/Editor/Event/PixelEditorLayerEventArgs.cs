@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pixellation.Components.Editor
+namespace Pixellation.Components.Event
 {
     public class PixelEditorLayerEventArgs : EventArgs
     {

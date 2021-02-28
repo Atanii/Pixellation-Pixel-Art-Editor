@@ -1,4 +1,5 @@
-﻿using Pixellation.Interfaces;
+﻿using Pixellation.Components.Event;
+using Pixellation.Interfaces;
 using Pixellation.Properties;
 using Pixellation.Utils;
 using System.Collections.Generic;
@@ -104,7 +105,7 @@ namespace Pixellation.Components.Editor
 
             // Previewlayer
             ResetPreviewLayer();
-            
+
             // Helpervisuals
             if (includeHelperVisuals)
             {
@@ -196,6 +197,7 @@ namespace Pixellation.Components.Editor
         #endregion Getters
 
         #region Merge
+
         /// <summary>
         /// Merges the layers in the given index range into a single WriteableBitmap.
         /// The indexing is reverse!
@@ -245,9 +247,11 @@ namespace Pixellation.Components.Editor
         public WriteableBitmap GetAllMergedWriteableBitmap() => Merge(Layers.Count() - 1, 0);
 
         public ImageSource GetImageSource() => Merge(Layers.Count() - 1, 0).ToImageSource();
+
         #endregion Merge
 
         #region Transform
+
         public void Mirror(bool horizontally, bool allLayers)
         {
             if (!allLayers && ActiveLayer != null)
@@ -289,9 +293,11 @@ namespace Pixellation.Components.Editor
             PixelHeight = newHeight;
             Magnification = Settings.Default.DefaultMagnification;
         }
+
         #endregion Transform
 
         #region Add, Delete, Duplicate, Move Up, Move Down, Merge, Clear
+
         public void AddLayer(DrawingLayer layer, int layerIndex = 0)
         {
             Layers.Insert(layerIndex, layer);
@@ -401,7 +407,7 @@ namespace Pixellation.Components.Editor
             }
             if (Layers.Count == 0)
             {
-                newLayerIndex = - 1;
+                newLayerIndex = -1;
             }
             else if ((layerIndex - 1) >= 0)
             {
@@ -420,7 +426,7 @@ namespace Pixellation.Components.Editor
         {
             var newLayerIndex = layerIndex;
             if (Layers.Count >= (layerIndex + 2))
-            {   
+            {
                 var bmp = Merge(layerIndex + 1, layerIndex);
                 Layers[layerIndex].Bitmap = bmp;
                 RemoveLayer(Layers[layerIndex + 1]);
@@ -454,6 +460,7 @@ namespace Pixellation.Components.Editor
                 ));
             }
         }
-        #endregion Add, Delete, Duplicate, Move Up, Move Down, Clear
+
+        #endregion Add, Delete, Duplicate, Move Up, Move Down, Merge, Clear
     }
 }

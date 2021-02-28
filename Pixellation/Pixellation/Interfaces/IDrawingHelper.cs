@@ -1,5 +1,6 @@
 ﻿using Pixellation.Components.Editor;
 using Pixellation.Components.Editor.Memento;
+using Pixellation.Components.Event;
 using Pixellation.MementoPattern;
 
 namespace Pixellation.Interfaces

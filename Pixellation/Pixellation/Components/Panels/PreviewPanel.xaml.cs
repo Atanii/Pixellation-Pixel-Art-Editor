@@ -1,19 +1,11 @@
-﻿using Pixellation.Components.Editor;
+﻿using Pixellation.Components.Preview;
 using Pixellation.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Pixellation.Components.Panels
 {
@@ -33,11 +25,13 @@ namespace Pixellation.Components.Panels
         public IFrameProvider FrameProvider
         {
             get => (IFrameProvider)GetValue(FrameProviderProperty);
-            set {
+            set
+            {
                 SetValue(FrameProviderProperty, value);
                 OnPropertyChanged();
             }
         }
+
         public static readonly DependencyProperty FrameProviderProperty =
          DependencyProperty.Register("FrameProvider", typeof(IFrameProvider), typeof(PreviewPanel), new FrameworkPropertyMetadata(
              default,
@@ -45,10 +39,12 @@ namespace Pixellation.Components.Panels
         ));
 
         private PreviewMode _pMode;
+
         public PreviewMode PMode
         {
             get => _pMode;
-            set {
+            set
+            {
                 _pMode = value;
                 OnPropertyChanged();
             }
@@ -90,11 +86,6 @@ namespace Pixellation.Components.Panels
         private void RbLayerClick(object sender, RoutedEventArgs e)
         {
             PMode = PreviewMode.LAYER;
-        }
-
-        private void CheckBox_Click(object sender, RoutedEventArgs e)
-        {
-            dPreview.OnionModeEnabled = !dPreview.OnionModeEnabled;
         }
     }
 }

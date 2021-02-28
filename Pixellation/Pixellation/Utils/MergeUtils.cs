@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Utils
 {
-    public class MergeAndExportUtils
+    public class MergeUtils
     {
         /// <summary>
         /// Merges the layers in the given index range into a single WriteableBitmap.
@@ -167,7 +167,7 @@ namespace Pixellation.Utils
         }
 
         public static WriteableBitmap GenerateSpriteSheetFromFrames(
-            List<DrawingFrame> frames, WriteableBitmapExtensions.BlendMode mode,int rows, int cols, Color backgroundColor)
+            List<DrawingFrame> frames, WriteableBitmapExtensions.BlendMode mode, int rows, int cols, Color backgroundColor)
         {
             if (frames.Count == 0 || rows * cols < frames.Count)
             {
@@ -186,7 +186,7 @@ namespace Pixellation.Utils
 
             var srcRect = new System.Windows.Rect(0, 0, w, h);
 
-            for(int row = 0; row < rows; row++)
+            for (int row = 0; row < rows; row++)
             {
                 Debug.WriteLine($"newline");
                 for (int col = 0; col < cols; col++)
@@ -200,7 +200,7 @@ namespace Pixellation.Utils
                         return merged;
                     }
                     var tmp = MergeAll(frames[index].Layers, mode);
-                    
+
                     merged.Blit(rect, tmp, srcRect, mode);
                 }
             }

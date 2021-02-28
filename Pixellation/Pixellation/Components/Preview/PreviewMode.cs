@@ -1,4 +1,4 @@
-﻿namespace Pixellation.Components.Editor
+﻿namespace Pixellation.Components.Preview
 {
     public enum PreviewMode
     {

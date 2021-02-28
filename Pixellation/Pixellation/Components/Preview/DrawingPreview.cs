@@ -1,13 +1,15 @@
-﻿using Pixellation.Interfaces;
+﻿using Pixellation.Components.Editor;
+using Pixellation.Interfaces;
 using System;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Pixellation.Components.Editor
+namespace Pixellation.Components.Preview
 {
     internal class DrawingPreview : FrameworkElement
     {
         private static event EventHandler<DependencyPropertyChangedEventArgs> IFrameProviderUpdated;
+
         private static event EventHandler<DependencyPropertyChangedEventArgs> ModeUpdated;
 
         public IFrameProvider DrawingFrameProvider
@@ -15,6 +17,7 @@ namespace Pixellation.Components.Editor
             get { return (IFrameProvider)GetValue(DrawingFrameProviderProperty); }
             set { SetValue(DrawingFrameProviderProperty, value); }
         }
+
         public static readonly DependencyProperty DrawingFrameProviderProperty =
          DependencyProperty.Register("DrawingFrameProvider", typeof(IFrameProvider), typeof(DrawingPreview), new FrameworkPropertyMetadata(
              default,
@@ -26,6 +29,7 @@ namespace Pixellation.Components.Editor
             get { return (PreviewMode)GetValue(PModeProperty); }
             set { SetValue(PModeProperty, value); }
         }
+
         public static readonly DependencyProperty PModeProperty =
          DependencyProperty.Register("PMode", typeof(PreviewMode), typeof(DrawingPreview), new FrameworkPropertyMetadata(
              PreviewMode.ALL,
@@ -33,6 +37,7 @@ namespace Pixellation.Components.Editor
         ));
 
         private bool _onionModeEnabled;
+
         public bool OnionModeEnabled
         {
             get => _onionModeEnabled;

@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:resource="clr-namespace:Pixellation.Properties"
-             mc:Ignorable="d"
+             mc:Ignorable="d" x:Name="toolPalette"
              d:DesignHeight="250" d:DesignWidth="180">
     <StackPanel Orientation="Vertical">
         <UniformGrid Columns="5" Rows="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="80">
@@ -132,7 +132,7 @@
             </Button>
         </UniformGrid>
         <Label>Tool Settings</Label>
-        <CheckBox Margin="5" x:Name="cbEraserMode" Click="CbEraserMode_Click" ToolTip="Use tools with transparency as color." IsChecked="False">Eraser Mode</CheckBox>
+        <CheckBox Margin="5" ToolTip="Use tools with transparency as color." IsChecked="{Binding ElementName=toolPalette, Path=ChosenTool.EraserModeOn, Mode=TwoWay}">Eraser Mode</CheckBox>
         <GroupBox Margin="5" Header="Mirror Mode">
             <StackPanel Orientation="Vertical" Margin="5">
                 <RadioButton x:Name="rbMMNone" GroupName="MirrorMode" Click="RbMMNone_Click" IsChecked="True">Off</RadioButton>

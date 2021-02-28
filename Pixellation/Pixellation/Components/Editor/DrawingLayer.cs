@@ -1,4 +1,5 @@
 ﻿using Pixellation.Components.Editor.Memento;
+using Pixellation.Components.Event;
 using Pixellation.Interfaces;
 using Pixellation.MementoPattern;
 using System;

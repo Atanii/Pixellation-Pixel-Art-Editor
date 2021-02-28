@@ -1,5 +1,6 @@
 ﻿using Pixellation.Components.Dialogs.StringInputDialog;
 using Pixellation.Components.Editor;
+using Pixellation.Components.Event;
 using Pixellation.Interfaces;
 using System;
 using System.Windows;

@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Pixellation.Components.Editor;
+using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Pixellation.Components.Editor
+namespace Pixellation.Components.Preview
 {
     internal class BitmapPreview : FrameworkElement
     {

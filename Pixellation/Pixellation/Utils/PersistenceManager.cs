@@ -158,22 +158,22 @@ namespace Pixellation.Utils
                         break;
 
                     case ExportModes.FRAME:
-                        bmp = MergeAndExportUtils.MergeAll(vm.Frames[vm.ActiveFrameIndex].Layers);
+                        bmp = MergeUtils.MergeAll(vm.Frames[vm.ActiveFrameIndex].Layers);
                         break;
 
                     case ExportModes.FRAME_ALL:
-                        bmp = MergeAndExportUtils.MergeAll(vm.Frames);
+                        bmp = MergeUtils.MergeAll(vm.Frames);
                         break;
 
                     case ExportModes.SPRITESHEET_FRAME:
-                        bmp = MergeAndExportUtils.GenerateSpriteSheetFromLayers(
+                        bmp = MergeUtils.GenerateSpriteSheetFromLayers(
                             vm.Frames[vm.ActiveFrameIndex].Layers, WriteableBitmapExtensions.BlendMode.Alpha,
                             rows, cols,
                             Colors.Transparent);
                         break;
 
                     case ExportModes.SPRITESHEET_ALL_FRAME:
-                        bmp = MergeAndExportUtils.GenerateSpriteSheetFromFrames(
+                        bmp = MergeUtils.GenerateSpriteSheetFromFrames(
                             vm.Frames, WriteableBitmapExtensions.BlendMode.Alpha,
                             rows, cols,
                             Colors.Transparent);

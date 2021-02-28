@@ -1,5 +1,6 @@
 ﻿using Pixellation.Components.Dialogs.StringInputDialog;
 using Pixellation.Components.Editor.Memento;
+using Pixellation.Components.Event;
 using Pixellation.Interfaces;
 using Pixellation.MementoPattern;
 using Pixellation.Utils;
@@ -12,7 +13,7 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
-    public class DrawingFrame : FrameworkElement, IBitmapProvider, IOriginator<FrameMemento, IPixelEditorEventType>
+    public class DrawingFrame : FrameworkElement, IOriginator<FrameMemento, IPixelEditorEventType>
     {
         public Guid FrameGuid { get; private set; } = Guid.NewGuid();
         public string Id => FrameGuid.ToString();
@@ -74,11 +75,8 @@ namespace Pixellation.Components.Editor
 
         public WriteableBitmap Bitmap
         {
-            get => MergeAndExportUtils.MergeAll(Layers);
+            get => MergeUtils.MergeAll(Layers);
         }
-
-        public int MagnifiedWidth => _owner.PixelWidth * _owner.Magnification;
-        public int MagnifiedHeight => _owner.PixelHeight * _owner.Magnification;
 
         #region Events
 

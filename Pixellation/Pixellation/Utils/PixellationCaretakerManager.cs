@@ -1,4 +1,4 @@
-﻿using Pixellation.Components.Editor;
+﻿using Pixellation.Components.Event;
 using Pixellation.MementoPattern;
 using System;
 using System.Collections.Generic;

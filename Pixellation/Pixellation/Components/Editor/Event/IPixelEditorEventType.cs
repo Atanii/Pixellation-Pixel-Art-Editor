@@ -1,6 +1,6 @@
 ﻿using Pixellation.MementoPattern;
 
-namespace Pixellation.Components.Editor
+namespace Pixellation.Components.Event
 {
     public interface IPixelEditorEventType : IMementoType
     {

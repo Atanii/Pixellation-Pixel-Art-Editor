@@ -1,9 +1,8 @@
 ﻿<UserControl x:Class="Pixellation.Components.Panels.Transforms"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Pixellation.Components.Panels"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" x:Name="transformsWindow"
              d:DesignHeight="300" d:DesignWidth="200">
     <StackPanel Orientation="Vertical">
@@ -23,7 +22,7 @@
         <GroupBox Header="Resize Image">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
-                    <Label>Width: </Label>
+                    <Label>Width:</Label>
                     <TextBox x:Name="txtWidth" Width="35" Margin="5" LostFocus="TxtWidth_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                     <Label>Height:</Label>
                     <TextBox x:Name="txtHeight" Width="35" Margin="5" LostFocus="TxtHeight_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>

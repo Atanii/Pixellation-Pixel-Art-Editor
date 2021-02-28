@@ -1,4 +1,5 @@
-﻿using Pixellation.Interfaces;
+﻿using Pixellation.Components.Event;
+using Pixellation.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;

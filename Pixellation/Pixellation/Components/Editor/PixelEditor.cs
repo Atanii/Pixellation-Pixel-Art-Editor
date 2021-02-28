@@ -16,7 +16,7 @@ namespace Pixellation.Components.Editor
     /// <summary>
     /// Class representing the edited image and the corresponding framework element.
     /// </summary>
-    public partial class PixelEditor : FrameworkElement, IPreviewable, INotifyPropertyChanged, IDrawingHelper, IFrameProvider
+    public partial class PixelEditor : FrameworkElement, INotifyPropertyChanged, IDrawingHelper, IFrameProvider
     {
         #region PrivateFields
 

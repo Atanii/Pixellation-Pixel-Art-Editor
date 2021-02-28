@@ -90,11 +90,6 @@ namespace Pixellation.Components.Panels
             };
         }
 
-        private void CbEraserMode_Click(object sender, RoutedEventArgs e)
-        {
-            ChosenTool.EraserModeOn = (bool)cbEraserMode.IsChecked;
-        }
-
         private void RbMMNone_Click(object sender, RoutedEventArgs e)
         {
             ChosenTool.MirrorMode = MirrorModeStates.OFF;
