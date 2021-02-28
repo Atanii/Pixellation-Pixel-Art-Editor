@@ -167,7 +167,6 @@ namespace Pixellation.Components.Editor
             }
             double x = (elementWidth - w) / 2;
             double y = (elementHeight - h) / 2;
-            Debug.WriteLine(y);
 
             // Render layers.
             if (layerIndex != -1)

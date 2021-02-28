@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:resource="clr-namespace:Pixellation.Properties"
+             xmlns:resource="clr-namespace:Pixellation.Properties" xmlns:components="clr-namespace:Pixellation.Components"
              mc:Ignorable="d" x:Name="layerManager"
              d:DesignHeight="250" d:DesignWidth="200">
     <StackPanel>
@@ -59,19 +59,19 @@
             </Button>
         </UniformGrid>
         <ListView Height="200" SelectionMode="Single" Margin="10" x:Name="layerList" SelectionChanged="LayerList_SelectionChanged"
-                  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False" MouseDoubleClick="OpenLayerSettingsDialog"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="False" MouseRightButtonUp="OpenLayerSettingsDialog"
                   IsSynchronizedWithCurrentItem="True">
             <ListView.View>
                 <GridView>
-                    <!--<GridViewColumn>
+                    <GridViewColumn>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Border BorderThickness="1" BorderBrush="Black">
-                                    <Image Height="25" Width="25"></Image>
+                                    <components:BitmapPreview Width="25" Height="25" Bmp="{Binding Bitmap}"></components:BitmapPreview>
                                 </Border>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-                    </GridViewColumn>-->
+                    </GridViewColumn>
                     <GridViewColumn Header="Name" Width="60" DisplayMemberBinding="{Binding LayerName}" />
                     <GridViewColumn Header="Opacity" Width="50" DisplayMemberBinding="{Binding Opacity}" />
                     <GridViewColumn Header="Visible" Width="45">
