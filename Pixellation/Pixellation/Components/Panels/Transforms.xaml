@@ -23,12 +23,16 @@
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <Label>Width:</Label>
-                    <TextBox x:Name="txtWidth" Width="35" Margin="5" LostFocus="TxtWidth_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBox x:Name="txtWidth" Width="35" Margin="5" LostFocus="TxtWidth_LostFocus"
+                             Text="{Binding ElementName=transformsWindow, Path=LayerManager.PixelWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                    </TextBox>
                     <Label>Height:</Label>
-                    <TextBox x:Name="txtHeight" Width="35" Margin="5" LostFocus="TxtHeight_LostFocus" Text="{Binding ElementName=transformsWindow, Path=LayerHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBox x:Name="txtHeight" Width="35" Margin="5" LostFocus="TxtHeight_LostFocus"
+                             Text="{Binding ElementName=transformsWindow, Path=LayerManager.PixelHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                    </TextBox>
                 </StackPanel>
-                <CheckBox x:Name="cbResizeProportional" Content="Proportional" ToolTip="Apply same amount of changes to other size attribute." Margin="5"></CheckBox>
-                <Button x:Name="btnResize" Content="Apply" Margin="5" Click="BtnResize_Click" IsDefault="True"></Button>
+                <CheckBox x:Name="cbResizeProportional" Margin="5" Content="Proportional" ToolTip="Apply same amount of changes to other size attribute."></CheckBox>
+                <Button x:Name="btnResize" Margin="5" Content="Apply" Click="BtnResize_Click" IsDefault="True"></Button>
             </StackPanel>
         </GroupBox>
     </StackPanel>

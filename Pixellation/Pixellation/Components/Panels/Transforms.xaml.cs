@@ -1,5 +1,4 @@
-﻿using Pixellation.Components.Editor;
-using Pixellation.Components.Event;
+﻿using Pixellation.Components.Event;
 using Pixellation.Interfaces;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,12 +10,18 @@ namespace Pixellation.Components.Panels
     /// </summary>
     public partial class Transforms : UserControl
     {
+        /// <summary>
+        /// Provides layers, functions and indexes for handling layers.
+        /// </summary>
         public ILayerManager LayerManager
         {
             get { return (ILayerManager)GetValue(LayerListProperty); }
             set { SetValue(LayerListProperty, value); }
         }
 
+        /// <summary>
+        /// DepdendencyProperty for <see cref="LayerManager"/>.
+        /// </summary>
         public static readonly DependencyProperty LayerListProperty = DependencyProperty.Register(
              "LayerManager",
              typeof(ILayerManager),
@@ -24,37 +29,19 @@ namespace Pixellation.Components.Panels
              new FrameworkPropertyMetadata()
         );
 
-        public int LayerWidth
-        {
-            get { return (int)GetValue(LayerWidthProperty); }
-            set { SetValue(LayerWidthProperty, value); }
-        }
-
-        public static readonly DependencyProperty LayerWidthProperty = DependencyProperty.Register(
-             "LayerWidth",
-             typeof(int),
-             typeof(Transforms),
-             new FrameworkPropertyMetadata()
-        );
-
-        public int LayerHeight
-        {
-            get { return (int)GetValue(LayerHeightProperty); }
-            set { SetValue(LayerHeightProperty, value); }
-        }
-
-        public static readonly DependencyProperty LayerHeightProperty = DependencyProperty.Register(
-             "LayerHeight",
-             typeof(int),
-             typeof(Transforms),
-             new FrameworkPropertyMetadata()
-        );
-
+        /// <summary>
+        /// Inits the component.
+        /// </summary>
         public Transforms()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Mirrors layer horizontally.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MHorizontal_Click(object sender, RoutedEventArgs e)
         {
             var all = (bool)cbAllLayers.IsChecked;
@@ -65,6 +52,11 @@ namespace Pixellation.Components.Panels
             LayerManager.Mirror(true, all);
         }
 
+        /// <summary>
+        /// Mirrors layer vertically.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MVertical_Click(object sender, RoutedEventArgs e)
         {
             var all = (bool)cbAllLayers.IsChecked;
@@ -75,6 +67,11 @@ namespace Pixellation.Components.Panels
             LayerManager.Mirror(false, all);
         }
 
+        /// <summary>
+        /// Rotates image by 90° degrees. (Counter- or clockwise based on the settings.)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void R90_Click(object sender, RoutedEventArgs e)
         {
             var counterClockWise = (bool)cbCounterClockWise.IsChecked;
@@ -85,6 +82,11 @@ namespace Pixellation.Components.Panels
             LayerManager.Rotate(counterClockWise);
         }
 
+        /// <summary>
+        /// Resizes the image to the given size.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnResize_Click(object sender, RoutedEventArgs e)
         {
             var w = txtWidth.Text;
@@ -100,24 +102,34 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Applies proportion to entered width and updates the input if proportional resizes enabled.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TxtWidth_LostFocus(object sender, RoutedEventArgs e)
         {
-            if ((bool)cbResizeProportional.IsChecked && 
+            if ((bool)cbResizeProportional.IsChecked &&
                 double.TryParse(txtWidth.Text, out double width) && double.TryParse(txtHeight.Text, out double height) &&
                 width > 0 && height > 0)
             {
-                double prop = width / LayerWidth;
+                double prop = width / LayerManager.PixelWidth;
                 txtHeight.Text = ((int)(height * prop)).ToString();
             }
         }
 
+        /// <summary>
+        /// Applies proportion to entered height and updates the input if proportional resizes enabled.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TxtHeight_LostFocus(object sender, RoutedEventArgs e)
         {
             if ((bool)cbResizeProportional.IsChecked &&
                 double.TryParse(txtHeight.Text, out double height) && double.TryParse(txtWidth.Text, out double width) &&
                 height > 0 && width > 0)
             {
-                double prop = height / LayerHeight;
+                double prop = height / LayerManager.PixelHeight;
                 txtWidth.Text = ((int)(width * prop)).ToString();
             }
         }

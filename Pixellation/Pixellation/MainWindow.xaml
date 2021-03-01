@@ -6,7 +6,6 @@
           xmlns:l="clr-namespace:Pixellation.Components.Editor"
           xmlns:Panels="clr-namespace:Pixellation.Components.Panels"
           xmlns:l2="clr-namespace:Pixellation.Tools"
-          xmlns:resource="clr-namespace:Pixellation.Properties"
           Title="{Binding ElementName=mainWindow, Path=Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
           Closing="MainWindow_Closing" WindowStartupLocation="CenterScreen"
           mc:Ignorable="d" Name="mainWindow" Height="1080" Width="1920">
@@ -66,18 +65,14 @@
                     <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}"></Panels:LayerPalette>
 
                     <Label Content="Transforms"></Label>
-                    <Panels:Transforms 
-                        LayerWidth="{Binding ElementName=canvasImage, Path=PixelWidth, Mode=OneWay}"
-                        LayerHeight="{Binding ElementName=canvasImage, Path=PixelHeight, Mode=OneWay}"
-                        LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}">
-                    </Panels:Transforms>
+                    <Panels:Transforms LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}"></Panels:Transforms>
 
                     <Label Content="Visual Helper Settings"></Label>
-                    <Panels:VisualHelperSettingsPanel x:Name="editorSettings"/>
+                    <Panels:VisualHelperSettingsPanel x:Name="visualHelperSettings" />
                 </StackPanel>
             </ScrollViewer>
         </Border>
-        
+
         <!-- RIGHT PANEL -->
         <Border DockPanel.Dock="Right" HorizontalAlignment="Right" Width="220" BorderBrush="Gray" BorderThickness="1">
             <ScrollViewer>
@@ -103,21 +98,21 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            
+
             <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" x:Name="canvasScroll">
                 <ScrollViewer.Background>
                     <DrawingBrush TileMode="Tile" Viewport="0,0,32,32" ViewportUnits="Absolute">
                         <DrawingBrush.Drawing>
-                            <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="LightGray"/>
+                            <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="LightGray" />
                         </DrawingBrush.Drawing>
                     </DrawingBrush>
                 </ScrollViewer.Background>
 
                 <l:PixelEditor ChosenTool="{Binding ElementName=toolPalette, Path=ChosenTool, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                           TiledModeOn="{Binding ElementName=editorSettings, Path=TiledModeOn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           TiledOpacity="{Binding ElementName=editorSettings, Path=TiledOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           ShowBorder="{Binding ElementName=editorSettings, Path=ShowBorderOn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           ShowGrid="{Binding ElementName=editorSettings, Path=ShowGridOn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           TiledModeEnabled="{Binding ElementName=visualHelperSettings, Path=TiledModeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           TiledOpacity="{Binding ElementName=visualHelperSettings, Path=TiledOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ShowBorder="{Binding ElementName=visualHelperSettings, Path=ShowBorder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ShowGrid="{Binding ElementName=visualHelperSettings, Path=ShowGrid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             PrimaryColor="{Binding ElementName=colorChooser, Path=PrimaryColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             SecondaryColor="{Binding ElementName=colorChooser, Path=SecondaryColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
@@ -125,7 +120,5 @@
 
             <Panels:FramePalette Grid.Row="1" VerticalAlignment="Stretch" FrameManager="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:FramePalette>
         </Grid>
-        
     </DockPanel>
-    
 </Window>

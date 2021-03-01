@@ -36,7 +36,7 @@ namespace Pixellation.Components.Panels
         private Rect _canvasRect;
 
         /// <summary>
-        /// Frame per second refresh(this parameter affect the "speed" of the rain).
+        /// Frame per second refresh.
         /// </summary>
         private int _framePerSecond = 30;
 
@@ -103,7 +103,7 @@ namespace Pixellation.Components.Panels
         }
 
         /// <summary>
-        /// Method that occurs when the element is laid out, rendered, and ready for interaction.
+        /// Element is fully loaded.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -132,7 +132,7 @@ namespace Pixellation.Components.Panels
             _canvasRect = new Rect(0, 0, myCanvas.ActualWidth, myCanvas.ActualHeight);
 
             _renderTargetBitmap = new RenderTargetBitmap((int)_canvasRect.Width, (int)_canvasRect.Height, 96, 96, PixelFormats.Pbgra32);
-            
+
             _wBitmap = new WriteableBitmap(_renderTargetBitmap);
             myImage.Source = _wBitmap;
 
@@ -143,7 +143,7 @@ namespace Pixellation.Components.Panels
         }
 
         /// <summary>
-        /// Method that occurs when the timer interval has elapsed. This method refresh the control to perform the animation.
+        /// Timer interval has elapsed. Refreshes the control to perform the animation.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

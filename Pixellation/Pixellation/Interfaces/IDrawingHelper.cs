@@ -31,7 +31,7 @@ namespace Pixellation.Interfaces
         /// <summary>
         /// Indicates if TiledMode is turned on or not.
         /// </summary>
-        bool TiledModeOn { get; }
+        bool TiledModeEnabled { get; }
 
         /// <summary>
         /// Opacity for tiles in tiled mode.

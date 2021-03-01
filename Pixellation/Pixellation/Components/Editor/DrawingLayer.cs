@@ -76,7 +76,7 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        private bool _tiledModeOn = Properties.Settings.Default.DefaultTiledModeOn;
+        private bool _tiledModeOn = Properties.Settings.Default.DefaultTiledModeEnabled;
 
         public bool TiledModeOn
         {
@@ -211,7 +211,7 @@ namespace Pixellation.Components.Editor
 
             dc.DrawImage(_bitmap, new Rect(0, 0, width, height));
 
-            if (_owner.TiledModeOn)
+            if (_owner.TiledModeEnabled)
             {
                 var temp = Bitmap.Clone();
                 temp.BlitRender(temp, false, _owner.TiledOpacity);

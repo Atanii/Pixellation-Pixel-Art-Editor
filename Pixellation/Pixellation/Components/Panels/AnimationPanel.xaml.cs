@@ -19,17 +19,26 @@ namespace Pixellation.Components.Panels
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Provides frames, indexes and functionality for handling frames.
+        /// </summary>
         public IFrameProvider AnimationFrameProvider
         {
             get { return (IFrameProvider)GetValue(AnimationFrameProviderProperty); }
             set { SetValue(AnimationFrameProviderProperty, value); }
         }
 
+        /// <summary>
+        /// DependencyProperty for <see cref="AnimationFrameProvider"/>.
+        /// </summary>
         public static readonly DependencyProperty AnimationFrameProviderProperty =
          DependencyProperty.Register("AnimationFrameProvider", typeof(IFrameProvider), typeof(AnimationPanel), new FrameworkPropertyMetadata(
              default
         ));
 
+        /// <summary>
+        /// Inits default animationplayer settings and eventhandling.
+        /// </summary>
         public AnimationPanel()
         {
             InitializeComponent();
@@ -44,23 +53,43 @@ namespace Pixellation.Components.Panels
             PixelEditor.RaiseImageUpdatedEvent += (s, a) => { InvalidateVisual(); };
         }
 
+        /// <summary>
+        /// Plays frames once then stop.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Play(object sender, RoutedEventArgs e)
         {
             player.SetParameters(framesToPlay: AnimationFrameProvider.Frames, playOnce: true);
             player.Start();
         }
 
+        /// <summary>
+        /// Plays frames until stopped manually.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Loop(object sender, RoutedEventArgs e)
         {
             player.SetParameters(framesToPlay: AnimationFrameProvider.Frames, playOnce: false);
             player.Start();
         }
 
+        /// <summary>
+        /// Stops playing animation.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Stop(object sender, RoutedEventArgs e)
         {
             player.Stop();
         }
 
+        /// <summary>
+        /// Updates the fps setting.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FPSslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             player.SetParameters(framePerSecond: (int)e.NewValue);

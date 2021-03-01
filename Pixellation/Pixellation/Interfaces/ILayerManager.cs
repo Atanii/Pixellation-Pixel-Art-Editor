@@ -25,6 +25,16 @@ namespace Pixellation.Interfaces
         public DrawingLayer ActiveLayer { get; }
 
         /// <summary>
+        /// Current width of the edited image in pixels.
+        /// </summary>
+        public int PixelWidth { get; }
+
+        /// <summary>
+        /// Current height of the edited image in pixels.
+        /// </summary>
+        public int PixelHeight { get; }
+
+        /// <summary>
         /// Adds a new layer.
         /// </summary>
         /// <param name="layer">Layer to be added.</param>

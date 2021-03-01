@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace Pixellation.Components.Panels
@@ -10,64 +9,84 @@ namespace Pixellation.Components.Panels
     /// </summary>
     public partial class VisualHelperSettingsPanel : UserControl, INotifyPropertyChanged
     {
+        /// <summary>
+        /// Event used for one- and twoway databinding.
+        /// Marks change regarding one of the properties.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private float _tiledOpacity;
-        public float TiledOpacity {
+
+        /// <summary>
+        /// Opacity of tiles in tiled-mode.
+        /// </summary>
+        public float TiledOpacity
+        {
             get { return _tiledOpacity; }
-            set {
+            set
+            {
                 _tiledOpacity = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool _tileModeOn;
-        public bool TiledModeOn
+        private bool _tileModeEnabled;
+
+        /// <summary>
+        /// Is tiled mode on or not.
+        /// </summary>
+        public bool TiledModeEnabled
         {
-            get { return _tileModeOn; }
+            get { return _tileModeEnabled; }
             set
             {
-                _tileModeOn = value;
+                _tileModeEnabled = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool _showBorderOn;
-        public bool ShowBorderOn
+        private bool _showBorder;
+
+        /// <summary>
+        /// Shows border around edited image.
+        /// </summary>
+        public bool ShowBorder
         {
-            get { return _showBorderOn; }
+            get { return _showBorder; }
             set
             {
-                _showBorderOn = value;
+                _showBorder = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool _showGridOn;
-        public bool ShowGridOn
+        private bool _showGrid;
+
+        /// <summary>
+        /// Shows grid on canvas.
+        /// </summary>
+        public bool ShowGrid
         {
-            get { return _showGridOn; }
+            get { return _showGrid; }
             set
             {
-                _showGridOn = value;
+                _showGrid = value;
                 OnPropertyChanged();
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        /// <summary>
+        /// Sets event handlers and default values.
+        /// </summary>
         public VisualHelperSettingsPanel()
         {
             InitializeComponent();
 
-            tiledModeOpacitySlider.Value = Properties.Settings.Default.DefaultTiledOpacity * 100d;
+            TiledOpacity = Properties.Settings.Default.DefaultTiledOpacity;
 
-            ShowBorderOn = Properties.Settings.Default.DefaultShowBorder;
-            ShowGridOn = Properties.Settings.Default.DefaultShowGrid;
-            TiledModeOn = Properties.Settings.Default.DefaultTiledModeOn;
-        }
-
-        private void TiledModeOpacitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            TiledOpacity = ((float)e.NewValue / 100.0f);
+            ShowBorder = Properties.Settings.Default.DefaultShowBorder;
+            ShowGrid = Properties.Settings.Default.DefaultShowGrid;
+            TiledModeEnabled = Properties.Settings.Default.DefaultTiledModeEnabled;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)

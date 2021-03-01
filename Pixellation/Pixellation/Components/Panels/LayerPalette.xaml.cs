@@ -14,20 +14,32 @@ namespace Pixellation.Components.Panels
     /// </summary>
     public partial class LayerPalette : UserControl
     {
+        /// <summary>
+        /// Event for signaling the initial or new value set to <see cref="LayerManager"/>.
+        /// </summary>
         private static event EventHandler<DependencyPropertyChangedEventArgs> RaiseLayerListPropertyChanged;
 
+        /// <summary>
+        /// Provides layers, indexes and functionalities for handling layers.
+        /// </summary>
         public ILayerManager LayerManager
         {
             get { return (ILayerManager)GetValue(LayerManagerProperty); }
             set { SetValue(LayerManagerProperty, value); }
         }
 
+        /// <summary>
+        /// DepdendencyProperty for <see cref="LayerManager"/>.
+        /// </summary>
         public static readonly DependencyProperty LayerManagerProperty =
          DependencyProperty.Register("LayerManager", typeof(ILayerManager), typeof(LayerPalette), new FrameworkPropertyMetadata(
              default,
              (s, e) => { RaiseLayerListPropertyChanged?.Invoke(s, e); }
         ));
 
+        /// <summary>
+        /// Inits event handling.
+        /// </summary>
         public LayerPalette()
         {
             RaiseLayerListPropertyChanged += (a, b) =>
@@ -40,6 +52,10 @@ namespace Pixellation.Components.Panels
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Selects a layer.
+        /// </summary>
+        /// <param name="index">Index of layer to select.</param>
         private void SelectLayer(int index = 0)
         {
             if (LayerManager != null && LayerManager.Layers.Count > 0)
@@ -55,6 +71,11 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Refreshes the layerlist due to event realted to layerlist.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UpdateLayerList(object sender, PixelEditorLayerEventArgs e)
         {
             layerList.ItemsSource = LayerManager.Layers;
@@ -66,6 +87,11 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Refreshes the layerlist due to event realted to framelist.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UpdateLayerList(object sender, PixelEditorFrameEventArgs e)
         {
             layerList.ItemsSource = LayerManager.Layers;
@@ -73,11 +99,21 @@ namespace Pixellation.Components.Panels
             SelectLayer();
         }
 
+        /// <summary>
+        /// A layer was clicked in the list.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LayerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectLayer(layerList.SelectedIndex);
         }
 
+        /// <summary>
+        /// Ask for a layername then adds a new layer with that name..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddLayer(object sender, RoutedEventArgs e)
         {
             var newLayerDialog = new StringInputDialog("New Layer", "Layername");
@@ -96,6 +132,11 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Deletes selected layer.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeleteLayer(object sender, RoutedEventArgs e)
         {
             if (layerList.Items.Count > 0)
@@ -105,6 +146,11 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Duplicates selected layer.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DuplicateLayer(object sender, RoutedEventArgs e)
         {
             if (layerList.Items.Count > 0)
@@ -114,6 +160,11 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Moves selected layer up (closer).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MoveLayerUp(object sender, RoutedEventArgs e)
         {
             if (layerList.SelectedIndex > 0)
@@ -123,6 +174,11 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Moves selected layer down (behind).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MoveLayerDown(object sender, RoutedEventArgs e)
         {
             if (layerList.Items.Count > 1)
@@ -132,6 +188,11 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Merges selected layer with the one below it.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MergeLayer(object sender, RoutedEventArgs e)
         {
             if (layerList.Items.Count > 1 && layerList.Items.Count > (layerList.SelectedIndex + 1))
@@ -141,6 +202,11 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Clears the selected layer from the drawn content.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ClearLayer(object sender, RoutedEventArgs e)
         {
             if (layerList.SelectedIndex < layerList.Items.Count)
@@ -150,6 +216,11 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Opens the settings dialog for the selected layer.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OpenLayerSettingsDialog(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (LayerManager != null)
@@ -160,7 +231,7 @@ namespace Pixellation.Components.Panels
                 {
                     // Due to lost focus (Note: "Focus();" doesn't help.)
                     SelectLayer(layerList.SelectedIndex);
-                    
+
                     LayerManager.SaveState(IPixelEditorEventType.LAYER_INNER_PROPERTY_UPDATE, layerList.SelectedIndex);
 
                     layer.LayerName = strDoubleDialog.Answer.Key;

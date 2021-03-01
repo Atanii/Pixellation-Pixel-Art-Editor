@@ -6,30 +6,51 @@ using System.Windows.Media;
 
 namespace Pixellation.Components.Preview
 {
+    /// <summary>
+    /// Class for previewing the current project in multiple possible modes based on <see cref="PreviewMode"/>.
+    /// </summary>
     internal class DrawingPreview : FrameworkElement
     {
+        /// <summary>
+        /// Event for signaling the initial or new value set to <see cref="DrawingFrameProvider"/>.
+        /// </summary>
         private static event EventHandler<DependencyPropertyChangedEventArgs> IFrameProviderUpdated;
 
+        /// <summary>
+        /// Event for signaling a change in the currently set <see cref="PreviewMode"/>.
+        /// </summary>
         private static event EventHandler<DependencyPropertyChangedEventArgs> ModeUpdated;
 
+        /// <summary>
+        /// Provides frames, indexes, functionality for handling frames.
+        /// </summary>
         public IFrameProvider DrawingFrameProvider
         {
             get { return (IFrameProvider)GetValue(DrawingFrameProviderProperty); }
             set { SetValue(DrawingFrameProviderProperty, value); }
         }
 
+        /// <summary>
+        /// DependencyProperty for <see cref="DrawingFrameProvider"/>.
+        /// </summary>
         public static readonly DependencyProperty DrawingFrameProviderProperty =
          DependencyProperty.Register("DrawingFrameProvider", typeof(IFrameProvider), typeof(DrawingPreview), new FrameworkPropertyMetadata(
              default,
              (s, e) => { IFrameProviderUpdated?.Invoke(s, e); }
         ));
 
+        /// <summary>
+        /// Mode for rendering.
+        /// </summary>
         public PreviewMode PMode
         {
             get { return (PreviewMode)GetValue(PModeProperty); }
             set { SetValue(PModeProperty, value); }
         }
 
+        /// <summary>
+        /// DependencyProperty for <see cref="PMode"/>.
+        /// </summary>
         public static readonly DependencyProperty PModeProperty =
          DependencyProperty.Register("PMode", typeof(PreviewMode), typeof(DrawingPreview), new FrameworkPropertyMetadata(
              PreviewMode.ALL,
@@ -38,6 +59,9 @@ namespace Pixellation.Components.Preview
 
         private bool _onionModeEnabled;
 
+        /// <summary>
+        /// Indicates if onion mode is enabled.
+        /// </summary>
         public bool OnionModeEnabled
         {
             get => _onionModeEnabled;
@@ -48,6 +72,9 @@ namespace Pixellation.Components.Preview
             }
         }
 
+        /// <summary>
+        /// Sets event handling, bitmapscaling and default values.
+        /// </summary>
         public DrawingPreview()
         {
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
@@ -65,6 +92,11 @@ namespace Pixellation.Components.Preview
             ModeUpdated += (s, e) => InvalidateVisual();
         }
 
+        /// <summary>
+        /// Depending on which <see cref="PreviewMode"/> is set, it renders the selected layer, frame or the whole edited image (all frames).
+        /// In case of onion mode it renders the one behind the selected with lower opacity for helping animation frame drawing.
+        /// </summary>
+        /// <param name="dc"></param>
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
@@ -94,10 +126,15 @@ namespace Pixellation.Components.Preview
             }
         }
 
+        /// <summary>
+        /// Renders only the selected layer (and the one behind it in onion mode).
+        /// </summary>
+        /// <param name="dc"></param>
         private void RenderLayer(DrawingContext dc)
         {
             var index = DrawingFrameProvider.ActiveLayerIndex;
 
+            // Renders the one behind the selected with lower opacity.
             if (OnionModeEnabled)
             {
                 if (DrawingFrameProvider.Layers.Count > (index + 1))
@@ -109,8 +146,13 @@ namespace Pixellation.Components.Preview
             DrawingFrameProvider.ActiveFrame.Render(dc, 0, 0, Width, Height, layerIndex: index);
         }
 
+        /// <summary>
+        /// Renders only the selected frame (and the one behind it in onion mode).
+        /// </summary>
+        /// <param name="dc"></param>
         private void RenderFrame(DrawingContext dc)
         {
+            // Renders the one behind the selected with lower opacity.
             if (OnionModeEnabled)
             {
                 var index = DrawingFrameProvider.ActiveFrameIndex;
@@ -123,6 +165,10 @@ namespace Pixellation.Components.Preview
             DrawingFrameProvider.ActiveFrame.Render(dc, 0, 0, Width, Height);
         }
 
+        /// <summary>
+        /// Render all frames on top of each other.
+        /// </summary>
+        /// <param name="dc"></param>
         private void RenderFrames(DrawingContext dc)
         {
             foreach (var frame in DrawingFrameProvider.Frames)

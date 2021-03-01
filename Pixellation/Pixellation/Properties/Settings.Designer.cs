@@ -107,9 +107,9 @@ namespace Pixellation.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool DefaultTiledModeOn {
+        public bool DefaultTiledModeEnabled {
             get {
-                return ((bool)(this["DefaultTiledModeOn"]));
+                return ((bool)(this["DefaultTiledModeEnabled"]));
             }
         }
         

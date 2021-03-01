@@ -116,15 +116,15 @@ namespace Pixellation.Components.Editor
         /// <summary>
         /// Is tiled mode on or not.
         /// </summary>
-        public bool TiledModeOn
+        public bool TiledModeEnabled
         {
-            get { return (bool)GetValue(TiledModeOnProperty); }
-            set { SetValue(TiledModeOnProperty, value); OnPropertyChanged(); }
+            get { return (bool)GetValue(TiledModeEnabledProperty); }
+            set { SetValue(TiledModeEnabledProperty, value); OnPropertyChanged(); }
         }
 
-        public static readonly DependencyProperty TiledModeOnProperty =
-         DependencyProperty.Register("TiledModeOn", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
-            Settings.Default.DefaultTiledModeOn, (d, e) => { VisualHelperSettingsChanged?.Invoke(default, EventArgs.Empty); }
+        public static readonly DependencyProperty TiledModeEnabledProperty =
+         DependencyProperty.Register("TiledModeEnabled", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
+            Settings.Default.DefaultTiledModeEnabled, (d, e) => { VisualHelperSettingsChanged?.Invoke(default, EventArgs.Empty); }
         ));
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace Pixellation.Components.Editor
         /// </summary>
         private void ResetVisualHelperSettings()
         {
-            TiledModeOn = Settings.Default.DefaultTiledModeOn;
+            TiledModeEnabled = Settings.Default.DefaultTiledModeEnabled;
             TiledOpacity = Settings.Default.DefaultTiledOpacity;
             ShowBorder = Settings.Default.DefaultShowBorder;
             ShowGrid = Settings.Default.DefaultShowGrid;
@@ -371,7 +371,7 @@ namespace Pixellation.Components.Editor
         private void VisualHelperRefresh()
         {
             ResetHelperVisuals();
-            ActiveFrame.SetTiledMode(TiledModeOn);
+            ActiveFrame.SetTiledMode(TiledModeEnabled);
             ActiveFrame.SetTiledModeOpacity(TiledOpacity);
         }
 

@@ -20,8 +20,14 @@ namespace Pixellation.Components.Panels
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Event for signaling the initial or new value set to <see cref="DrawingFrameProvider"/>.
+        /// </summary>
         private static event EventHandler<DependencyPropertyChangedEventArgs> IFrameProviderUpdated;
 
+        /// <summary>
+        /// Provides frames, indexes, functionality for handling frames.
+        /// </summary>
         public IFrameProvider FrameProvider
         {
             get => (IFrameProvider)GetValue(FrameProviderProperty);
@@ -32,6 +38,9 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// DependencyProperty for <see cref="FrameProvider"/>.
+        /// </summary>
         public static readonly DependencyProperty FrameProviderProperty =
          DependencyProperty.Register("FrameProvider", typeof(IFrameProvider), typeof(PreviewPanel), new FrameworkPropertyMetadata(
              default,
@@ -40,6 +49,9 @@ namespace Pixellation.Components.Panels
 
         private PreviewMode _pMode;
 
+        /// <summary>
+        /// Mode for rendering.
+        /// </summary>
         public PreviewMode PMode
         {
             get => _pMode;
@@ -50,6 +62,9 @@ namespace Pixellation.Components.Panels
             }
         }
 
+        /// <summary>
+        /// Inits default values and event handling.
+        /// </summary>
         public PreviewPanel()
         {
             InitializeComponent();
@@ -65,27 +80,42 @@ namespace Pixellation.Components.Panels
         }
 
         /// <summary>
+        /// Sets <see cref="PMode"/> to mode showing whole image.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RbAllClick(object sender, RoutedEventArgs e)
+        {
+            PMode = PreviewMode.ALL;
+        }
+
+        /// <summary>
+        /// Sets <see cref="PMode"/> to mode showing only the selected frame.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RbFrameClick(object sender, RoutedEventArgs e)
+        {
+            PMode = PreviewMode.FRAME;
+        }
+
+        /// <summary>
+        /// Sets <see cref="PMode"/> to mode showing only selected layer.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RbLayerClick(object sender, RoutedEventArgs e)
+        {
+            PMode = PreviewMode.LAYER;
+        }
+
+        /// <summary>
         /// Used as change notification for one- and twoway binding with <see cref="DependencyProperty"/> objects.
         /// </summary>
         /// <param name="name"></param>
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        private void RbAllClick(object sender, RoutedEventArgs e)
-        {
-            PMode = PreviewMode.ALL;
-        }
-
-        private void RbFrameClick(object sender, RoutedEventArgs e)
-        {
-            PMode = PreviewMode.FRAME;
-        }
-
-        private void RbLayerClick(object sender, RoutedEventArgs e)
-        {
-            PMode = PreviewMode.LAYER;
         }
     }
 }
