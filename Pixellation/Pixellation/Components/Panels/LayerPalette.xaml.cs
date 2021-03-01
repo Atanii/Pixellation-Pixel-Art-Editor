@@ -68,7 +68,7 @@ namespace Pixellation.Components.Panels
         /// <param name="index">Index of layer to select.</param>
         private void SelectLayer(int index = 0)
         {
-            if (LayerManager != null)
+            if (LayerManager != null && LayerManager.Layers.Count > 0)
             {
                 if (LayerManager.Layers.Count <= index || index < 0)
                 {
