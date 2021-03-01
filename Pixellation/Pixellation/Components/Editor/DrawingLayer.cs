@@ -9,17 +9,33 @@ using System.Windows.Media.Imaging;
 
 namespace Pixellation.Components.Editor
 {
+    /// <summary>
+    /// Class representing a layer of surface for drawing.
+    /// </summary>
     public class DrawingLayer : FrameworkElement, IOriginator<LayerMemento, IPixelEditorEventType>
     {
         #region Fields And Properties
 
+        /// <summary>
+        /// Unique identifier.
+        /// </summary>
         public Guid LayerGuid { get; private set; } = Guid.NewGuid();
+
+        /// <summary>
+        /// String form of <see cref="LayerGuid"/>.
+        /// </summary>
         public string Id => LayerGuid.ToString();
 
+        /// <summary>
+        /// Owner editor of the layer.
+        /// </summary>
         private readonly IDrawingHelper _owner;
 
         private WriteableBitmap _bitmap;
 
+        /// <summary>
+        /// Bitmap for drawing.
+        /// </summary>
         public WriteableBitmap Bitmap
         {
             get => _bitmap;
@@ -36,6 +52,9 @@ namespace Pixellation.Components.Editor
 
         private string _name;
 
+        /// <summary>
+        /// Name of the layer shown on the UI.
+        /// </summary>
         public string LayerName
         {
             get => _name;
@@ -46,6 +65,9 @@ namespace Pixellation.Components.Editor
             }
         }
 
+        /// <summary>
+        /// Opacity of the layer.
+        /// </summary>
         public new double Opacity
         {
             get
@@ -66,6 +88,9 @@ namespace Pixellation.Components.Editor
 
         private bool _visible = true;
 
+        /// <summary>
+        /// Indicates if visible or hidden.
+        /// </summary>
         public bool Visible
         {
             get => _visible;
@@ -76,20 +101,26 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        private bool _tiledModeOn = Properties.Settings.Default.DefaultTiledModeEnabled;
+        private bool _tiledModeEnabled = Properties.Settings.Default.DefaultTiledModeEnabled;
 
-        public bool TiledModeOn
+        /// <summary>
+        /// Indicates if tiled mode rendering is enabled.
+        /// </summary>
+        public bool TiledModeEnabled
         {
-            get => _tiledModeOn;
+            get => _tiledModeEnabled;
             set
             {
-                _tiledModeOn = value;
+                _tiledModeEnabled = value;
                 InvalidateVisual();
             }
         }
 
         private float _tiledModeOpacity = Properties.Settings.Default.DefaultTiledOpacity;
 
+        /// <summary>
+        /// Tile opacity for tiled mdoe.
+        /// </summary>
         public float TiledModeOpacity
         {
             get => _tiledModeOpacity;
@@ -104,12 +135,22 @@ namespace Pixellation.Components.Editor
 
         #region Events
 
+        /// <summary>
+        /// Indicates propertyupdate.
+        /// </summary>
         public static event LayerEventHandler OnUpdated;
 
         #endregion Events
 
         #region Constructors, Init
 
+        /// <summary>
+        /// Inits layer.
+        /// </summary>
+        /// <param name="owner">Owner editor.</param>
+        /// <param name="layerName">Name of the layer.</param>
+        /// <param name="visible">Is the layer visible or not.</param>
+        /// <param name="opacity">Opacity of the layer.</param>
         public DrawingLayer(IDrawingHelper owner, string layerName = "", bool visible = true, double opacity = 1.0)
         {
             _owner = owner;
@@ -119,6 +160,14 @@ namespace Pixellation.Components.Editor
             Opacity = opacity;
         }
 
+        /// <summary>
+        /// Inits layer.
+        /// </summary>
+        /// <param name="owner">Owner editor.</param>
+        /// <param name="bitmap">Bitmap for drawing on.</param>
+        /// <param name="layerName">Name of the layer.</param>
+        /// <param name="visible">Is the layer visible or not.</param>
+        /// <param name="opacity">Opacity of the layer.</param>
         public DrawingLayer(IDrawingHelper owner, WriteableBitmap bitmap, string layerName = "", bool visible = true, double opacity = 1.0)
         {
             _owner = owner;
@@ -128,6 +177,11 @@ namespace Pixellation.Components.Editor
             Opacity = opacity;
         }
 
+        /// <summary>
+        /// Inits layer from a memento.
+        /// </summary>
+        /// <param name="owner">Owner editor.</param>
+        /// <param name="mem">Saved state to create from.</param>
         public DrawingLayer(IDrawingHelper owner, LayerMemento mem)
         {
             _owner = owner;
@@ -137,6 +191,10 @@ namespace Pixellation.Components.Editor
             Opacity = mem.Opacity;
         }
 
+        /// <summary>
+        /// Inits the underlying bitmap.
+        /// </summary>
+        /// <param name="bitmap">Init from this bitmap if provided.</param>
         private void InitBitmap(WriteableBitmap bitmap = null)
         {
             _bitmap = bitmap ?? BitmapFactory.New(_owner.PixelWidth, _owner.PixelHeight);
@@ -147,6 +205,10 @@ namespace Pixellation.Components.Editor
 
         #region Conversions, Cloning
 
+        /// <summary>
+        /// Represents the layer as a string.
+        /// </summary>
+        /// <returns>Name of this layer.</returns>
         public override string ToString() => LayerName;
 
         /// <summary>
@@ -168,6 +230,10 @@ namespace Pixellation.Components.Editor
 
         #region Memento
 
+        /// <summary>
+        /// Restore layer state from memento.
+        /// </summary>
+        /// <param name="mem">Saved state.</param>
         public void Restore(LayerMemento mem)
         {
             LayerName = mem.LayerName == "" ? "Layer-" + (new DateTime()).Ticks : mem.LayerName;
@@ -177,6 +243,11 @@ namespace Pixellation.Components.Editor
             LayerGuid = mem.LayerGuid;
         }
 
+        /// <summary>
+        /// Generates a memento representing the current state of the layer.
+        /// </summary>
+        /// <param name="mTypeValue">Value of <see cref="IPixelEditorEventType"/>.</param>
+        /// <returns>Resulting memento.</returns>
         public LayerMemento GetMemento(int mTypeValue)
         {
             return new LayerMemento
@@ -188,6 +259,10 @@ namespace Pixellation.Components.Editor
             );
         }
 
+        /// <summary>
+        /// Saves the state of layer for possible undo.
+        /// </summary>
+        /// <param name="mTypeValue">Value of <see cref="IPixelEditorEventType"/>.</param>
         public void SaveState(int mTypeValue)
         {
             _owner.SaveState(mTypeValue, _owner.ActiveLayerIndex);
@@ -197,6 +272,10 @@ namespace Pixellation.Components.Editor
 
         #region Bitmap, Rendering
 
+        /// <summary>
+        /// Renders <see cref="Bitmap"/> (with tiled mode if enabled) if the layer is visible.
+        /// </summary>
+        /// <param name="dc"></param>
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
@@ -227,32 +306,28 @@ namespace Pixellation.Components.Editor
             }
         }
 
-        public Color GetPixel(int x, int y) => _bitmap.GetPixel(x, y);
-
+        /// <summary>
+        /// Gets the copy of <see cref="Bitmap"/> without applying layer opacity.
+        /// </summary>
+        /// <returns></returns>
         public WriteableBitmap GetWriteableBitmap() => _bitmap.Clone();
 
+        /// <summary>
+        /// Applies the <see cref="Opacity"/> to the copy of the underlying bitmap then returns the it.
+        /// Does not affect original bitmap!
+        /// </summary>
+        /// <returns><see cref="Bitmap"/> with applied layer opacity.</returns>
         public WriteableBitmap GetWriteableBitmapWithAppliedOpacity()
         {
-            var tmp = BitmapFactory.New(_bitmap.PixelWidth, _bitmap.PixelHeight);
-            tmp.Clear(Colors.Transparent);
-
-            for (int i = 0; i < tmp.Width; i++)
-            {
-                for (int j = 0; j < tmp.Height; j++)
-                {
-                    var c = _bitmap.GetPixel(i, j);
-                    if (c.A == 0)
-                    {
-                        continue;
-                    }
-                    c.A = (byte)Math.Floor(Opacity * 255.0);
-                    tmp.SetPixel(i, j, c);
-                }
-            }
-
-            return tmp;
+            var temp = _bitmap.Clone();
+            temp.BlitRender(temp, false, (float)Opacity);
+            return temp;
         }
 
+        /// <summary>
+        /// Mirrors the layer.
+        /// </summary>
+        /// <param name="horizontal">Horizontal or vertical mirroring.</param>
         public void Mirror(bool horizontal = true)
         {
             _bitmap = _bitmap.Flip(
@@ -262,11 +337,20 @@ namespace Pixellation.Components.Editor
             );
         }
 
+        /// <summary>
+        /// Rotates the layer by the given degree.
+        /// </summary>
+        /// <param name="angleInDegree"></param>
         public void Rotate(int angleInDegree)
         {
             _bitmap = _bitmap.Rotate(angleInDegree);
         }
 
+        /// <summary>
+        /// Resizes the layer.
+        /// </summary>
+        /// <param name="newWidth">New width in pixels.</param>
+        /// <param name="newHeight">New height in pixels.</param>
         public void Resize(int newWidth, int newHeight)
         {
             _bitmap = _bitmap.Resize(
@@ -275,6 +359,9 @@ namespace Pixellation.Components.Editor
             );
         }
 
+        /// <summary>
+        /// Clears the layer leaving only transparent pixels.
+        /// </summary>
         public void Clear()
         {
             _bitmap.Clear(Colors.Transparent);

@@ -23,7 +23,7 @@ namespace Pixellation.Tools
 
             var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
-            var targetColor = _layer.GetPixel(p.X, p.Y);
+            var targetColor = _drawSurface.GetPixel(p.X, p.Y);
             var replacementColor = ToolColor;
 
             ColorPixels(targetColor, replacementColor);
