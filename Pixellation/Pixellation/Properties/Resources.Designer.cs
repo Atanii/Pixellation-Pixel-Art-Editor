@@ -97,7 +97,7 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pxel)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pxel.
+        ///   Looks up a localized string similar to Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.pxel)|*.bmp;*.jpg;*.png;*.tiff;*.pxel.
         /// </summary>
         public static string OpenFileFilter {
             get {

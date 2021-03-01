@@ -40,11 +40,11 @@ namespace Pixellation.Components.Preview
         public BitmapPreview()
         {
             // Due to operations like layer merging.
-            PixelEditor.LayerListChanged += (s, a) => InvalidateVisual();
+            PixelEditor.LayerListChanged += (a) => InvalidateVisual();
             // Drawing.
-            PixelEditor.RaiseImageUpdatedEvent += (s, a) => InvalidateVisual();
+            PixelEditor.RaiseImageUpdatedEvent += InvalidateVisual;
             // New bitmap set.
-            DrawingLayer.OnUpdated += () => InvalidateVisual();
+            DrawingLayer.PropertyUpdated += () => InvalidateVisual();
         }
 
         /// <summary>

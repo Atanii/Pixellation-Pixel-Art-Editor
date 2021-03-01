@@ -48,9 +48,9 @@ namespace Pixellation.Components.Panels
 
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
 
-            PixelEditor.FrameListChanged += (s, a) => { InvalidateVisual(); };
-            PixelEditor.LayerListChanged += (s, a) => { InvalidateVisual(); };
-            PixelEditor.RaiseImageUpdatedEvent += (s, a) => { InvalidateVisual(); };
+            PixelEditor.FrameListChanged += (a) => { InvalidateVisual(); };
+            PixelEditor.LayerListChanged += (a) => { InvalidateVisual(); };
+            PixelEditor.RaiseImageUpdatedEvent += InvalidateVisual;
         }
 
         /// <summary>

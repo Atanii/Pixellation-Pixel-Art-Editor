@@ -1,4 +1,4 @@
-﻿Tool And Other Icons
+﻿Tool And Other Icons, Cursors
 
 (C) 2020-2021 Jeremi Emánuel Kádár. All rights reserved.
 

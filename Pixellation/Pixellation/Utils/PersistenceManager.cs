@@ -285,7 +285,6 @@ namespace Pixellation.Utils
                     }
 
                     encoder.Frames.Add(BitmapFrame.Create(image));
-
                     encoder.Save(fs);
                 }
             }

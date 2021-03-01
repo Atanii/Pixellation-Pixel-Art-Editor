@@ -44,9 +44,19 @@ namespace Pixellation.Components.Panels
         {
             RaiseLayerListPropertyChanged += (a, b) =>
             {
+                // Merge, move layers...
                 PixelEditor.LayerListChanged += UpdateLayerList;
+
+                // Merge -> new layers
                 PixelEditor.FrameListChanged += UpdateLayerList;
-                UpdateLayerList(a, PixelEditorLayerEventArgs.Empty);
+
+                // Renaming, opacity change
+                DrawingLayer.PropertyUpdated += () => UpdateLayerList(new PixelEditorLayerEventArgs(IPixelEditorEventType.LAYER_INNER_PROPERTY_UPDATE));
+
+                // Refresh.
+                UpdateLayerList(PixelEditorLayerEventArgs.Empty);
+
+                // Select first layer.
                 SelectLayer();
             };
             InitializeComponent();
@@ -58,16 +68,16 @@ namespace Pixellation.Components.Panels
         /// <param name="index">Index of layer to select.</param>
         private void SelectLayer(int index = 0)
         {
-            if (LayerManager != null && LayerManager.Layers.Count > 0)
+            if (LayerManager != null)
             {
-                if (layerList.Items.Count == 0)
+                if (LayerManager.Layers.Count <= index || index < 0)
                 {
-                    layerList.ItemsSource = LayerManager.Layers;
-                    layerList.Items.Refresh();
+                    index = 0;
                 }
                 LayerManager?.SetActiveLayer(index);
                 layerList.SelectedIndex = index;
                 layerList.SelectedItem = layerList.Items[index];
+                layerList.Items.Refresh();
             }
         }
 
@@ -76,12 +86,12 @@ namespace Pixellation.Components.Panels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UpdateLayerList(object sender, PixelEditorLayerEventArgs e)
+        private void UpdateLayerList(PixelEditorLayerEventArgs e)
         {
             layerList.ItemsSource = LayerManager.Layers;
             layerList.Items.Refresh();
 
-            if (e != PixelEditorLayerEventArgs.Empty && e.NewIndexOfActiveLayer != -1)
+            if (e != PixelEditorLayerEventArgs.Empty && e.EditorEventTypeValue != IPixelEditorEventType.LAYER_INNER_PROPERTY_UPDATE)
             {
                 SelectLayer(e.NewIndexOfActiveLayer);
             }
@@ -92,7 +102,7 @@ namespace Pixellation.Components.Panels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UpdateLayerList(object sender, PixelEditorFrameEventArgs e)
+        private void UpdateLayerList(PixelEditorFrameEventArgs e)
         {
             layerList.ItemsSource = LayerManager.Layers;
             layerList.Items.Refresh();
@@ -106,7 +116,7 @@ namespace Pixellation.Components.Panels
         /// <param name="e"></param>
         private void LayerList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SelectLayer(layerList.SelectedIndex);
+            LayerManager?.SetActiveLayer(layerList.SelectedIndex);
         }
 
         /// <summary>
@@ -119,16 +129,9 @@ namespace Pixellation.Components.Panels
             var newLayerDialog = new StringInputDialog("New Layer", "Layername");
             if (newLayerDialog.ShowDialog() == true)
             {
-                if (layerList.Items.Count == 0)
-                {
-                    LayerManager.AddLayer(newLayerDialog.Answer);
-                    LayerManager.SaveState(IPixelEditorEventType.ADDLAYER, layerList.Items.Count > 0 ? layerList.SelectedIndex : -1);
-                }
-                else
-                {
-                    LayerManager.SaveState(IPixelEditorEventType.ADDLAYER, layerList.Items.Count > 0 ? layerList.SelectedIndex : -1);
-                    LayerManager.AddLayer(newLayerDialog.Answer);
-                }
+                var index = layerList.SelectedIndex;
+                LayerManager.AddLayer(newLayerDialog.Answer, index);
+                LayerManager.SaveState(IPixelEditorEventType.ADDLAYER, index);
             }
         }
 
@@ -155,8 +158,9 @@ namespace Pixellation.Components.Panels
         {
             if (layerList.Items.Count > 0)
             {
+                var index = layerList.SelectedIndex;
+                LayerManager.DuplicateLayer(index);
                 LayerManager.SaveState(IPixelEditorEventType.DUPLICATELAYER, layerList.SelectedIndex);
-                LayerManager.DuplicateLayer(layerList.SelectedIndex);
             }
         }
 
@@ -169,7 +173,7 @@ namespace Pixellation.Components.Panels
         {
             if (layerList.SelectedIndex > 0)
             {
-                LayerManager.SaveState(IPixelEditorEventType.MOVELAYERUP, layerList.SelectedIndex);
+                LayerManager.SaveState(IPixelEditorEventType.MOVELAYERUP, layerList.SelectedIndex - 1);
                 LayerManager.MoveLayerUp(layerList.SelectedIndex);
             }
         }
@@ -181,9 +185,9 @@ namespace Pixellation.Components.Panels
         /// <param name="e"></param>
         private void MoveLayerDown(object sender, RoutedEventArgs e)
         {
-            if (layerList.Items.Count > 1)
+            if (layerList.Items.Count > (layerList.SelectedIndex + 1))
             {
-                LayerManager.SaveState(IPixelEditorEventType.MOVELAYERDOWN, layerList.SelectedIndex);
+                LayerManager.SaveState(IPixelEditorEventType.MOVELAYERDOWN, layerList.SelectedIndex + 1);
                 LayerManager.MoveLayerDown(layerList.SelectedIndex);
             }
         }

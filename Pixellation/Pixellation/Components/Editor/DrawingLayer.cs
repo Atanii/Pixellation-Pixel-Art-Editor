@@ -45,7 +45,7 @@ namespace Pixellation.Components.Editor
                 {
                     _bitmap = value;
                     InvalidateVisual();
-                    OnUpdated?.Invoke();
+                    PropertyUpdated?.Invoke();
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace Pixellation.Components.Editor
             set
             {
                 _name = value;
-                OnUpdated?.Invoke();
+                PropertyUpdated?.Invoke();
             }
         }
 
@@ -82,7 +82,7 @@ namespace Pixellation.Components.Editor
             {
                 base.Opacity = value;
                 InvalidateVisual();
-                OnUpdated?.Invoke();
+                PropertyUpdated?.Invoke();
             }
         }
 
@@ -136,9 +136,9 @@ namespace Pixellation.Components.Editor
         #region Events
 
         /// <summary>
-        /// Indicates propertyupdate.
+        /// Indicates propertyupdate like renaming or opacity change.
         /// </summary>
-        public static event LayerEventHandler OnUpdated;
+        public static event LayerEventHandler PropertyUpdated;
 
         #endregion Events
 
@@ -189,6 +189,7 @@ namespace Pixellation.Components.Editor
             LayerName = mem.LayerName;
             Visible = mem.Visible;
             Opacity = mem.Opacity;
+            LayerGuid = mem.LayerGuid;
         }
 
         /// <summary>
@@ -215,15 +216,33 @@ namespace Pixellation.Components.Editor
         /// Creates a copy of this <see cref="DrawingLayer"/>.
         /// </summary>
         /// <param name="deep">Copy exact same LayerName if set to true.</param>
+        /// <param name="sameName">Copy will have the same name.</param>
         /// <returns>Created copy.</returns>
-        public DrawingLayer Clone(bool deep = false)
+        public DrawingLayer Clone(bool deep = false, bool sameName = false)
         {
             var bmp2 = _bitmap.Clone();
             if (deep)
             {
                 return new DrawingLayer(_owner, bmp2, LayerName, Visible, Opacity);
             }
-            return new DrawingLayer(_owner, bmp2, LayerName + "_copy", Visible, Opacity);
+            if (sameName)
+            {
+                return new DrawingLayer(_owner, bmp2, LayerName, Visible, Opacity);
+            }
+            string newName;
+            if (int.TryParse(LayerName, out int val))
+            {
+                newName = (++val).ToString();
+            }
+            else if (int.TryParse(LayerName.Split('_')[^1], out int val2))
+            {
+                newName = LayerName.Split('_')[0] + '_' + (++val2).ToString();
+            }
+            else
+            {
+                newName = LayerName + "_1";
+            }
+            return new DrawingLayer(_owner, bmp2, newName, Visible, Opacity);
         }
 
         #endregion Conversions, Cloning

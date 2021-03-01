@@ -25,7 +25,7 @@ namespace Pixellation.Tools
         /// <param name="e"></param>
         private void TakeColor(ToolEventType e)
         {
-            OnRaiseToolEvent(this, new ToolEventArgs { Type = e, Value = _drawSurface.GetPixel(p.X, p.Y).ToDrawingColor() });
+            OnRaiseToolEvent(new ToolEventArgs { Type = e, Value = _drawSurface.GetPixel(p.X, p.Y).ToDrawingColor() });
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)

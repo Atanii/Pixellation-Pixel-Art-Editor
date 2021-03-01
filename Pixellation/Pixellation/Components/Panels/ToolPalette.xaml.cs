@@ -111,10 +111,12 @@ namespace Pixellation.Components.Panels
         {
             InitializeComponent();
 
-            // Select Pencil by default
+            // Select Pencil by default.
             PreviouslyClicked = BtnPencil;
             BtnPencil.BorderThickness = ThicknessClicked;
             ChosenTool = Pencil;
+            // Set tool settings to default.
+            ResetModes();
         }
 
         /// <summary>
@@ -124,6 +126,8 @@ namespace Pixellation.Components.Panels
         /// <param name="e"></param>
         private void ToolButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetModes();
+
             PreviouslyClicked.BorderThickness = ThicknessDefault;
 
             var btn = (Button)sender;
@@ -156,6 +160,20 @@ namespace Pixellation.Components.Panels
                 "BtnSameColorPaintBucket" => SameColorPaintBucket,
                 _ => Pencil,
             };
+        }
+
+        /// <summary>
+        /// Reset different tool options and UI.
+        /// </summary>
+        private void ResetModes()
+        {
+            ChosenTool.EraserModeOn = false;
+            ChosenTool.MirrorMode = MirrorModeStates.OFF;
+            ChosenTool.Thickness = ToolThickness.NORMAL;
+
+            cbEraserMode.IsChecked = false;
+            rbMMNone.IsChecked = true;
+            rbTh1.IsChecked = true;
         }
 
         /// <summary>
@@ -225,6 +243,11 @@ namespace Pixellation.Components.Panels
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        private void SetEraserMode(object sender, RoutedEventArgs e)
+        {
+            ChosenTool.EraserModeOn = (bool)cbEraserMode.IsChecked;
         }
     }
 }

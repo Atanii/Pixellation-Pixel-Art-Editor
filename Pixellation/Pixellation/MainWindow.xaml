@@ -17,7 +17,9 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_New" Click="Menu_NewImage" />
                 <MenuItem Header="_Open" Click="Menu_Open" />
+                <Separator />
                 <MenuItem Header="_Save Project" Click="Menu_SaveProject" />
+                <MenuItem Header="_Save Project As.." Click="Menu_SaveProjectAs" />
                 <Separator />
                 <MenuItem Header="_Exit" Click="Menu_Exit" />
             </MenuItem>

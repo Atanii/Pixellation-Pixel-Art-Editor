@@ -74,7 +74,7 @@ namespace Pixellation.Components.Editor
             set
             {
                 _name = value;
-                OnUpdated?.Invoke();
+                PropertyUpdated?.Invoke();
             }
         }
 
@@ -90,7 +90,7 @@ namespace Pixellation.Components.Editor
             {
                 _visible = value;
                 InvalidateVisual();
-                OnUpdated?.Invoke();
+                PropertyUpdated?.Invoke();
             }
         }
 
@@ -107,7 +107,7 @@ namespace Pixellation.Components.Editor
         /// <summary>
         /// Indicates propertyupdate.
         /// </summary>
-        public static event FrameEventHandler OnUpdated;
+        public static event FrameEventHandler PropertyUpdated;
 
         #endregion Events
 
@@ -129,10 +129,7 @@ namespace Pixellation.Components.Editor
             Layers = layers;
             FrameName = name;
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
-            PixelEditor.RaiseImageUpdatedEvent += (s, a) =>
-            {
-                InvalidateVisual();
-            };
+            PixelEditor.RaiseImageUpdatedEvent += InvalidateVisual;
             Visible = visible;
         }
 
@@ -148,10 +145,7 @@ namespace Pixellation.Components.Editor
             _owner = owner;
             FrameName = name;
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
-            PixelEditor.RaiseImageUpdatedEvent += (s, a) =>
-            {
-                InvalidateVisual();
-            };
+            PixelEditor.RaiseImageUpdatedEvent += InvalidateVisual;
             Visible = visible;
             if (generateDefaultLayer)
             {
@@ -252,20 +246,20 @@ namespace Pixellation.Components.Editor
             }
             else
             {
-                foreach (var l in Layers)
+                for (int i = Layers.Count - 1; i >= 0; i--)
                 {
-                    if (!l.Visible)
+                    if (!Layers[i].Visible)
                     {
                         continue;
                     }
-                    var bmp = l.Bitmap.Clone();
+                    var bmp = Layers[i].Bitmap.Clone();
                     if (opacity != null)
                     {
-                        bmp.BlitRender(l.Bitmap, false, (float)opacity);
+                        bmp.BlitRender(Layers[i].Bitmap, false, (float)opacity);
                     }
                     else
                     {
-                        bmp.BlitRender(l.Bitmap, false, (float)l.Opacity);
+                        bmp.BlitRender(Layers[i].Bitmap, false, (float)Layers[i].Opacity);
                     }
                     dc.DrawImage(bmp, new Rect(x, y, w, h));
                 }
@@ -352,14 +346,12 @@ namespace Pixellation.Components.Editor
         /// Renders layers and <see cref="FrameName"/> additionally onto the given <see cref="DrawingContext"/>.
         /// </summary>
         /// <param name="dc"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
         /// <param name="w"></param>
         /// <param name="h"></param>
         /// <param name="drawName">Indicates if <see cref="FrameName"/> should be drawn or not.</param>
         /// <param name="opacity">If provided, this opacity will be used for all drawn layers.</param>
         /// <param name="layerIndex">If provided, only the layer of this index will be drawn.</param>
-        public void Render(DrawingContext dc, double x, double y, double w, double h, bool drawName = false, float? opacity = null, int layerIndex = -1)
+        public void Render(DrawingContext dc, double w, double h, bool drawName = false, float? opacity = null, int layerIndex = -1)
         {
             if (!Visible)
             {
@@ -383,19 +375,37 @@ namespace Pixellation.Components.Editor
         /// <param name="deep">
         /// Copy exact same name and <see cref="Guid"/> if set to true. Value of this parameter applies to the layers of this frame too.
         /// </param>
+        /// <param name="sameName">Copy will have the same name.</param>
         /// <returns>Created copy.</returns>
-        public DrawingFrame Clone(bool deep = false)
+        public DrawingFrame Clone(bool deep = false, bool sameName = false)
         {
             var layers = new List<DrawingLayer>();
             foreach (var l in Layers)
             {
-                layers.Add(l.Clone(deep));
+                layers.Add(l.Clone(deep, true));
             }
             if (deep)
             {
                 return new DrawingFrame(layers, FrameName, _owner, id: FrameGuid);
             }
-            return new DrawingFrame(layers, FrameName + "_copy", _owner);
+            if (sameName)
+            {
+                return new DrawingFrame(layers, FrameName, _owner);
+            }
+            string newName;
+            if (int.TryParse(FrameName, out int val))
+            {
+                newName = (++val).ToString();
+            }
+            else if (int.TryParse(FrameName.Split('_')[^1], out int val2))
+            {
+                newName = FrameName.Split('_')[0] + '_' + (++val2).ToString();
+            }
+            else
+            {
+                newName = FrameName + "_1";
+            }
+            return new DrawingFrame(layers, newName, _owner);
         }
 
         /// <summary>

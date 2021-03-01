@@ -2,6 +2,7 @@
 using Pixellation.Components.Event;
 using Pixellation.Interfaces;
 using Pixellation.MementoPattern;
+using System.Diagnostics;
 
 namespace Pixellation.Components.Editor
 {
@@ -11,13 +12,18 @@ namespace Pixellation.Components.Editor
     public partial class PixelEditor : IDrawingHelper, IOriginator<LayerListMemento, IPixelEditorEventType>
     {
         /// <summary>
+        /// Index that will be used for the next <see cref="LayerListMemento"/>.
+        /// </summary>
+        private int indexForLayerListMemento = -1;
+
+        /// <summary>
         /// Gets a memento representing the current state of the layerlist.
         /// </summary>
         /// <param name="type">Value of <see cref="IPixelEditorEventType"/>.</param>
         /// <returns>Resulting memento.</returns>
         public LayerListMemento GetMemento(int type)
         {
-            return new LayerListMemento(this, type, GetIndex(ActiveLayer), PixelWidth, PixelHeight);
+            return new LayerListMemento(this, type, indexForLayerListMemento, PixelWidth, PixelHeight);
         }
 
         /// <summary>
@@ -31,6 +37,7 @@ namespace Pixellation.Components.Editor
                 case IPixelEditorEventType.MOVELAYERUP:
                     MoveLayerDown(mem.LayerIndex);
                     break;
+
                 case IPixelEditorEventType.MOVELAYERDOWN:
                     MoveLayerUp(mem.LayerIndex);
                     break;
@@ -38,12 +45,15 @@ namespace Pixellation.Components.Editor
                 case IPixelEditorEventType.MIRROR_HORIZONTAL:
                     Mirror(true, false);
                     break;
+
                 case IPixelEditorEventType.MIRROR_HORIZONTAL_ALL:
                     Mirror(true, true);
                     break;
+
                 case IPixelEditorEventType.MIRROR_VERTICAL:
                     Mirror(false, false);
                     break;
+
                 case IPixelEditorEventType.MIRROR_VERTICAL_ALL:
                     Mirror(false, true);
                     break;
@@ -51,6 +61,7 @@ namespace Pixellation.Components.Editor
                 case IPixelEditorEventType.ROTATE:
                     Rotate(true);
                     break;
+
                 case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE:
                     Rotate(false);
                     break;
@@ -65,10 +76,10 @@ namespace Pixellation.Components.Editor
         }
 
         /// <summary>
-        /// Saves a layerstate for undo.
+        /// Saves a layer, frame or layerlist state for undo-redo.
         /// </summary>
         /// <param name="eTypeValue">Value of the given <see cref="IPixelEditorEventType"/>.</param>
-        /// <param name="selectedLayerIndex">Index of layer to save state for.</param>
+        /// <param name="selectedLayerIndex">Index of layer or frame to save state for.</param>
         public void SaveState(int eTypeValue, int elementIndex)
         {
             switch (eTypeValue)
@@ -94,6 +105,7 @@ namespace Pixellation.Components.Editor
                 case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE:
                 case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL:
                 case IPixelEditorEventType.RESIZE:
+                    indexForLayerListMemento = elementIndex; // GetIndex(ActiveLayer);
                     _caretaker.Save(GetMemento(eTypeValue));
                     break;
 
@@ -149,44 +161,13 @@ namespace Pixellation.Components.Editor
                         Layers[origIndex].Restore(mem);
 
                         // Set original pre-merge selected layerindex
-                        LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs
-                        (
-                            IPixelEditorEventType.REVERSE_MERGELAYER,
-                            origIndex));
+                        LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.REVERSE_MERGELAYER, origIndex));
 
                         RefreshVisualsThenSignalUpdate();
+
                         return redoMem;
                     }
                     return null;
-
-                case IPixelEditorEventType.REMOVELAYER:
-                    originator = new DrawingLayer(this, mem);
-                    redoMem = originator.GetMemento(-typeValue);
-                    AddLayer(originator, mem.LayerIndex);
-                    return redoMem;
-
-                case IPixelEditorEventType.ADDLAYER:
-                case IPixelEditorEventType.DUPLICATELAYER:
-                    origIndex = Layers.FindIndex(x => x.LayerGuid == mem.LayerGuid);
-                    if (origIndex != -1)
-                    {
-                        redoMem = Layers[origIndex].GetMemento(IPixelEditorEventType.REMOVELAYER);
-                        RemoveLayer(origIndex);
-                        return redoMem;
-                    }
-                    return null;
-
-                case IPixelEditorEventType.LAYER_INNER_PROPERTY_UPDATE:
-                    originator = Layers[mem.LayerIndex];
-                    if (originator != null)
-                    {
-                        redoMem = originator.GetMemento(typeValue);
-                        originator.Restore(mem);
-                        RefreshVisualsThenSignalUpdate();
-                        return redoMem;
-                    }
-                    return null;
-
 
                 case IPixelEditorEventType.REVERSE_MERGELAYER:
                     origIndex = Layers.FindIndex(x => x.LayerGuid == mem.LayerGuid);
@@ -195,6 +176,28 @@ namespace Pixellation.Components.Editor
                         redoMem = Layers[origIndex].GetMemento(-typeValue);
                         redoMem.SetChainedMemento(Layers[origIndex + 1].GetMemento(IPixelEditorEventType.REMOVELAYER));
                         MergeLayerDownward(origIndex);
+                        return redoMem;
+                    }
+                    return null;
+
+                case IPixelEditorEventType.ADDLAYER:
+                case IPixelEditorEventType.DUPLICATELAYER:
+                    redoMem = Layers[mem.LayerIndex].GetMemento(IPixelEditorEventType.REMOVELAYER);
+                    RemoveLayerByUndoRedo(mem.LayerIndex);
+                    return redoMem;
+
+                case IPixelEditorEventType.REMOVELAYER:
+                    originator = new DrawingLayer(this, mem);
+                    AddLayerByUndoRedo(originator, mem.LayerIndex);
+                    redoMem = Layers[mem.LayerIndex].GetMemento(-typeValue);
+                    return redoMem;
+
+                case IPixelEditorEventType.LAYER_INNER_PROPERTY_UPDATE:
+                    originator = Layers[mem.LayerIndex];
+                    if (originator != null)
+                    {
+                        redoMem = originator.GetMemento(typeValue);
+                        originator.Restore(mem);
                         return redoMem;
                     }
                     return null;
@@ -216,11 +219,22 @@ namespace Pixellation.Components.Editor
             switch (typeValue)
             {
                 case IPixelEditorEventType.MOVELAYERUP:
+                    indexForLayerListMemento = mem.LayerIndex + 1;
+                    redoMem = GetMemento(-typeValue);
+                    Restore(mem);
+                    return redoMem;
+
                 case IPixelEditorEventType.MOVELAYERDOWN:
+                    indexForLayerListMemento = mem.LayerIndex - 1;
+                    redoMem = GetMemento(-typeValue);
+                    Restore(mem);
+                    return redoMem;
+
                 case IPixelEditorEventType.ROTATE:
                 case IPixelEditorEventType.ROTATE_ALL:
                 case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE:
                 case IPixelEditorEventType.ROTATE_COUNTERCLOCKWISE_ALL:
+                    indexForLayerListMemento = ActiveLayerIndex;
                     redoMem = GetMemento(-typeValue);
                     Restore(mem);
                     return redoMem;
@@ -230,6 +244,7 @@ namespace Pixellation.Components.Editor
                 case IPixelEditorEventType.MIRROR_VERTICAL:
                 case IPixelEditorEventType.MIRROR_VERTICAL_ALL:
                 case IPixelEditorEventType.RESIZE:
+                    indexForLayerListMemento = ActiveLayerIndex;
                     redoMem = GetMemento(typeValue);
                     Restore(mem);
                     return redoMem;

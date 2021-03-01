@@ -131,7 +131,7 @@
     <comment>zip</comment>
   </data>
   <data name="OpenFileFilter" xml:space="preserve">
-    <value>Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.gif, *.pxel)|*.bmp;*.jpg;*.png;*.tiff;*.gif;*.pxel</value>
+    <value>Image And Pixellation Project Files (*.bmp, *.jpg, *.png, *.tiff, *.pxel)|*.bmp;*.jpg;*.png;*.tiff;*.pxel</value>
   </data>
   <data name="PackageContentFileNameForMetaData" xml:space="preserve">
     <value>metadata</value>

@@ -140,7 +140,6 @@ namespace Pixellation
                     ProjectTitle = data.Key;
                     ThereAreUnsavedChanges = false;
                     _caretaker.ClearAll();
-                    _pm.Reset();
 
                     canvasImage.NewProject(data.Value);
                 }
@@ -169,12 +168,28 @@ namespace Pixellation
         /// <returns>True if project is successfully saved, otherwise false.</returns>
         private void Menu_SaveProject(object sender, RoutedEventArgs e)
         {
-            SaveProject(sender, e);
+            SaveProject(false);
         }
 
-        private bool SaveProject(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Saves the project after choosing the location.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns>True if project is successfully saved, otherwise false.</returns>
+        private void Menu_SaveProjectAs(object sender, RoutedEventArgs e)
         {
-            if (_pm.AlreadySaved)
+            SaveProject(true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="saveAs"></param>
+        /// <returns></returns>
+        private bool SaveProject(bool saveAs = false)
+        {
+            if (!saveAs && _pm.AlreadySaved)
             {
                 var res = _pm.SaveProject(canvasImage.Frames);
 
@@ -182,6 +197,7 @@ namespace Pixellation
                 {
                     ProjectTitle = _pm.PreviousFullPath.GetFileNameWithoutExtension();
                     ThereAreUnsavedChanges = false;
+                    return true;
                 }
             }
             else
@@ -207,6 +223,10 @@ namespace Pixellation
             return false;
         }
 
+        /// <summary>
+        /// Ask for a location before save if there are unsaved changes and save.
+        /// </summary>
+        /// <returns>True if save if successful, false otherwise.</returns>
         private bool AskAndTrySaveUnsavedChanges()
         {
             if (ThereAreUnsavedChanges)
@@ -220,7 +240,7 @@ namespace Pixellation
 
                 if (res == MessageBoxResult.Yes)
                 {
-                    if (!SaveProject(this, new RoutedEventArgs()))
+                    if (!SaveProject())
                     {
                         return false;
                     }
@@ -270,11 +290,20 @@ namespace Pixellation
             aboutDialog.ShowDialog();
         }
 
+        /// <summary>
+        /// Closes program.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Menu_Exit(object sender, RoutedEventArgs e)
         {
             mainWindow.Close();
         }
-
+        
+        /// <summary>
+        /// Ask for location then exports the project into the chosen format.
+        /// </summary>
+        /// <param name="mode">Export format.</param>
         private void ExportAsImage(ExportModes mode)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
@@ -288,6 +317,10 @@ namespace Pixellation
             }
         }
 
+        /// <summary>
+        /// Exports the project into a spritesheet.
+        /// </summary>
+        /// <param name="mode"></param>
         private void ExportToSpritesheet(ExportModes mode)
         {
             if (mode < ExportModes.SPRITESHEET_FRAME)
@@ -315,7 +348,7 @@ namespace Pixellation
         }
 
         /// <summary>
-        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports the project.
+        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports the selected layer.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -324,31 +357,61 @@ namespace Pixellation
             ExportAsImage(ExportModes.LAYER);
         }
 
+        /// <summary>
+        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports the selected frame.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Menu_ExportSelectedFrame(object sender, RoutedEventArgs e)
         {
             ExportAsImage(ExportModes.FRAME);
         }
 
+        /// <summary>
+        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports all frames.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Menu_ExportAllFrames(object sender, RoutedEventArgs e)
         {
             ExportAsImage(ExportModes.FRAME_ALL);
         }
 
+        /// <summary>
+        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports the selected frame into a spritesheet.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Menu_SpritesheetFromFrame(object sender, RoutedEventArgs e)
         {   
             ExportToSpritesheet(ExportModes.SPRITESHEET_FRAME);
         }
 
+        /// <summary>
+        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports all the frames into a spritesheet.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Menu_SpritesheetFromAllFrames(object sender, RoutedEventArgs e)
         {
             ExportToSpritesheet(ExportModes.SPRITESHEET_ALL_FRAME);
         }
 
+        /// <summary>
+        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports the selected frame into a gif.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Menu_GifFromFrame(object sender, RoutedEventArgs e)
         {
             ExportAsImage(ExportModes.GIF_FRAME);
         }
 
+        /// <summary>
+        /// Opens a <see cref="SaveFileDialog"/> for choosing location and name for the exported file then exports the frames into a gif.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Menu_GifFromAllFrames(object sender, RoutedEventArgs e)
         {
             ExportAsImage(ExportModes.GIF_ALL_FRAMES);
@@ -364,7 +427,7 @@ namespace Pixellation
 
             if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.S)
             {
-                SaveProject(this, new RoutedEventArgs());
+                SaveProject();
             }
             else if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) && e.Key == Key.Z)
             {

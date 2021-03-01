@@ -52,6 +52,10 @@ namespace Pixellation.Components.Editor
             {
                 l?.Measure(s);
             }
+            if (_onionLayer != null)
+            {
+                _onionLayer.Measure(s);
+            }
             if (_drawPreview != null)
             {
                 _drawPreview.Measure(s);
@@ -67,6 +71,10 @@ namespace Pixellation.Components.Editor
             foreach (var l in Layers)
             {
                 l?.Arrange(s);
+            }
+            if (_onionLayer != null)
+            {
+                _onionLayer.Arrange(s);
             }
             if (_drawPreview != null)
             {
@@ -85,6 +93,11 @@ namespace Pixellation.Components.Editor
             }
             Layers.Clear();
 
+            if (_onionLayer != null)
+            {
+                RemoveVisualChild(_onionLayer);
+                _onionLayer = null;
+            }
             if (_drawPreview != null)
             {
                 RemoveVisualChild(_drawPreview);
@@ -102,11 +115,11 @@ namespace Pixellation.Components.Editor
                 _gridLines = null;
             }
 
-            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.CLEAR, -1));
+            LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.CLEAR, -1));
 
             Frames.Clear();
 
-            FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.CLEAR, -1));
+            FrameListChanged?.Invoke(new PixelEditorFrameEventArgs(IPixelEditorEventType.CLEAR, -1));
         }
 
         /// <summary>
@@ -118,6 +131,9 @@ namespace Pixellation.Components.Editor
             // Layers
             RemoveLayersFromVisualChildren();
             AddLayersToVisualChildren();
+
+            // Onionlayer
+            ResetOnionLayer();
 
             // Previewlayer
             ResetPreviewLayer();
@@ -162,6 +178,20 @@ namespace Pixellation.Components.Editor
             }
             _drawPreview = new DrawingLayer(this, "DrawPreview");
             AddVisualChild(_drawPreview);
+        }
+
+        /// <summary>
+        /// Recreates onionlayer.
+        /// </summary>
+        public void ResetOnionLayer()
+        {
+            if (_onionLayer != null)
+            {
+                RemoveVisualChild(_onionLayer);
+                _onionLayer.Clear();
+            }
+            OnionLayer = new DrawingLayer(this, "Onion", true, 0.5f);
+            AddVisualChild(_onionLayer);
         }
 
         /// <summary>
@@ -287,11 +317,36 @@ namespace Pixellation.Components.Editor
         public void AddLayer(DrawingLayer layer, int layerIndex = 0)
         {
             Layers.Insert(layerIndex, layer);
-            AddVisualChild(Layers[layerIndex]);
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.ADDLAYER, layerIndex));
+            LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.ADDLAYER, layerIndex));
+        }
+
+        /// <summary>
+        /// Adds a layer in the process of undoing or redoing an operation.
+        /// </summary>
+        /// <param name="layer">Layer to add.</param>
+        /// <param name="layerIndex">Index to insert in.</param>
+        public void AddLayerByUndoRedo(DrawingLayer layer, int layerIndex = 0)
+        {
+            Layers.Insert(layerIndex, layer);
+            ActiveLayer = Layers[ActiveLayerIndex < 1 ? 0 : ActiveLayerIndex - 1];
+            LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.ADDLAYER, ActiveLayerIndex));
+            RefreshVisualsThenSignalUpdate();
+        }
+
+        /// <summary>
+        /// Removes layer in the process of undoing or redoing an operation.
+        /// </summary>
+        /// <param name="layerIndex">Index of layer to remove.</param>
+        public void RemoveLayerByUndoRedo(int layerIndex)
+        {
+            RemoveVisualChild(Layers[layerIndex]);
+            Layers.RemoveAt(layerIndex);
+            ActiveLayer = Layers[ActiveLayerIndex < 1 ? 0 : ActiveLayerIndex - 1];
+            LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.REMOVELAYER, ActiveLayerIndex));
+            RefreshVisualsThenSignalUpdate();
         }
 
         /// <summary>
@@ -302,11 +357,10 @@ namespace Pixellation.Components.Editor
         public void AddLayer(string name, int layerIndex = 0)
         {
             Layers.Insert(layerIndex, new DrawingLayer(this, name));
-            AddVisualChild(Layers[layerIndex]);
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.ADDLAYER, layerIndex));
+            LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.ADDLAYER, layerIndex));
         }
 
         /// <summary>
@@ -316,11 +370,10 @@ namespace Pixellation.Components.Editor
         public void DuplicateLayer(int layerIndex = 0)
         {
             Layers.Insert(layerIndex, Layers[layerIndex].Clone());
-            AddVisualChild(Layers[layerIndex]);
 
             RefreshVisualsThenSignalUpdate();
 
-            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.DUPLICATELAYER, layerIndex));
+            LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.DUPLICATELAYER, layerIndex));
         }
 
         /// <summary>
@@ -330,15 +383,15 @@ namespace Pixellation.Components.Editor
         public void MoveLayerUp(int layerIndex)
         {
             var newLayerIndex = layerIndex;
-            if (layerIndex > 0)
+            if (Layers.Count > layerIndex && layerIndex > 0)
             {
                 var tmp = Layers[layerIndex];
                 Layers.RemoveAt(layerIndex);
                 --newLayerIndex;
                 Layers.Insert(newLayerIndex, tmp);
                 RefreshVisualsThenSignalUpdate();
+                LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.MOVELAYERUP, newLayerIndex));
             }
-            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.MOVELAYERUP, newLayerIndex));
         }
 
         /// <summary>
@@ -356,7 +409,7 @@ namespace Pixellation.Components.Editor
                 Layers.Insert(newLayerIndex, tmp);
                 RefreshVisualsThenSignalUpdate();
             }
-            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.MOVELAYERDOWN, newLayerIndex));
+            LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.MOVELAYERDOWN, newLayerIndex));
         }
 
         /// <summary>
@@ -394,7 +447,7 @@ namespace Pixellation.Components.Editor
             {
                 newLayerIndex = layerIndex - 1;
             }
-            LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.REMOVELAYER, newLayerIndex));
+            LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.REMOVELAYER, newLayerIndex));
         }
 
         /// <summary>
@@ -412,7 +465,7 @@ namespace Pixellation.Components.Editor
 
                 RefreshVisualsThenSignalUpdate();
 
-                LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.MERGELAYER, newLayerIndex));
+                LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.MERGELAYER, newLayerIndex));
             }
         }
 
@@ -428,7 +481,7 @@ namespace Pixellation.Components.Editor
 
                 RefreshVisualsThenSignalUpdate();
 
-                LayerListChanged?.Invoke(this, new PixelEditorLayerEventArgs(IPixelEditorEventType.LAYER_PIXELS_CHANGED, layerIndex));
+                LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.LAYER_PIXELS_CHANGED, layerIndex));
             }
         }
 

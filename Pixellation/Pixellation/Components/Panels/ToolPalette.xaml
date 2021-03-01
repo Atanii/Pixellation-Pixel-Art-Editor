@@ -132,7 +132,7 @@
             </Button>
         </UniformGrid>
         <Label>Tool Settings</Label>
-        <CheckBox Margin="5" ToolTip="Use tools with transparency as color." IsChecked="{Binding ElementName=toolPalette, Path=ChosenTool.EraserModeOn, Mode=TwoWay}">Eraser Mode</CheckBox>
+        <CheckBox x:Name="cbEraserMode" Margin="5" ToolTip="Use tools with transparency as color." Click="SetEraserMode">Eraser Mode</CheckBox>
         <GroupBox Margin="5" Header="Mirror Mode">
             <StackPanel Orientation="Vertical" Margin="5">
                 <RadioButton x:Name="rbMMNone" GroupName="MirrorMode" Click="RbMMNone_Click" IsChecked="True">Off</RadioButton>

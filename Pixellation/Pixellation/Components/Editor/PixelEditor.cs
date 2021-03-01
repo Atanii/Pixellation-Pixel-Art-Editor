@@ -1,8 +1,8 @@
-﻿using Pixellation.Interfaces;
+﻿using Pixellation.Components.Editor.Event;
+using Pixellation.Interfaces;
 using Pixellation.Properties;
 using Pixellation.Tools;
 using Pixellation.Utils;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -33,6 +33,36 @@ namespace Pixellation.Components.Editor
         #endregion PrivateFields
 
         #region Properties
+
+        private DrawingLayer _onionLayer;
+
+        /// <summary>
+        /// Layer for showing the previous frame with low opacity.
+        /// </summary>
+        private DrawingLayer OnionLayer
+        {
+            get => _onionLayer;
+            set
+            {
+                _onionLayer = value;
+                RefreshOnionLayer();
+            }
+        }
+
+        private bool _onionModeEnabled;
+        
+        /// <summary>
+        /// Indicates if onion mode is enabled in the editor.
+        /// </summary>
+        public bool OnionModeEnabled
+        {
+            get => _onionModeEnabled;
+            set
+            {
+                _onionModeEnabled = value;
+                RefreshOnionLayer();
+            }
+        }
 
         private int _pixelWidth;
 
@@ -110,7 +140,7 @@ namespace Pixellation.Components.Editor
 
         public static readonly DependencyProperty TiledOpacityProperty =
          DependencyProperty.Register("TiledOpacity", typeof(float), typeof(PixelEditor), new FrameworkPropertyMetadata(
-            Settings.Default.DefaultTiledOpacity, (d, e) => { VisualHelperSettingsChanged?.Invoke(default, EventArgs.Empty); }
+            Settings.Default.DefaultTiledOpacity, (d, e) => { VisualHelperSettingsChanged?.Invoke(); }
         ));
 
         /// <summary>
@@ -124,7 +154,7 @@ namespace Pixellation.Components.Editor
 
         public static readonly DependencyProperty TiledModeEnabledProperty =
          DependencyProperty.Register("TiledModeEnabled", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
-            Settings.Default.DefaultTiledModeEnabled, (d, e) => { VisualHelperSettingsChanged?.Invoke(default, EventArgs.Empty); }
+            Settings.Default.DefaultTiledModeEnabled, (d, e) => { VisualHelperSettingsChanged?.Invoke(); }
         ));
 
         /// <summary>
@@ -166,7 +196,7 @@ namespace Pixellation.Components.Editor
 
         public static readonly DependencyProperty ShowBorderProperty =
          DependencyProperty.Register("ShowBorder", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
-            Settings.Default.DefaultShowBorder, (d, e) => { VisualHelperSettingsChanged?.Invoke(default, EventArgs.Empty); }
+            Settings.Default.DefaultShowBorder, (d, e) => { VisualHelperSettingsChanged?.Invoke(); }
         ));
 
         /// <summary>
@@ -180,7 +210,7 @@ namespace Pixellation.Components.Editor
 
         public static readonly DependencyProperty ShowGridProperty =
          DependencyProperty.Register("ShowGrid", typeof(bool), typeof(PixelEditor), new FrameworkPropertyMetadata(
-            Settings.Default.DefaultShowGrid, (d, e) => { VisualHelperSettingsChanged?.Invoke(default, EventArgs.Empty); }
+            Settings.Default.DefaultShowGrid, (d, e) => { VisualHelperSettingsChanged?.Invoke(); }
         ));
 
         /// <summary>
@@ -198,7 +228,7 @@ namespace Pixellation.Components.Editor
 
         public readonly DependencyProperty ChosenToolProperty =
          DependencyProperty.Register("ChosenTool", typeof(ITool), typeof(PixelEditor), new PropertyMetadata(
-             null, (d, e) => { RaiseToolChangeEvent?.Invoke(default, EventArgs.Empty); }
+             null, (d, e) => { RaiseToolChangeEvent?.Invoke(); }
         ));
 
         #endregion DependencyProperties
@@ -208,17 +238,17 @@ namespace Pixellation.Components.Editor
         /// <summary>
         /// Event for changing tool.
         /// </summary>
-        private static event EventHandler RaiseToolChangeEvent;
+        private static event PixelEditorEventHandler RaiseToolChangeEvent;
 
         /// <summary>
         /// Event for changing editor settings (eg. toggle <see cref="ShowBorder"/>)
         /// </summary>
-        private static event EventHandler VisualHelperSettingsChanged;
+        private static event PixelEditorEventHandler VisualHelperSettingsChanged;
 
         /// <summary>
         /// Event for signaling change in the edited image.
         /// </summary>
-        public static event EventHandler RaiseImageUpdatedEvent;
+        public static event PixelEditorEventHandler RaiseImageUpdatedEvent;
 
         /// <summary>
         /// Event used for one- and twoway databinding.
@@ -231,7 +261,7 @@ namespace Pixellation.Components.Editor
         /// <summary>
         /// Default and only constructor. Binds eventhandlers and initializes an editable image with the default size, magnification and layer settings.
         /// </summary>
-        
+
         public PixelEditor()
         {
             // Default cursor is a pen.
@@ -246,8 +276,8 @@ namespace Pixellation.Components.Editor
             Magnification = Settings.Default.DefaultMagnification;
 
             BaseTool.RaiseToolEvent += HandleToolEvent;
-            RaiseToolChangeEvent += (d, e) => { UpdateToolProperties(); };
-            VisualHelperSettingsChanged += (d, e) => { VisualHelperRefresh(); };
+            RaiseToolChangeEvent += UpdateToolProperties;
+            VisualHelperSettingsChanged += VisualHelperRefresh;
 
             AddLayer(new DrawingLayer(this, DefaultLayerName));
 
@@ -395,6 +425,21 @@ namespace Pixellation.Components.Editor
         }
 
         /// <summary>
+        /// Refreshes onionlayer.
+        /// </summary>
+        private void RefreshOnionLayer()
+        {
+            if (_onionModeEnabled && ActiveFrameIndex > 0 && _onionLayer != null)
+            {
+                _onionLayer.Bitmap = MergeUtils.MergeAll(Frames[ActiveFrameIndex - 1].Layers);
+            }
+            if (!_onionModeEnabled && _onionLayer != null)
+            {
+                _onionLayer.Clear();
+            }
+        }
+
+        /// <summary>
         /// Refresh position and alignment, origin of <see cref="PixelEditor"/> on the UI.
         /// </summary>
         public void RefreshPositionAndAlignment()
@@ -410,7 +455,7 @@ namespace Pixellation.Components.Editor
         public void RefreshVisualsThenSignalUpdate()
         {
             SetOrRefreshMeasureVisualsMagnification();
-            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+            RaiseImageUpdatedEvent?.Invoke();
         }
 
         /// <summary>
@@ -466,7 +511,10 @@ namespace Pixellation.Components.Editor
             {
                 return Layers[(Layers.Count - 1) - index];
             }
-            // Preview is located bet
+            else if (index == VisualCount - 4)
+            {
+                return _onionLayer;
+            }
             else if (index == VisualCount - 3)
             {
                 return _drawPreview;
@@ -590,7 +638,7 @@ namespace Pixellation.Components.Editor
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HandleToolEvent(object sender, ToolEventArgs e)
+        private void HandleToolEvent(ToolEventArgs e)
         {
             switch (e.Type)
             {
@@ -628,7 +676,7 @@ namespace Pixellation.Components.Editor
             if (IsMouseCaptured)
             {
                 ChosenTool.OnMouseMove(e);
-                RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+                RaiseImageUpdatedEvent?.Invoke();
                 ActiveLayer.InvalidateVisual();
             }
         }
@@ -651,7 +699,7 @@ namespace Pixellation.Components.Editor
 
             ChosenTool.SetDrawColor(PrimaryColor);
             ChosenTool.OnMouseDown(e);
-            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+            RaiseImageUpdatedEvent?.Invoke();
             ActiveLayer.InvalidateVisual();
         }
 
@@ -673,7 +721,7 @@ namespace Pixellation.Components.Editor
 
             ChosenTool.SetDrawColor(SecondaryColor);
             ChosenTool.OnMouseDown(e);
-            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+            RaiseImageUpdatedEvent?.Invoke();
             ActiveLayer.InvalidateVisual();
         }
 
@@ -694,7 +742,7 @@ namespace Pixellation.Components.Editor
             ReleaseMouseCapture();
 
             ChosenTool.OnMouseUp(e);
-            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+            RaiseImageUpdatedEvent?.Invoke();
             ActiveLayer.InvalidateVisual();
         }
 
@@ -715,7 +763,7 @@ namespace Pixellation.Components.Editor
             ReleaseMouseCapture();
 
             ChosenTool.OnMouseUp(e);
-            RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+            RaiseImageUpdatedEvent?.Invoke();
             ActiveLayer.InvalidateVisual();
         }
 
@@ -731,7 +779,7 @@ namespace Pixellation.Components.Editor
             {
                 base.OnKeyDown(e);
                 ChosenTool.OnKeyDown(e);
-                RaiseImageUpdatedEvent?.Invoke(this, EventArgs.Empty);
+                RaiseImageUpdatedEvent?.Invoke();
                 ActiveLayer.InvalidateVisual();
             }
         }

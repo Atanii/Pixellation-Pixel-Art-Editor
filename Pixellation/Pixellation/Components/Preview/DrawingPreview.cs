@@ -68,6 +68,10 @@ namespace Pixellation.Components.Preview
             set
             {
                 _onionModeEnabled = value;
+                if (DrawingFrameProvider != null)
+                {
+                    DrawingFrameProvider.OnionModeEnabled = value;
+                }
                 InvalidateVisual();
             }
         }
@@ -81,13 +85,13 @@ namespace Pixellation.Components.Preview
 
             OnionModeEnabled = false;
 
-            PixelEditor.FrameListChanged += (s, a) => InvalidateVisual();
-            PixelEditor.LayerListChanged += (s, a) => InvalidateVisual();
+            PixelEditor.FrameListChanged += (a) => InvalidateVisual();
+            PixelEditor.LayerListChanged += (a) => InvalidateVisual();
 
-            PixelEditor.RaiseImageUpdatedEvent += (s, a) => InvalidateVisual();
+            PixelEditor.RaiseImageUpdatedEvent += InvalidateVisual;
 
-            DrawingLayer.OnUpdated += () => InvalidateVisual();
-            DrawingFrame.OnUpdated += () => InvalidateVisual();
+            DrawingLayer.PropertyUpdated += InvalidateVisual;
+            DrawingFrame.PropertyUpdated += InvalidateVisual;
 
             ModeUpdated += (s, e) => InvalidateVisual();
         }
@@ -134,16 +138,16 @@ namespace Pixellation.Components.Preview
         {
             var index = DrawingFrameProvider.ActiveLayerIndex;
 
+            DrawingFrameProvider.ActiveFrame.Render(dc, Width, Height, layerIndex: index);
+
             // Renders the one behind the selected with lower opacity.
             if (OnionModeEnabled)
             {
                 if (DrawingFrameProvider.Layers.Count > (index + 1))
                 {
-                    DrawingFrameProvider.ActiveFrame.Render(dc, 0, 0, Width, Height, opacity: 0.5f, layerIndex: index + 1);
+                    DrawingFrameProvider.ActiveFrame.Render(dc, Width, Height, opacity: 0.3f, layerIndex: index + 1);
                 }
             }
-
-            DrawingFrameProvider.ActiveFrame.Render(dc, 0, 0, Width, Height, layerIndex: index);
         }
 
         /// <summary>
@@ -152,17 +156,17 @@ namespace Pixellation.Components.Preview
         /// <param name="dc"></param>
         private void RenderFrame(DrawingContext dc)
         {
+            DrawingFrameProvider.ActiveFrame.Render(dc, Width, Height);
+
             // Renders the one behind the selected with lower opacity.
             if (OnionModeEnabled)
             {
                 var index = DrawingFrameProvider.ActiveFrameIndex;
                 if (index > 0)
                 {
-                    DrawingFrameProvider.Frames[index - 1].Render(dc, 0, 0, Width, Height, opacity: 0.5f);
+                    DrawingFrameProvider.Frames[index - 1].Render(dc, Width, Height, opacity: 0.3f);
                 }
             }
-
-            DrawingFrameProvider.ActiveFrame.Render(dc, 0, 0, Width, Height);
         }
 
         /// <summary>
@@ -173,7 +177,7 @@ namespace Pixellation.Components.Preview
         {
             foreach (var frame in DrawingFrameProvider.Frames)
             {
-                frame.Render(dc, 0, 0, Width, Height);
+                frame.Render(dc, Width, Height);
             }
         }
     }

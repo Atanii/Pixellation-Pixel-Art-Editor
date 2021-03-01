@@ -44,5 +44,10 @@ namespace Pixellation.Interfaces
         /// </summary>
         /// <returns></returns>
         public IEnumerable<BitmapSource> GetFramesAsWriteableBitmaps();
+
+        /// <summary>
+        /// Indicates if onion mode is enabled in the editor.
+        /// </summary>
+        public bool OnionModeEnabled { get; set; }
     }
 }
