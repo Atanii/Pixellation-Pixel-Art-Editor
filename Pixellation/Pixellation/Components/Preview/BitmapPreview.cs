@@ -24,7 +24,9 @@ namespace Pixellation.Components.Preview
 
         public BitmapPreview()
         {
-            PixelEditor.RaiseImageUpdatedEvent += (s, e) => InvalidateVisual();
+            PixelEditor.LayerListChanged += (s, a) => InvalidateVisual();
+            PixelEditor.RaiseImageUpdatedEvent += (s, a) => InvalidateVisual();
+            DrawingLayer.OnUpdated += () => InvalidateVisual();
         }
 
         protected override void OnRender(DrawingContext drawingContext)

@@ -129,6 +129,8 @@ namespace Pixellation.Components.Editor
             FrameListChanged?.Invoke(this, new PixelEditorFrameEventArgs(IPixelEditorEventType.FRAME_ADD, index));
 
             SetActiveLayer();
+
+            InvalidateVisual();
         }
 
         /// <summary>
@@ -253,6 +255,8 @@ namespace Pixellation.Components.Editor
             if ((Frames.Count - 1) > 0 && Frames.ElementAtOrDefault(frameIndex) != null)
             {
                 var index = frameIndex;
+
+                RemoveLayersFromVisualChildren();
 
                 if (removeCaretakerAsWell)
                     _caretaker.RemoveCaretaker(Frames[index].Id);
