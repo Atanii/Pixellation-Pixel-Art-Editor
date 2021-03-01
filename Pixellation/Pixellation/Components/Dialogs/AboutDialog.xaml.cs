@@ -7,6 +7,9 @@ namespace Pixellation.Components.Dialogs.AboutDialog
     /// </summary>
     public partial class AboutDialog : Window
     {
+        /// <summary>
+        /// Dialog containing information about Pixellation.
+        /// </summary>
         public AboutDialog()
         {
             InitializeComponent();

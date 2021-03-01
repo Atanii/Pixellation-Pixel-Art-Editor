@@ -1,14 +1,18 @@
 ﻿<Window x:Class="Pixellation.Components.Dialogs.AboutDialog.AboutDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Pixellation.Components.Dialogs.AboutDialog"
+        xmlns:resource="clr-namespace:Pixellation.Properties"
         mc:Ignorable="d" KeyDown="Window_KeyDown" WindowStartupLocation="CenterScreen"
-        Title="About" Height="150" Width="525">
+        Title="{Binding Source={x:Static resource:Settings.Default}, Path=AboutDialogTitle}" Height="170" Width="525">
     <StackPanel>
-        <Label>Title: Pixellation Pixelart Editor</Label>
-        <GroupBox Header="Design, Programming, Icons">Jeremi Emánuel Kádár</GroupBox>
-        <GroupBox Header="License">MIT License, Copyright (c) 2020-2021 Kádár Jeremi Emánuel</GroupBox>
+        <Label Content="{Binding Source={x:Static resource:Settings.Default}, Path=AboutTitle}"></Label>
+        <GroupBox Header="{Binding Source={x:Static resource:Settings.Default}, Path=AboutCreditsHeader}">
+            <Label Content="{Binding Source={x:Static resource:Settings.Default}, Path=AboutCreditsAuthor}"></Label>
+        </GroupBox>
+        <GroupBox Header="{Binding Source={x:Static resource:Settings.Default}, Path=AboutLicenseHeader}">
+            <Label Content="{Binding Source={x:Static resource:Settings.Default}, Path=AboutLicenseContent}"></Label>
+        </GroupBox>
     </StackPanel>
 </Window>

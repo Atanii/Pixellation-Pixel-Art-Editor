@@ -38,5 +38,23 @@
     <Setting Name="DefaultAnimationFPS" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">24</Value>
     </Setting>
+    <Setting Name="AboutLicenseContent" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">MIT License, Copyright (c) 2020-2021 Kádár Jeremi Emánuel</Value>
+    </Setting>
+    <Setting Name="AboutLicenseHeader" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">License</Value>
+    </Setting>
+    <Setting Name="AboutCreditsAuthor" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Jeremi Emánuel Kádár</Value>
+    </Setting>
+    <Setting Name="AboutCreditsHeader" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Design, Programming, Icons</Value>
+    </Setting>
+    <Setting Name="AboutTitle" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Title: Pixellation Pixelart Editor</Value>
+    </Setting>
+    <Setting Name="AboutDialogTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">About Pixellation</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

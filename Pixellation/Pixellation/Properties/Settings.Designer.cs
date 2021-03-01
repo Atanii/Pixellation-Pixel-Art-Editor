@@ -130,5 +130,62 @@ namespace Pixellation.Properties {
                 return ((int)(this["DefaultAnimationFPS"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("MIT License, Copyright (c) 2020-2021 Kádár Jeremi Emánuel")]
+        public string AboutLicenseContent {
+            get {
+                return ((string)(this["AboutLicenseContent"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("License")]
+        public string AboutLicenseHeader {
+            get {
+                return ((string)(this["AboutLicenseHeader"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Jeremi Emánuel Kádár")]
+        public string AboutCreditsAuthor {
+            get {
+                return ((string)(this["AboutCreditsAuthor"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Design, Programming, Icons")]
+        public string AboutCreditsHeader {
+            get {
+                return ((string)(this["AboutCreditsHeader"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Title: Pixellation Pixelart Editor")]
+        public string AboutTitle {
+            get {
+                return ((string)(this["AboutTitle"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("About Pixellation")]
+        public string AboutDialogTitle {
+            get {
+                return ((string)(this["AboutDialogTitle"]));
+            }
+            set {
+                this["AboutDialogTitle"] = value;
+            }
+        }
     }
 }
