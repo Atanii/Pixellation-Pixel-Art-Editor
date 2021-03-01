@@ -192,6 +192,7 @@ namespace Pixellation.Components.Editor
             set
             {
                 SetValue(ChosenToolProperty, value);
+                Cursor = ChosenTool.ToolCursor;
             }
         }
 
@@ -230,8 +231,10 @@ namespace Pixellation.Components.Editor
         /// <summary>
         /// Default and only constructor. Binds eventhandlers and initializes an editable image with the default size, magnification and layer settings.
         /// </summary>
+        
         public PixelEditor()
         {
+            // Default cursor is a pen.
             Cursor = Cursors.Pen;
 
             _caretaker.InitCaretaker(FramesCaretakerKey, autoActivateIfInitial: false);
@@ -415,6 +418,7 @@ namespace Pixellation.Components.Editor
         /// </summary>
         private void UpdateToolProperties()
         {
+            Cursor = ChosenTool?.ToolCursor ?? Cursors.Pen;
             ChosenTool?.SetAllDrawingCircumstances(Magnification, PixelWidth, PixelHeight, ActiveLayer, _drawPreview);
         }
 

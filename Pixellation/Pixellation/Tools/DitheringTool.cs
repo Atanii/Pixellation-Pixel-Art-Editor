@@ -9,6 +9,9 @@ namespace Pixellation.Tools
     /// </summary>
     public class DitheringTool : BaseMultitonTool<DitheringTool>
     {
+        private readonly Cursor _cursor = GetCursorFromResource("cursor-dithering.cur");
+        public override Cursor ToolCursor { get => _cursor; }
+
         private DitheringTool() : base()
         {
         }
@@ -24,16 +27,16 @@ namespace Pixellation.Tools
             var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
 
             // odd X or even Y -> return
-            if (e.LeftButton == MouseButtonState.Pressed && 
+            if (e.LeftButton == MouseButtonState.Pressed &&
                 (((p.X & 1) == 1 || (p.Y & 1) != 1) ^
-                ((p.X & 1) != 1 || (p.Y & 1) == 1)) )
+                ((p.X & 1) != 1 || (p.Y & 1) == 1)))
             {
                 return;
             }
             // odd + odd ^ even + even
             if (e.LeftButton != MouseButtonState.Pressed &&
                 (((p.X & 1) == 1 && (p.Y & 1) == 1) ^
-                ((p.X & 1) != 1 && (p.Y & 1) != 1)) )
+                ((p.X & 1) != 1 && (p.Y & 1) != 1)))
             {
                 return;
             }

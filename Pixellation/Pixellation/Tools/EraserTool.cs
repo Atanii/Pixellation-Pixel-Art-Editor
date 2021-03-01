@@ -9,6 +9,9 @@ namespace Pixellation.Tools
     /// </summary>
     public class EraserTool : BaseMultitonTool<EraserTool>
     {
+        private readonly Cursor _cursor = GetCursorFromResource("cursor-eraser.cur");
+        public override Cursor ToolCursor { get => _cursor; }
+
         /// <summary>
         /// Used color is always transparent for <see cref="EraserTool"/>.
         /// </summary>

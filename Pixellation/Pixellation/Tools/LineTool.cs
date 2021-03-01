@@ -12,6 +12,9 @@ namespace Pixellation.Tools
     /// </summary>
     public class LineTool : BaseMultitonTool<LineTool>
     {
+        private readonly Cursor _cursor = GetCursorFromResource("cursor-line.cur");
+        public override Cursor ToolCursor { get => _cursor; }
+
         private IntPoint p0;
         private IntPoint p1;
 

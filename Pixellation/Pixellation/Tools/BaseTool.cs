@@ -2,9 +2,12 @@
 using Pixellation.Components.Event;
 using Pixellation.Models;
 using Pixellation.Utils;
+using System;
 using System.Drawing;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Resources;
 
 namespace Pixellation.Tools
 {
@@ -15,6 +18,11 @@ namespace Pixellation.Tools
     /// </summary>
     public abstract class BaseTool
     {
+        /// <summary>
+        /// Cursor for the drawing tool.
+        /// </summary>
+        public abstract Cursor ToolCursor { get; }
+
         /// <summary>
         /// Editor magnification.
         /// </summary>
@@ -246,6 +254,19 @@ namespace Pixellation.Tools
                         bmp.SetPixel(x0, y0 + 1, c);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets a cursor from the resource.
+        /// </summary>
+        /// <param name="cursorFileName">Name of the cursor file with the extension.</param>
+        /// <returns>Resulting object.</returns>
+        protected static Cursor GetCursorFromResource(string cursorFileName)
+        {
+            StreamResourceInfo cursorResStream = Application.GetResourceStream(
+                new Uri($"pack://application:,,,/Resources/cursors/{cursorFileName}", UriKind.RelativeOrAbsolute)
+            );
+            return new Cursor(cursorResStream.Stream);
         }
     }
 }

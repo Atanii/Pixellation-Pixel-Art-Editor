@@ -8,6 +8,9 @@ namespace Pixellation.Tools
     /// </summary>
     public class PencilTool : BaseMultitonTool<PencilTool>
     {
+        private readonly Cursor _cursor = GetCursorFromResource("cursor-pencil.cur");
+        public override Cursor ToolCursor { get => _cursor; }
+
         private PencilTool() : base()
         {
         }

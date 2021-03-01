@@ -22,6 +22,11 @@ namespace Pixellation.Tools
         public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF, ToolThickness thickness = ToolThickness.NORMAL);
 
         /// <summary>
+        /// Cursor for the drawing tool.
+        /// </summary>
+        public Cursor ToolCursor { get; }
+
+        /// <summary>
         /// Sets editor magnification.
         /// </summary>
         /// <param name="magnification"></param>

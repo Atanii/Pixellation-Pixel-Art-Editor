@@ -6,9 +6,9 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject></StartupObject>
-    <Version>0.1.1.1</Version>
-    <AssemblyVersion>0.1.1.1</AssemblyVersion>
-    <FileVersion>0.1.1.1</FileVersion>
+    <Version>0.1.1.2</Version>
+    <AssemblyVersion>0.1.1.2</AssemblyVersion>
+    <FileVersion>0.1.1.2</FileVersion>
     <Authors>Jeremi Emánuel Kádár</Authors>
     <Copyright>Jeremi Emánuel Kádár</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -24,6 +24,17 @@
   <ItemGroup>
     <None Remove="Resources\application-icon.ico" />
     <None Remove="Resources\application-icon.png" />
+    <None Remove="Resources\cursors\cursor-dithering.cur" />
+    <None Remove="Resources\cursors\cursor-ellipse.cur" />
+    <None Remove="Resources\cursors\cursor-eraser.cur" />
+    <None Remove="Resources\cursors\cursor-line.cur" />
+    <None Remove="Resources\cursors\cursor-paintbucket-same-color.cur" />
+    <None Remove="Resources\cursors\cursor-paintbucket.cur" />
+    <None Remove="Resources\cursors\cursor-pencil.cur" />
+    <None Remove="Resources\cursors\cursor-pipette.cur" />
+    <None Remove="Resources\cursors\cursor-rectangle.cur" />
+    <None Remove="Resources\cursors\cursor-selection-ellipse.cur" />
+    <None Remove="Resources\cursors\cursor-selection-rectangle.cur" />
     <None Remove="Resources\icons\animation\animation-loop.png" />
     <None Remove="Resources\icons\animation\animation-play.png" />
     <None Remove="Resources\icons\animation\animation-stop.png" />
@@ -78,6 +89,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\cursors\cursor-dithering.cur" />
+    <Resource Include="Resources\cursors\cursor-ellipse.cur" />
+    <Resource Include="Resources\cursors\cursor-eraser.cur" />
+    <Resource Include="Resources\cursors\cursor-line.cur" />
+    <Resource Include="Resources\cursors\cursor-paintbucket-same-color.cur" />
+    <Resource Include="Resources\cursors\cursor-paintbucket.cur" />
+    <Resource Include="Resources\cursors\cursor-pencil.cur" />
+    <Resource Include="Resources\cursors\cursor-pipette.cur" />
+    <Resource Include="Resources\cursors\cursor-rectangle.cur" />
+    <Resource Include="Resources\cursors\cursor-selection-ellipse.cur" />
+    <Resource Include="Resources\cursors\cursor-selection-rectangle.cur" />
     <Resource Include="Resources\icons\animation\animation-loop.png" />
     <Resource Include="Resources\icons\animation\animation-play.png" />
     <Resource Include="Resources\icons\animation\animation-stop.png" />

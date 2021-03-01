@@ -1,5 +1,6 @@
 ﻿using Pixellation.Utils;
 using System.Drawing.Drawing2D;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -10,6 +11,9 @@ namespace Pixellation.Tools
     /// </summary>
     internal class SelectCopyPasteEllipseTool : BaseSelectionTool<SelectCopyPasteEllipseTool>
     {
+        private readonly Cursor _cursor = GetCursorFromResource("cursor-selection-ellipse.cur");
+        public override Cursor ToolCursor { get => _cursor; }
+
         private SelectCopyPasteEllipseTool() : base()
         {
         }

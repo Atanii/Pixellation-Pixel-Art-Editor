@@ -10,6 +10,9 @@ namespace Pixellation.Tools
     /// </summary>
     public class PipetteTool : BaseMultitonTool<PipetteTool>
     {
+        private readonly Cursor _cursor = GetCursorFromResource("cursor-pipette.cur");
+        public override Cursor ToolCursor { get => _cursor; }
+
         private IntPoint p;
 
         private PipetteTool() : base()

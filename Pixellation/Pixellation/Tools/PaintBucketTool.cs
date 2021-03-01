@@ -11,6 +11,9 @@ namespace Pixellation.Tools
     /// </summary>
     public class PaintBucketTool : BaseMultitonTool<PaintBucketTool>
     {
+        private readonly Cursor _cursor = GetCursorFromResource("cursor-paintbucket.cur");
+        public override Cursor ToolCursor { get => _cursor; }
+
         private PaintBucketTool() : base()
         {
         }

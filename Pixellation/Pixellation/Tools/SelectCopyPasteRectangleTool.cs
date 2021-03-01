@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Pixellation.Tools
@@ -8,6 +9,9 @@ namespace Pixellation.Tools
     /// </summary>
     internal class SelectCopyPasteRectangleTool : BaseSelectionTool<SelectCopyPasteRectangleTool>
     {
+        private readonly Cursor _cursor = GetCursorFromResource("cursor-selection-rectangle.cur");
+        public override Cursor ToolCursor { get => _cursor; }
+
         private SelectCopyPasteRectangleTool() : base()
         {
         }

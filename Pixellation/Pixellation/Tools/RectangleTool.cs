@@ -1,4 +1,5 @@
 ﻿using Pixellation.Models;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -9,6 +10,9 @@ namespace Pixellation.Tools
     /// </summary>
     public class RectangleTool : BaseFourCornerGeometryTool<RectangleTool>
     {
+        private readonly Cursor _cursor = GetCursorFromResource("cursor-rectangle.cur");
+        public override Cursor ToolCursor { get => _cursor; }
+
         private RectangleTool() : base()
         {
         }
