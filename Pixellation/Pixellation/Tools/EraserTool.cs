@@ -17,6 +17,8 @@ namespace Pixellation.Tools
         /// </summary>
         private new Color ToolColor = Color.FromArgb(0, 0, 0, 0);
 
+        public override bool EraserModeCompatible => false;
+
         private EraserTool() : base()
         {
         }

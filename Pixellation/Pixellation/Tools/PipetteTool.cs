@@ -15,6 +15,10 @@ namespace Pixellation.Tools
 
         private IntPoint p;
 
+        public override bool ThicknessCompatible => false;
+
+        public override bool MirrorModeCompatible => false;
+
         private PipetteTool() : base()
         {
         }

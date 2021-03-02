@@ -69,11 +69,39 @@ namespace Pixellation.Tools
             set => _toolColor = value;
         }
 
+        protected MColor PointerColor = MColor.FromArgb(100, 50, 50, 50);
+
+        /// <summary>
+        /// Indicates if tool is used as an eraser.
+        /// </summary>
         public bool EraserModeOn { get; set; } = false;
 
+        /// <summary>
+        /// Mirror mode state for the drawing tool.
+        /// </summary>
         public MirrorModeStates MirrorMode { get; set; }
 
+        /// <summary>
+        /// Thickness used with the drawing tool.
+        /// </summary>
         public ToolThickness Thickness { get; set; }
+
+        /// <summary>
+        /// Is compatible with different thickness settings?
+        /// </summary>
+        public virtual bool ThicknessCompatible { get; } = true;
+
+        /// <summary>
+        /// Is compatible with different mirror mode settings?
+        /// </summary>
+        public virtual bool MirrorModeCompatible { get; } = true;
+
+        /// <summary>
+        /// Is compatible with erasermorde?
+        /// </summary>
+        public virtual bool EraserModeCompatible { get; } = true;
+
+        protected bool _showPointerFlag = true;
 
         protected BaseTool()
         {
@@ -133,6 +161,42 @@ namespace Pixellation.Tools
             return;
         }
 
+        /// <summary>
+        /// Shows mousepointer with applied thickness in a form of a greyed area.
+        /// Should be called before OnMouseMove to make sure clearing preview area won't conflict.
+        /// </summary>
+        /// <param name="e"></param>
+        public void OnMouseMoveTraceWithPointer(MouseEventArgs e)
+        {
+            void showPointer(IntPoint p)
+            {
+                if (ThicknessCompatible)
+                {
+                    SetPixelWithThickness(_previewDrawSurface, p.X, p.Y, PointerColor, Thickness);
+                }
+                else
+                {
+                    SetPixelWithThickness(_previewDrawSurface, p.X, p.Y, PointerColor, ToolThickness.NORMAL);
+                }
+            }
+
+            if (!_showPointerFlag)
+            {
+                return;
+            }
+
+            _previewDrawSurface.Clear();
+
+            var p = e.GetPosition(_previewLayer).DivideByIntAsIntPoint(_magnification);
+
+            showPointer(p);
+            if (MirrorModeCompatible && MirrorMode != MirrorModeStates.OFF)
+            {
+                p = Mirr(p);
+                showPointer(p);
+            }
+        }
+
         public virtual void OnMouseMove(MouseEventArgs e)
         {
             return;
@@ -146,6 +210,14 @@ namespace Pixellation.Tools
         public virtual void Reset()
         {
             return;
+        }
+
+        /// <summary>
+        /// Clean not applied drawn content.
+        /// </summary>
+        public virtual void Clean()
+        {
+            _previewDrawSurface.Clear();
         }
 
         /// <summary>

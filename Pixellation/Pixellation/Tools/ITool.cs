@@ -38,6 +38,13 @@ namespace Pixellation.Tools
         /// <param name="c">Color to set.</param>
         public void SetDrawColor(Color c);
 
+        /// <summary>
+        /// Shows mousepointer with applied thickness in a form of a greyed area.
+        /// Should be called before OnMouseMove to make sure clearing preview area won't conflict.
+        /// </summary>
+        /// <param name="e"></param>
+        public void OnMouseMoveTraceWithPointer(MouseEventArgs e);
+
         public void OnMouseMove(MouseEventArgs e);
 
         public void OnMouseDown(MouseButtonEventArgs e);
@@ -77,5 +84,25 @@ namespace Pixellation.Tools
         /// Indicates if tool is used as an eraser.
         /// </summary>
         public bool EraserModeOn { get; set; }
+
+        /// <summary>
+        /// Is compatible with different thickness settings?
+        /// </summary>
+        public bool ThicknessCompatible { get; }
+
+        /// <summary>
+        /// Is compatible with different mirror mode settings?
+        /// </summary>
+        public bool MirrorModeCompatible { get; }
+
+        /// <summary>
+        /// Is compatible with erasermorde?
+        /// </summary>
+        public bool EraserModeCompatible { get; }
+
+        /// <summary>
+        /// Clean not applied drawn content.
+        /// </summary>
+        public void Clean();
     }
 }

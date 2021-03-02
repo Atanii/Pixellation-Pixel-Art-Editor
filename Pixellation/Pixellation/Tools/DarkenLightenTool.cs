@@ -12,6 +12,8 @@ namespace Pixellation.Tools
         private readonly Cursor _cursor = GetCursorFromResource("cursor-darkenlighten.cur");
         public override Cursor ToolCursor { get => _cursor; }
 
+        public override bool EraserModeCompatible => false;
+
         private DarkenLightenTool() : base()
         {
         }

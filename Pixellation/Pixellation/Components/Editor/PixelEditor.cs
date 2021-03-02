@@ -28,6 +28,7 @@ namespace Pixellation.Components.Editor
         private Visual _gridLines;
         private Visual _borderLine;
 
+        private DrawingLayer _mousePointerArea;
         private DrawingLayer _drawPreview;
 
         #endregion PrivateFields
@@ -673,8 +674,22 @@ namespace Pixellation.Components.Editor
                 return;
             }
 
+            // Making sure mouse is captured only(!) within the bounds of the drawing area.
+            // Also clearing preview assuring that no pointer or other preview graphics got stucked when leaving the drawing area.
+            var p = e.GetPosition(this).DivideByIntAsIntPoint(_magnification);
+            if (p.X >= 0 && p.Y >= 0 && p.X < MagnifiedWidth && p.Y < MagnifiedHeight)
+            {
+                CaptureMouse();
+            }
+            else
+            {
+                ReleaseMouseCapture();
+                ChosenTool.Clean();
+            }
+
             if (IsMouseCaptured)
             {
+                ChosenTool.OnMouseMoveTraceWithPointer(e);
                 ChosenTool.OnMouseMove(e);
                 RaiseImageUpdatedEvent?.Invoke();
                 ActiveLayer.InvalidateVisual();
@@ -694,8 +709,6 @@ namespace Pixellation.Components.Editor
             {
                 return;
             }
-
-            CaptureMouse();
 
             ChosenTool.SetDrawColor(PrimaryColor);
             ChosenTool.OnMouseDown(e);
@@ -717,8 +730,6 @@ namespace Pixellation.Components.Editor
                 return;
             }
 
-            CaptureMouse();
-
             ChosenTool.SetDrawColor(SecondaryColor);
             ChosenTool.OnMouseDown(e);
             RaiseImageUpdatedEvent?.Invoke();
@@ -739,8 +750,6 @@ namespace Pixellation.Components.Editor
                 return;
             }
 
-            ReleaseMouseCapture();
-
             ChosenTool.OnMouseUp(e);
             RaiseImageUpdatedEvent?.Invoke();
             ActiveLayer.InvalidateVisual();
@@ -760,8 +769,6 @@ namespace Pixellation.Components.Editor
                 return;
             }
 
-            ReleaseMouseCapture();
-
             ChosenTool.OnMouseUp(e);
             RaiseImageUpdatedEvent?.Invoke();
             ActiveLayer.InvalidateVisual();
@@ -775,7 +782,8 @@ namespace Pixellation.Components.Editor
         /// <param name="e"></param>
         public void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (IsMouseOver)
+            // Ctrl + C, Ctrl + V, Ctlr + X are only applied when the drawing area is focused with mouseposition.
+            if (IsMouseCaptured)
             {
                 base.OnKeyDown(e);
                 ChosenTool.OnKeyDown(e);

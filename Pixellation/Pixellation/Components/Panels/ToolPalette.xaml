@@ -154,19 +154,40 @@
             </Button>
         </UniformGrid>
         <Label>Tool Settings</Label>
-        <CheckBox x:Name="cbEraserMode" Margin="5" ToolTip="Use tools with transparency as color." Click="SetEraserMode">Eraser Mode</CheckBox>
+        <CheckBox x:Name="cbEraserMode" Margin="5" ToolTip="Use tools with transparency as color." Click="SetEraserMode"
+                  IsEnabled="{Binding ElementName=toolPalette, Path=ChosenTool.EraserModeCompatible}">
+            Eraser Mode
+        </CheckBox>
         <GroupBox Margin="5" Header="Mirror Mode">
             <StackPanel Orientation="Vertical" Margin="5">
-                <RadioButton x:Name="rbMMNone" GroupName="MirrorMode" Click="RbMMNone_Click" IsChecked="True">Off</RadioButton>
-                <RadioButton x:Name="rbMMHorizontal" GroupName="MirrorMode" Click="RbMMHorizontal_Click">Horizontal</RadioButton>
-                <RadioButton x:Name="rbMMVertical" GroupName="MirrorMode" Click="RbMMVertical_Click">Vertical</RadioButton>
+                <RadioButton x:Name="rbMMNone" GroupName="MirrorMode" Click="RbMMNone_Click" IsChecked="True"
+                             IsEnabled="{Binding ElementName=toolPalette, Path=ChosenTool.MirrorModeCompatible}">
+                    Off
+                </RadioButton>
+                <RadioButton x:Name="rbMMHorizontal" GroupName="MirrorMode" Click="RbMMHorizontal_Click"
+                              IsEnabled="{Binding ElementName=toolPalette, Path=ChosenTool.MirrorModeCompatible}">
+                    Horizontal
+                </RadioButton>
+                <RadioButton x:Name="rbMMVertical" GroupName="MirrorMode" Click="RbMMVertical_Click"
+                              IsEnabled="{Binding ElementName=toolPalette, Path=ChosenTool.MirrorModeCompatible}">
+                    Vertical
+                </RadioButton>
             </StackPanel>
         </GroupBox>
         <GroupBox Margin="5" Header="Thickness">
             <StackPanel Orientation="Horizontal" Margin="5">
-                <RadioButton x:Name="rbTh1" GroupName="Thickness" Click="RbTh1_Click" IsChecked="True">1x</RadioButton>
-                <RadioButton x:Name="rbTh2" GroupName="Thickness" Click="RbTh2_Click">2x</RadioButton>
-                <RadioButton x:Name="rbTh3" GroupName="Thickness" Click="RbTh3_Click">3x</RadioButton>
+                <RadioButton x:Name="rbTh1" GroupName="Thickness" Click="RbTh1_Click" IsChecked="True"
+                             IsEnabled="{Binding ElementName=toolPalette, Path=ChosenTool.ThicknessCompatible}">
+                    1x
+                </RadioButton>
+                <RadioButton x:Name="rbTh2" GroupName="Thickness" Click="RbTh2_Click"
+                             IsEnabled="{Binding ElementName=toolPalette, Path=ChosenTool.ThicknessCompatible}">
+                    2x
+                </RadioButton>
+                <RadioButton x:Name="rbTh3" GroupName="Thickness" Click="RbTh3_Click"
+                             IsEnabled="{Binding ElementName=toolPalette, Path=ChosenTool.ThicknessCompatible}">
+                    3x
+                </RadioButton>
             </StackPanel>
         </GroupBox>
     </StackPanel>

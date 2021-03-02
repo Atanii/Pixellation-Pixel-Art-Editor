@@ -10,7 +10,12 @@ namespace Pixellation.Tools
     public class SameColorPaintBucketTool : BaseMultitonTool<SameColorPaintBucketTool>
     {
         private readonly Cursor _cursor = GetCursorFromResource("cursor-paintbucket-same-color.cur");
+
         public override Cursor ToolCursor { get => _cursor; }
+
+        public override bool ThicknessCompatible => false;
+
+        public override bool MirrorModeCompatible => false;
 
         private SameColorPaintBucketTool() : base()
         {

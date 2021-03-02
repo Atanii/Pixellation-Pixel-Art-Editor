@@ -29,12 +29,19 @@ namespace Pixellation.Tools
         private bool _dragging = false;
         private bool _click = false;
 
+        public override bool ThicknessCompatible => false;
+
+        public override bool MirrorModeCompatible => false;
+
+        public override bool EraserModeCompatible => false;
+
         protected BaseSelectionTool() : base()
         {
         }
 
         public override void OnMouseDown(MouseButtonEventArgs e)
         {
+            _showPointerFlag = false;
             p0 = e.GetPosition(_previewLayer).DivideByIntAsIntPoint(_magnification);
             p1prev = p0;
 
@@ -55,7 +62,7 @@ namespace Pixellation.Tools
                 _click = true;
             }
             else
-            {
+            {   
                 _dragging = true;
                 _creating = false;
             }
@@ -66,6 +73,7 @@ namespace Pixellation.Tools
             _creating = false;
             if (_click)
             {
+                _showPointerFlag = true;
                 _dragging = false;
                 Reset();
             }
@@ -200,6 +208,11 @@ namespace Pixellation.Tools
             }
 
             _previewDrawSurface.Clear();
+        }
+
+        public override void Clean()
+        {
+            return;
         }
 
         /// <summary>

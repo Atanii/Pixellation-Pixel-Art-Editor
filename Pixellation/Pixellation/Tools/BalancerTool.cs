@@ -12,6 +12,8 @@ namespace Pixellation.Tools
         private readonly Cursor _cursor = GetCursorFromResource("cursor-balancer.cur");
         public override Cursor ToolCursor { get => _cursor; }
 
+        public override bool EraserModeCompatible => false;
+
         private BalancerTool() : base()
         {
         }

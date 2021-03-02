@@ -12,7 +12,12 @@ namespace Pixellation.Tools
     public class PaintBucketTool : BaseMultitonTool<PaintBucketTool>
     {
         private readonly Cursor _cursor = GetCursorFromResource("cursor-paintbucket.cur");
+
         public override Cursor ToolCursor { get => _cursor; }
+
+        public override bool MirrorModeCompatible => false;
+
+        public override bool ThicknessCompatible => false;
 
         private PaintBucketTool() : base()
         {

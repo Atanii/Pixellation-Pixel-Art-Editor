@@ -10,7 +10,10 @@ namespace Pixellation.Tools
     public class DitheringTool : BaseMultitonTool<DitheringTool>
     {
         private readonly Cursor _cursor = GetCursorFromResource("cursor-dithering.cur");
+
         public override Cursor ToolCursor { get => _cursor; }
+
+        public override bool ThicknessCompatible => false;
 
         private DitheringTool() : base()
         {
