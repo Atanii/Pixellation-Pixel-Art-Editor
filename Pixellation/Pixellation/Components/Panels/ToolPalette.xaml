@@ -130,6 +130,28 @@
                     <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/same-color-bucket.png"></ImageBrush>
                 </Button.Background>
             </Button>
+            <Button
+                Click="ToolButton_Click"
+                ToolTip="Lighten or Darken pixels"
+                x:Name="BtnLightenDarken"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/darkenlighten.png"></ImageBrush>
+                </Button.Background>
+            </Button>
+            <Button
+                Click="ToolButton_Click"
+                ToolTip="Balances pixels"
+                x:Name="BtnBalancer"
+                BorderThickness="0"
+                Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                <Button.Background>
+                    <ImageBrush ImageSource="pack://application:,,,/Resources/icons/tools/balancer.png"></ImageBrush>
+                </Button.Background>
+            </Button>
         </UniformGrid>
         <Label>Tool Settings</Label>
         <CheckBox x:Name="cbEraserMode" Margin="5" ToolTip="Use tools with transparency as color." Click="SetEraserMode">Eraser Mode</CheckBox>

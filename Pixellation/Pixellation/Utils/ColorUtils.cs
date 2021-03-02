@@ -197,5 +197,49 @@ namespace Pixellation.Utils
 
             return Color.FromRgb(_R, _G, _B);
         }
+
+        public static Color ModifiyLightness(Color c, float modifier)
+        {
+            var hsl = ToHSL(c.R, c.G, c.B);
+            hsl.L = Math.Clamp(hsl.L + modifier, 0f, 1f);
+            return ToRGB(hsl);
+        }
+
+        public static Color BalanceColor(Color c, bool max, byte modifier)
+        {
+            if (max)
+            {
+                byte tmp = Math.Max(c.R, Math.Max(c.G, c.B));
+                if (tmp == c.R)
+                {
+                    c.R = (byte)Math.Clamp(tmp - modifier, 0, 255);
+                }
+                else if (tmp == c.G)
+                {
+                    c.G = (byte)Math.Clamp(tmp - modifier, 0, 255);
+                }
+                else if (tmp == c.B)
+                {
+                    c.B = (byte)Math.Clamp(tmp - modifier, 0, 255);
+                }
+            }
+            else
+            {
+                byte tmp = Math.Min(c.R, Math.Min(c.G, c.B));
+                if (tmp == c.R)
+                {
+                    c.R = (byte)Math.Clamp(tmp + modifier, 0, 255);
+                }
+                else if (tmp == c.G)
+                {
+                    c.G = (byte)Math.Clamp(tmp + modifier, 0, 255);
+                }
+                else if (tmp == c.B)
+                {
+                    c.B = (byte)Math.Clamp(tmp + modifier, 0, 255);
+                }
+            }
+            return c;
+        }
     }
 }

@@ -75,6 +75,16 @@ namespace Pixellation.Components.Panels
         public static readonly ITool SameColorPaintBucket = SameColorPaintBucketTool.GetInstance(Res.PrimaryToolInstanceKey);
 
         /// <summary>
+        /// Tool for lightening and darkening pixels.
+        /// </summary>
+        public static readonly ITool DarkenLighten = DarkenLightenTool.GetInstance(Res.PrimaryToolInstanceKey);
+
+        /// <summary>
+        /// Tool for balancing pixels. With left click it decrease the maximum from the RGB of the clicked pixel, on right click the opposite.
+        /// </summary>
+        public static readonly ITool Balancer = BalancerTool.GetInstance(Res.PrimaryToolInstanceKey);
+
+        /// <summary>
         /// Borderthickness for the icon of clicked tool.
         /// </summary>
         private readonly Thickness ThicknessClicked = new Thickness() { Top = 1.0, Right = 1.0, Bottom = 1.0, Left = 1.0 };
@@ -158,6 +168,8 @@ namespace Pixellation.Components.Panels
                 "BtnSelection" => SelectionRectangle,
                 "BtnEllipseSelection" => SelectionEllipse,
                 "BtnSameColorPaintBucket" => SameColorPaintBucket,
+                "BtnLightenDarken" => DarkenLighten,
+                "BtnBalancer" => Balancer,
                 _ => Pencil,
             };
         }

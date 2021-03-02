@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Reflection;
+using System.Windows;
 
 namespace Pixellation.Components.Dialogs.AboutDialog
 {
@@ -13,6 +15,14 @@ namespace Pixellation.Components.Dialogs.AboutDialog
         public AboutDialog()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Application version number.
+        /// </summary>
+        public Version AssemblyVersion
+        {
+            get => Assembly.GetEntryAssembly().GetName().Version;
         }
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)

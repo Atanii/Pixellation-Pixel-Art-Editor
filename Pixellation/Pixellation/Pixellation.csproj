@@ -6,9 +6,9 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject></StartupObject>
-    <Version>1.0.0.1</Version>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <FileVersion>1.0.0.1</FileVersion>
+    <Version>1.0.0.2</Version>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <FileVersion>1.0.0.2</FileVersion>
     <Authors>Jeremi Emánuel Kádár</Authors>
     <Copyright>Jeremi Emánuel Kádár</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -24,6 +24,8 @@
   <ItemGroup>
     <None Remove="Resources\application-icon.ico" />
     <None Remove="Resources\application-icon.png" />
+    <None Remove="Resources\cursors\cursor-balancer.cur" />
+    <None Remove="Resources\cursors\cursor-darkenlighten.cur" />
     <None Remove="Resources\cursors\cursor-dithering.cur" />
     <None Remove="Resources\cursors\cursor-ellipse.cur" />
     <None Remove="Resources\cursors\cursor-eraser.cur" />
@@ -52,7 +54,9 @@
     <None Remove="Resources\icons\rectangle.png" />
     <None Remove="Resources\icons\swap-reverse.png" />
     <None Remove="Resources\icons\swap.png" />
+    <None Remove="Resources\icons\tools\balancer.png" />
     <None Remove="Resources\icons\tools\bucket.png" />
+    <None Remove="Resources\icons\tools\darkenlighten.png" />
     <None Remove="Resources\icons\tools\dithering.png" />
     <None Remove="Resources\icons\tools\eraser.png" />
     <None Remove="Resources\icons\tools\line.png" />
@@ -89,6 +93,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\cursors\cursor-balancer.cur" />
+    <Resource Include="Resources\cursors\cursor-darkenlighten.cur" />
     <Resource Include="Resources\cursors\cursor-dithering.cur" />
     <Resource Include="Resources\cursors\cursor-ellipse.cur" />
     <Resource Include="Resources\cursors\cursor-eraser.cur" />
@@ -108,6 +114,7 @@
     <Resource Include="Resources\icons\layers\layer-clear.png" />
     <Resource Include="Resources\icons\layers\layer-merge.png" />
     <Resource Include="Resources\icons\swap-reverse.png" />
+    <Resource Include="Resources\icons\tools\balancer.png" />
     <Resource Include="Resources\icons\tools\bucket.png" />
     <Resource Include="Resources\icons\tools\circle.png" />
     <Resource Include="Resources\icons\tools\circle_selection.png" />
@@ -116,6 +123,7 @@
     <Resource Include="Resources\icons\layers\layer-duplicate.png" />
     <Resource Include="Resources\icons\layers\layer-remove.png" />
     <Resource Include="Resources\icons\layers\layer-up.png" />
+    <Resource Include="Resources\icons\tools\darkenlighten.png" />
     <Resource Include="Resources\icons\tools\dithering.png" />
     <Resource Include="Resources\icons\tools\eraser.png" />
     <Resource Include="Resources\icons\tools\line.png" />
