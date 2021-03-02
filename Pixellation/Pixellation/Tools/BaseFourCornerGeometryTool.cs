@@ -30,13 +30,13 @@ namespace Pixellation.Tools
             DrawGeometry(_p0, _p1, ToolColor, _drawSurface);
         }
 
-        public override void OnMouseDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(MouseEventArgs e)
         {
             p0 = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
             _creating = true;
         }
 
-        public override void OnMouseUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(MouseEventArgs e)
         {
             if (_creating && _dragging)
             {

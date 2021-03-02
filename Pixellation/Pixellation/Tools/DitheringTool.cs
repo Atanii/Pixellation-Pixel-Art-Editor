@@ -65,12 +65,12 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(MouseEventArgs e)
         {
             UnlockMemento();
         }
 
-        public override void OnMouseDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(MouseEventArgs e)
         {
             Draw(e);
         }

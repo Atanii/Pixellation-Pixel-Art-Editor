@@ -19,13 +19,7 @@ namespace Pixellation.Tools
 
         protected override void DrawGeometry(IntPoint p0, IntPoint p1, Color c, WriteableBitmap surface)
         {
-            surface.DrawRectangle(p0.X, p0.Y, p1.X, p1.Y, c);
-            if (Thickness > ToolThickness.NORMAL)
-            {
-                surface.DrawRectangle(p0.X + 1, p0.Y + 1, p1.X - 1, p1.Y - 1, c);
-                if (Thickness > ToolThickness.MEDIUM)
-                    surface.DrawRectangle(p0.X + 2, p0.Y + 2, p1.X - 2, p1.Y - 2, c);
-            }
+            DrawRectangleWithThickness(p0.X, p0.Y, p1.X, p1.Y, surface, c, Thickness);
 
             if (MirrorMode != MirrorModeStates.OFF)
             {
@@ -38,13 +32,31 @@ namespace Pixellation.Tools
                 int x2 = Max(p2.X, p3.X);
                 int y2 = Max(p2.Y, p3.Y);
 
-                surface.DrawRectangle(x1, y1, x2, y2, c);
-                if (Thickness > ToolThickness.NORMAL)
-                {
-                    surface.DrawRectangle(x1 + 1, y1 + 1, x2 - 1, y2 - 1, c);
-                    if (Thickness > ToolThickness.MEDIUM)
-                        surface.DrawRectangle(x1 + 2, y1 + 2, x2 - 2, y2 - 2, c);
-                }
+                DrawRectangleWithThickness(x1, y1, x2, y2, surface, c, Thickness);
+            }
+        }
+
+        private void DrawRectangleWithThickness(int x0, int y0, int x1, int y1, WriteableBitmap surface, Color c, ToolThickness thickness)
+        {
+            // Top
+            for (int x = x0; x <= x1; x++)
+            {
+                SetPixelWithThickness(surface, x, y0, c, thickness);
+            }
+            // Bottom
+            for (int x = x0; x <= x1; x++)
+            {
+                SetPixelWithThickness(surface, x, y1, c, thickness);
+            }
+            // Left
+            for (int y = y0; y <= y1; y++)
+            {
+                SetPixelWithThickness(surface, x0, y, c, thickness);
+            }
+            // Right
+            for (int y = y0; y <= y1; y++)
+            {
+                SetPixelWithThickness(surface, x1, y, c, thickness);
             }
         }
     }

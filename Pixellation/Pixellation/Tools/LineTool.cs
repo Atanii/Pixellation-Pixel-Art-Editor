@@ -40,13 +40,13 @@ namespace Pixellation.Tools
             );
         }
 
-        public override void OnMouseDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(MouseEventArgs e)
         {
             p0 = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
             _creating = true;
         }
 
-        public override void OnMouseUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(MouseEventArgs e)
         {
             Draw();
             _creating = false;

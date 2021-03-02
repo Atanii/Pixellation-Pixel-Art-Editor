@@ -39,7 +39,7 @@ namespace Pixellation.Tools
         {
         }
 
-        public override void OnMouseDown(MouseButtonEventArgs e)
+        public override void OnMouseDown(MouseEventArgs e)
         {
             _showPointerFlag = false;
             p0 = e.GetPosition(_previewLayer).DivideByIntAsIntPoint(_magnification);
@@ -68,7 +68,7 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(MouseEventArgs e)
         {
             _creating = false;
             if (_click)

@@ -27,7 +27,7 @@ namespace Pixellation.Tools
         /// Getting the cliked point of the area.
         /// </summary>
         /// <param name="e"></param>
-        private void Draw(MouseButtonEventArgs e)
+        private void Draw(MouseEventArgs e)
         {
             SaveLayerMemento();
 
@@ -99,7 +99,7 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(MouseEventArgs e)
         {
             Draw(e);
         }

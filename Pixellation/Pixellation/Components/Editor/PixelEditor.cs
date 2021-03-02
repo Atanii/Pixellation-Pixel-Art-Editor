@@ -1,5 +1,6 @@
 ﻿using Pixellation.Components.Editor.Event;
 using Pixellation.Interfaces;
+using Pixellation.Models;
 using Pixellation.Properties;
 using Pixellation.Tools;
 using Pixellation.Utils;
@@ -28,7 +29,6 @@ namespace Pixellation.Components.Editor
         private Visual _gridLines;
         private Visual _borderLine;
 
-        private DrawingLayer _mousePointerArea;
         private DrawingLayer _drawPreview;
 
         #endregion PrivateFields
@@ -571,6 +571,12 @@ namespace Pixellation.Components.Editor
 
         #endregion Misc overrides
 
+        #region Misc
+
+        public bool InBounds(IntPoint p) => p.X >= 0 && p.Y >= 0 && p.X < PixelWidth && p.Y < PixelHeight;
+
+        #endregion Misc
+
         #region Create visuals
 
         /// <summary>
@@ -677,14 +683,15 @@ namespace Pixellation.Components.Editor
             // Making sure mouse is captured only(!) within the bounds of the drawing area.
             // Also clearing preview assuring that no pointer or other preview graphics got stucked when leaving the drawing area.
             var p = e.GetPosition(this).DivideByIntAsIntPoint(_magnification);
-            if (p.X >= 0 && p.Y >= 0 && p.X < MagnifiedWidth && p.Y < MagnifiedHeight)
+            if (InBounds(p))
             {
                 CaptureMouse();
             }
-            else
+            else if (e.LeftButton != MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
             {
+                ChosenTool.OnMouseUp(e);
                 ReleaseMouseCapture();
-                ChosenTool.Clean();
+                RaiseImageUpdatedEvent?.Invoke();
             }
 
             if (IsMouseCaptured)
@@ -710,10 +717,13 @@ namespace Pixellation.Components.Editor
                 return;
             }
 
-            ChosenTool.SetDrawColor(PrimaryColor);
-            ChosenTool.OnMouseDown(e);
-            RaiseImageUpdatedEvent?.Invoke();
-            ActiveLayer.InvalidateVisual();
+            if (IsMouseCaptured)
+            {
+                ChosenTool.SetDrawColor(PrimaryColor);
+                ChosenTool.OnMouseDown(e);
+                RaiseImageUpdatedEvent?.Invoke();
+                ActiveLayer.InvalidateVisual();
+            }
         }
 
         /// <summary>
@@ -730,10 +740,13 @@ namespace Pixellation.Components.Editor
                 return;
             }
 
-            ChosenTool.SetDrawColor(SecondaryColor);
-            ChosenTool.OnMouseDown(e);
-            RaiseImageUpdatedEvent?.Invoke();
-            ActiveLayer.InvalidateVisual();
+            if (IsMouseCaptured)
+            {
+                ChosenTool.SetDrawColor(SecondaryColor);
+                ChosenTool.OnMouseDown(e);
+                RaiseImageUpdatedEvent?.Invoke();
+                ActiveLayer.InvalidateVisual();
+            }
         }
 
         /// <summary>
@@ -753,6 +766,12 @@ namespace Pixellation.Components.Editor
             ChosenTool.OnMouseUp(e);
             RaiseImageUpdatedEvent?.Invoke();
             ActiveLayer.InvalidateVisual();
+
+            var p = e.GetPosition(this).DivideByIntAsIntPoint(_magnification);
+            if (!InBounds(p))
+            {
+                ReleaseMouseCapture();
+            }
         }
 
         /// <summary>
@@ -772,6 +791,12 @@ namespace Pixellation.Components.Editor
             ChosenTool.OnMouseUp(e);
             RaiseImageUpdatedEvent?.Invoke();
             ActiveLayer.InvalidateVisual();
+
+            var p = e.GetPosition(this).DivideByIntAsIntPoint(_magnification);
+            if (!InBounds(p))
+            {
+                ReleaseMouseCapture();
+            }
         }
 
         /// <summary>

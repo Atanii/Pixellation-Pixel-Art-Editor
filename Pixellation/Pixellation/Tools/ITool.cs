@@ -47,9 +47,9 @@ namespace Pixellation.Tools
 
         public void OnMouseMove(MouseEventArgs e);
 
-        public void OnMouseDown(MouseButtonEventArgs e);
+        public void OnMouseDown(MouseEventArgs e);
 
-        public void OnMouseUp(MouseButtonEventArgs e);
+        public void OnMouseUp(MouseEventArgs e);
 
         public void OnKeyDown(KeyEventArgs e);
 

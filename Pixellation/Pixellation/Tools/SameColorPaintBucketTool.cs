@@ -25,7 +25,7 @@ namespace Pixellation.Tools
         /// Gets the clicked pixel and start coloring.
         /// </summary>
         /// <param name="e"></param>
-        private void Draw(MouseButtonEventArgs e)
+        private void Draw(MouseEventArgs e)
         {
             SaveLayerMemento();
 
@@ -56,7 +56,7 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseUp(MouseButtonEventArgs e)
+        public override void OnMouseUp(MouseEventArgs e)
         {
             Draw(e);
         }

@@ -147,16 +147,14 @@ namespace Pixellation.Tools
             ToolColor = c.ToMediaColor();
         }
 
-        protected static bool IsMouseDown(MouseButtonEventArgs e) => e.LeftButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed;
-
         protected static bool IsMouseDown(MouseEventArgs e) => e.LeftButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed;
 
-        public virtual void OnMouseDown(MouseButtonEventArgs e)
+        public virtual void OnMouseDown(MouseEventArgs e)
         {
             return;
         }
 
-        public virtual void OnMouseUp(MouseButtonEventArgs e)
+        public virtual void OnMouseUp(MouseEventArgs e)
         {
             return;
         }
