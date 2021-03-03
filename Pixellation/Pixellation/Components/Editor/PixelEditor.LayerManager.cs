@@ -96,23 +96,18 @@ namespace Pixellation.Components.Editor
             if (_onionLayer != null)
             {
                 RemoveVisualChild(_onionLayer);
-                _onionLayer = null;
             }
             if (_drawPreview != null)
             {
                 RemoveVisualChild(_drawPreview);
-                _drawPreview = null;
             }
             if (_borderLine != null)
             {
                 RemoveVisualChild(_borderLine);
-                _borderLine = null;
             }
-
             if (_gridLines != null)
             {
                 RemoveVisualChild(_gridLines);
-                _gridLines = null;
             }
 
             LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.CLEAR, -1));
@@ -168,30 +163,44 @@ namespace Pixellation.Components.Editor
         }
 
         /// <summary>
-        /// Recreates layer used for drawpreview.
+        /// Refreshes layer used for drawpreview.
         /// </summary>
         public void ResetPreviewLayer()
         {
             if (_drawPreview != null)
             {
                 RemoveVisualChild(_drawPreview);
+                AddVisualChild(_drawPreview);
             }
-            _drawPreview = new DrawingLayer(this, "DrawPreview");
-            AddVisualChild(_drawPreview);
         }
 
         /// <summary>
-        /// Recreates onionlayer.
+        /// Refreshes layer used for onion mode.
         /// </summary>
         public void ResetOnionLayer()
         {
             if (_onionLayer != null)
             {
                 RemoveVisualChild(_onionLayer);
-                _onionLayer.Clear();
+                AddVisualChild(_onionLayer);
+                RefreshOnionLayer();
             }
+        }
+
+        /// <summary>
+        /// (Re)initializes previewlayer.
+        /// </summary>
+        private void InitPreviewLayer()
+        {
+            _drawPreview = new DrawingLayer(this, "DrawPreview");
+        }
+
+        /// <summary>
+        /// (Re)initializes onionlayer.
+        /// </summary>
+        private void InitOnionLayer()
+        {
             OnionLayer = new DrawingLayer(this, "Onion", true, 0.5f);
-            AddVisualChild(_onionLayer);
         }
 
         /// <summary>
@@ -202,13 +211,11 @@ namespace Pixellation.Components.Editor
             if (_borderLine != null)
             {
                 RemoveVisualChild(_borderLine);
-                _borderLine = null;
             }
 
             if (_gridLines != null)
             {
                 RemoveVisualChild(_gridLines);
-                _gridLines = null;
             }
 
             if (ShowBorder)
@@ -280,6 +287,8 @@ namespace Pixellation.Components.Editor
             {
                 l.Rotate(counterClockWise ? 270 : 90);
             }
+            _drawPreview.Rotate(counterClockWise ? 270 : 90);
+            _onionLayer.Rotate(counterClockWise ? 270 : 90);
 
             var tmp = PixelHeight;
             PixelHeight = PixelWidth;
@@ -299,6 +308,8 @@ namespace Pixellation.Components.Editor
             {
                 l.Resize(newWidth, newHeight);
             }
+            _drawPreview.Resize(newWidth, newHeight);
+            _onionLayer.Resize(newWidth, newHeight);
 
             PixelWidth = newWidth;
             PixelHeight = newHeight;

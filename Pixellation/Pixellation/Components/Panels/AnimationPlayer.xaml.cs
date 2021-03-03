@@ -200,10 +200,7 @@ namespace Pixellation.Components.Panels
                 _canvasRect
             );
 
-            drawingContext.DrawImage(
-                _frames[ActiveFrameIndex++].Bitmap,
-                _canvasRect
-            );
+            _frames[ActiveFrameIndex++].Render(drawingContext, _canvasRect.Width, _canvasRect.Height);
 
             drawingContext.Close();
 

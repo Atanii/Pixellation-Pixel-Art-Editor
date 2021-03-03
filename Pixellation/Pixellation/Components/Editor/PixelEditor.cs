@@ -280,7 +280,12 @@ namespace Pixellation.Components.Editor
             RaiseToolChangeEvent += UpdateToolProperties;
             VisualHelperSettingsChanged += VisualHelperRefresh;
 
+            // Default layer
             AddLayer(new DrawingLayer(this, DefaultLayerName));
+            // Onion layer
+            InitOnionLayer();
+            // Preview layer
+            InitPreviewLayer();
 
             SetActiveLayer();
         }
@@ -481,6 +486,7 @@ namespace Pixellation.Components.Editor
         {
             var size = new Size(PixelWidth * Magnification, PixelHeight * Magnification);
             MeasureAllLayer(size);
+            _drawPreview.Measure(size);
             return size;
         }
 
@@ -492,6 +498,7 @@ namespace Pixellation.Components.Editor
         protected override Size ArrangeOverride(Size finalSize)
         {
             ArrangeAllLayer(new Rect(finalSize));
+            _drawPreview.Arrange(new Rect(finalSize));
             return finalSize;
         }
 
@@ -698,6 +705,7 @@ namespace Pixellation.Components.Editor
                 ReleaseMouseCapture();
                 RaiseImageUpdatedEvent?.Invoke();
                 ActiveLayer.InvalidateVisual();
+                _drawPreview.InvalidateVisual();
             }
 
             if (IsMouseCaptured)
@@ -706,6 +714,7 @@ namespace Pixellation.Components.Editor
                 ChosenTool.OnMouseMove(e);
                 RaiseImageUpdatedEvent?.Invoke();
                 ActiveLayer.InvalidateVisual();
+                _drawPreview.InvalidateVisual();
             }
         }
 
