@@ -573,6 +573,11 @@ namespace Pixellation.Components.Editor
 
         #region Misc
 
+        /// <summary>
+        /// Checks if the given point is inside the bounds of the edited image.
+        /// </summary>
+        /// <param name="p">Point to check.</param>
+        /// <returns>True if point is contained, false otherwise.</returns>
         public bool InBounds(IntPoint p) => p.X >= 0 && p.Y >= 0 && p.X < PixelWidth && p.Y < PixelHeight;
 
         #endregion Misc
@@ -692,6 +697,7 @@ namespace Pixellation.Components.Editor
                 ChosenTool.OnMouseUp(e);
                 ReleaseMouseCapture();
                 RaiseImageUpdatedEvent?.Invoke();
+                ActiveLayer.InvalidateVisual();
             }
 
             if (IsMouseCaptured)
@@ -796,6 +802,23 @@ namespace Pixellation.Components.Editor
             if (!InBounds(p))
             {
                 ReleaseMouseCapture();
+            }
+        }
+
+        /// <summary>
+        /// Signals to <see cref="PixelEditor"/> if the mouse left the containerelement.
+        /// Since this class uses an overriden measure, a signal from the container element is needed in case of enlarged, scolled images.
+        /// </summary>
+        /// <param name="left">True if mouse left the area.</param>
+        /// <param name="e"></param>
+        public void MouseLeftContainerElement(bool left, MouseEventArgs e)
+        {
+            if (left && IsMouseCaptured)
+            {
+                ChosenTool.OnMouseUp(e);
+                ReleaseMouseCapture();
+                RaiseImageUpdatedEvent?.Invoke();
+                ActiveLayer.InvalidateVisual();
             }
         }
 

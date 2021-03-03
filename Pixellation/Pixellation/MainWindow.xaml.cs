@@ -3,6 +3,7 @@ using Pixellation.Components.Dialogs;
 using Pixellation.Components.Dialogs.AboutDialog;
 using Pixellation.Utils;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -102,6 +103,16 @@ namespace Pixellation
 
             // Automaximize at start
             WindowState = WindowState.Maximized;
+
+            // Signals to PixelEditor if mouse left the container element.
+            canvasScroll.MouseMove += (sender, mouseArgs) =>
+            {
+                var p = mouseArgs.GetPosition(canvasScroll);
+                canvasImage.MouseLeftContainerElement(
+                    !(p.X >= 0 && p.Y >= 0 && p.X < canvasScroll.ActualWidth && p.Y < canvasScroll.ActualHeight),
+                    mouseArgs
+                );
+            };
         }
 
         /// <summary>
