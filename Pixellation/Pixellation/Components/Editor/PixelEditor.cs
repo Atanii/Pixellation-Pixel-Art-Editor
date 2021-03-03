@@ -21,8 +21,9 @@ namespace Pixellation.Components.Editor
     {
         #region PrivateFields
 
-        private const string FramesCaretakerKey = "FramesCaretaker";
-        public const string DefaultLayerName = "default";
+        private readonly string FramesCaretakerKey = Properties.Resources.FramesCaretakerKey;
+        public readonly string DefaultLayerName = Properties.Resources.DefaultLayerName;
+        public readonly string DefaultFrameName = Properties.Resources.DefaultFrameName;
 
         private readonly PixellationCaretakerManager _caretaker = PixellationCaretakerManager.GetInstance();
 
@@ -270,7 +271,7 @@ namespace Pixellation.Components.Editor
 
             _caretaker.InitCaretaker(FramesCaretakerKey, autoActivateIfInitial: false);
 
-            AddDrawingFrame(0, DefaultLayerName);
+            AddDrawingFrame(0, DefaultFrameName);
 
             PixelWidth = Settings.Default.DefaultImageSize;
             PixelHeight = Settings.Default.DefaultImageSize;
@@ -306,10 +307,14 @@ namespace Pixellation.Components.Editor
 
             _caretaker.InitCaretaker(FramesCaretakerKey, autoActivateIfInitial: false);
 
-            AddDrawingFrame(0, "Default");
+            AddDrawingFrame(0, DefaultFrameName);
 
             PixelWidth = pixelWidth;
             PixelHeight = pixelHeight;
+
+            InitOnionLayer();
+            InitPreviewLayer();
+
             Magnification = Settings.Default.DefaultMagnification;
 
             AddLayer(new DrawingLayer(this, DefaultLayerName));
@@ -330,10 +335,14 @@ namespace Pixellation.Components.Editor
 
             _caretaker.InitCaretaker(FramesCaretakerKey, autoActivateIfInitial: false);
 
-            AddDrawingFrame(0, "Default");
+            AddDrawingFrame(0, DefaultFrameName);
 
             PixelWidth = imageToEdit.PixelWidth;
             PixelHeight = imageToEdit.PixelHeight;
+
+            InitOnionLayer();
+            InitPreviewLayer();
+
             Magnification = Settings.Default.DefaultMagnification;
 
             if (imageToEdit == null)
@@ -365,6 +374,9 @@ namespace Pixellation.Components.Editor
 
             PixelWidth = frames[0].Layers[0].Bitmap.PixelWidth;
             PixelHeight = frames[0].Layers[0].Bitmap.PixelHeight;
+
+            InitOnionLayer();
+            InitPreviewLayer();
 
             AddDrawingFrames(frames);
 
@@ -486,7 +498,6 @@ namespace Pixellation.Components.Editor
         {
             var size = new Size(PixelWidth * Magnification, PixelHeight * Magnification);
             MeasureAllLayer(size);
-            _drawPreview.Measure(size);
             return size;
         }
 
@@ -498,7 +509,6 @@ namespace Pixellation.Components.Editor
         protected override Size ArrangeOverride(Size finalSize)
         {
             ArrangeAllLayer(new Rect(finalSize));
-            _drawPreview.Arrange(new Rect(finalSize));
             return finalSize;
         }
 

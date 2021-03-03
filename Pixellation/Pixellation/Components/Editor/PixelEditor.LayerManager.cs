@@ -96,18 +96,23 @@ namespace Pixellation.Components.Editor
             if (_onionLayer != null)
             {
                 RemoveVisualChild(_onionLayer);
+                _onionLayer = null;
             }
             if (_drawPreview != null)
             {
                 RemoveVisualChild(_drawPreview);
+                _drawPreview = null;
             }
+
             if (_borderLine != null)
             {
                 RemoveVisualChild(_borderLine);
+                _borderLine = null;
             }
             if (_gridLines != null)
             {
                 RemoveVisualChild(_gridLines);
+                _gridLines = null;
             }
 
             LayerListChanged?.Invoke(new PixelEditorLayerEventArgs(IPixelEditorEventType.CLEAR, -1));
@@ -211,11 +216,13 @@ namespace Pixellation.Components.Editor
             if (_borderLine != null)
             {
                 RemoveVisualChild(_borderLine);
+                _borderLine = null;
             }
 
             if (_gridLines != null)
             {
                 RemoveVisualChild(_gridLines);
+                _gridLines = null;
             }
 
             if (ShowBorder)
@@ -294,7 +301,7 @@ namespace Pixellation.Components.Editor
             PixelHeight = PixelWidth;
             PixelWidth = tmp;
 
-            UpdateMagnification();
+            RefreshVisualsThenSignalUpdate();
         }
 
         /// <summary>

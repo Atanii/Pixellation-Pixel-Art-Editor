@@ -61,6 +61,24 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 0.
+        /// </summary>
+        public static string DefaultFrameName {
+            get {
+                return ResourceManager.GetString("DefaultFrameName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        public static string DefaultLayerName {
+            get {
+                return ResourceManager.GetString("DefaultLayerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unsaved Project.
         /// </summary>
         public static string DefaultProjectTitle {
@@ -93,6 +111,15 @@ namespace Pixellation.Properties {
         public static string ExtensionForProjectFilePackage {
             get {
                 return ResourceManager.GetString("ExtensionForProjectFilePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FramesCaretaker.
+        /// </summary>
+        public static string FramesCaretakerKey {
+            get {
+                return ResourceManager.GetString("FramesCaretakerKey", resourceCulture);
             }
         }
         

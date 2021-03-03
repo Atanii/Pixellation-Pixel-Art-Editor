@@ -8,7 +8,7 @@ namespace Pixellation.Tools
     /// <summary>
     /// Draws an ellipse.
     /// </summary>
-    public class EllipseTool : BaseFourCornerGeometryTool<EllipseTool>
+    public class EllipseTool : BaseFourPointGeometryTool<EllipseTool>
     {
         private readonly Cursor _cursor = GetCursorFromResource("cursor-ellipse.cur");
         public override Cursor ToolCursor { get => _cursor; }

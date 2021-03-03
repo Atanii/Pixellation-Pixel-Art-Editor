@@ -10,7 +10,7 @@ namespace Pixellation.Tools
     /// Base class for all four-point geometry drawing tools in Pixellation.
     /// </summary>
     /// <typeparam name="T">Type of inheriting class. Needed for multiton pattern.</typeparam>
-    public abstract class BaseFourCornerGeometryTool<T> : BaseMultitonTool<T> where T : class, ITool
+    public abstract class BaseFourPointGeometryTool<T> : BaseMultitonTool<T> where T : class, ITool
     {
         private IntPoint p0;
         private IntPoint p1;
@@ -18,7 +18,7 @@ namespace Pixellation.Tools
         private bool _creating = false;
         private bool _dragging = false;
 
-        protected BaseFourCornerGeometryTool() : base()
+        protected BaseFourPointGeometryTool() : base()
         {
         }
 

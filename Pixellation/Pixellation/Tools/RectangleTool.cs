@@ -8,7 +8,7 @@ namespace Pixellation.Tools
     /// <summary>
     /// Draws a rectangle.
     /// </summary>
-    public class RectangleTool : BaseFourCornerGeometryTool<RectangleTool>
+    public class RectangleTool : BaseFourPointGeometryTool<RectangleTool>
     {
         private readonly Cursor _cursor = GetCursorFromResource("cursor-rectangle.cur");
         public override Cursor ToolCursor { get => _cursor; }
