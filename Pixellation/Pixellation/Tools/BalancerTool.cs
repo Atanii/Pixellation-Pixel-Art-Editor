@@ -24,9 +24,14 @@ namespace Pixellation.Tools
         /// <param name="e"></param>
         private void Draw(MouseEventArgs e)
         {
-            SaveLayerMemento(true);
-
             var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+
+            if (OutOfBounds(p) || _drawSurface.GetPixel(p.X, p.Y).A == 0)
+            {
+                return;
+            }
+
+            SaveLayerMemento(true);
 
             byte modifier = 10;
             bool max = true;

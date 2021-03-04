@@ -39,6 +39,8 @@ namespace Pixellation.Tools
                 WriteableBitmapExtensions.BlendMode.Alpha
             );
 
+            _previewDrawSurface.Clear();
+
             OnRaiseToolEvent(new ToolEventArgs());
         }
 

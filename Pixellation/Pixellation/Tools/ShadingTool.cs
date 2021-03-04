@@ -7,14 +7,14 @@ namespace Pixellation.Tools
     /// <summary>
     /// Tool for lightening and darkening pixels.
     /// </summary>
-    public class DarkenLightenTool : BaseMultitonTool<DarkenLightenTool>
+    public class ShadingTool : BaseMultitonTool<ShadingTool>
     {
         private readonly Cursor _cursor = GetCursorFromResource("cursor-darkenlighten.cur");
         public override Cursor ToolCursor { get => _cursor; }
 
         public override bool EraserModeCompatible => false;
 
-        private DarkenLightenTool() : base()
+        private ShadingTool() : base()
         {
         }
 
@@ -24,9 +24,14 @@ namespace Pixellation.Tools
         /// <param name="e"></param>
         private void Draw(MouseEventArgs e)
         {
-            SaveLayerMemento(true);
-
             var p = e.GetPosition(_layer).DivideByIntAsIntPoint(_magnification);
+
+            if (OutOfBounds(p) || _drawSurface.GetPixel(p.X, p.Y).A == 0)
+            {
+                return;
+            }
+
+            SaveLayerMemento(true);
 
             float modifier = 0.01f;
             if (e.RightButton == MouseButtonState.Pressed)

@@ -293,25 +293,6 @@ namespace Pixellation.Components.Editor
         }
 
         /// <summary>
-        /// Draws a X cross on the top of this frame element.
-        /// </summary>
-        /// <param name="dc"></param>
-        private void DrawX(DrawingContext dc)
-        {
-            dc.DrawLine(
-                BorderPen,
-                new Point(0, 0),
-                new Point(Width, Height)
-            );
-
-            dc.DrawLine(
-                BorderPen,
-                new Point(0, Height),
-                new Point(Width, 0)
-            );
-        }
-
-        /// <summary>
         /// Renders layers and other information such as <see cref="FrameName"/>.
         /// </summary>
         /// <param name="dc"></param>
@@ -319,22 +300,22 @@ namespace Pixellation.Components.Editor
         {
             base.OnRender(dc);
 
-            if (!Visible)
-            {
-                DrawX(dc);
-            }
-
             DrawBackground(dc, 0, 0, Width, Height);
 
             if (Layers != null && Layers.Count > 0)
             {
-                DrawLayers(dc);
+                DrawLayers(dc, opacity: Visible ? 1f : 0.25f);
             }
 
             var dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
 
             DrawText(dc, 0, Height + 10, TextDrawColor, FrameName, dpi, 15);
-            DrawText(dc, 0, Height + 25, TextDrawColor, Visible ? "Visible" : "Hidden", dpi, 15);
+
+            if (!Visible)
+            {
+                DrawBackground(dc, 0, 0, Width, Height);
+                DrawText(dc, Width / 5, Height / 2.5, TextDrawColor, "Hidden", dpi, 16);
+            }
 
             if (_owner.ActiveFrameId == Id)
             {

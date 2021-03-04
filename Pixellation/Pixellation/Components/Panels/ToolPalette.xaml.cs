@@ -77,7 +77,7 @@ namespace Pixellation.Components.Panels
         /// <summary>
         /// Tool for lightening and darkening pixels.
         /// </summary>
-        public static readonly ITool DarkenLighten = DarkenLightenTool.GetInstance(Res.PrimaryToolInstanceKey);
+        public static readonly ITool DarkenLighten = ShadingTool.GetInstance(Res.PrimaryToolInstanceKey);
 
         /// <summary>
         /// Tool for balancing pixels. With left click it decrease the maximum from the RGB of the clicked pixel, on right click the opposite.

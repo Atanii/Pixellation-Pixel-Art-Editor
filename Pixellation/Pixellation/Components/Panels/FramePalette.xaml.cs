@@ -52,8 +52,12 @@ namespace Pixellation.Components.Panels
         public FramePalette()
         {
             InitializeComponent();
+            // Image update -> frame render update
             RaiseFrameManagerPropertyPropertyInitialized += (s, e) => { Refresh(); };
+            // Frames merged, moved, ...
             PixelEditor.FrameListChanged += (e) => { Refresh(); };
+            // Name changed, ...
+            DrawingFrame.PropertyUpdated += Refresh;
         }
         
         /// <summary>

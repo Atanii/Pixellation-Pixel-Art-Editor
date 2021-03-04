@@ -101,7 +101,7 @@ namespace Pixellation.Tools
             }
         }
 
-        public override void OnMouseUp(MouseEventArgs e)
+        public override void OnMouseDown(MouseEventArgs e)
         {
             Draw(e);
         }

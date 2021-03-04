@@ -28,6 +28,7 @@ namespace Pixellation.Tools
             var _p0 = new IntPoint(Min(p0.X, p1.X), Min(p0.Y, p1.Y));
             var _p1 = new IntPoint(Max(p0.X, p1.X), Max(p0.Y, p1.Y));
             DrawGeometry(_p0, _p1, ToolColor, _drawSurface);
+            _previewDrawSurface.Clear();
         }
 
         public override void OnMouseDown(MouseEventArgs e)
