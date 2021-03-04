@@ -98,6 +98,7 @@ namespace Pixellation.Components.Editor
             {
                 _visible = value;
                 InvalidateVisual();
+                PropertyUpdated?.Invoke();
             }
         }
 
