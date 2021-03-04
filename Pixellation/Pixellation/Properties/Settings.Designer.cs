@@ -169,7 +169,7 @@ namespace Pixellation.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Title: Pixellation Pixelart Editor")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Pixellation Pixelart Editor")]
         public string AboutTitle {
             get {
                 return ((string)(this["AboutTitle"]));

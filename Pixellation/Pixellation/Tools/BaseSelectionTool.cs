@@ -190,6 +190,7 @@ namespace Pixellation.Tools
                 var dest = new Rect(_selectionArea.X, _selectionArea.Y, _selectionArea.Width, _selectionArea.Height);
                 var cpy = new Rect(_copyArea.X, _copyArea.Y, _copyArea.Width, _copyArea.Height);
                 _drawSurface.Blit(dest, _copySrc, cpy, WriteableBitmapExtensions.BlendMode.Alpha);
+                OnRaiseToolEvent(new ToolEventArgs());
             }
         }
 

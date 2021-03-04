@@ -34,6 +34,8 @@ namespace Pixellation.Tools
 
                 DrawRectangleWithThickness(x1, y1, x2, y2, surface, c, Thickness);
             }
+
+            OnRaiseToolEvent(new ToolEventArgs());
         }
 
         private void DrawRectangleWithThickness(int x0, int y0, int x1, int y1, WriteableBitmap surface, Color c, ToolThickness thickness)

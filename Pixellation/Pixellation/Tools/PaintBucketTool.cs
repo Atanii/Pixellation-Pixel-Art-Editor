@@ -37,6 +37,8 @@ namespace Pixellation.Tools
             var replacementColor = ToolColor;
 
             FloodFill(p, targetColor, replacementColor);
+
+            OnRaiseToolEvent(new ToolEventArgs());
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace Pixellation.Tools
+﻿using System.Drawing;
+
+namespace Pixellation.Tools
 {
     /// <summary>
     /// Args for event regarding tools.
@@ -13,6 +15,17 @@
         /// <summary>
         /// New or picked color.
         /// </summary>
-        public System.Drawing.Color Value { get; set; } = default;
+        public Color Value { get; set; } = default;
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        /// <param name="type">Type of event that happened.</param>
+        /// <param name="c">Color accompaining the event.</param>
+        public ToolEventArgs(ToolEventType type = ToolEventType.DRAW, Color c = default)
+        {
+            Type = type;
+            Value = c;
+        }
     }
 }

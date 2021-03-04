@@ -31,6 +31,8 @@ namespace Pixellation.Tools
                 p = Mirr(p);
                 SetPixelWithThickness(_drawSurface, p.X, p.Y, ToolColor, Thickness);
             }
+
+            OnRaiseToolEvent(new ToolEventArgs());
         }
 
         public override void OnMouseUp(MouseEventArgs e)

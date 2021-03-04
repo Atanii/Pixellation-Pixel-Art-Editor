@@ -29,6 +29,8 @@ namespace Pixellation.Tools
                     surface, c, Thickness
                 );
             }
+
+            OnRaiseToolEvent(new ToolEventArgs());
         }
 
         /// <summary>

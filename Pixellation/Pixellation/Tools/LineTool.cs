@@ -38,6 +38,8 @@ namespace Pixellation.Tools
                 drawArea,
                 WriteableBitmapExtensions.BlendMode.Alpha
             );
+
+            OnRaiseToolEvent(new ToolEventArgs());
         }
 
         public override void OnMouseDown(MouseEventArgs e)

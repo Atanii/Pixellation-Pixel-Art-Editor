@@ -42,7 +42,7 @@ namespace Pixellation.Components.Preview
             // Due to operations like layer merging.
             PixelEditor.LayerListChanged += (a) => InvalidateVisual();
             // Drawing.
-            PixelEditor.RaiseImageUpdatedEvent += InvalidateVisual;
+            PixelEditor.RaiseImageUpdatedEvent += () => InvalidateVisual();
             // New bitmap set.
             DrawingLayer.PropertyUpdated += () => InvalidateVisual();
         }

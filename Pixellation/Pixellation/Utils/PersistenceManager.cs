@@ -109,8 +109,9 @@ namespace Pixellation.Utils
         /// </summary>
         /// <param name="frames">List of <see cref="DrawingFrame"/> to save.</param>
         /// <param name="filePath">Savepath.</param>
+        /// <param name="projectName">Name of the project to save.</param>
         /// <returns>True if successful, otherwise false.</returns>
-        public bool SaveProject(List<DrawingFrame> frames, string filePath = "")
+        public bool SaveProject(List<DrawingFrame> frames, string projectName, string filePath = "")
         {
             if (filePath == "" && (!AlreadySaved || PreviousFullPath == ""))
             {
@@ -124,7 +125,7 @@ namespace Pixellation.Utils
             var filePaths = new List<string>();
 
             // Saving ProjectModel
-            var pm = ModelConverterExtensions.MakeProjectModel(filePath.GetFileNameWithoutExtension(), frames);
+            var pm = ModelConverterExtensions.MakeProjectModel(projectName, frames);
             var projectInfoPath = Resources.PackageContentFileNameForProjectData + "." + Resources.ExtensionForDataFile;
             var jsonString = JsonSerializer.Serialize(pm);
             File.WriteAllText(projectInfoPath, jsonString);

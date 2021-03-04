@@ -6,6 +6,7 @@ using Pixellation.Tools;
 using Pixellation.Utils;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -312,10 +313,10 @@ namespace Pixellation.Components.Editor
             PixelWidth = pixelWidth;
             PixelHeight = pixelHeight;
 
+            Magnification = Settings.Default.DefaultMagnification;
+
             InitOnionLayer();
             InitPreviewLayer();
-
-            Magnification = Settings.Default.DefaultMagnification;
 
             AddLayer(new DrawingLayer(this, DefaultLayerName));
 
@@ -340,10 +341,10 @@ namespace Pixellation.Components.Editor
             PixelWidth = imageToEdit.PixelWidth;
             PixelHeight = imageToEdit.PixelHeight;
 
+            Magnification = Settings.Default.DefaultMagnification;
+
             InitOnionLayer();
             InitPreviewLayer();
-
-            Magnification = Settings.Default.DefaultMagnification;
 
             if (imageToEdit == null)
             {
@@ -375,12 +376,12 @@ namespace Pixellation.Components.Editor
             PixelWidth = frames[0].Layers[0].Bitmap.PixelWidth;
             PixelHeight = frames[0].Layers[0].Bitmap.PixelHeight;
 
-            InitOnionLayer();
-            InitPreviewLayer();
-
             AddDrawingFrames(frames);
 
             Magnification = Settings.Default.DefaultMagnification;
+
+            InitOnionLayer();
+            InitPreviewLayer();
 
             SetActiveLayer();
         }
@@ -671,6 +672,10 @@ namespace Pixellation.Components.Editor
         {
             switch (e.Type)
             {
+                case ToolEventType.DRAW:
+                    RaiseImageUpdatedEvent?.Invoke();
+                    break;
+
                 case ToolEventType.PRIMARYCOLOR:
                     PrimaryColor = e.Value;
                     break;
@@ -713,18 +718,12 @@ namespace Pixellation.Components.Editor
             {
                 ChosenTool.OnMouseUp(e);
                 ReleaseMouseCapture();
-                RaiseImageUpdatedEvent?.Invoke();
-                ActiveLayer.InvalidateVisual();
-                _drawPreview.InvalidateVisual();
             }
 
             if (IsMouseCaptured)
             {
                 ChosenTool.OnMouseMoveTraceWithPointer(e);
                 ChosenTool.OnMouseMove(e);
-                RaiseImageUpdatedEvent?.Invoke();
-                ActiveLayer.InvalidateVisual();
-                _drawPreview.InvalidateVisual();
             }
         }
 
@@ -746,8 +745,6 @@ namespace Pixellation.Components.Editor
             {
                 ChosenTool.SetDrawColor(PrimaryColor);
                 ChosenTool.OnMouseDown(e);
-                RaiseImageUpdatedEvent?.Invoke();
-                ActiveLayer.InvalidateVisual();
             }
         }
 
@@ -769,8 +766,6 @@ namespace Pixellation.Components.Editor
             {
                 ChosenTool.SetDrawColor(SecondaryColor);
                 ChosenTool.OnMouseDown(e);
-                RaiseImageUpdatedEvent?.Invoke();
-                ActiveLayer.InvalidateVisual();
             }
         }
 
@@ -789,8 +784,6 @@ namespace Pixellation.Components.Editor
             }
 
             ChosenTool.OnMouseUp(e);
-            RaiseImageUpdatedEvent?.Invoke();
-            ActiveLayer.InvalidateVisual();
 
             var p = e.GetPosition(this).DivideByIntAsIntPoint(_magnification);
             if (!InBounds(p))
@@ -814,8 +807,6 @@ namespace Pixellation.Components.Editor
             }
 
             ChosenTool.OnMouseUp(e);
-            RaiseImageUpdatedEvent?.Invoke();
-            ActiveLayer.InvalidateVisual();
 
             var p = e.GetPosition(this).DivideByIntAsIntPoint(_magnification);
             if (!InBounds(p))
@@ -835,9 +826,7 @@ namespace Pixellation.Components.Editor
             if (left && IsMouseCaptured)
             {
                 ChosenTool.OnMouseUp(e);
-                ReleaseMouseCapture();
-                RaiseImageUpdatedEvent?.Invoke();
-                ActiveLayer.InvalidateVisual();
+                ReleaseMouseCapture();;
             }
         }
 
@@ -854,8 +843,6 @@ namespace Pixellation.Components.Editor
             {
                 base.OnKeyDown(e);
                 ChosenTool.OnKeyDown(e);
-                RaiseImageUpdatedEvent?.Invoke();
-                ActiveLayer.InvalidateVisual();
             }
         }
 

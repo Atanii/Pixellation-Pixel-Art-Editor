@@ -5,6 +5,6 @@
     /// </summary>
     public enum ToolEventType
     {
-        NOTHING, PRIMARYCOLOR, SECONDARY
+        NOTHING, PRIMARYCOLOR, SECONDARY, DRAW
     }
 }

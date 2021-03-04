@@ -40,6 +40,8 @@ namespace Pixellation.Tools
                 p = Mirr(p);
                 DarkenOrLightenPixelWithThickness(_drawSurface, p.X, p.Y, Thickness, modifier);
             }
+
+            OnRaiseToolEvent(new ToolEventArgs());
         }
 
         public override void OnMouseUp(MouseEventArgs e)

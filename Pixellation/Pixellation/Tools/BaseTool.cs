@@ -132,7 +132,7 @@ namespace Pixellation.Tools
             _layer = ds;
             _drawSurface = ds.Bitmap;
             _previewLayer = previewLayer;
-            _previewDrawSurface = _previewLayer.Bitmap;
+            _previewDrawSurface = _previewLayer?.Bitmap;
             MirrorMode = mirrorModeState;
             Thickness = thickness;
         }

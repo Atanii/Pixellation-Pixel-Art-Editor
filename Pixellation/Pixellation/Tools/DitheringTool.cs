@@ -80,6 +80,8 @@ namespace Pixellation.Tools
                     SetPixelWithThickness(_drawSurface, p.X, p.Y, ToolColor, Thickness, RightClickTest);
                 }
             }
+
+            OnRaiseToolEvent(new ToolEventArgs());
         }
 
         public override void OnMouseUp(MouseEventArgs e)

@@ -35,6 +35,8 @@ namespace Pixellation.Tools
             var replacementColor = ToolColor;
 
             ColorPixels(targetColor, replacementColor);
+
+            OnRaiseToolEvent(new ToolEventArgs());
         }
 
         /// <summary>

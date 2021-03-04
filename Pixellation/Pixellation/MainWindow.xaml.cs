@@ -3,7 +3,6 @@ using Pixellation.Components.Dialogs;
 using Pixellation.Components.Dialogs.AboutDialog;
 using Pixellation.Utils;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -194,7 +193,7 @@ namespace Pixellation
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="saveAs"></param>
         /// <returns></returns>
@@ -202,11 +201,10 @@ namespace Pixellation
         {
             if (!saveAs && _pm.AlreadySaved)
             {
-                var res = _pm.SaveProject(canvasImage.Frames);
+                var res = _pm.SaveProject(canvasImage.Frames, ProjectTitle);
 
                 if (res)
                 {
-                    ProjectTitle = _pm.PreviousFullPath.GetFileNameWithoutExtension();
                     ThereAreUnsavedChanges = false;
                     return true;
                 }
@@ -220,11 +218,11 @@ namespace Pixellation
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     string fileName = saveFileDialog.FileName;
-                    var res = _pm.SaveProject(canvasImage.Frames, fileName);
+                    var res = _pm.SaveProject(canvasImage.Frames, ProjectTitle, fileName);
 
                     if (res)
                     {
-                        ProjectTitle = fileName.GetFileNameWithoutExtension();
+                        ProjectTitle = ProjectTitle == Res.DefaultProjectTitle ? fileName.GetFileNameWithoutExtension() : ProjectTitle;
                         ThereAreUnsavedChanges = false;
                         return true;
                     }
@@ -272,18 +270,20 @@ namespace Pixellation
                 return;
             }
 
-            var newImgDialog = new DualInputDialog("New Project", "Width", "Height");
+            var newImgDialog = new StringTripleDialog("New Project", "Project Name", "Width", "Height");
             if (newImgDialog.ShowDialog() == true)
             {
                 // Get Data
-                var widthHeight = newImgDialog.Answer;
-                var w = int.Parse(widthHeight.Split(';')[0]);
-                var h = int.Parse(widthHeight.Split(';')[1]);
+                var nameAndSize = newImgDialog.Answer;
+
+                ProjectTitle = nameAndSize.Split(';')[0];
+
+                var w = int.Parse(nameAndSize.Split(';')[1]);
+                var h = int.Parse(nameAndSize.Split(';')[2]);
 
                 _pm.Reset();
                 _caretaker.ClearAll();
                 ThereAreUnsavedChanges = false;
-                ProjectTitle = Res.DefaultProjectTitle;
 
                 // New Project
                 canvasImage.NewProject(w, h);
@@ -310,7 +310,7 @@ namespace Pixellation
         {
             mainWindow.Close();
         }
-        
+
         /// <summary>
         /// Ask for location then exports the project into the chosen format.
         /// </summary>
@@ -394,7 +394,7 @@ namespace Pixellation
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Menu_SpritesheetFromFrame(object sender, RoutedEventArgs e)
-        {   
+        {
             ExportToSpritesheet(ExportModes.SPRITESHEET_FRAME);
         }
 
