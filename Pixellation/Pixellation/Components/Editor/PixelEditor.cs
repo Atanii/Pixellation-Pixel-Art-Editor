@@ -32,6 +32,7 @@ namespace Pixellation.Components.Editor
         private Visual _borderLine;
 
         private DrawingLayer _drawPreview;
+        private DrawingLayer _pointerLayer;
 
         #endregion PrivateFields
 
@@ -288,6 +289,8 @@ namespace Pixellation.Components.Editor
             InitOnionLayer();
             // Preview layer
             InitPreviewLayer();
+            // Pointer layer
+            InitPointerLayer();
 
             SetActiveLayer();
         }
@@ -317,6 +320,7 @@ namespace Pixellation.Components.Editor
 
             InitOnionLayer();
             InitPreviewLayer();
+            InitPointerLayer();
 
             AddLayer(new DrawingLayer(this, DefaultLayerName));
 
@@ -345,6 +349,7 @@ namespace Pixellation.Components.Editor
 
             InitOnionLayer();
             InitPreviewLayer();
+            InitPointerLayer();
 
             if (imageToEdit == null)
             {
@@ -382,6 +387,7 @@ namespace Pixellation.Components.Editor
 
             InitOnionLayer();
             InitPreviewLayer();
+            InitPointerLayer();
 
             SetActiveLayer();
         }
@@ -483,7 +489,7 @@ namespace Pixellation.Components.Editor
         private void UpdateToolProperties()
         {
             Cursor = ChosenTool?.ToolCursor ?? Cursors.Pen;
-            ChosenTool?.SetAllDrawingCircumstances(Magnification, PixelWidth, PixelHeight, ActiveLayer, _drawPreview);
+            ChosenTool?.SetAllDrawingCircumstances(Magnification, PixelWidth, PixelHeight, ActiveLayer, _drawPreview, _pointerLayer);
         }
 
         #endregion Update, refresh...
@@ -530,9 +536,13 @@ namespace Pixellation.Components.Editor
             {
                 return Layers[(Layers.Count - 1) - index];
             }
-            else if (index == VisualCount - 4)
+            else if (index == VisualCount - 5)
             {
                 return _onionLayer;
+            }
+            else if (index == VisualCount - 4)
+            {
+                return _pointerLayer;
             }
             else if (index == VisualCount - 3)
             {
@@ -718,6 +728,7 @@ namespace Pixellation.Components.Editor
             {
                 ChosenTool.OnMouseUp(e);
                 ReleaseMouseCapture();
+                _pointerLayer.Clear();
             }
 
             if (IsMouseCaptured)
@@ -826,7 +837,8 @@ namespace Pixellation.Components.Editor
             if (left && IsMouseCaptured)
             {
                 ChosenTool.OnMouseUp(e);
-                ReleaseMouseCapture();;
+                ReleaseMouseCapture();
+                _pointerLayer.Clear();
             }
         }
 

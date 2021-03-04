@@ -17,9 +17,10 @@ namespace Pixellation.Tools
         /// <param name="pixelHeight">Editable area height in pixels.</param>
         /// <param name="ds">Layer to draw on.</param>
         /// <param name="previewLayer">Layer to preview drawing on.</param>
+        /// <param name="pointerLayer">Layer for showing toolpointer.</param>
         /// <param name="mirrorModeState">Mirror mode state for drawing.</param>
         /// <param name="thickness">Line thickness for drawing.</param>
-        public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF, ToolThickness thickness = ToolThickness.NORMAL);
+        public void SetAllDrawingCircumstances(int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, DrawingLayer pointerLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF, ToolThickness thickness = ToolThickness.NORMAL);
 
         /// <summary>
         /// Cursor for the drawing tool.

@@ -52,6 +52,13 @@ namespace Pixellation.Tools
 
         protected static WriteableBitmap _previewDrawSurface;
 
+        /// <summary>
+        /// Layer for showing toolpointer.
+        /// </summary>
+        protected static DrawingLayer _pointerLayer;
+
+        protected static WriteableBitmap _pointerSurface;
+
         public delegate void ToolEventHandler(ToolEventArgs args);
 
         public static event ToolEventHandler RaiseToolEvent;
@@ -124,7 +131,9 @@ namespace Pixellation.Tools
         /// <param name="mirrorModeState">Mirror mode state for drawing.</param>
         /// <param name="thickness">Line thickness for drawing.</param>
         public void SetAllDrawingCircumstances(
-            int magnification, int pixelWidth, int pixelHeight, DrawingLayer ds, DrawingLayer previewLayer, MirrorModeStates mirrorModeState = MirrorModeStates.OFF, ToolThickness thickness = ToolThickness.NORMAL)
+            int magnification, int pixelWidth, int pixelHeight,
+            DrawingLayer ds, DrawingLayer previewLayer, DrawingLayer pointerLayer,
+            MirrorModeStates mirrorModeState = MirrorModeStates.OFF, ToolThickness thickness = ToolThickness.NORMAL)
         {
             _magnification = magnification;
             _surfaceWidth = pixelWidth;
@@ -135,6 +144,8 @@ namespace Pixellation.Tools
             _previewDrawSurface = _previewLayer?.Bitmap;
             MirrorMode = mirrorModeState;
             Thickness = thickness;
+            _pointerLayer = pointerLayer;
+            _pointerSurface = _pointerLayer?.Bitmap;
         }
 
         public void SetMagnification(int magnification)
@@ -170,11 +181,11 @@ namespace Pixellation.Tools
             {
                 if (ThicknessCompatible)
                 {
-                    SetPixelWithThickness(_previewDrawSurface, p.X, p.Y, PointerColor, Thickness);
+                    SetPixelWithThickness(_pointerSurface, p.X, p.Y, PointerColor, Thickness);
                 }
                 else
                 {
-                    SetPixelWithThickness(_previewDrawSurface, p.X, p.Y, PointerColor, ToolThickness.NORMAL);
+                    SetPixelWithThickness(_pointerSurface, p.X, p.Y, PointerColor, ToolThickness.NORMAL);
                 }
             }
 
@@ -183,9 +194,9 @@ namespace Pixellation.Tools
                 return;
             }
 
-            _previewDrawSurface.Clear();
+            _pointerSurface.Clear();
 
-            var p = e.GetPosition(_previewLayer).DivideByIntAsIntPoint(_magnification);
+            var p = e.GetPosition(_pointerLayer).DivideByIntAsIntPoint(_magnification);
 
             showPointer(p);
             if (MirrorModeCompatible && MirrorMode != MirrorModeStates.OFF)

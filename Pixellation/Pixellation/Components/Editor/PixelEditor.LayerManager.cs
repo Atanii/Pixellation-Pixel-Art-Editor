@@ -60,6 +60,10 @@ namespace Pixellation.Components.Editor
             {
                 _drawPreview.Measure(s);
             }
+            if (_pointerLayer != null)
+            {
+                _pointerLayer.Measure(s);
+            }
         }
 
         /// <summary>
@@ -79,6 +83,10 @@ namespace Pixellation.Components.Editor
             if (_drawPreview != null)
             {
                 _drawPreview.Arrange(s);
+            }
+            if (_pointerLayer != null)
+            {
+                _pointerLayer.Arrange(s);
             }
         }
 
@@ -102,6 +110,11 @@ namespace Pixellation.Components.Editor
             {
                 RemoveVisualChild(_drawPreview);
                 _drawPreview = null;
+            }
+            if (_pointerLayer != null)
+            {
+                RemoveVisualChild(_pointerLayer);
+                _pointerLayer = null;
             }
 
             if (_borderLine != null)
@@ -138,6 +151,9 @@ namespace Pixellation.Components.Editor
             // Previewlayer
             ResetPreviewLayer();
 
+            // Pointerlayer
+            ResetPointerLayer();
+
             // Helpervisuals
             if (includeHelperVisuals)
             {
@@ -168,7 +184,7 @@ namespace Pixellation.Components.Editor
         }
 
         /// <summary>
-        /// Refreshes layer used for drawpreview.
+        /// Refreshes layer used for draw preview.
         /// </summary>
         public void ResetPreviewLayer()
         {
@@ -176,6 +192,18 @@ namespace Pixellation.Components.Editor
             {
                 RemoveVisualChild(_drawPreview);
                 AddVisualChild(_drawPreview);
+            }
+        }
+
+        /// <summary>
+        /// Refreshes layer used for showing toolpointer.
+        /// </summary>
+        public void ResetPointerLayer()
+        {
+            if (_pointerLayer != null)
+            {
+                RemoveVisualChild(_pointerLayer);
+                AddVisualChild(_pointerLayer);
             }
         }
 
@@ -198,6 +226,14 @@ namespace Pixellation.Components.Editor
         private void InitPreviewLayer()
         {
             _drawPreview = new DrawingLayer(this, "DrawPreview");
+        }
+
+        /// <summary>
+        /// (Re)initializes pointerlayer.
+        /// </summary>
+        private void InitPointerLayer()
+        {
+            _pointerLayer = new DrawingLayer(this, "PointerLayer");
         }
 
         /// <summary>
