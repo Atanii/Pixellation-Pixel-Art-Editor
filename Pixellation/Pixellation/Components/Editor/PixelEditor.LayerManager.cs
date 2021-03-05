@@ -330,6 +330,7 @@ namespace Pixellation.Components.Editor
             {
                 l.Rotate(counterClockWise ? 270 : 90);
             }
+
             _drawPreview.Rotate(counterClockWise ? 270 : 90);
             _onionLayer.Rotate(counterClockWise ? 270 : 90);
 
@@ -351,11 +352,13 @@ namespace Pixellation.Components.Editor
             {
                 l.Resize(newWidth, newHeight);
             }
+
             _drawPreview.Resize(newWidth, newHeight);
             _onionLayer.Resize(newWidth, newHeight);
 
             PixelWidth = newWidth;
             PixelHeight = newHeight;
+
             Magnification = Settings.Default.DefaultMagnification;
         }
 

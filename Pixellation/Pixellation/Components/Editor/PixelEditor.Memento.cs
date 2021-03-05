@@ -2,7 +2,6 @@
 using Pixellation.Components.Event;
 using Pixellation.Interfaces;
 using Pixellation.MementoPattern;
-using System.Diagnostics;
 
 namespace Pixellation.Components.Editor
 {

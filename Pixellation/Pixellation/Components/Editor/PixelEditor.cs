@@ -285,6 +285,7 @@ namespace Pixellation.Components.Editor
 
             // Default layer
             AddLayer(new DrawingLayer(this, DefaultLayerName));
+
             // Onion layer
             InitOnionLayer();
             // Preview layer

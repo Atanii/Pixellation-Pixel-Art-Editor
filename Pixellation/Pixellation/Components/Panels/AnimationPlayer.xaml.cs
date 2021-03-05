@@ -18,12 +18,12 @@ namespace Pixellation.Components.Panels
         /// <summary>
         /// Timer for animation refresh.
         /// </summary>
-        private Timer _dispatcherTimer = new Timer();
+        private Timer _animationTimer = new Timer();
 
         /// <summary>
         /// Variable to handle frame drop.
         /// </summary>
-        private Boolean _dispatcherTimerMonitorFlag = false;
+        private Boolean _animationTimerMonitorFlag = false;
 
         /// <summary>
         /// <see cref="AnimationPlayer"/> is loaded.
@@ -95,8 +95,8 @@ namespace Pixellation.Components.Panels
 
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
 
-            _dispatcherTimer.AutoReset = true;
-            _dispatcherTimer.Elapsed += DispatcherTimerTick;
+            _animationTimer.AutoReset = true;
+            _animationTimer.Elapsed += DispatcherTimerTick;
 
             // When the component is loaded  we need to make some calculation.
             Loaded += AnimationPlayerLoaded;
@@ -153,14 +153,14 @@ namespace Pixellation.Components.Panels
             {
                 // Synchronize on main thread.
                 System.Timers.ElapsedEventHandler dt = DispatcherTimerTick;
-                if (!_dispatcherTimerMonitorFlag)
+                if (!_animationTimerMonitorFlag)
                 {
                     Dispatcher.Invoke(dt, sender, e);
                 }
                 return;
             }
 
-            _dispatcherTimerMonitorFlag = true;
+            _animationTimerMonitorFlag = true;
 
             DrawingVisual dv = RenderNextFrame();
             _renderTargetBitmap.Render(dv);
@@ -182,7 +182,7 @@ namespace Pixellation.Components.Panels
 
             _wBitmap.Unlock();
 
-            _dispatcherTimerMonitorFlag = false;
+            _animationTimerMonitorFlag = false;
         }
 
         /// <summary>
@@ -217,9 +217,9 @@ namespace Pixellation.Components.Panels
         public void SetParameters(int framePerSecond = 30, Brush backgroundClearBrush = null, List<DrawingFrame> framesToPlay = null, bool playOnce = false)
         {
             bool dispRunning = false;
-            if (_dispatcherTimer.Enabled)
+            if (_animationTimer.Enabled)
             {
-                _dispatcherTimer.Stop();
+                _animationTimer.Stop();
                 dispRunning = true;
             }
 
@@ -249,11 +249,11 @@ namespace Pixellation.Components.Panels
                 }
             }
 
-            _dispatcherTimer.Interval = 1000D / _framePerSecond;
+            _animationTimer.Interval = 1000D / _framePerSecond;
 
             if (dispRunning)
             {
-                _dispatcherTimer.Start();
+                _animationTimer.Start();
             }
         }
 
@@ -262,7 +262,7 @@ namespace Pixellation.Components.Panels
         /// </summary>
         public void Start()
         {
-            _dispatcherTimer.Start();
+            _animationTimer.Start();
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace Pixellation.Components.Panels
         /// </summary>
         public void Stop()
         {
-            _dispatcherTimer.Stop();
+            _animationTimer.Stop();
         }
     }
 }

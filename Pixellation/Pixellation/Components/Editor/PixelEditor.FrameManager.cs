@@ -34,6 +34,7 @@ namespace Pixellation.Components.Editor
 
                 _activeFrameIndex = value;
                 _activeFrame = Frames[value];
+
                 _caretaker.ActiveKey = Frames[value].Id;
 
                 OnPropertyChanged();
@@ -57,6 +58,7 @@ namespace Pixellation.Components.Editor
                 RemoveLayersFromVisualChildren();
 
                 _activeFrame = value;
+
                 _activeFrameIndex = Frames.FindIndex(x => x.Id == value.Id);
 
                 OnPropertyChanged();

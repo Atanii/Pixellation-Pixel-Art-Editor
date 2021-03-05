@@ -91,7 +91,7 @@ namespace Pixellation.Utils
         }
 
         /// <summary>
-        /// Converts the given hsl color into a RGB model.
+        /// Converts the given hsl color into a RGB color.
         /// </summary>
         /// <param name="color">Color to convert.</param>
         /// <returns>Resulting RGB color.</returns>
@@ -198,6 +198,12 @@ namespace Pixellation.Utils
             return Color.FromRgb(_R, _G, _B);
         }
 
+        /// <summary>
+        /// Adds the modifier to the lightness of the given color.
+        /// </summary>
+        /// <param name="c">Color to modify.</param>
+        /// <param name="modifier">Modifier.</param>
+        /// <returns>Modified color.</returns>
         public static Color ModifiyLightness(Color c, float modifier)
         {
             var hsl = ToHSL(c.R, c.G, c.B);
@@ -205,6 +211,14 @@ namespace Pixellation.Utils
             return ToRGB(hsl);
         }
 
+        /// <summary>
+        /// Takes the max or min from the R, G, B values of the color and adds or subtracts the modifier to it.
+        /// This way it 'balances' the max-min intervall of the color.
+        /// </summary>
+        /// <param name="c">Color to modify.</param>
+        /// <param name="max">Substract from max if true, opposite if false.</param>
+        /// <param name="modifier">Modifier.</param>
+        /// <returns></returns>
         public static Color BalanceColor(Color c, bool max, byte modifier)
         {
             if (max)
