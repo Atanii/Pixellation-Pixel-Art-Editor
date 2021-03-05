@@ -319,7 +319,8 @@ namespace Pixellation
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = Res.ExportFilter
+                Filter = Res.ExportFilter,
+                DefaultExt = (mode > ExportModes.SPRITESHEET_ALL_FRAME) ? "gif" : "png"
             };
             if (saveFileDialog.ShowDialog() == true)
             {
@@ -348,7 +349,8 @@ namespace Pixellation
 
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    Filter = Res.ExportFilter
+                    Filter = Res.ExportFilter,
+                    DefaultExt = "png"
                 };
                 if (saveFileDialog.ShowDialog() == true)
                 {

@@ -221,26 +221,19 @@ namespace Pixellation.Utils
 
                     case ExportModes.GIF_ALL_FRAMES:
                         frames = vm.GetFramesAsWriteableBitmaps();
-                        break;
+                        SaveBitmapSourceToGif(filePath, frames);
+                        return;
 
                     case ExportModes.GIF_FRAME:
                         frames = vm.Frames[vm.ActiveFrameIndex].GetLayersAsBitmapSources();
-                        break;
+                        SaveBitmapSourceToGif(filePath, frames);
+                        return;
 
                     default:
                         break;
                 }
 
-                var extension = filePath.GetExtension();
-
-                if (extension.ToLower() == "gif")
-                {
-                    SaveBitmapSourceToGif(filePath, frames);
-                }
-                else
-                {
-                    SaveBitmapSourceToFile(filePath, extension, bmp);
-                }
+                SaveBitmapSourceToFile(filePath, filePath.GetExtension(), bmp);
             }
             catch (Exception ex)
             {
