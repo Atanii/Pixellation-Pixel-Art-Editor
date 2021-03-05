@@ -355,6 +355,7 @@ namespace Pixellation.Components.Editor
                 WriteableBitmapExtensions.FlipMode.Horizontal :
                 WriteableBitmapExtensions.FlipMode.Vertical
             );
+            PropertyUpdated?.Invoke();
         }
 
         /// <summary>
@@ -364,6 +365,7 @@ namespace Pixellation.Components.Editor
         public void Rotate(int angleInDegree)
         {
             _bitmap = _bitmap.Rotate(angleInDegree);
+            PropertyUpdated?.Invoke();
         }
 
         /// <summary>
@@ -377,6 +379,7 @@ namespace Pixellation.Components.Editor
                 newWidth, newHeight,
                 WriteableBitmapExtensions.Interpolation.NearestNeighbor
             );
+            PropertyUpdated?.Invoke();
         }
 
         /// <summary>

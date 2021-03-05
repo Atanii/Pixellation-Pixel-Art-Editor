@@ -359,7 +359,7 @@ namespace Pixellation.Components.Editor
             PixelWidth = newWidth;
             PixelHeight = newHeight;
 
-            Magnification = Settings.Default.DefaultMagnification;
+            RefreshVisualsThenSignalUpdate();
         }
 
         #endregion Transform

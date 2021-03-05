@@ -10,7 +10,7 @@
         <Border HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Black" Margin="10">
             <preview:DrawingPreview
                 x:Name="dPreview"
-                Height="180" Width="180" Margin="10"
+                Height="180" Width="180"
                 DrawingFrameProvider="{Binding ElementName=previewPanel, Path=FrameProvider, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 PMode="{Binding ElementName=previewPanel, Path=PMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
             </preview:DrawingPreview>
