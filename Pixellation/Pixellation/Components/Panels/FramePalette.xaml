@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="Pixellation.Components.Panels.FramePalette"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:resource="clr-namespace:Pixellation.Properties"
+             mc:Ignorable="d"
+             d:DesignHeight="220" d:DesignWidth="800">
+    <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalAlignment="Stretch" Background="AliceBlue">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Label Margin="5">Frames</Label>
+                <Button Click="BtnAddFrame" ToolTip="Add New Frame" Margin="5"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-blank.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnDuplicateFrame" ToolTip="Duplicate Frame" Margin="10,5,5,5"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-duplicate.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnMergeFrame" ToolTip="Merge Into Left Neighbour  (Irreversible! Clears stored undo-redo possibilites for layers in both frames!)" Margin="15,5,5,5"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-merge.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+
+                <Button Click="BtnMoveFrameLeft" ToolTip="Move Frame Left" Margin="15,5,5,5"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/frames/frame-left.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnMoveFrameRight" ToolTip="Move Frame Right" Margin="5"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/frames/frame-right.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+
+                <Button Click="BtnRemoveFrame" ToolTip="Delete Frame" Margin="25,5,5,5"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-remove.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnResetFrame" ToolTip="Clears the frame and leaves only one blank layer. (Irreversible! Clears stored undo-redo possibilites for layers in the frame!)" Margin="25,5,5,5"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/layers/layer-clear.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+
+                <Button Click="BtnUndoFrameOperation" ToolTip="Undo Frame Operation" Margin="25,5,5,5" BorderThickness="0"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/swap-reverse.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+                <Button Click="BtnRedoFrameOperation" ToolTip="Redo Frame Operation" Margin="10,5,5,5" BorderThickness="0"
+                    Width="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}"
+                    Height="{Binding Source={x:Static resource:Settings.Default}, Path=IconSize}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Resources/icons/swap.png"></ImageBrush>
+                    </Button.Background>
+                </Button>
+            </StackPanel>
+            <UniformGrid x:Name="frameList" Rows="1" HorizontalAlignment="Left"></UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

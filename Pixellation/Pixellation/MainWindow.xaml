@@ -1,0 +1,126 @@
+﻿<Window   x:Class="Pixellation.MainWindow"
+          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:l="clr-namespace:Pixellation.Components.Editor"
+          xmlns:Panels="clr-namespace:Pixellation.Components.Panels"
+          xmlns:l2="clr-namespace:Pixellation.Tools"
+          Title="{Binding ElementName=mainWindow, Path=Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+          Closing="MainWindow_Closing" WindowStartupLocation="CenterScreen"
+          mc:Ignorable="d" Name="mainWindow" Height="1080" Width="1920">
+
+    <!-- MAINPANEL -->
+    <DockPanel LastChildFill="True">
+        <!-- MENUBAR -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" Click="Menu_NewImage" />
+                <MenuItem Header="_Open" Click="Menu_Open" />
+                <Separator />
+                <MenuItem Header="_Save Project" Click="Menu_SaveProject" />
+                <MenuItem Header="_Save Project As.." Click="Menu_SaveProjectAs" />
+                <Separator />
+                <MenuItem Header="_Exit" Click="Menu_Exit" />
+            </MenuItem>
+
+            <MenuItem Header="_Export">
+                <MenuItem Header="Selected _Layer" Click="Menu_ExportSelectedLayer" />
+                <MenuItem Header="Selected _Frame" Click="Menu_ExportSelectedFrame" />
+                <MenuItem Header="_All Frames Merged" Click="Menu_ExportAllFrames" />
+                <Separator />
+                <MenuItem Header="Spritesheet from Frame" Click="Menu_SpritesheetFromFrame" />
+                <MenuItem Header="Spritesheet from All Frames" Click="Menu_SpritesheetFromAllFrames" />
+                <Separator />
+                <MenuItem Header="Gif from Frame" Click="Menu_GifFromFrame" />
+                <MenuItem Header="Gif from All Frames" Click="Menu_GifFromAllFrames" />
+            </MenuItem>
+
+            <MenuItem Header="_About" Click="Menu_About" />
+        </Menu>
+
+        <!-- STATUSBAR -->
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Name="statWidth" Text="{Binding ElementName=canvasImage, Path=PixelWidth, Mode=OneWay, StringFormat=' Width: {0}px'}" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statHeight" Text="{Binding ElementName=canvasImage, Path=PixelHeight, Mode=OneWay, StringFormat=' Height: {0}px'}" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Left" Text="Zoom: " />
+                    <Slider x:Name="sliderZoom" Value="{Binding ElementName=canvasImage, Path=Magnification, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="30" Width="150" IsSnapToTickEnabled="True" />
+                    <TextBlock DockPanel.Dock="Right" Name="statZoom" Text="{Binding ElementName=sliderZoom, Path=Value, StringFormat=' {0}x'}" />
+                </DockPanel>
+            </StatusBarItem>
+        </StatusBar>
+
+        <!-- LEFT PANEL -->
+        <Border DockPanel.Dock="Left" HorizontalAlignment="Left" Width="220" BorderBrush="Gray" BorderThickness="1">
+            <ScrollViewer>
+                <StackPanel>
+                    <Label Content="Tools"></Label>
+                    <Panels:ToolPalette Height="280" x:Name="toolPalette" />
+
+                    <Label Content="Layers"></Label>
+                    <Panels:LayerPalette LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}"></Panels:LayerPalette>
+
+                    <Label Content="Transforms"></Label>
+                    <Panels:Transforms LayerManager="{Binding ElementName=canvasImage, Mode=OneTime}"></Panels:Transforms>
+
+                    <Label Content="Visual Helper Settings"></Label>
+                    <Panels:VisualHelperSettingsPanel x:Name="visualHelperSettings" />
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- RIGHT PANEL -->
+        <Border DockPanel.Dock="Right" HorizontalAlignment="Right" Width="220" BorderBrush="Gray" BorderThickness="1">
+            <ScrollViewer>
+                <StackPanel>
+                    <Label Content="Preview"></Label>
+                    <Panels:PreviewPanel FrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:PreviewPanel>
+
+                    <Label Content="Colour"></Label>
+                    <l2:ColourChooser Width="200" Height="520" x:Name="colorChooser"></l2:ColourChooser>
+
+                    <Label Content="Animation Preview"></Label>
+                    <Panels:AnimationPanel AnimationFrameProvider="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:AnimationPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- DRAWING AREA -->
+        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="220px"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" x:Name="canvasScroll">
+                <ScrollViewer.Background>
+                    <DrawingBrush TileMode="Tile" Viewport="0,0,32,32" ViewportUnits="Absolute">
+                        <DrawingBrush.Drawing>
+                            <GeometryDrawing Geometry="M0,0 H1 V1 H2 V2 H1 V1 H0Z" Brush="LightGray" />
+                        </DrawingBrush.Drawing>
+                    </DrawingBrush>
+                </ScrollViewer.Background>
+
+                <l:PixelEditor ChosenTool="{Binding ElementName=toolPalette, Path=ChosenTool, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                           TiledModeEnabled="{Binding ElementName=visualHelperSettings, Path=TiledModeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           TiledOpacity="{Binding ElementName=visualHelperSettings, Path=TiledOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ShowBorder="{Binding ElementName=visualHelperSettings, Path=ShowBorder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ShowGrid="{Binding ElementName=visualHelperSettings, Path=ShowGrid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            PrimaryColor="{Binding ElementName=colorChooser, Path=PrimaryColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            SecondaryColor="{Binding ElementName=colorChooser, Path=SecondaryColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="canvasImage" />
+            </ScrollViewer>
+
+            <Panels:FramePalette Grid.Row="1" VerticalAlignment="Stretch" FrameManager="{Binding ElementName=canvasImage, Mode=OneWay}"></Panels:FramePalette>
+        </Grid>
+    </DockPanel>
+</Window>

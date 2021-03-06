@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="Pixellation.Components.Panels.Transforms"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" x:Name="transformsWindow"
+             d:DesignHeight="300" d:DesignWidth="200">
+    <StackPanel Orientation="Vertical">
+        <GroupBox Header="Mirror">
+            <StackPanel Orientation="Vertical">
+                <CheckBox x:Name="cbAllLayers" ToolTip="Apply To All Layers" Content="All Layers" Margin="5"></CheckBox>
+                <Button x:Name="mVertical" Margin="5" Click="MVertical_Click">Horizontally</Button>
+                <Button x:Name="mHorizontal" Margin="5" Click="MHorizontal_Click">Vertically</Button>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Rotate">
+            <StackPanel Orientation="Vertical">
+                <CheckBox x:Name="cbCounterClockWise" Content="Counterclockwise" Margin="5"></CheckBox>
+                <Button x:Name="r90" Margin="5" Click="R90_Click">90°</Button>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Resize Image">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Label>Width:</Label>
+                    <TextBox x:Name="txtWidth" Width="35" Margin="5" LostFocus="TxtWidth_LostFocus"
+                             Text="{Binding ElementName=transformsWindow, Path=LayerManager.PixelWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                    </TextBox>
+                    <Label>Height:</Label>
+                    <TextBox x:Name="txtHeight" Width="35" Margin="5" LostFocus="TxtHeight_LostFocus"
+                             Text="{Binding ElementName=transformsWindow, Path=LayerManager.PixelHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                    </TextBox>
+                </StackPanel>
+                <CheckBox x:Name="cbResizeProportional" Margin="5" Content="Proportional" ToolTip="Apply same amount of changes to other size attribute."></CheckBox>
+                <Button x:Name="btnResize" Margin="5" Content="Apply" Click="BtnResize_Click" IsDefault="True"></Button>
+            </StackPanel>
+        </GroupBox>
+    </StackPanel>
+</UserControl>
