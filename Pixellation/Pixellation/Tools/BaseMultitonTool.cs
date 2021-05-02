@@ -37,7 +37,8 @@ namespace Pixellation.Tools
                 }
                 else
                 {
-                    throw new MultitonException($"Classes inherited from {typeof(BaseMultitonTool<T>)} must have a private constructor!");
+                    throw new MultitonException(
+                        $"Classes inherited from {typeof(BaseMultitonTool<T>)} must have a private constructor!");
                 }
             }
 

@@ -4,6 +4,8 @@ using System.Windows.Controls;
 
 namespace Pixellation.Components.Panels
 {
+    using Settings = Properties.Settings;
+
     /// <summary>
     /// Interaction logic for VisualHelperSettingsPanel.xaml
     /// </summary>
@@ -26,6 +28,7 @@ namespace Pixellation.Components.Panels
             set
             {
                 _tiledOpacity = value;
+                Settings.Default.DefaultTiledOpacity = value;
                 OnPropertyChanged();
             }
         }
@@ -41,6 +44,7 @@ namespace Pixellation.Components.Panels
             set
             {
                 _tileModeEnabled = value;
+                Settings.Default.DefaultTiledModeEnabled = value;
                 OnPropertyChanged();
             }
         }
@@ -56,6 +60,7 @@ namespace Pixellation.Components.Panels
             set
             {
                 _showBorder = value;
+                Settings.Default.DefaultShowBorder = value;
                 OnPropertyChanged();
             }
         }
@@ -71,6 +76,7 @@ namespace Pixellation.Components.Panels
             set
             {
                 _showGrid = value;
+                Settings.Default.DefaultShowGrid = value;
                 OnPropertyChanged();
             }
         }
@@ -82,11 +88,11 @@ namespace Pixellation.Components.Panels
         {
             InitializeComponent();
 
-            TiledOpacity = Properties.Settings.Default.DefaultTiledOpacity;
+            TiledOpacity = Settings.Default.DefaultTiledOpacity;
 
-            ShowBorder = Properties.Settings.Default.DefaultShowBorder;
-            ShowGrid = Properties.Settings.Default.DefaultShowGrid;
-            TiledModeEnabled = Properties.Settings.Default.DefaultTiledModeEnabled;
+            ShowBorder = Settings.Default.DefaultShowBorder;
+            ShowGrid = Settings.Default.DefaultShowGrid;
+            TiledModeEnabled = Settings.Default.DefaultTiledModeEnabled;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)

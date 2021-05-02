@@ -109,6 +109,7 @@ namespace Pixellation.Components.Editor
             set
             {
                 _magnification = value;
+                Settings.Default.DefaultMagnification = value;
                 UpdateMagnification();
                 OnPropertyChanged();
             }

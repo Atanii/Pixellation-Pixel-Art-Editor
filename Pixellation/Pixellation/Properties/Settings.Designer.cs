@@ -41,75 +41,99 @@ namespace Pixellation.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("5")]
         public int DefaultMagnification {
             get {
                 return ((int)(this["DefaultMagnification"]));
             }
+            set {
+                this["DefaultMagnification"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
         public float DefaultTiledOpacity {
             get {
                 return ((float)(this["DefaultTiledOpacity"]));
             }
+            set {
+                this["DefaultTiledOpacity"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Black")]
         public global::System.Drawing.Color DefaultPrimaryColor {
             get {
                 return ((global::System.Drawing.Color)(this["DefaultPrimaryColor"]));
             }
+            set {
+                this["DefaultPrimaryColor"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("DarkSlateGray")]
         public global::System.Drawing.Color DefaultSecondaryColor {
             get {
                 return ((global::System.Drawing.Color)(this["DefaultSecondaryColor"]));
             }
+            set {
+                this["DefaultSecondaryColor"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("White")]
         public global::System.Drawing.Color DefaultHueColor {
             get {
                 return ((global::System.Drawing.Color)(this["DefaultHueColor"]));
             }
+            set {
+                this["DefaultHueColor"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool DefaultShowBorder {
             get {
                 return ((bool)(this["DefaultShowBorder"]));
             }
+            set {
+                this["DefaultShowBorder"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool DefaultShowGrid {
             get {
                 return ((bool)(this["DefaultShowGrid"]));
             }
+            set {
+                this["DefaultShowGrid"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool DefaultTiledModeEnabled {
             get {
                 return ((bool)(this["DefaultTiledModeEnabled"]));
+            }
+            set {
+                this["DefaultTiledModeEnabled"] = value;
             }
         }
         
@@ -128,63 +152,6 @@ namespace Pixellation.Properties {
         public int DefaultAnimationFPS {
             get {
                 return ((int)(this["DefaultAnimationFPS"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MIT License, Copyright (c) 2020-2021 Kádár Jeremi Emánuel")]
-        public string AboutLicenseContent {
-            get {
-                return ((string)(this["AboutLicenseContent"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("License")]
-        public string AboutLicenseHeader {
-            get {
-                return ((string)(this["AboutLicenseHeader"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Jeremi Emánuel Kádár")]
-        public string AboutCreditsAuthor {
-            get {
-                return ((string)(this["AboutCreditsAuthor"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Design, Programming, Icons")]
-        public string AboutCreditsHeader {
-            get {
-                return ((string)(this["AboutCreditsHeader"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Pixellation Pixelart Editor")]
-        public string AboutTitle {
-            get {
-                return ((string)(this["AboutTitle"]));
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("About Pixellation")]
-        public string AboutDialogTitle {
-            get {
-                return ((string)(this["AboutDialogTitle"]));
-            }
-            set {
-                this["AboutDialogTitle"] = value;
             }
         }
     }
