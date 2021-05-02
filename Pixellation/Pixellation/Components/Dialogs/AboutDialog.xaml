@@ -5,17 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:resource="clr-namespace:Pixellation.Properties" x:Name="about"
         mc:Ignorable="d" KeyDown="Window_KeyDown" WindowStartupLocation="CenterScreen"
-        Title="{Binding Source={x:Static resource:Settings.Default}, Path=AboutDialogTitle}" Height="170" Width="525">
+        Title="{x:Static resource:Resources.AboutDialogTitle}" Height="170" Width="525">
     <StackPanel>
         <StackPanel Orientation="Horizontal">
-            <Label Content="{Binding Source={x:Static resource:Settings.Default}, Path=AboutTitle}"></Label>
+            <Label Content="{x:Static resource:Resources.AboutTitle}"></Label>
             <Label Content="{Binding ElementName=about, Path=AssemblyVersion, Mode=OneTime}"></Label>
         </StackPanel>
-        <GroupBox Header="{Binding Source={x:Static resource:Settings.Default}, Path=AboutCreditsHeader}">
-            <Label Content="{Binding Source={x:Static resource:Settings.Default}, Path=AboutCreditsAuthor}"></Label>
+        <GroupBox Header="{x:Static resource:Resources.AboutCreditsHeader}">
+            <Label Content="{x:Static resource:Resources.AboutCreditsAuthor}"></Label>
         </GroupBox>
-        <GroupBox Header="{Binding Source={x:Static resource:Settings.Default}, Path=AboutLicenseHeader}">
-            <Label Content="{Binding Source={x:Static resource:Settings.Default}, Path=AboutLicenseContent}"></Label>
+        <GroupBox Header="{x:Static resource:Resources.AboutLicenseHeader}">
+            <Label Content="{x:Static resource:Resources.AboutLicenseContent}"></Label>
         </GroupBox>
     </StackPanel>
 </Window>

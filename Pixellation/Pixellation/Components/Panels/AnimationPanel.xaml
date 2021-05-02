@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:resource="clr-namespace:Pixellation.Properties"
              xmlns:local="clr-namespace:Pixellation.Components.Panels" xmlns:l="clr-namespace:Pixellation.Components.Editor"
              mc:Ignorable="d" x:Name="ap"
              d:DesignHeight="300" d:DesignWidth="200">

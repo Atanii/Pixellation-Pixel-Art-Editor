@@ -37,14 +37,25 @@ namespace Pixellation.Components.Panels
         ));
 
         /// <summary>
+        /// Setter for frames per second, speed of the animation.
+        /// </summary>
+        private double FPS
+        {
+            set
+            {
+                player.SetParameters(framePerSecond: (int)value);
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
         /// Inits default animationplayer settings and eventhandling.
         /// </summary>
         public AnimationPanel()
         {
             InitializeComponent();
 
-            player.SetParameters(framePerSecond: Properties.Settings.Default.DefaultAnimationFPS);
-            FPSslider.Value = Properties.Settings.Default.DefaultAnimationFPS;
+            FPS = Properties.Settings.Default.DefaultAnimationFPS;
 
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
 
@@ -92,7 +103,7 @@ namespace Pixellation.Components.Panels
         /// <param name="e"></param>
         private void FPSslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            player.SetParameters(framePerSecond: (int)e.NewValue);
+            FPS = e.NewValue;
         }
 
         /// <summary>

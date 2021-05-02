@@ -38,5 +38,10 @@ namespace Pixellation
             }
             mainWindow.Show();
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            Pixellation.Properties.Settings.Default.Save();
+        }
     }
 }

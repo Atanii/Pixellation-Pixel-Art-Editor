@@ -117,6 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutCreditsAuthor" xml:space="preserve">
+    <value>Jeremi Emánuel Kádár</value>
+  </data>
+  <data name="AboutCreditsHeader" xml:space="preserve">
+    <value>Design, Programming, Icons</value>
+  </data>
+  <data name="AboutDialogTitle" xml:space="preserve">
+    <value>About Pixellation</value>
+  </data>
+  <data name="AboutLicenseContent" xml:space="preserve">
+    <value>MIT License, Copyright (c) 2020-2021 Kádár Jeremi Emánuel</value>
+  </data>
+  <data name="AboutLicenseHeader" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>Pixellation Pixelart Editor</value>
+  </data>
   <data name="DefaultFrameName" xml:space="preserve">
     <value>0</value>
   </data>

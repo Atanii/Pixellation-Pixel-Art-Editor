@@ -116,10 +116,15 @@ namespace Pixellation.Tools
         }
 
         /// <summary>
-        /// Updates the two color indicating rectangle and the RGBA inputs.
+        /// Updates the two color indicating rectangle and the RGBA inputs and the color usersettings.
         /// </summary>
         private void Refresh()
         {
+            // Updating default colors
+            Properties.Settings.Default.DefaultPrimaryColor = PrimaryColor;
+            Properties.Settings.Default.DefaultSecondaryColor = SecondaryColor;
+
+            // Updating UI and inputs
             SetCcRectanglesFill();
             SetRGBATxtInputs();
         }
@@ -189,7 +194,9 @@ namespace Pixellation.Tools
         {
             var hsl = ColorUtils.ToHSL(color.R, color.G, color.B);
             hsl.S = 1;
+            var tmp = ColorUtils.ToRGB(hsl);
             Resources["HueColor"] = ColorUtils.ToRGB(hsl);
+            Properties.Settings.Default.DefaultHueColor = tmp.ToDrawingColor();
         }
 
         /// <summary>
@@ -227,6 +234,7 @@ namespace Pixellation.Tools
             if (colour != null)
             {
                 Resources["HueColor"] = colour.ToMediaColor();
+                Properties.Settings.Default.DefaultHueColor = colour;
             }
         }
 

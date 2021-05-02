@@ -61,6 +61,60 @@ namespace Pixellation.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Jeremi Emánuel Kádár.
+        /// </summary>
+        public static string AboutCreditsAuthor {
+            get {
+                return ResourceManager.GetString("AboutCreditsAuthor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Design, Programming, Icons.
+        /// </summary>
+        public static string AboutCreditsHeader {
+            get {
+                return ResourceManager.GetString("AboutCreditsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About Pixellation.
+        /// </summary>
+        public static string AboutDialogTitle {
+            get {
+                return ResourceManager.GetString("AboutDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MIT License, Copyright (c) 2020-2021 Kádár Jeremi Emánuel.
+        /// </summary>
+        public static string AboutLicenseContent {
+            get {
+                return ResourceManager.GetString("AboutLicenseContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License.
+        /// </summary>
+        public static string AboutLicenseHeader {
+            get {
+                return ResourceManager.GetString("AboutLicenseHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pixellation Pixelart Editor.
+        /// </summary>
+        public static string AboutTitle {
+            get {
+                return ResourceManager.GetString("AboutTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 0.
         /// </summary>
         public static string DefaultFrameName {
