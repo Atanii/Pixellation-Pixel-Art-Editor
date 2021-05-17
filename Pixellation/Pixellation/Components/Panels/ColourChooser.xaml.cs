@@ -103,10 +103,10 @@ namespace Pixellation.Tools
         /// </summary>
         public ColourChooser()
         {
-            InitializeComponent();
+            _primaryColor = Properties.Settings.Default.DefaultPrimaryColor;
+            _secondaryColor = Properties.Settings.Default.DefaultSecondaryColor;
 
-            PrimaryColorLocal = Properties.Settings.Default.DefaultPrimaryColor;
-            SecondaryColorLocal = Properties.Settings.Default.DefaultSecondaryColor;
+            InitializeComponent();
 
             Resources["HueColor"] = Properties.Settings.Default.DefaultHueColor.ToMediaColor();
 
@@ -245,6 +245,7 @@ namespace Pixellation.Tools
         {
             Resources["PrimaryColor"] = PrimaryColor.ToMediaColor();
             Resources["SecondaryColor"] = SecondaryColor.ToMediaColor();
+            InvalidateVisual();
         }
 
         /// <summary>
